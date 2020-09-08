@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +34,7 @@ public class CreateClaimRequestWebDTO {
     private String key;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
+    @NonNull
     private int ispb;
 
     @ApiModelProperty(value = "Branch number of client", dataType="java.lang.String")
@@ -56,6 +57,7 @@ public class CreateClaimRequestWebDTO {
     protected LocalDateTime accountOpeningDate;
 
     @ApiModelProperty(value = "CPF/CNPJ of client", dataType="java.lang.String", required = true)
+    @NonNull
     private long cpfCnpj;
 
     @ApiModelProperty(value = "Razão Social/Full client name", dataType="java.lang.String", required = true)

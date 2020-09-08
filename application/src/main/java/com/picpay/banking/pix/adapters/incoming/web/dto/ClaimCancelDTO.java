@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 @Setter
 @Getter
@@ -17,6 +17,7 @@ import lombok.Setter;
 public class ClaimCancelDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
+    @NonNull
     private int ispb;
 
     @ApiModelProperty(value = "Canceled by claimant")

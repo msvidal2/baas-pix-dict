@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateClaimPortImpl implements CreateClaimPort {
 
-    private ClaimJDClient claimJDClient;
     private CreateClaimConverter converter;
+
+    private ClaimJDClient claimJDClient;
 
     public CreateClaimPortImpl(ClaimJDClient claimJDClient, CreateClaimConverter converter) {
         this.converter = converter;

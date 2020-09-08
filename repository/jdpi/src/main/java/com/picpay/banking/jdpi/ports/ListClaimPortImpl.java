@@ -1,6 +1,5 @@
 package com.picpay.banking.jdpi.ports;
 
-
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.request.ListClaimRequestDTO;

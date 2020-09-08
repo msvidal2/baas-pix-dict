@@ -2,10 +2,12 @@ package com.picpay.banking.pix.converters;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.Claim;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class CreateClaimWebConverter implements DataConverter<CreateClaimRequestWebDTO, Claim> {
+
+
 
     @Override
     public Claim convert(CreateClaimRequestWebDTO from) {

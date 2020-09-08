@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateAddressingKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ListAddressingKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ListKeyResponseWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.RemoveAddressingKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountAddressingKeyDTO;
 import com.picpay.banking.pix.converters.CreateAddressingKeyWebConverter;
@@ -52,7 +53,6 @@ public class AddressingKeyController {
     private CreateAddressingKeyWebConverter converter;
 
     @ApiOperation(value = AddressingKeyControllerMessages.METHOD_CREATE)
-
     @PostMapping
     @ResponseStatus(CREATED)
     public AddressingKey create(@RequestBody @Validated CreateAddressingKeyRequestWebDTO requestDTO) {
@@ -65,7 +65,7 @@ public class AddressingKeyController {
     @ApiOperation(value = AddressingKeyControllerMessages.METHOD_LIST)
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<AddressingKey> list(
+    public Collection<ListKeyResponseWebDTO> list(
             @RequestHeader String requestIdentifier, ListAddressingKeyRequestWebDTO requestDTO) {
 
         AddressingKey addressingKey = AddressingKey.builder()
@@ -77,7 +77,7 @@ public class AddressingKeyController {
             .ispb(requestDTO.getIspb())
             .build();
 
-        return listAddressKeyUseCase.listAddressKeyUseCase(requestIdentifier, addressingKey);
+        return converter.convert(listAddressKeyUseCase.listAddressKeyUseCase(requestIdentifier, addressingKey));
     }
 
     @ApiOperation(value = AddressingKeyControllerMessages.METHOD_FIND)
