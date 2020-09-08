@@ -1,0 +1,1051 @@
+swagger: '2.0'
+info:
+  description: |
+    Diretório de Identificadores de Contas Transacionais. <br />
+    O DICT é o componente do arranjo que será instituído pelo BC que armazenará as informações das chaves ou apelidos que servem para identificar as contas transacionais dos usuários recebedores de maneira intuitiva e simplificada, permitindo que o usuário pagador utilize informações que ele já possui sobre o usuário recebedor para iniciar o pagamento.
+    <br /> <br />
+  version: 0.0.2
+  title: BAAS - DICT API
+  x-logo:
+    url: "https://www.oficinadanet.com.br/imagens/post/32145/picpay.png"
+    backgroundColor: "#FFFFFF"
+    altText: "PIX"
+host: 'localhost:8081'
+basePath: /pix/dict
+tags:
+  - name: addressing-key
+    description: |
+      A chave para endereçamento é uma forma de simplificar a identificação e a comunicação de uma conta transacional. As contas transacionais são formadas por diversos números que, além da conta em si, também identificam a instituição  responsável e, se houver, a agência. <br /> 
+      Além de não ser provido de significado para o usuário pagador, o número de conta, usualmente, é um dado extenso, cujo processo de comunicação e de utilização não é intuitivo para os usuários. <br /> 
+      O objetivo da chave para endereçamento, portanto, é utilizar informações que sejam de fácil acesso e de simples inserção pelo usuário pagador. Essas chaves estarão armazenadas no diretório de endereçamento e estarão vinculadas à conta transacional do usuário recebedor. De maneira simplificada, pode-se compreender a chave para endereçamento como um apelido que identifica uma determinada conta transacional. <br /> 
+
+  - name: claim
+    description: |
+      <h4>Fluxo de portabilidade de chave</h4>
+      No âmbito do processo de portabilidade, PSP doador é o participante do Pix ao qual a chave está originalmente vinculada. <br /><br />
+      Durante o processo de portabilidade, a partir do momento em que o DICT coloca o status do pedido em “Aberto” até o momento em que o DICT altera o status para “Completo”, a chave Pix não está passível de pedidos de registro e de exclusão. Enquanto o status do pedido estiver como “Aguardando Resolução”, as consultas continuarão retornando normalmente a identificação da conta transacional originalmente vinculada à chave. Também durante esse período, tanto o PSP reivindicador quanto o PSP doador poderão cancelar o pedido, em caso de suspeita de fraude ou em caso de solicitação de cancelamento pelo usuário do PSP reivindicador.<br /><br />
+      O período de resolução de um processo de portabilidade é de sete dias. Caso o usuário doador não cancele ou confirme a portabilidade até o final desse período, o PSP doador deve necessariamente cancelar o pedido. O cancelamento do processo deve ser feito imediatamente após o fim do período de resolução. O processo continuará com o status de “Aguardando Resolução” até o recebimento dessa informação pelo DICT.<br /><br />
+      O DICT disponibiliza um serviço que permite consultar e filtrar os processos de portabilidade. PSPs com acesso direto ao DICT deverão consultar pelo menos uma vez por minuto esse serviço a fim de identificar mudanças de status das portabilidades de interesse do PSP (além daquelas de interesse dos PSPs com acesso indireto para os quais ele presta serviço), tanto como reivindicador quanto como doador.<br />
+      <img src="./images/fluxo_reividicacao_posse_chave.png" />
+paths:
+  /v1/addressing-keys:
+    post:
+      tags:
+        - addressing-key
+      summary: Criar uma nova Chave de Endereçamento.
+      description: |
+        O Sistema Cliente deve consumir essa API para incluir uma Chave de Endereçamento.<br /> <br />
+        Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que está requisitando esta inclusão de Chave: <br />
+        <br />
+        • É Titular da Conta Transacional ou tem poderes legais para operá-la e <br />
+        • Possui Autorização para requisitar este tipo de ação.
+        <br /> <br />
+        Caso a Chave de Endereçamento já exista no DICT, será retornado um erro. O cliente pode então solicitar uma Reivindicação de Chave.
+        Se a chave existente estiver associada ao mesmo CPF/CNPJ, será uma Reivindicação do tipo Portabilidade. Caso contrário será do tipo Reivindicação de Posse.
+        <br /> <br />
+        Fluxo de registro de chave
+        <img src="./images/fluxo_cadastro_chave.png" />
+      operationId: createUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: requestDTO
+          description: requestDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateAddressingKeyRequestWebDTO'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/AddressingKey'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    get:
+      tags:
+        - addressing-key
+      summary: Listar Chaves de Endereçamento por Cliente/Conta.
+      description: |
+        O Sistema Cliente deve consumir essa API para listar as Chaves de Endereçamento
+        associadas a uma Conta Transacional e a um Cliente do PSP <br />
+        Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que requisitou a consulta:<br />
+        <br />
+        • Possui Autorização para requisitar esse tipo de ação e <br />
+        • É Titular da Conta Transacional ou tem poderes legais para operá-la.
+        <br /> <br />
+        Após validar os dados da consulta, será identificada na base de dados local o conjunto de chaves associadas ao Cliente e a Conta e o repassará ao Sistema Cliente.<br />
+        <br />
+        Fluxo de listagem de chave de endereçamento
+        <img src="./images/fluxo_consulta_chave_indireta.png" />
+      operationId: listUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: accountNumber
+          in: query
+          description: Número da conta do cliente
+          required: true
+          type: string
+        - name: accountType
+          in: query
+          description: Tipo da conta do cliente
+          required: true
+          type: string
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        - name: branchNumber
+          in: query
+          description: Número da agência do cliente
+          required: false
+          type: string
+        - name: cpfCnpj
+          in: query
+          description: CPF/CNPJ do  cliente
+          required: true
+          type: string
+        - name: ispb
+          in: query
+          description: ISPB do PSP
+          required: true
+          type: integer
+          format: int32
+        - name: personType
+          in: query
+          description: Tipo da Pessoa recebedora
+          required: true
+          type: string
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AddressingKey'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/addressing-keys/{key}':
+    get:
+      tags:
+        - addressing-key
+      summary: Obter Chave de Endereçamento por chave.
+      description:
+        Sistema Cliente deve consumir essa API para Consultar os dados associados a uma
+        Chave de Endereçamento, tais como Nome do Titular, CPF/CNPJ do Titular, ISPB do PSP,
+        Número da Agência, Tipo de Conta e Número da Conta'
+        <br /><br />
+        Fluxo de consulta de chave <br />
+        <img src="./images/fluxo_consulta_chave.png" />
+
+      operationId: findUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: key
+          in: path
+          description: Valor da chave de endereçamento. <br />Pode ser CPF/CNPJ/E-mail/Telefone Celular/EVP
+          required: true
+          type: string
+        - name: userId
+          in: header
+          description: CPF ou algum outro identificador do usuário final que originou
+            a consulta de chave. Será utilizado pelo DICT para calcular o
+            rate-limiting.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AddressingKey'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - addressing-key
+      summary: Atualizar Chave de Endereçamento.
+      description:
+        O Sistema Cliente deve consumir essa API para alterar uma Chave de Endereçamento. Não se trata de alterar o Valor da chave, mas sim de alterar a conta vinculada à chave, ou seja, o valor da chave se mantém inalterado, porém a chave deixa de estar associada à conta original e passa a estar associada a uma nova Conta Transacional, no mesmo PSP.
+        <br /><br />
+        Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que requisitou a alteração da chave <br />
+        <br />
+        • Possui Autorização para requisitar esse tipo de ação e <br />
+        • É Titular da Conta Transacional ou tem poderes legais para operá-la. <br />
+        <br />
+        Chaves do tipo EVP – Endereço Virtual de Pagamento não podem ser alteradas por solicitação do cliente.
+        <br /><br />
+        Após validar a Requisição, será enviado ao DICT. Em caso de sucesso, será atualizada a Chave de Endereçamento.<br />
+        <br />
+        Fluxo de atualização de chave
+        <br />
+        <img src="./images/fluxo_atualizacao_chave.png" />
+      operationId: updateAccountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateAccountAddressingKeyDTO'
+        - name: key
+          in: path
+          description: key
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AddressingKey'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - addressing-key
+      summary: Deletar uma Chave de Endereçamento por chave.
+      description:
+        O Sistema Cliente deve consumir essa API para excluir uma Chave de Endereçamento.
+        <br /><br />
+        Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente que requisitou a exclusão da Chave <br />
+        <br />
+        • Possui Autorização para requisitar esse tipo de ação e <br />
+        • É Titular da Conta Transacional ou tem poderes legais para operá-la. <br />
+        <br />
+        Fluxo de exclusão de chave <br />
+        <img src="./images/fluxo_exclusao_chave.png" />
+
+      operationId: removeUsingDELETE
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: RemoveAddressingKeyRequest
+          required: true
+          schema:
+            $ref: '#/definitions/RemoveAddressingKeyRequestWebDTO'
+        - name: key
+          in: path
+          description: Valor da Chave de endereçamento a ser removida
+          required: true
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1/claims:
+    get:
+      tags:
+        - claim
+      summary: Listar Reivindicações.
+      description: |
+        O Sistema Cliente deve consumir essa API sempre que um Cliente necessitar conhecer a lista de Reivindicações de Chaves de Endereçamento, nas quais ele atua como:<br />
+        <ul>
+          <li>Cliente Reivindicador - o próprio Cliente registrou a Reivindicação - ou</li>
+          <li>Cliente Doador – um outro Cliente, possivelmente de outro PSP cadastrou uma Reinvidicação de uma Chave que está atualmente de posse do Cliente em questão.</li>
+        </ul>
+        O Regulamento do Pix estabelece prazos para os clientes envolvidos se pronunciarem sobre uma Reivindicação de Chave de Endereçamento.<br /><br />
+        Por questões de segurança, a API não interage diretamente com os canais de acesso utilizados pelo cliente final, tais como App Mobile e Internet Bank. Estes canais se comunicam, através de uma forte camada de segurança, com um módulo chamado BackEnd. A API atende as requisições do BackEnd. Dessa forma, a API não tem como identificar o Usuário/Conta que está logado no App Mobile/Internet Bank. Para evitar fraudes, o Sistema Cliente deve informar a API, os dados do Cliente e da Conta, utilizada no login no canal de atendimento e que está requisitando as informações.
+        O Sistema Cliente deve também assegurar que o Cliente logado é Titular da Conta ou tem poderes para operar a conta logada.<br /><br />
+      operationId: listUsingGET_1
+      produces:
+        - application/json
+      parameters:
+        - name: accountNumber
+          in: query
+          description: Número da conta do cliente
+          required: false
+          type: string
+        - name: accountType
+          in: query
+          description: Tipo de conta do cliente
+          required: false
+          type: string
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        - name: branchNumber
+          in: query
+          description: Número da agência do cliente
+          required: false
+          type: string
+        - name: cpfCnpj
+          in: query
+          description: CPF/CNPJ do cliente
+          required: false
+          type: integer
+          format: int64
+        - name: ispb
+          in: query
+          description: Código ISPB do participante
+          required: true
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: Número limite de registros que devem ser retornados
+          required: true
+          type: integer
+          format: int32
+        - name: pending
+          in: query
+          description: Informa se ainda possui registros pendentes para retorno
+          required: true
+          type: boolean
+        - name: personType
+          in: query
+          description: Tipo pessoal (Física ou Jurídica)
+          required: false
+          type: string
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClaimIterable'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - claim
+      summary: Incluir Reivindicação de Chave de Endereçamento.
+      description: |
+        O Sistema Cliente deve consumir essa API para iniciar um processo de Reivindicação de uma Chave de Endereçamento.<br /><br />
+        Se, ao tentar incluir uma Chave de Endereçamento, retornar um erro, informando que a chave já existe no DICT, o cliente pode solicitar uma Reivindicação de Chave de Endereçamento.<br /><br />
+        Caso a chave existente esteja associada ao mesmo CPF/CNPJ do cliente em questão, será uma Reivindicação do tipo Portabilidade. Do contrário, será do tipo Reivindicação de Posse.<br /><br />
+        Não se pode reivindicar uma chave do tipo EVP – Endereço Virtual de Pagamento, visto que o valor de uma chave do tipo EVP não tem qualquer significado semântico. Ao invés de iniciar um processo de Reivindicação, basta o Cliente gerar uma nova chave EVP.<br /><br />
+        O processo de Reivindicação segue os seguintes passos:
+        <ul>
+          <li>O Cliente Reivindicador inclui a Reivindicação, com situação “Aberta”;</li>
+          <li>O cliente que detém a posse da chave, chamado de Cliente Doador tem um prazo para ler a Reivindicação. No momento que o fizer, a Reivindicação adota a situação “Aguardando Resolução”. A partir daí o Cliente Doador tem um prazo para aceitar ceder a chave ou não;</li>
+          <li>O Cliente Doador e o Cliente Reivindicador podem cancelar a Reivindicação, cadastrando a situação “Cancelada”;</li>
+          <li>Caso o Cliente Doador concorde em ceder a chave, ele altera a situação para “Confirmada”;</li>
+          <li>Quando o Cliente Reivindicador registra a situação “Concluída”, o DICT assume que o processo foi aceito pelas duas partes, e vincula a chave ao Cliente Reivindicador.</li>
+        </ul>
+      operationId: createUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: requestDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateClaimRequestWebDTO'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/Claim'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/claims/{claimId}':
+    get:
+      tags:
+        - claim
+      summary: Consultar Reivindicação.
+      description: |
+        O Sistema Cliente deve consumir essa API para consultar uma Reivindicação de Chave de Endereçamento, na qual ele atua como:<br />
+        <ul>
+          <li>Cliente Reivindicador - o próprio Cliente registrou a Reivindicação - ou</li>
+          <li>Cliente Doador – um outro Cliente, possivelmente de outro PSP cadastrou uma Reinvidicação de uma Chave que está atualmente de posse do Cliente em questão.</li>
+        </ul>
+        Por questões de segurança, a API não interage diretamente com os canais de acesso utilizados pelo cliente final, tais como App Mobile e Internet Bank. Estes canais se comunicam, através de uma forte camada de segurança, com um módulo chamado BackEnd. A API atende as requisições do BackEnd. Dessa forma, a API não tem como identificar o Usuário/Conta que está logado no App Mobile/Internet Bank. Para evitar fraudes, o Sistema Cliente deve informar a API, os dados do Cliente e da Conta, utilizada no login no canal de atendimento e que está requisitando as informações.<br /><br />
+        O Sistema Cliente deve também assegurar que o Cliente logado é Titular da Conta ou tem poderes para operar a conta logada.<br /><br />
+      operationId: findUsingGET_1
+      produces:
+        - application/json
+      parameters:
+        - name: claimId
+          in: path
+          description: Identificador da Reivindicação.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Claim'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - claim
+      summary: Cancelar Reivindicação de Chave de Endereçamento
+      description: |
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, o Cliente Doador ou o Cliente Reivindicador desejarem cancelar a Reivindicação.<br /><br />
+      operationId: cancelUsingDELETE
+      produces:
+        - application/json
+      parameters:
+        - name: claimId
+          in: path
+          description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Cancelada”. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
+        - in: body
+          name: dto
+          required: true
+          schema:
+            $ref: '#/definitions/ClaimCancelDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Claim'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/v1/claims/{claimId}/complete':
+    put:
+      tags:
+        - claim
+      summary: Concluir Reivindicação de Chave de Endereçamento
+      description: |
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, quando o Cliente Reivindicador desejar registrar a Conclusão de uma Reivindicação, ou seja, o Cliente Reivindicador conclui o processo e que a Chave de Endereçamento em disputa já pode ser associada à sua Conta.<br /><br />
+        Obs.: No caso da Reivindicação de Posse o PSP Reivindicador deve fazer a validação ativa da posse da chave com o usuário final, antes de chamar essa API.<br />
+      operationId: completeUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: claimId
+          in: path
+          description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Concluída”. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
+        - in: body
+          name: dto
+          required: true
+          schema:
+            $ref: '#/definitions/CompleteClaimRequestWebDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Claim'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/claims/{claimId}/confirm':
+    post:
+      tags:
+        - claim
+      summary: Confirmar Reivindicação de Chave de Endereçamento
+      description: |
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, o Cliente Doador desejar registrar a Confirmação de uma Reivindicação, ou seja, o Cliente Doador registra que está disposto em ceder ao Cliente Reivindicador a chave reivindicada.<br /><br />
+      operationId: confirmUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: claimId
+          in: path
+          description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Confirmada”. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
+        - in: body
+          name: dto
+          required: true
+          schema:
+            $ref: '#/definitions/ClaimConfirmationDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Claim'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  Accountant:
+    type: object
+    properties:
+      aggregate:
+        type: string
+        enum:
+          - KEY
+          - OWNER
+          - ACCOUNT
+      lastSixMonths:
+        type: integer
+        format: int32
+      lastThirtyDays:
+        type: integer
+        format: int32
+      lastThreeDays:
+        type: integer
+        format: int32
+      type:
+        type: string
+        enum:
+          - DONE_TRANSACTIONS
+          - FRAUDS_REPORT
+          - PREVENTION_LAUNDERING
+          - FRAUDS_CONFIRMATION
+          - PREVENTION_LAUNDERING_CONFIRMATION
+    title: Accountant
+  AddressingKey:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountOpeningDate:
+        type: string
+        format: date-time
+      accountType:
+        type: string
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+      claim:
+        type: string
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      cpfCnpj:
+        type: integer
+        format: int64
+      createdAt:
+        type: string
+        format: date-time
+      endToEndId:
+        type: string
+      fantasyName:
+        type: string
+      ispb:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+      nameIspb:
+        type: string
+      personType:
+        type: string
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      startPossessionAt:
+        type: string
+        format: date-time
+      statistic:
+        $ref: '#/definitions/Statistic'
+      type:
+        type: string
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+    title: AddressingKey
+  Claim:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountOpeningDate:
+        type: string
+        format: date-time
+      accountType:
+        type: string
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+      claimId:
+        type: string
+      claimSituation:
+        type: string
+        enum:
+          - OPEN
+          - AWAITING_CLAIM
+          - CONFIRMED
+          - CANCELED
+          - COMPLETED
+      claimType:
+        type: string
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      completionThresholdDate:
+        type: string
+        format: date-time
+      cpfCnpj:
+        type: integer
+        format: int64
+      donorData:
+        $ref: '#/definitions/DonorData'
+      donorIspb:
+        type: integer
+        format: int32
+      fantasyName:
+        type: string
+      isClaim:
+        type: boolean
+      ispb:
+        type: integer
+        format: int32
+      key:
+        type: string
+      keyType:
+        type: string
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+      lastModifiedDate:
+        type: string
+        format: date-time
+      name:
+        type: string
+      participationFlow:
+        type: integer
+        format: int32
+      personType:
+        type: string
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      resolutionThresholdDate:
+        type: string
+        format: date-time
+    title: Claim
+  ClaimCancelDTO:
+    type: object
+    required:
+      - ispb
+      - reason
+      - requestIdentifier
+    properties:
+      canceledClaimant:
+        type: boolean
+        description: Cancelado pelo reivindicador
+      ispb:
+        type: integer
+        format: int32
+        description: Código ISPB do PSP
+      reason:
+        type: string
+        description: Motivo da operação
+        enum:
+          - CLIENT_REQUEST
+          - ACCOUNT_CLOSURE
+          - FRAUD
+      requestIdentifier:
+        type: string
+        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+    title: ClaimCancelDTO
+  ClaimConfirmationDTO:
+    type: object
+    required:
+      - ispb
+      - reason
+      - requestIdentifier
+    properties:
+      ispb:
+        type: integer
+        format: int32
+        description: Código ISPB do PSP
+      reason:
+        type: string
+        description: Motivo da operação
+        enum:
+          - CLIENT_REQUEST
+          - ACCOUNT_CLOSURE
+      requestIdentifier:
+        type: string
+        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+    title: ClaimConfirmationDTO
+  ClaimIterable:
+    type: object
+    properties:
+      claims:
+        type: array
+        items:
+          $ref: '#/definitions/Claim'
+      count:
+        type: integer
+        format: int32
+      hasNext:
+        type: boolean
+    title: ClaimIterable
+  CompleteClaimRequestWebDTO:
+    type: object
+    required:
+      - ispb
+      - requestIdentifier
+    properties:
+      ispb:
+        type: integer
+        format: int32
+        description: Código ISPB do PSP
+      requestIdentifier:
+        type: string
+        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+    title: CompleteClaimRequestWebDTO
+  CreateAddressingKeyRequestWebDTO:
+    type: object
+    required:
+      - accountNumber
+      - accountOpeningDate
+      - accountType
+      - cpfCnpj
+      - ispb
+      - key
+      - name
+      - personType
+      - reason
+      - requestIdentifier
+      - type
+    properties:
+      accountNumber:
+        type: string
+        description: Número da conta do cliente
+      accountOpeningDate:
+        type: string
+        format: date-time
+        description: 'Data de abertura da conta. Formato: aaaa-mm-ddTHH:mm:ss.sssZ'
+      accountType:
+        type: string
+        description: Tipo da conta do cliente
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+        description: Número da agência da conta do cliente
+      cpfCnpj:
+        type: string
+        description: CPF/CNPJ do cliente
+      fantasyName:
+        type: string
+        description: Nome fantasia do cliente
+      ispb:
+        type: integer
+        format: int32
+        description: ISPB do PSP
+      key:
+        type: string
+        description: 'Valor da chave {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{EVP}'
+      name:
+        type: string
+        description: Razão Social
+      personType:
+        type: string
+        description: Tipo da Pessoa recebedora
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      reason:
+        type: string
+        description: Motivo criação da chave
+        enum:
+          - CUSTOMER_REQUEST
+      requestIdentifier:
+        type: string
+        description: 'Chave de Idempotência. Utiliza tipagem GUID (v4).'
+      type:
+        type: string
+        description: Tipo da chave endereçamento
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+    title: CreateAddressingKeyRequestWebDTO
+  CreateClaimRequestWebDTO:
+    type: object
+    required:
+      - accountNumber
+      - accountOpeningDate
+      - accountType
+      - claimType
+      - cpfCnpj
+      - ispb
+      - key
+      - keyType
+      - name
+      - personType
+      - requestIdentifier
+    properties:
+      accountNumber:
+        type: string
+        description: Número da conta do cliente.
+      accountOpeningDate:
+        type: string
+        format: date-time
+        description: 'Data de abertura da conta. (Formato: aaaa-mm-ddTHH:mm:ss.sssZ).'
+      accountType:
+        type: string
+        description: Tipo da conta do cliente.
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+        description: Número da agência do cliente.
+      claimType:
+        type: string
+        description: 'Tipo da reivindicação: Portabilidade (PORTABILITY) ou Reivindicação de posse (POSSESION_CLAIM).'
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      cpfCnpj:
+        type: string
+        description: CPF/CNPJ do cliente.
+      fantasyName:
+        type: string
+        description: Nome fantasia do cliente.
+      ispb:
+        type: integer
+        format: int32
+        description: Código ISPB do PSP
+      key:
+        type: string
+        description: 'Chave CPF/CNPJ/E-mail/Telefone Celular/EVP.'
+      keyType:
+        type: string
+        description: Tipo da chave.
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+      name:
+        type: string
+        description: Razão Social/Nome completo do cliente.
+      personType:
+        type: string
+        description: Tipo de pessoa Física ou Jurídica.
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      requestIdentifier:
+        type: string
+        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+    title: CreateClaimRequestWebDTO
+  DonorData:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+        description: Número da conta do cliente.
+      accountType:
+        type: string
+        description: Tipo da conta do cliente.
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+        description: Número da agência do cliente.
+      cpfCnpj:
+        type: integer
+        format: int64
+        description: CPF/CNPJ do cliente.
+      fantasyName:
+        type: string
+        description: Nome fantasia do cliente.
+      name:
+        type: string
+        description: Razão Social/Nome completo do cliente.
+      notificationDate:
+        type: string
+        format: date-time
+      personType:
+        type: string
+        description: Tipo de pessoa Física ou Jurídica.
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+    title: DonorData
+  RemoveAddressingKeyRequestWebDTO:
+    type: object
+    required:
+      - ispb
+      - reason
+      - requestIdentifier
+      - type
+    properties:
+      ispb:
+        type: integer
+        format: int32
+        description: ISPB do PSP
+      reason:
+        type: string
+        description: Motivo da exclusão
+        enum:
+          - CLIENT_REQUEST
+          - INACTIVITY
+          - FRAUD
+      requestIdentifier:
+        type: string
+        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+      type:
+        type: string
+        description: Tipo de chave endereçamento
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+    title: RemoveAddressingKeyRequestWebDTO
+  Statistic:
+    type: object
+    properties:
+      accountants:
+        type: array
+        items:
+          $ref: '#/definitions/Accountant'
+      lastUpdateDateAntiFraud:
+        type: string
+        format: date-time
+    title: Statistic
+  UpdateAccountAddressingKeyDTO:
+    type: object
+    required:
+      - accountNumber
+      - accountOpeningDate
+      - accountType
+      - branchNumber
+      - ispb
+      - reason
+      - requestIdentifier
+      - type
+    properties:
+      accountNumber:
+        type: string
+        description: Número da conta do cliente.
+      accountOpeningDate:
+        format: date-time
+        description: 'Data de abertura da conta. Formato: aaaa-mm-ddTHH:mm:ss.sssZ'
+        type: string
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+        description: Número da agência do cliente
+      ispb:
+        type: integer
+        format: int32
+        description: ISPB da PSP
+      reason:
+        type: string
+        description: Motivo para atualizar
+        enum:
+          - CLIENT_REQUEST
+          - BRANCH_TRANSFER
+      requestIdentifier:
+        type: string
+        description: 'Chave de Idempotência. Utiliza tipagem GUID (v4).'
+      type:
+        type: string
+        description: Tipo chave endereçamento
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - EVP
+    title: UpdateAccountAddressingKeyDTO
