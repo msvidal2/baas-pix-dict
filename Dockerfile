@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11:jre-11.0.4_11-alpine
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY application/target/*.jar app.jar
 
 EXPOSE 8080
 
