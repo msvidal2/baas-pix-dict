@@ -5,10 +5,8 @@ import com.picpay.banking.jdpi.dto.request.CompleteClaimRequestDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.CompleteClaimPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class CompleteClaimPortImpl implements CompleteClaimPort {
 
     private ClaimJDClient claimJDClient;

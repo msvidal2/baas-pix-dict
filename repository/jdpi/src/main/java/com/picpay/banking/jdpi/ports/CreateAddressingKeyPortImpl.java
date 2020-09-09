@@ -8,10 +8,8 @@ import com.picpay.banking.pix.core.domain.AddressingKey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.ports.CreateAddressingKeyPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class CreateAddressingKeyPortImpl implements CreateAddressingKeyPort {
 
     private AddressingKeyJDClient addressingKeyJDClient;

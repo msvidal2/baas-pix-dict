@@ -8,11 +8,9 @@ import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.ClaimCancelPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @AllArgsConstructor
-@Component
 public class ClaimCancelPortImpl implements ClaimCancelPort {
 
     private ClaimJDClient claimJDClient;

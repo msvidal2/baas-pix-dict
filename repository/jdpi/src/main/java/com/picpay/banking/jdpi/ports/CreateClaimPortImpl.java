@@ -7,10 +7,8 @@ import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.CreateClaimPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class CreateClaimPortImpl implements CreateClaimPort {
 
     private CreateClaimConverter converter;

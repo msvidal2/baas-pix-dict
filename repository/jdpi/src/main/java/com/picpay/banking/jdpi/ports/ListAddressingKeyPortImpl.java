@@ -6,11 +6,9 @@ import com.picpay.banking.jdpi.dto.request.ListAddressingKeyRequestDTO;
 import com.picpay.banking.pix.core.domain.AddressingKey;
 import com.picpay.banking.pix.core.ports.ListAddressingKeyPort;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@Service
 @AllArgsConstructor
 public class ListAddressingKeyPortImpl implements ListAddressingKeyPort {
 

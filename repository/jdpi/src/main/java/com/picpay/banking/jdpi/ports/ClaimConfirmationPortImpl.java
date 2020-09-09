@@ -5,9 +5,7 @@ import com.picpay.banking.jdpi.dto.request.ClaimConfirmationRequestDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.core.ports.ClaimConfirmationPort;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ClaimConfirmationPortImpl implements ClaimConfirmationPort {
 
     private ClaimJDClient claimJDClient;

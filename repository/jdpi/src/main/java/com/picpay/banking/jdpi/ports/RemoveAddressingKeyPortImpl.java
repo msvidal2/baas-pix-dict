@@ -6,10 +6,8 @@ import com.picpay.banking.pix.core.domain.AddressingKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.ports.RemoveAddressingKeyPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class RemoveAddressingKeyPortImpl implements RemoveAddressingKeyPort {
 
     private AddressingKeyJDClient addressingKeyJDClient;

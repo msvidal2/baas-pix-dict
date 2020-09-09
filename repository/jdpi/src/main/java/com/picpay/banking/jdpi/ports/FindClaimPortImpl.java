@@ -6,9 +6,7 @@ import com.picpay.banking.jdpi.dto.response.FindClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.FindClaimPort;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @AllArgsConstructor
 public class FindClaimPortImpl implements FindClaimPort {
 

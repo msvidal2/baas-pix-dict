@@ -7,9 +7,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.ports.ListClaimPort;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @AllArgsConstructor
 public class ListClaimPortImpl implements ListClaimPort {
 

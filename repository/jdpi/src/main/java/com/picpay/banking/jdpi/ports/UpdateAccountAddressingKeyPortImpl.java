@@ -5,9 +5,7 @@ import com.picpay.banking.jdpi.dto.request.UpdateAccountAddressingKeyRequestDTO;
 import com.picpay.banking.pix.core.domain.AddressingKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.ports.UpdateAccountAddressingKeyPort;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UpdateAccountAddressingKeyPortImpl implements UpdateAccountAddressingKeyPort {
 
     private AddressingKeyJDClient addressingKeyJDClient;
