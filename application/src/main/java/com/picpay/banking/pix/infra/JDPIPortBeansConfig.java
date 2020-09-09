@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class JDPIPortUseCaseBeansConfig {
+public class JDPIPortBeansConfig {
 
     @Bean
     public ClaimCancelPort claimCancelPort(ClaimJDClient claimJDClient) {
