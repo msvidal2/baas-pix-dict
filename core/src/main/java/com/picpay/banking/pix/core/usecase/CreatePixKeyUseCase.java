@@ -20,7 +20,7 @@ public class CreatePixKeyUseCase {
 
         validateRequestFields(reason, requestIdentifier);
 
-        return createPixKeyPort.createAddressingKey(pixKey, reason, requestIdentifier);
+        return createPixKeyPort.createPixKey(pixKey, reason, requestIdentifier);
     }
 
     public void validateRequestFields(final CreateReason reason, final String requestIdentifier) {

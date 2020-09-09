@@ -7,5 +7,5 @@ import java.util.Collection;
 
 public interface ListPixKeyPort {
 
-    Collection<PixKey> listAddressingKey(final String requestIdentifier, final PixKey pixKey);
+    Collection<PixKey> listPixKey(final String requestIdentifier, final PixKey pixKey);
 }

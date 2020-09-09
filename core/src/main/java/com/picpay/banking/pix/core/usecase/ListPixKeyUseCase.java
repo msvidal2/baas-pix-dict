@@ -21,7 +21,7 @@ public class ListPixKeyUseCase {
 
         validateRequestFields(requestIdentifier);
 
-        return listPixKeyPort.listAddressingKey(requestIdentifier, pixKey);
+        return listPixKeyPort.listPixKey(requestIdentifier, pixKey);
     }
 
     public void validateRequestFields(final String requestIdentifier) {

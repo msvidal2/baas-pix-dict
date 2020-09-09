@@ -6,6 +6,6 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 
 public interface CreatePixKeyPort {
 
-    PixKey createAddressingKey(
+    PixKey createPixKey(
             final PixKey pixKey, final CreateReason reason, final String requestIdentifier);
 }
