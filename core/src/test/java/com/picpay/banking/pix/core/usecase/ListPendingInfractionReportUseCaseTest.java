@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
@@ -37,7 +38,7 @@ class ListPendingInfractionReportUseCaseTest {
     @BeforeEach
     void setup() {
 
-        InfractionReport infractionReport = InfractionReport.builder().details("details").dateCreated("10/04/2020").dateLastUpdated("10/04/2020")
+        InfractionReport infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .requestIdentifier("IDENTIFIER")
