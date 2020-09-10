@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InfractionReportPortImpl implements InfractionReportPort {
 
     @Override
-    public Infraction execute(Infraction infraction, String requestIdentifier) {
+    public Infraction create(Infraction infraction, String requestIdentifier) {
 
         return null;
     }
