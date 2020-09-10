@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @Api(value = "InfractionReport")
 @RestController
-@RequestMapping(value = "/v1/infraction", produces = "application/json")
+@RequestMapping(value = "/v1/infraction-report", produces = "application/json")
 @AllArgsConstructor
 public class InfractionReportController {
 
@@ -36,8 +38,8 @@ public class InfractionReportController {
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
-    public InfractionReportCreatedDTO report(@RequestBody @Validated CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+    public InfractionReportCreatedDTO report(@RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
+        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
         return InfractionReportCreatedDTO.from(infractionReport);
     }
 

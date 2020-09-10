@@ -1,13 +1,12 @@
 package com.picpay.banking.jdpi.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -17,7 +16,7 @@ import java.math.BigDecimal;
 public class CreateInfractionReportRequestDTO {
 
     @JsonProperty("ispb")
-    private int ispbRequester;
+    private String ispbRequester;
 
     @JsonProperty("endToEndId")
     private String endToEndId;
@@ -27,5 +26,14 @@ public class CreateInfractionReportRequestDTO {
 
     @JsonProperty("detalhes")
     private String details;
+
+    public static CreateInfractionReportRequestDTO from(InfractionReport infractionReport) {
+        return CreateInfractionReportRequestDTO.builder()
+            .ispbRequester(infractionReport.getIspbRequester())
+            .endToEndId(infractionReport.getEndToEndId())
+            .infractionType(Integer.parseInt(infractionReport.getType().getValue()))
+            .details(infractionReport.getDetails())
+            .build();
+    }
 
 }

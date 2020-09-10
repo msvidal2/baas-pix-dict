@@ -1,15 +1,15 @@
 package com.picpay.banking.jdpi.fallbacks;
 
-import com.picpay.banking.jdpi.clients.InfractionJDClient;
+import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class InfractionJDClientFallback extends JDClientFallback implements InfractionJDClient {
+public class InfractionReportJDClientFallback extends JDClientFallback implements InfractionReportJDClient {
 
-    public InfractionJDClientFallback(Throwable cause) {
+    public InfractionReportJDClientFallback(Throwable cause) {
         super(cause);
     }
 
