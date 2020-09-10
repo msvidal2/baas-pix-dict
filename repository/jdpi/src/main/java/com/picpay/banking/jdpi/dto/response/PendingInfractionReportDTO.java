@@ -23,7 +23,7 @@ public class PendingInfractionReportDTO {
 
 
     private String endToEndId;
-    private Integer tpInfracao;
+    private String tpInfracao;
     private String detalhes;
     private String idRelatoInfracao;
     private Integer reportadoPor;

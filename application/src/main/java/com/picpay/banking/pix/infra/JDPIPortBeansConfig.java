@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
-import com.picpay.banking.jdpi.clients.InfractionJDClient;
+import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.converter.CreateClaimConverter;
@@ -111,8 +111,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public InfractionReportPort infractionReportPort(InfractionJDClient infractionJDClient) {
-        return new InfractionReportPortImpl(infractionJDClient);
+    public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient) {
+        return new InfractionReportPortImpl(infractionReportJDClient);
     }
 
 }

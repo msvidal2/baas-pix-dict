@@ -1,6 +1,6 @@
 package com.picpay.banking.jdpi.ports;
 
-import com.picpay.banking.jdpi.clients.InfractionJDClient;
+import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
 import com.picpay.banking.pix.core.common.Pagination;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
@@ -30,7 +31,7 @@ class InfractionPortImplTest {
     private InfractionReportPort port;
 
     @Mock
-    private InfractionJDClient jdClient;
+    private InfractionReportJDClient jdClient;
 
     private ListPendingInfractionReportDTO listPendingInfractionReportDTO;
 
@@ -39,7 +40,7 @@ class InfractionPortImplTest {
 
         this.port = new InfractionReportPortImpl(jdClient);
 
-        PendingInfractionReportDTO infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao("10/04/2020").dtHrUltModificacao("10/04/2020")
+        PendingInfractionReportDTO infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
             .idRelatoInfracao(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCreditado(1).ispbDebitado(2).reportadoPor(ReportedBy.CREDITED_PARTICIPANT.getValue())
             .stRelatoInfracao(InfractionReportSituation.OPEN.getValue())

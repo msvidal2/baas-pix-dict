@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @ToString
@@ -22,8 +24,8 @@ public class InfractionReportDTO {
     private InfractionReportSituation situation;
     private Integer ispbDebited;
     private Integer ispbCredited;
-    private String dateCreated;
-    private String dateLastUpdated;
+    private LocalDateTime dateCreated;
+    private LocalDateTime dateLastUpdated;
     private InfractionAnalyzeDTO analyze;
 
     public static InfractionReportDTO from(InfractionReport infraction) {
@@ -33,8 +35,8 @@ public class InfractionReportDTO {
             .situation(infraction.getSituation())
             .ispbDebited(infraction.getIspbDebited())
             .ispbCredited(infraction.getIspbCredited())
-            .dateCreated(infraction.getDateCreated())
-            .dateLastUpdated(infraction.getDateLastUpdated())
+            .dateCreated(infraction.getDateCreate())
+            .dateLastUpdated(infraction.getDateLastUpdate())
             .analyze(InfractionAnalyzeDTO.from(infraction.getAnalyze()))
             .build();
     }

@@ -15,8 +15,8 @@ public class InfractionReportCreatedDTO {
     private String infractionReportId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private Integer ispbDebited;
-    private Integer ispbCredited;
+    private String ispbDebited;
+    private String ispbCredited;
     private String dateCreate;
     private String dateLastUpdate;
 
