@@ -22,7 +22,7 @@ public class InfractionReport {
     private String ispbCredited;
     private LocalDateTime dateCreate;
     private LocalDateTime dateLastUpdate;
-    private int ispbRequester;
+    private String ispbRequester;
     private String endToEndId;
     private InfractionType type;
     private String details;

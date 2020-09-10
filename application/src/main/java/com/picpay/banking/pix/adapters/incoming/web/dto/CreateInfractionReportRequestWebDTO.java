@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
 
@@ -26,7 +27,7 @@ public class CreateInfractionReportRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of the Participant who identified the infraction.", required = true)
     @NotNull
-    private int ispbRequester;
+    private String ispbRequester;
 
     @ApiModelProperty(value = "Unique payment transaction identifier", required = true)
     @NotNull
@@ -34,9 +35,9 @@ public class CreateInfractionReportRequestWebDTO {
 
     @ApiModelProperty(value = "Infraction type ", required = true)
     @NotNull
-    private int infractionType;
+    private String infractionType;
 
-    @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction", required = true)
+    @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction")
     private String details;
 
     public InfractionReport toInfractionReport() {

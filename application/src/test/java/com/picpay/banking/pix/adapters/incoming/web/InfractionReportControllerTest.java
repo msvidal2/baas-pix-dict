@@ -64,12 +64,104 @@ class InfractionReportControllerTest {
         when(createInfractionReportUseCase.execute(any(), anyString())).thenReturn(infractionReport);
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
-            .ispbRequester(01234)
+            .ispbRequester("01234")
             .infractionType(InfractionType.FRAUD.getValue())
             .details("análise de fraude por comportamento suspeito do usuário")
+            .build();
+
+        mockMvc.perform(post("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReport.getInfractionReportId())))
+            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReport.getReportedBy().toString())))
+            .andExpect(jsonPath("$.situation", equalTo(infractionReport.getSituation().toString())))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReport.getIspbDebited())))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReport.getIspbCredited())))
+            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReport.getDateCreate().toString())))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReport.getDateLastUpdate().toString())));
+
+    }
+
+    @Test
+    void when_RequestWithoutRequestIdentifier_expect_statusBadRequest() throws Exception {
+
+        var request = CreateInfractionReportRequestWebDTO.builder()
+            .endToEndId("E9999901012341234123412345678900")
+            .ispbRequester("01234")
+            .infractionType(InfractionType.FRAUD.getValue())
+            .details("análise de fraude por comportamento suspeito do usuário")
+            .build();
+
+        mockMvc.perform(post("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void when_RequestWithoutIspbRequester_expect_statusBadRequest() throws Exception {
+
+        var request = CreateInfractionReportRequestWebDTO.builder()
+            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
+            .endToEndId("E9999901012341234123412345678900")
+            .infractionType(InfractionType.FRAUD.getValue())
+            .details("análise de fraude por comportamento suspeito do usuário")
+            .build();
+
+        mockMvc.perform(post("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void when_RequestWithoutEndToEndId_expect_statusBadRequest() throws Exception {
+
+        var request = CreateInfractionReportRequestWebDTO.builder()
+            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
+            .infractionType(InfractionType.FRAUD.getValue())
+            .ispbRequester("01234")
+            .details("análise de fraude por comportamento suspeito do usuário")
+            .build();
+
+        mockMvc.perform(post("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void when_RequestWithoutInfractionType_expect_statusBadRequest() throws Exception {
+
+        var request = CreateInfractionReportRequestWebDTO.builder()
+            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
+            .endToEndId("E9999901012341234123412345678900")
+            .ispbRequester("01234")
+            .details("análise de fraude por comportamento suspeito do usuário")
+            .build();
+
+        mockMvc.perform(post("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void when_RequestWithoutDetails_expect_statusOk() throws Exception {
+        when(createInfractionReportUseCase.execute(any(), anyString())).thenReturn(infractionReport);
+
+        var request = CreateInfractionReportRequestWebDTO.builder()
+            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
+            .endToEndId("E9999901012341234123412345678900")
+            .ispbRequester("01234")
+            .infractionType(InfractionType.FRAUD.getValue())
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")

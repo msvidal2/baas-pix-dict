@@ -7,15 +7,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum InfractionType {
 
-    FRAUD (0),
-    PLD_FT (1);
+    FRAUD ("0"),
+    PLD_FT ("1");
 
 
-    private int value;
+    private String value;
 
-    public static InfractionType resolve(int value) {
+    public static InfractionType resolve(String value) {
         for(InfractionType infractionType : values()) {
-            if (infractionType.value == value) {
+            if (infractionType.value.equalsIgnoreCase(value)) {
                 return infractionType;
             }
         }

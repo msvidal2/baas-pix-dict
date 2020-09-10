@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 
 @Api(value = "InfractionReport")
@@ -27,7 +29,7 @@ public class InfractionReportController {
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
-    public InfractionReportCreatedDTO report(@RequestBody @Validated CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
+    public InfractionReportCreatedDTO report(@RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
         final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
         return InfractionReportCreatedDTO.from(infractionReport);
     }

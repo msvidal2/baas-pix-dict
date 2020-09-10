@@ -16,7 +16,7 @@ import lombok.Setter;
 public class CreateInfractionReportRequestDTO {
 
     @JsonProperty("ispb")
-    private int ispbRequester;
+    private String ispbRequester;
 
     @JsonProperty("endToEndId")
     private String endToEndId;
@@ -31,7 +31,7 @@ public class CreateInfractionReportRequestDTO {
         return CreateInfractionReportRequestDTO.builder()
             .ispbRequester(infractionReport.getIspbRequester())
             .endToEndId(infractionReport.getEndToEndId())
-            .infractionType(infractionReport.getType().getValue())
+            .infractionType(Integer.parseInt(infractionReport.getType().getValue()))
             .details(infractionReport.getDetails())
             .build();
     }
