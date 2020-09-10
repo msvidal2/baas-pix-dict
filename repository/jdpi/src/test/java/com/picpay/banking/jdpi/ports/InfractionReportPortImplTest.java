@@ -3,9 +3,7 @@ package com.picpay.banking.jdpi.ports;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
-import com.picpay.banking.pix.core.domain.ReportedBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,8 +36,8 @@ class InfractionReportPortImplTest {
     void setup() {
         responseDTO = CreateInfractionReportResponseDTO.builder()
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
-            .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
-            .situation(InfractionReportSituation.OPEN)
+            .reportedBy(0)
+            .situation(0)
             .ispbDebited(01234)
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
