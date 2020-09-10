@@ -25,7 +25,7 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
             .tpConta(pixKey.getAccountType().getValue())
             .nrConta(pixKey.getAccountNumber())
             .tpPessoa(pixKey.getPersonType().getValue())
-            .cpfCnpj(Long.valueOf(pixKey.getCpfCnpj())).build();
+            .cpfCnpj(Long.valueOf(pixKey.getTaxId())).build();
 
         var findPixKeyResponseDTO = pixKeyJDClient.listPixKey(requestIdentifier, listPixKeyRequestDTO);
 

@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ClaimConfirmationReason {
 
-    CLIENT_REQUEST(0),
-    ACCOUNT_CLOSURE(1);
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
+    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE.getValue());
 
     private int value;
 

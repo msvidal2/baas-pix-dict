@@ -36,7 +36,7 @@ class FindPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .branchNumber("0001")
                 .claim(ClaimType.POSSESION_CLAIM)
-                .cpfCnpj(59375566072L)
+                .taxId(59375566072L)
                 .createdAt(LocalDateTime.now())
                 .ispb(5345343)
                 .key("59375566072")

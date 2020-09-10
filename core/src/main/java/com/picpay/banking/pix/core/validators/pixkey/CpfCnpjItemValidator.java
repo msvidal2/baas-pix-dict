@@ -8,11 +8,11 @@ public class CpfCnpjItemValidator implements DictItemValidator<PixKey> {
 
     @Override
     public void validate(PixKey domain) {
-        if (Strings.isNullOrEmpty(String.valueOf(domain.getCpfCnpj()))) {
+        if (Strings.isNullOrEmpty(String.valueOf(domain.getTaxId()))) {
             throw new IllegalArgumentException("cpfCnpj can not be empty");
         }
 
-        if (String.valueOf(domain.getCpfCnpj()).length() > 14) {
+        if (String.valueOf(domain.getTaxId()).length() > 14) {
             throw new IllegalArgumentException("The number of characters in the cpfCnpj must be less than 15");
         }
     }

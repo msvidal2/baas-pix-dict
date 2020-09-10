@@ -5,10 +5,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UpdateReason {
+public enum Reason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    BRANCH_TRANSFER(Reason.BRANCH_TRANSFER.getValue());
+    CLIENT_REQUEST(0),
+    ACCOUNT_CLOSURE(1),
+    BRANCH_TRANSFER(2),
+    INACTIVITY(3),
+    FRAUD(4);
 
     private int value;
+
 }

@@ -20,7 +20,7 @@ public class PixKey {
     private String accountNumber;
     private LocalDateTime accountOpeningDate;
     private PersonType personType;
-    private long cpfCnpj;
+    private String taxId;
     private String name;
     private String fantasyName;
     private LocalDateTime createdAt;
