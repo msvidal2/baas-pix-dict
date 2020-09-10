@@ -2,8 +2,8 @@ package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.core.domain.Infraction;
-import com.picpay.banking.pix.core.usecase.InfractionReportUseCase;
+import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -22,14 +22,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 @AllArgsConstructor
 public class InfractionReportController {
 
-    private InfractionReportUseCase infractionReportUseCase;
+    private CreateInfractionReportUseCase infractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestBody @Validated CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final Infraction infraction = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
-        return InfractionReportCreatedDTO.from(infraction);
+        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+        return InfractionReportCreatedDTO.from(infractionReport);
     }
 
 }

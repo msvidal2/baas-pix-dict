@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.Infraction;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.Builder;
@@ -17,18 +17,18 @@ public class InfractionReportCreatedDTO {
     private InfractionReportSituation situation;
     private String ispbDebited;
     private String ispbCredited;
-    private String dateCreated;
-    private String dateLastUpdated;
+    private String dateCreate;
+    private String dateLastUpdate;
 
-    public static InfractionReportCreatedDTO from(Infraction infraction) {
+    public static InfractionReportCreatedDTO from(InfractionReport infractionReport) {
         return InfractionReportCreatedDTO.builder()
-            .infractionReportId(infraction.getInfractionReportId())
-            .reportedBy(infraction.getReportedBy())
-            .situation(infraction.getSituation())
-            .ispbDebited(infraction.getIspbDebited())
-            .ispbCredited(infraction.getIspbCredited())
-            .dateCreated(infraction.getDateCreated())
-            .dateLastUpdated(infraction.getDateLastUpdated())
+            .infractionReportId(infractionReport.getInfractionReportId())
+            .reportedBy(infractionReport.getReportedBy())
+            .situation(infractionReport.getSituation())
+            .ispbDebited(infractionReport.getIspbDebited())
+            .ispbCredited(infractionReport.getIspbCredited())
+            .dateCreate(infractionReport.getDateCreated())
+            .dateLastUpdate(infractionReport.getDateLastUpdated())
             .build();
     }
 

@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Infraction {
+public class InfractionReport {
 
     private String infractionReportId;
     private ReportedBy reportedBy;

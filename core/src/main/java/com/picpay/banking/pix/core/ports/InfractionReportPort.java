@@ -1,10 +1,10 @@
 package com.picpay.banking.pix.core.ports;
 
 
-import com.picpay.banking.pix.core.domain.Infraction;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 
 public interface InfractionReportPort {
 
-    Infraction create(Infraction infraction, String requestIdentifier);
+    InfractionReport create(InfractionReport infractionReport, String requestIdentifier);
 
 }
