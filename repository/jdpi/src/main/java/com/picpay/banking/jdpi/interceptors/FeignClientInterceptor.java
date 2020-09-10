@@ -5,9 +5,7 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 
-@Component
 public class FeignClientInterceptor implements RequestInterceptor {
 
     private final String TOKEN_MANAGER_CLIENT = "tokenManagerClient";

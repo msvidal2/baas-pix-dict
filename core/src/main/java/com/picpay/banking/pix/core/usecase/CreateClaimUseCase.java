@@ -15,6 +15,6 @@ public class CreateClaimUseCase {
 
         validator.validate(claim);
 
-        return createClaimPort.createAddressingKey(claim, requestIdentifier);
+        return createClaimPort.createPixKey(claim, requestIdentifier);
     }
 }
