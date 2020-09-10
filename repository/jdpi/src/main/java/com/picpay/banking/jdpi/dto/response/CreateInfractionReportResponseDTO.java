@@ -27,10 +27,10 @@ public class CreateInfractionReportResponseDTO {
     private InfractionReportSituation situation;
 
     @JsonProperty("ispbDebitado")
-    private Integer ispbDebited;
+    private int ispbDebited;
 
     @JsonProperty("ispbCreditado")
-    private Integer ispbCredited;
+    private int ispbCredited;
 
     @JsonProperty("dtHrCriacaoRelatoInfracao")
     private LocalDateTime dateCreate;

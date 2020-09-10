@@ -29,7 +29,7 @@ public class CreateInfractionReportRequestDTO {
 
     public static CreateInfractionReportRequestDTO from(InfractionReport infractionReport) {
         return CreateInfractionReportRequestDTO.builder()
-            .ispbRequester(infractionReport.getIspbRequester())
+            .ispbRequester(String.valueOf(infractionReport.getIspbRequester()))
             .endToEndId(infractionReport.getEndToEndId())
             .infractionType(Integer.parseInt(infractionReport.getType().getValue()))
             .details(infractionReport.getDetails())

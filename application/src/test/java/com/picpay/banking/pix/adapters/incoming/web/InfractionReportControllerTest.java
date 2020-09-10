@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
@@ -52,8 +53,8 @@ class InfractionReportControllerTest {
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
             .situation(InfractionReportSituation.OPEN)
-            .ispbDebited("01234")
-            .ispbCredited("56789")
+            .ispbDebited(01234)
+            .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
@@ -67,21 +68,23 @@ class InfractionReportControllerTest {
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
-            .infractionType(InfractionType.FRAUD.getValue())
+            .infractionType(InfractionType.FRAUD)
             .details("análise de fraude por comportamento suspeito do usuário")
             .build();
+
+        final InfractionReportCreatedDTO infractionReportCreatedDTO = InfractionReportCreatedDTO.from(infractionReport);
 
         mockMvc.perform(post("/v1/infraction-report")
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReport.getInfractionReportId())))
-            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReport.getReportedBy().toString())))
-            .andExpect(jsonPath("$.situation", equalTo(infractionReport.getSituation().toString())))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReport.getIspbDebited())))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReport.getIspbCredited())))
-            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReport.getDateCreate().toString())))
-            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReport.getDateLastUpdate().toString())));
+            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReportCreatedDTO.getInfractionReportId())))
+            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReportCreatedDTO.getReportedBy().toString())))
+            .andExpect(jsonPath("$.situation", equalTo(infractionReportCreatedDTO.getSituation().toString())))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReportCreatedDTO.getIspbDebited())))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReportCreatedDTO.getIspbCredited())))
+            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReportCreatedDTO.getDateCreate())))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReportCreatedDTO.getDateLastUpdate())));
 
     }
 
@@ -91,7 +94,7 @@ class InfractionReportControllerTest {
         var request = CreateInfractionReportRequestWebDTO.builder()
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
-            .infractionType(InfractionType.FRAUD.getValue())
+            .infractionType(InfractionType.FRAUD)
             .details("análise de fraude por comportamento suspeito do usuário")
             .build();
 
@@ -108,7 +111,7 @@ class InfractionReportControllerTest {
         var request = CreateInfractionReportRequestWebDTO.builder()
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
-            .infractionType(InfractionType.FRAUD.getValue())
+            .infractionType(InfractionType.FRAUD)
             .details("análise de fraude por comportamento suspeito do usuário")
             .build();
 
@@ -124,7 +127,7 @@ class InfractionReportControllerTest {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
-            .infractionType(InfractionType.FRAUD.getValue())
+            .infractionType(InfractionType.FRAUD)
             .ispbRequester("01234")
             .details("análise de fraude por comportamento suspeito do usuário")
             .build();
@@ -161,20 +164,22 @@ class InfractionReportControllerTest {
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
-            .infractionType(InfractionType.FRAUD.getValue())
+            .infractionType(InfractionType.FRAUD)
             .build();
+
+        final InfractionReportCreatedDTO infractionReportCreatedDTO = InfractionReportCreatedDTO.from(infractionReport);
 
         mockMvc.perform(post("/v1/infraction-report")
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReport.getInfractionReportId())))
-            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReport.getReportedBy().toString())))
-            .andExpect(jsonPath("$.situation", equalTo(infractionReport.getSituation().toString())))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReport.getIspbDebited())))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReport.getIspbCredited())))
-            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReport.getDateCreate().toString())))
-            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReport.getDateLastUpdate().toString())));
+            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReportCreatedDTO.getInfractionReportId())))
+            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReportCreatedDTO.getReportedBy().toString())))
+            .andExpect(jsonPath("$.situation", equalTo(infractionReportCreatedDTO.getSituation().toString())))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReportCreatedDTO.getIspbDebited())))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReportCreatedDTO.getIspbCredited())))
+            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReportCreatedDTO.getDateCreate())))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReportCreatedDTO.getDateLastUpdate())));
 
     }
 
