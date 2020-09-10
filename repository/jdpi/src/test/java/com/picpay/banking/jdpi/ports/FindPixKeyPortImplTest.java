@@ -36,7 +36,7 @@ class FindPixKeyPortImplTest {
     private FindPixKeyConverter converter;
 
     @Test
-    void when_findAddressingKey_expect_() {
+    void when_findPixKey_expect_() {
         var eventoResponseMockDTO = EventoResponseDTO.builder()
                 .tipo(0)
                 .agregado(0)

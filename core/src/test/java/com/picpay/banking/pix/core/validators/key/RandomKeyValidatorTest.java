@@ -8,13 +8,13 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EVPKeyValidatorTest {
+public class RandomKeyValidatorTest {
 
-    private EVPKeyValidator validator;
+    private RandomKeyValidator validator;
 
     @BeforeEach
     public void setup() {
-        validator = new EVPKeyValidator();
+        validator = new RandomKeyValidator();
     }
 
     @Test

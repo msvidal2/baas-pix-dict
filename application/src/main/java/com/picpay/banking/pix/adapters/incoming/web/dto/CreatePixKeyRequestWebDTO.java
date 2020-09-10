@@ -27,7 +27,7 @@ public class CreatePixKeyRequestWebDTO {
     @NotNull
     protected KeyType type;
 
-    @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{EVP}", required = true)
+    @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}", required = true)
     @NotNull
     protected String key;
 

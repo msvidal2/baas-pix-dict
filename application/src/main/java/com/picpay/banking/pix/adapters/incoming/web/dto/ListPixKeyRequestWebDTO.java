@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Getter
 @Setter
@@ -18,25 +20,25 @@ import org.springframework.lang.NonNull;
 public class ListPixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "CPF/CNPJ of client", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private String cpfCnpj;
 
     @ApiModelProperty(value = "Person type of receiver", required = true)
-    @NonNull
+    @NotNull
     private PersonType personType;
 
     @ApiModelProperty(value = "Account number of client", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private String accountNumber;
 
     @ApiModelProperty(value = "Account type of client", required = true)
-    @NonNull
+    @NotNull
     private AccountType accountType;
 
     @ApiModelProperty(value = "Branch number of client", dataType="java.lang.String")
     private String branchNumber;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NonNull
+    @NotNull
     private Integer ispb;
 }

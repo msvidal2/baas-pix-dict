@@ -58,7 +58,7 @@ class PixKeyControllerFindTest {
     }
 
     @Test
-    void when_findAddressingKeyWithSuccess_expect_statusOk() {
+    void when_findPixKeyWithSuccess_expect_statusOk() {
         var eventoResponseMockDTO = EventoResponseDTO.builder()
                 .tipo(0)
                 .agregado(0)

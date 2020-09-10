@@ -29,8 +29,8 @@ public class UpdateAccountPixKeyUseCase {
     private void validateRequestFields(
             final String requestIdentifier, final UpdateReason reason, final KeyType keyType) {
 
-        if(KeyType.EVP.equals(keyType) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
-            throw new UseCaseException("EVP keys cannot be updated per client requests");
+        if(KeyType.RANDOM.equals(keyType) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
+            throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
         if (reason == null) {

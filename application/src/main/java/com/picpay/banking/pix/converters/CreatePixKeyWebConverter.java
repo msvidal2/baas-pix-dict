@@ -70,7 +70,9 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
     }
 
     public Collection<ListKeyResponseWebDTO> convert(final Collection<PixKey> from) {
-        return from.stream().map(this::getPixKey).collect(Collectors.toList());
+        return from.stream()
+                .map(this::getPixKey)
+                .collect(Collectors.toList());
     }
 
     private ListKeyResponseWebDTO getPixKey(final PixKey pixKey) {
@@ -80,7 +82,7 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
             .fantasyName(pixKey.getFantasyName())
             .createdAt(pixKey.getCreatedAt())
             .startPossessionAt(pixKey.getStartPossessionAt())
-            .claim(pixKey.getClaim().getValue())
+            .claim(pixKey.getClaim() != null ? pixKey.getClaim().getValue() : null)
             .build();
     }
 

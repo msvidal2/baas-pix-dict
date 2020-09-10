@@ -29,7 +29,7 @@ public class CreateClaimRequestWebDTO {
     @NonNull
     private KeyType keyType;
 
-    @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{EVP}", required = true)
+    @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}", required = true)
     @NonNull
     private String key;
 

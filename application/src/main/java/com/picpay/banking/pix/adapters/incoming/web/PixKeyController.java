@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -49,7 +50,7 @@ public class PixKeyController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<ListKeyResponseWebDTO> list(
-            @RequestHeader String requestIdentifier, ListPixKeyRequestWebDTO requestDTO) {
+            @RequestHeader String requestIdentifier, @Valid ListPixKeyRequestWebDTO requestDTO) {
 
         var pixKey = PixKey.builder()
             .cpfCnpj(Long.valueOf(requestDTO.getCpfCnpj()))

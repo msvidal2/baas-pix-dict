@@ -61,7 +61,7 @@ public class PixKeyControllerTest {
     }
 
     @Test
-    public void when_deleteAddressingKeyWithSuccess_expect_statusNoContent() {
+    public void when_deletePixKeyWithSuccess_expect_statusNoContent() {
         var dto = RemovePixKeyRequestWebDTO.builder()
                 .reason(RemoveReason.CLIENT_REQUEST)
                 .type(KeyType.CPF)
@@ -78,7 +78,7 @@ public class PixKeyControllerTest {
     }
 
     @Test
-    public void when_deleteAddressingKeyWithInvalidCPF_expect_statusBadRequest() {
+    public void when_deletePixKeyWithInvalidCPF_expect_statusBadRequest() {
         var dto = RemovePixKeyRequestWebDTO.builder()
                 .reason(RemoveReason.CLIENT_REQUEST)
                 .type(KeyType.CPF)
@@ -95,7 +95,7 @@ public class PixKeyControllerTest {
     }
 
     @Test
-    public void when_deleteAddressingKeyWithInvalidType_expect_statusBadRequest() {
+    public void when_deletePixKeyWithInvalidType_expect_statusBadRequest() {
         var dto = new RemovePixKeyRequestWebDTO();
         dto.setReason(RemoveReason.CLIENT_REQUEST);
         dto.setRequestIdentifier(UUID.randomUUID().toString());

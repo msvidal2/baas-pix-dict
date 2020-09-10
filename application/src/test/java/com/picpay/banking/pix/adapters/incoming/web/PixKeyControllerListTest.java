@@ -1,96 +1,114 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picpay.banking.jdpi.clients.PixKeyJDClient;
-import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.dto.response.TokenDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ListPixKeyRequestWebDTO;
+import com.picpay.banking.pix.converters.CreatePixKeyWebConverter;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.usecase.ListPixKeyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class PixKeyControllerListTest {
 
-    private MockRestServiceServer mockServer;
+//    private MockRestServiceServer mockServer;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
+    private MockMvc mockMvc;
+
+    @InjectMocks
     private PixKeyController controller;
 
-    @MockBean
-    private TokenManagerClient tokenManagerClient;
+    @Mock
+    private ListPixKeyUseCase listPixKeyUseCase;
 
-    @MockBean
-    private PixKeyJDClient pixKeyJDClient;
+    @Spy
+    private CreatePixKeyWebConverter converter;
 
     @BeforeEach
     public void setup() {
-        mockServer = MockRestServiceServer.createServer(new RestTemplate());
-
-        var token = new TokenDTO();
-        token.setAccessToken("SKDFGNSDUNFSD877S6DTF67SBASG7ASB67AST");
-        token.setScope("dict_api");
-        token.setTokenType("Bearer");
-
-        when(tokenManagerClient.getToken(any())).thenReturn(token);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(new CustomExceptionHandler())
+                .build();
     }
 
     @Test
     public void testList() {
+        var pixKey1 = PixKey.builder()
+                .type(KeyType.EMAIL)
+                .key("joao@ppicpay.com")
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj(57950197048L)
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
+                .createdAt(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now())
+                .endToEndId("endToEndId").build();
 
-        var requestDTO = ListPixKeyRequestWebDTO.builder()
-            .cpfCnpj("1111111111111")
-            .personType(PersonType.INDIVIDUAL_PERSON)
-            .accountNumber("1")
-            .accountType(AccountType.SALARY)
-            .branchNumber("1")
-            .ispb(1).build();
+        var pixKey2 = PixKey.builder()
+                .type(KeyType.CPF)
+                .key("57950197048")
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj(57950197048L)
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
+                .createdAt(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now())
+                .endToEndId("endToEndId").build();
 
-        var dto = PixKey.builder()
-            .type(KeyType.EMAIL)
-            .key("joao@ppicpay.com")
-            .ispb(1)
-            .nameIspb("Empresa Picpay")
-            .branchNumber("1")
-            .accountType(AccountType.SALARY)
-            .accountNumber("1")
-            .accountOpeningDate(LocalDateTime.now())
-            .personType(PersonType.INDIVIDUAL_PERSON)
-            .cpfCnpj(1111111111111l)
-            .name("Joao da Silva")
-            .fantasyName("Nome Fantasia")
-            .createdAt(LocalDateTime.now())
-            .startPossessionAt(LocalDateTime.now())
-            .endToEndId("endToEndId").build();
+        var listKeys = Arrays.asList(pixKey1, pixKey2);
 
-        var responseDTO = Arrays.asList(dto);
+        when(listPixKeyUseCase.listAddressKeyUseCase(anyString(), any()))
+                .thenReturn(listKeys);
 
         assertDoesNotThrow(() -> {
-            mockServer.expect(requestTo("http://localhost:8080/addressing-key"))
-                .andExpect(method(HttpMethod.GET))
-                .andExpect(content().json(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(header("requestIdentifier","1111111111111"))
-                .andExpect(content().json(objectMapper.writeValueAsString(responseDTO)))
-                .andRespond(withNoContent());
+            mockMvc.perform(get("/v1/keys")
+                    .header("requestIdentifier", UUID.randomUUID().toString())
+                    .param("cpfCnpj", "57950197048")
+                    .param("personType", "INDIVIDUAL_PERSON")
+                    .param("accountNumber", "123456")
+                    .param("accountType", "CHECKING")
+                    .param("ispb", "123456"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].key", equalTo("joao@ppicpay.com")))
+                    .andExpect(jsonPath("$[1].key", equalTo("57950197048")))
+            ;
+
         });
     }
 

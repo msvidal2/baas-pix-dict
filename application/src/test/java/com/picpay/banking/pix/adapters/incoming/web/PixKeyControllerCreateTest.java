@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class PixKeyControllerCreateTest {
 
@@ -55,7 +54,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullType_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullType_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setKey("teste@teste.com");
         dto.setIspb(12345);
@@ -74,7 +73,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullKey_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullKey_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setIspb(12345);
@@ -93,7 +92,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullIspb_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullIspb_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -112,7 +111,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullAccountType_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullAccountType_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -131,7 +130,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullAccountNumber_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullAccountNumber_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -150,7 +149,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullAccountOpeningDate_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullAccountOpeningDate_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -169,7 +168,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullPersonType_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullPersonType_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -188,7 +187,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullCpfCnpj_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullCpfCnpj_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -207,7 +206,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullName_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullName_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -226,7 +225,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullReason_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullReason_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -245,7 +244,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithNullRequestIdentifier_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithNullRequestIdentifier_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");
@@ -264,7 +263,7 @@ public class PixKeyControllerCreateTest {
     }
 
     @Test
-    public void when_createAddressingKeyWithSuccess_expect_NullPointer() throws Exception {
+    public void when_createPixKeyWithSuccess_expect_NullPointer() throws Exception {
         CreatePixKeyRequestWebDTO dto = new CreatePixKeyRequestWebDTO();
         dto.setType(KeyType.EMAIL);
         dto.setKey("teste@teste.com");

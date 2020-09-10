@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.UpdateAccountPixKeyPort;
-import com.picpay.banking.pix.core.usecase.UpdateAccountPixKeyUseCase;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import com.picpay.banking.pix.core.validators.pixkey.*;
@@ -101,16 +100,16 @@ public class UpdateAccountPixKeyUseCaseTest {
     }
 
     @Test
-    public void testUpdateChangeEVPKey() {
-        var evpKey = randomUUID().toString();
+    public void testUpdateChangeRandomKey() {
+        var randomKey = randomUUID().toString();
 
         var pixKeyResponse = PixKey.builder()
-                .key(evpKey)
+                .key(randomKey)
                 .build();
 
         var pixKey = PixKey.builder()
-                .key(evpKey)
-                .type(KeyType.EVP)
+                .key(randomKey)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")
@@ -124,10 +123,10 @@ public class UpdateAccountPixKeyUseCaseTest {
     }
 
     @Test
-    public void testUpdateChangeEVPKeyByClientRequest() {
+    public void testUpdateChangeRandomKeyByClientRequest() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")
@@ -142,7 +141,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKey() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")
@@ -157,7 +156,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Test
     public void testValidatePixKeyNull() {
         var pixKey = PixKey.builder()
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")
@@ -176,7 +175,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyEmptyKey() {
         var pixKey = PixKey.builder()
                 .key("")
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")
@@ -211,7 +210,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyIspbNull() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .branchNumber("0001")
                 .accountNumber("12345")
                 .accountType(AccountType.CHECKING)
@@ -228,7 +227,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyBranchEmpty() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .accountNumber("12345")
                 .accountType(AccountType.CHECKING)
@@ -245,7 +244,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyBranchInvalidSize() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("1")
                 .accountNumber("12345")
@@ -263,7 +262,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyAccountNumberEmpty() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountType(AccountType.CHECKING)
@@ -280,7 +279,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyLessThan4() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("123")
@@ -298,7 +297,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyBiggerThen20() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("123456789012345678901")
@@ -316,7 +315,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     public void testValidatePixKeyAccountOpeningDateNull() {
         var pixKey = PixKey.builder()
                 .key(randomUUID().toString())
-                .type(KeyType.EVP)
+                .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("12345")

@@ -29,7 +29,7 @@ class FindPixKeyUseCaseTest {
     private DictItemValidator validator;
 
     @Test
-    void when_findPixKeyWithSuccess_expect_addressingKey() {
+    void when_findPixKeyWithSuccess_expect_pixKey() {
         var pixKeyMockResponse = PixKey.builder()
                 .accountNumber("123456")
                 .accountOpeningDate(LocalDateTime.now())
@@ -65,7 +65,7 @@ class FindPixKeyUseCaseTest {
     }
 
     @Test
-    void when_findPixKeyWithoutAddressingKey_expect_exception() {
+    void when_findPixKeyWithoutPixKey_expect_exception() {
         assertThrows(NullPointerException.class, () ->
             useCase.findPixKeyUseCase(null, "59375566072"));
     }

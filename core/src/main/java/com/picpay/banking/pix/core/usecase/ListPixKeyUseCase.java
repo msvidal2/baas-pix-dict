@@ -11,7 +11,8 @@ import java.util.Collection;
 @AllArgsConstructor
 public class ListPixKeyUseCase {
 
-    ListPixKeyPort listPixKeyPort;
+    private ListPixKeyPort listPixKeyPort;
+
     private DictItemValidator dictItemValidator;
 
     public Collection<PixKey> listAddressKeyUseCase(
