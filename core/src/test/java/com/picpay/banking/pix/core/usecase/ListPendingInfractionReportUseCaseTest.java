@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.core.usecase;
 
-import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
@@ -33,7 +32,7 @@ class ListPendingInfractionReportUseCaseTest {
     @Mock
     private InfractionReportPort infractionReportPort;
 
-    private Pagination<InfractionReport> pagination;
+    private List<InfractionReport> listInfractionReport;
 
     @BeforeEach
     void setup() {
@@ -47,17 +46,15 @@ class ListPendingInfractionReportUseCaseTest {
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 
-        this.pagination = new Pagination<>();
-        this.pagination.setResult(List.of(infractionReport));
-        this.pagination.setHasNext(true);
+        this.listInfractionReport = List.of(infractionReport);
     }
 
     @Test
     void when_listPendingInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.listPendingInfractionReport(anyInt(), anyInt())).thenReturn(this.pagination);
+        when(infractionReportPort.listPendingInfractionReport(anyInt(), anyInt())).thenReturn(this.listInfractionReport);
 
-        Pagination<InfractionReport> pagination = this.listPendingInfractionReportUseCase.execute(1, 1);
-        Assertions.assertThat(pagination.getResult()).isNotEmpty();
+        List<InfractionReport> list = this.listPendingInfractionReportUseCase.execute(1, 1);
+        Assertions.assertThat(list).isNotEmpty();
 
         verify(infractionReportPort).listPendingInfractionReport(anyInt(), anyInt());
     }

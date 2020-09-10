@@ -3,7 +3,6 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
-import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -46,9 +47,8 @@ public class InfractionReportController {
     @ApiOperation(value = "List pendings infractions")
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public Pagination<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
-        Pagination<InfractionReport> pagination = this.listPendingInfractionReportUseCase.execute(ispb, limit);
-        return pagination.copy(InfractionReportDTO::from);
+    public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
+       return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
 }

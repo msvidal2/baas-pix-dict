@@ -3,7 +3,6 @@ package com.picpay.banking.jdpi.ports;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
-import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
@@ -61,9 +60,8 @@ class InfractionPortImplTest {
         when(jdClient.listPendings(anyInt(),anyInt()))
             .thenReturn(listPendingInfractionReportDTO);
 
-        Pagination<InfractionReport> pagination = this.port.listPendingInfractionReport(1, 1);
-        assertThat(pagination.getResult()).isNotEmpty();
-        assertThat(pagination.getHasNext()).isTrue();
+        List<InfractionReport> pagination = this.port.listPendingInfractionReport(1, 1);
+        assertThat(pagination).isNotEmpty();
 
         verify(jdClient).listPendings(anyInt(),anyInt());
     }

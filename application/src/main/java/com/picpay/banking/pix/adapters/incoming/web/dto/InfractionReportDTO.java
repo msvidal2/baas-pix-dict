@@ -4,8 +4,10 @@ import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class InfractionReportDTO {
 
 
@@ -24,8 +28,8 @@ public class InfractionReportDTO {
     private InfractionReportSituation situation;
     private Integer ispbDebited;
     private Integer ispbCredited;
-    private LocalDateTime dateCreated;
-    private LocalDateTime dateLastUpdated;
+    private LocalDateTime dateCreate;
+    private LocalDateTime dateLastUpdate;
     private InfractionAnalyzeDTO analyze;
 
     public static InfractionReportDTO from(InfractionReport infraction) {
@@ -35,8 +39,8 @@ public class InfractionReportDTO {
             .situation(infraction.getSituation())
             .ispbDebited(infraction.getIspbDebited())
             .ispbCredited(infraction.getIspbCredited())
-            .dateCreated(infraction.getDateCreate())
-            .dateLastUpdated(infraction.getDateLastUpdate())
+            .dateCreate(infraction.getDateCreate())
+            .dateLastUpdate(infraction.getDateLastUpdate())
             .analyze(InfractionAnalyzeDTO.from(infraction.getAnalyze()))
             .build();
     }
