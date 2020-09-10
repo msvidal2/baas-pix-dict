@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @Api(value = "InfractionReport")
 @RestController
-@RequestMapping(value = "/v1/infraction", produces = "application/json")
+@RequestMapping(value = "/v1/infraction-report", produces = "application/json")
 @AllArgsConstructor
 public class InfractionReportController {
 

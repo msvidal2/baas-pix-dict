@@ -27,8 +27,8 @@ public class InfractionReportCreatedDTO {
             .situation(infractionReport.getSituation())
             .ispbDebited(infractionReport.getIspbDebited())
             .ispbCredited(infractionReport.getIspbCredited())
-            .dateCreate(infractionReport.getDateCreate())
-            .dateLastUpdate(infractionReport.getDateLastUpdate())
+            .dateCreate(infractionReport.getDateCreate().toString())
+            .dateLastUpdate(infractionReport.getDateLastUpdate().toString())
             .build();
     }
 

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @ToString
@@ -31,10 +33,10 @@ public class CreateInfractionReportResponseDTO {
     private String ispbCredited;
 
     @JsonProperty("dtHrCriacaoRelatoInfracao")
-    private String dateCreate;
+    private LocalDateTime dateCreate;
 
     @JsonProperty("dtHrUltModificacao")
-    private String dateLastUpdate;
+    private LocalDateTime dateLastUpdate;
 
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()

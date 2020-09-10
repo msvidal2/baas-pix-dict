@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
-@Builder(toBuilder = true)
 @ToString
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class InfractionReport {
@@ -18,8 +20,8 @@ public class InfractionReport {
     private InfractionReportSituation situation;
     private String ispbDebited;
     private String ispbCredited;
-    private String dateCreate;
-    private String dateLastUpdate;
+    private LocalDateTime dateCreate;
+    private LocalDateTime dateLastUpdate;
     private int ispbRequester;
     private String endToEndId;
     private InfractionType type;

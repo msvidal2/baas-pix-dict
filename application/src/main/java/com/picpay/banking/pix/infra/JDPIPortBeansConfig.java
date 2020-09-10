@@ -65,7 +65,7 @@ public class JDPIPortBeansConfig {
     @Bean
     public FindAddressingKeyPort findAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient,
         FindAddressingKeyConverter findAddressingKeyConverter) {
-        return new FindAddressingKeyPortImpl(addressingKeyJDClient,findAddressingKeyConverter);
+        return new FindAddressingKeyPortImpl(addressingKeyJDClient, findAddressingKeyConverter);
     }
 
     @Bean
