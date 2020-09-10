@@ -18,11 +18,11 @@ public class InfractionReport {
     private String infractionReportId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private String ispbDebited;
-    private String ispbCredited;
+    private int ispbDebited;
+    private int ispbCredited;
     private LocalDateTime dateCreate;
     private LocalDateTime dateLastUpdate;
-    private String ispbRequester;
+    private int ispbRequester;
     private String endToEndId;
     private InfractionType type;
     private String details;
