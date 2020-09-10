@@ -90,8 +90,7 @@ public class PixKeyController {
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
-    public PixKey updateAccount(
-            @PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyDTO dto) {
+    public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyDTO dto) {
         var pixKey = PixKey.builder()
                 .key(key)
                 .type(dto.getType())
