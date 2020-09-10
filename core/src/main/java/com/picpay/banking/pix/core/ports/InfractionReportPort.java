@@ -2,12 +2,12 @@ package com.picpay.banking.pix.core.ports;
 
 
 import com.picpay.banking.pix.core.common.Pagination;
-import com.picpay.banking.pix.core.domain.Infraction;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 
 public interface InfractionReportPort {
 
-    Infraction execute(Infraction infraction, String requestIdentifier);
+    InfractionReport create(InfractionReport infractionReport, String requestIdentifier);
 
-    Pagination<Infraction> listPendingInfractionReport(Integer ispb, Integer limit);
+    Pagination<InfractionReport> listPendingInfractionReport(Integer ispb, Integer limit);
 
 }

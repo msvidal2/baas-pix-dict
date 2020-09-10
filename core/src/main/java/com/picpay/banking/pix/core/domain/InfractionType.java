@@ -19,6 +19,6 @@ public enum InfractionType {
                 return infractionType;
             }
         }
-        return null;
+        throw new IllegalArgumentException("InfractionType can't be resolved, invalid value");
     }
 }

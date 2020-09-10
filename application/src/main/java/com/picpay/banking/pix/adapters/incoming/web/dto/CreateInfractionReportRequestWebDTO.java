@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.Infraction;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -29,22 +29,22 @@ public class CreateInfractionReportRequestWebDTO {
     private int ispbRequester;
 
     @ApiModelProperty(value = "Unique payment transaction identifier", required = true)
+    @NotNull
     private String endToEndId;
 
     @ApiModelProperty(value = "Infraction type ", required = true)
     @NotNull
-    private InfractionType infractionType;
+    private int infractionType;
 
     @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction", required = true)
-    @NotNull
     private String details;
 
-    public Infraction toInfraction() {
-        return Infraction.builder()
+    public InfractionReport toInfraction() {
+        return InfractionReport.builder()
             .requestIdentifier(requestIdentifier)
             .ispbRequester(ispbRequester)
             .endToEndId(endToEndId)
-            .type(infractionType)
+            .type(InfractionType.resolve(infractionType))
             .details(details)
             .build();
     }

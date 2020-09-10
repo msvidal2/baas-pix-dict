@@ -4,9 +4,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRe
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.common.Pagination;
-import com.picpay.banking.pix.core.domain.Infraction;
-import com.picpay.banking.pix.core.usecase.InfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
+import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -30,15 +30,15 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 public class InfractionReportController {
 
-    private InfractionReportUseCase infractionReportUseCase;
     private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
+    private CreateInfractionReportUseCase infractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestBody @Validated CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final Infraction infraction = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
-        return InfractionReportCreatedDTO.from(infraction);
+        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+        return InfractionReportCreatedDTO.from(infractionReport);
     }
 
 
@@ -46,8 +46,8 @@ public class InfractionReportController {
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public Pagination<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
-        Pagination<Infraction> pagination = this.listPendingInfractionReportUseCase.execute(ispb, limit);
-        return null;
+        Pagination<InfractionReport> pagination = this.listPendingInfractionReportUseCase.execute(ispb, limit);
+        return pagination.copy(InfractionReportDTO::from);
     }
 
 }

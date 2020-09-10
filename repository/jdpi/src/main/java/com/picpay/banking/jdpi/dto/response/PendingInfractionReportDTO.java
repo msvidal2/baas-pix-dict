@@ -1,8 +1,8 @@
 package com.picpay.banking.jdpi.dto.response;
 
-import com.picpay.banking.pix.core.domain.Infraction;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
@@ -33,8 +33,8 @@ public class PendingInfractionReportDTO {
     private Integer resultadoAnalise;
     private String detalhesAnalise;
 
-    public Infraction toInfraction() {
-        return Infraction.builder()
+    public InfractionReport toInfraction() {
+        return InfractionReport.builder()
             .endToEndId(endToEndId)
             .type(InfractionType.resolve(tpInfracao))
             .details(detalhes)

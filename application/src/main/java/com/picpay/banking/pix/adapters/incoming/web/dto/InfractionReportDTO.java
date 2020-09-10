@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.Infraction;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
@@ -26,7 +26,7 @@ public class InfractionReportDTO {
     private String dateLastUpdated;
     private InfractionAnalyzeDTO analyze;
 
-    public static InfractionReportDTO from(Infraction infraction) {
+    public static InfractionReportDTO from(InfractionReport infraction) {
         return InfractionReportDTO.builder()
             .infractionReportId(infraction.getInfractionReportId())
             .reportedBy(infraction.getReportedBy())

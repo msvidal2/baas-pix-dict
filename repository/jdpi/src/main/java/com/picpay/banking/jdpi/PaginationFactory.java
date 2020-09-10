@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaginationFactory {
 
@@ -18,7 +20,7 @@ public class PaginationFactory {
     private static final String HAS_PREVIOUS_PARAM = "temPaginaAnterior";
     private static final String HAS_NEXT_PARAM = "temProximaPagina";
 
-    public static <T> Pagination<T> create(HttpHeaders httpHeaders, T result) {
+    public static <T> Pagination<T> create(HttpHeaders httpHeaders, List<T> result) {
         Pagination<T> pagination = new Pagination<>();
         try {
             String jsonPagination = httpHeaders.get(PAGINATION_HEADER).get(0);
@@ -32,6 +34,13 @@ public class PaginationFactory {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return pagination;
+    }
+
+    public static <T> Pagination<T> create(List<T> result, Boolean hasNext) {
+        Pagination<T> pagination = new Pagination<>();
+        pagination.setResult(result);
+        pagination.setHasNext(hasNext);
         return pagination;
     }
 

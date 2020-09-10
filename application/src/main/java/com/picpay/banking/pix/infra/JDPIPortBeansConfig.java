@@ -2,6 +2,7 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.jdpi.clients.AddressingKeyJDClient;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
+import com.picpay.banking.jdpi.clients.InfractionJDClient;
 import com.picpay.banking.jdpi.converter.CreateAddressingKeyConverter;
 import com.picpay.banking.jdpi.converter.CreateClaimConverter;
 import com.picpay.banking.jdpi.converter.FindAddressingKeyConverter;
@@ -14,6 +15,7 @@ import com.picpay.banking.jdpi.ports.CreateAddressingKeyPortImpl;
 import com.picpay.banking.jdpi.ports.CreateClaimPortImpl;
 import com.picpay.banking.jdpi.ports.FindAddressingKeyPortImpl;
 import com.picpay.banking.jdpi.ports.FindClaimPortImpl;
+import com.picpay.banking.jdpi.ports.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.ports.ListAddressingKeyPortImpl;
 import com.picpay.banking.jdpi.ports.ListClaimPortImpl;
 import com.picpay.banking.jdpi.ports.ListPendingClaimPortImpl;
@@ -26,6 +28,7 @@ import com.picpay.banking.pix.core.ports.CreateAddressingKeyPort;
 import com.picpay.banking.pix.core.ports.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.FindAddressingKeyPort;
 import com.picpay.banking.pix.core.ports.FindClaimPort;
+import com.picpay.banking.pix.core.ports.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.ListAddressingKeyPort;
 import com.picpay.banking.pix.core.ports.ListClaimPort;
 import com.picpay.banking.pix.core.ports.ListPendingClaimPort;
@@ -96,6 +99,11 @@ public class JDPIPortBeansConfig {
     @Bean
     public UpdateAccountAddressingKeyPort updateAccountAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient) {
         return new UpdateAccountAddressingKeyPortImpl(addressingKeyJDClient);
+    }
+
+    @Bean
+    public InfractionReportPort infractionReportPort(InfractionJDClient infractionJDClient) {
+        return new InfractionReportPortImpl(infractionJDClient);
     }
 
 }
