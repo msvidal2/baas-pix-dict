@@ -16,8 +16,8 @@ public class Infraction {
     private String infractionReportId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private String ispbDebited;
-    private String ispbCredited;
+    private Integer ispbDebited;
+    private Integer ispbCredited;
     private String dateCreated;
     private String dateLastUpdated;
     private int ispbRequester;
@@ -25,4 +25,7 @@ public class Infraction {
     private InfractionType type;
     private String details;
     private String requestIdentifier;
+
+    private InfractionAnalyze analyze;
+
 }
