@@ -13,11 +13,11 @@ info:
 host: 'localhost:8081'
 basePath: /pix/dict
 tags:
-  - name: addressing-key
+  - name: pix-key
     description: |
-      A chave para endereçamento é uma forma de simplificar a identificação e a comunicação de uma conta transacional. As contas transacionais são formadas por diversos números que, além da conta em si, também identificam a instituição  responsável e, se houver, a agência. <br /> 
+      A chave PIX é uma forma de simplificar a identificação e a comunicação de uma conta transacional. As contas transacionais são formadas por diversos números que, além da conta em si, também identificam a instituição  responsável e, se houver, a agência. <br /> 
       Além de não ser provido de significado para o usuário pagador, o número de conta, usualmente, é um dado extenso, cujo processo de comunicação e de utilização não é intuitivo para os usuários. <br /> 
-      O objetivo da chave para endereçamento, portanto, é utilizar informações que sejam de fácil acesso e de simples inserção pelo usuário pagador. Essas chaves estarão armazenadas no diretório de endereçamento e estarão vinculadas à conta transacional do usuário recebedor. De maneira simplificada, pode-se compreender a chave para endereçamento como um apelido que identifica uma determinada conta transacional. <br /> 
+      O objetivo da chave PIX, portanto, é utilizar informações que sejam de fácil acesso e de simples inserção pelo usuário pagador. Essas chaves estarão armazenadas no diretório de endereçamento e estarão vinculadas à conta transacional do usuário recebedor. De maneira simplificada, pode-se compreender a chave PIX como um apelido que identifica uma determinada conta transacional. <br /> 
 
   - name: claim
     description: |
@@ -28,19 +28,19 @@ tags:
       O DICT disponibiliza um serviço que permite consultar e filtrar os processos de portabilidade. PSPs com acesso direto ao DICT deverão consultar pelo menos uma vez por minuto esse serviço a fim de identificar mudanças de status das portabilidades de interesse do PSP (além daquelas de interesse dos PSPs com acesso indireto para os quais ele presta serviço), tanto como reivindicador quanto como doador.<br />
       <img src="./images/fluxo_reividicacao_posse_chave.png" />
 paths:
-  /v1/addressing-keys:
+  /v1/keys:
     post:
       tags:
-        - addressing-key
-      summary: Criar uma nova Chave de Endereçamento.
+        - pix-key
+      summary: Criar uma nova Chave de PIX.
       description: |
-        O Sistema Cliente deve consumir essa API para incluir uma Chave de Endereçamento.<br /> <br />
+        O Sistema Cliente deve consumir essa API para incluir uma Chave de PIX.<br /> <br />
         Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que está requisitando esta inclusão de Chave: <br />
         <br />
         • É Titular da Conta Transacional ou tem poderes legais para operá-la e <br />
         • Possui Autorização para requisitar este tipo de ação.
         <br /> <br />
-        Caso a Chave de Endereçamento já exista no DICT, será retornado um erro. O cliente pode então solicitar uma Reivindicação de Chave.
+        Caso a Chave de PIX já exista no DICT, será retornado um erro. O cliente pode então solicitar uma Reivindicação de Chave.
         Se a chave existente estiver associada ao mesmo CPF/CNPJ, será uma Reivindicação do tipo Portabilidade. Caso contrário será do tipo Reivindicação de Posse.
         <br /> <br />
         Fluxo de registro de chave
@@ -56,12 +56,12 @@ paths:
           description: requestDTO
           required: true
           schema:
-            $ref: '#/definitions/CreateAddressingKeyRequestWebDTO'
+            $ref: '#/definitions/CreatePixKeyRequestWebDTO'
       responses:
         '201':
           description: Created
           schema:
-            $ref: '#/definitions/AddressingKey'
+            $ref: '#/definitions/PixKey'
         '401':
           description: Unauthorized
         '403':
@@ -71,10 +71,10 @@ paths:
       deprecated: false
     get:
       tags:
-        - addressing-key
-      summary: Listar Chaves de Endereçamento por Cliente/Conta.
+        - pix-key
+      summary: Listar Chaves de PIX por Cliente/Conta.
       description: |
-        O Sistema Cliente deve consumir essa API para listar as Chaves de Endereçamento
+        O Sistema Cliente deve consumir essa API para listar as Chaves de PIX
         associadas a uma Conta Transacional e a um Cliente do PSP <br />
         Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que requisitou a consulta:<br />
         <br />
@@ -83,7 +83,7 @@ paths:
         <br /> <br />
         Após validar os dados da consulta, será identificada na base de dados local o conjunto de chaves associadas ao Cliente e a Conta e o repassará ao Sistema Cliente.<br />
         <br />
-        Fluxo de listagem de chave de endereçamento
+        Fluxo de listagem de Chave de PIX
         <img src="./images/fluxo_consulta_chave_indireta.png" />
       operationId: listUsingGET
       produces:
@@ -138,7 +138,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/AddressingKey'
+              $ref: '#/definitions/PixKey'
         '401':
           description: Unauthorized
         '403':
@@ -146,14 +146,14 @@ paths:
         '404':
           description: Not Found
       deprecated: false
-  '/v1/addressing-keys/{key}':
+  '/v1/keys/{key}':
     get:
       tags:
-        - addressing-key
-      summary: Obter Chave de Endereçamento por chave.
+        - pix-key
+      summary: Obter Chave de PIX por chave.
       description:
         Sistema Cliente deve consumir essa API para Consultar os dados associados a uma
-        Chave de Endereçamento, tais como Nome do Titular, CPF/CNPJ do Titular, ISPB do PSP,
+        Chave de PIX, tais como Nome do Titular, CPF/CNPJ do Titular, ISPB do PSP,
         Número da Agência, Tipo de Conta e Número da Conta'
         <br /><br />
         Fluxo de consulta de chave <br />
@@ -165,7 +165,7 @@ paths:
       parameters:
         - name: key
           in: path
-          description: Valor da chave de endereçamento. <br />Pode ser CPF/CNPJ/E-mail/Telefone Celular/EVP
+          description: Valor da Chave de PIX. <br />Pode ser CPF/CNPJ/E-mail/Telefone Celular/Aleatória
           required: true
           type: string
         - name: userId
@@ -179,7 +179,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/AddressingKey'
+            $ref: '#/definitions/PixKey'
         '401':
           description: Unauthorized
         '403':
@@ -189,19 +189,19 @@ paths:
       deprecated: false
     put:
       tags:
-        - addressing-key
-      summary: Atualizar Chave de Endereçamento.
+        - pix-key
+      summary: Atualizar Chave de PIX.
       description:
-        O Sistema Cliente deve consumir essa API para alterar uma Chave de Endereçamento. Não se trata de alterar o Valor da chave, mas sim de alterar a conta vinculada à chave, ou seja, o valor da chave se mantém inalterado, porém a chave deixa de estar associada à conta original e passa a estar associada a uma nova Conta Transacional, no mesmo PSP.
+        O Sistema Cliente deve consumir essa API para alterar uma Chave de PIX. Não se trata de alterar o Valor da chave, mas sim de alterar a conta vinculada à chave, ou seja, o valor da chave se mantém inalterado, porém a chave deixa de estar associada à conta original e passa a estar associada a uma nova Conta Transacional, no mesmo PSP.
         <br /><br />
         Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente final que requisitou a alteração da chave <br />
         <br />
         • Possui Autorização para requisitar esse tipo de ação e <br />
         • É Titular da Conta Transacional ou tem poderes legais para operá-la. <br />
         <br />
-        Chaves do tipo EVP – Endereço Virtual de Pagamento não podem ser alteradas por solicitação do cliente.
+        Chaves do tipo Aleatória – Endereço Virtual de Pagamento não podem ser alteradas por solicitação do cliente.
         <br /><br />
-        Após validar a Requisição, será enviado ao DICT. Em caso de sucesso, será atualizada a Chave de Endereçamento.<br />
+        Após validar a Requisição, será enviado ao DICT. Em caso de sucesso, será atualizada a Chave de PIX.<br />
         <br />
         Fluxo de atualização de chave
         <br />
@@ -217,7 +217,7 @@ paths:
           description: dto
           required: true
           schema:
-            $ref: '#/definitions/UpdateAccountAddressingKeyDTO'
+            $ref: '#/definitions/UpdateAccountPixKeyDTO'
         - name: key
           in: path
           description: key
@@ -227,7 +227,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/AddressingKey'
+            $ref: '#/definitions/PixKey'
         '201':
           description: Created
         '401':
@@ -239,10 +239,10 @@ paths:
       deprecated: false
     delete:
       tags:
-        - addressing-key
-      summary: Deletar uma Chave de Endereçamento por chave.
+        - pix-key
+      summary: Deletar uma Chave de PIX por chave.
       description:
-        O Sistema Cliente deve consumir essa API para excluir uma Chave de Endereçamento.
+        O Sistema Cliente deve consumir essa API para excluir uma Chave de PIX.
         <br /><br />
         Antes de consumir esta API, o Sistema Cliente deve assegurar que o Cliente que requisitou a exclusão da Chave <br />
         <br />
@@ -257,13 +257,13 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: RemoveAddressingKeyRequest
+          name: RemovePixKeyRequest
           required: true
           schema:
-            $ref: '#/definitions/RemoveAddressingKeyRequestWebDTO'
+            $ref: '#/definitions/RemovePixKeyRequestWebDTO'
         - name: key
           in: path
-          description: Valor da Chave de endereçamento a ser removida
+          description: Valor da Chave de PIX a ser removida
           required: true
           type: string
       responses:
@@ -280,12 +280,12 @@ paths:
         - claim
       summary: Listar Reivindicações.
       description: |
-        O Sistema Cliente deve consumir essa API sempre que um Cliente necessitar conhecer a lista de Reivindicações de Chaves de Endereçamento, nas quais ele atua como:<br />
+        O Sistema Cliente deve consumir essa API sempre que um Cliente necessitar conhecer a lista de Reivindicações de Chaves de PIX, nas quais ele atua como:<br />
         <ul>
           <li>Cliente Reivindicador - o próprio Cliente registrou a Reivindicação - ou</li>
           <li>Cliente Doador – um outro Cliente, possivelmente de outro PSP cadastrou uma Reinvidicação de uma Chave que está atualmente de posse do Cliente em questão.</li>
         </ul>
-        O Regulamento do Pix estabelece prazos para os clientes envolvidos se pronunciarem sobre uma Reivindicação de Chave de Endereçamento.<br /><br />
+        O Regulamento do Pix estabelece prazos para os clientes envolvidos se pronunciarem sobre uma Reivindicação de Chave de PIX.<br /><br />
         Por questões de segurança, a API não interage diretamente com os canais de acesso utilizados pelo cliente final, tais como App Mobile e Internet Bank. Estes canais se comunicam, através de uma forte camada de segurança, com um módulo chamado BackEnd. A API atende as requisições do BackEnd. Dessa forma, a API não tem como identificar o Usuário/Conta que está logado no App Mobile/Internet Bank. Para evitar fraudes, o Sistema Cliente deve informar a API, os dados do Cliente e da Conta, utilizada no login no canal de atendimento e que está requisitando as informações.
         O Sistema Cliente deve também assegurar que o Cliente logado é Titular da Conta ou tem poderes para operar a conta logada.<br /><br />
       operationId: listUsingGET_1
@@ -362,12 +362,12 @@ paths:
     post:
       tags:
         - claim
-      summary: Incluir Reivindicação de Chave de Endereçamento.
+      summary: Incluir Reivindicação de Chave de PIX.
       description: |
-        O Sistema Cliente deve consumir essa API para iniciar um processo de Reivindicação de uma Chave de Endereçamento.<br /><br />
-        Se, ao tentar incluir uma Chave de Endereçamento, retornar um erro, informando que a chave já existe no DICT, o cliente pode solicitar uma Reivindicação de Chave de Endereçamento.<br /><br />
+        O Sistema Cliente deve consumir essa API para iniciar um processo de Reivindicação de uma Chave de PIX.<br /><br />
+        Se, ao tentar incluir uma Chave de PIX, retornar um erro, informando que a chave já existe no DICT, o cliente pode solicitar uma Reivindicação de Chave de PIX.<br /><br />
         Caso a chave existente esteja associada ao mesmo CPF/CNPJ do cliente em questão, será uma Reivindicação do tipo Portabilidade. Do contrário, será do tipo Reivindicação de Posse.<br /><br />
-        Não se pode reivindicar uma chave do tipo EVP – Endereço Virtual de Pagamento, visto que o valor de uma chave do tipo EVP não tem qualquer significado semântico. Ao invés de iniciar um processo de Reivindicação, basta o Cliente gerar uma nova chave EVP.<br /><br />
+        Não se pode reivindicar uma chave do tipo Aleatória – Endereço Virtual de Pagamento, visto que o valor de uma chave do tipo Aleatória não tem qualquer significado semântico. Ao invés de iniciar um processo de Reivindicação, basta o Cliente gerar uma nova chave Aleatória.<br /><br />
         O processo de Reivindicação segue os seguintes passos:
         <ul>
           <li>O Cliente Reivindicador inclui a Reivindicação, com situação “Aberta”;</li>
@@ -405,7 +405,7 @@ paths:
         - claim
       summary: Consultar Reivindicação.
       description: |
-        O Sistema Cliente deve consumir essa API para consultar uma Reivindicação de Chave de Endereçamento, na qual ele atua como:<br />
+        O Sistema Cliente deve consumir essa API para consultar uma Reivindicação de Chave de PIX, na qual ele atua como:<br />
         <ul>
           <li>Cliente Reivindicador - o próprio Cliente registrou a Reivindicação - ou</li>
           <li>Cliente Doador – um outro Cliente, possivelmente de outro PSP cadastrou uma Reinvidicação de uma Chave que está atualmente de posse do Cliente em questão.</li>
@@ -436,9 +436,9 @@ paths:
     delete:
       tags:
         - claim
-      summary: Cancelar Reivindicação de Chave de Endereçamento
+      summary: Cancelar Reivindicação de Chave de PIX
       description: |
-        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, o Cliente Doador ou o Cliente Reivindicador desejarem cancelar a Reivindicação.<br /><br />
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de PIX, o Cliente Doador ou o Cliente Reivindicador desejarem cancelar a Reivindicação.<br /><br />
       operationId: cancelUsingDELETE
       produces:
         - application/json
@@ -469,9 +469,9 @@ paths:
     put:
       tags:
         - claim
-      summary: Concluir Reivindicação de Chave de Endereçamento
+      summary: Concluir Reivindicação de Chave de PIX
       description: |
-        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, quando o Cliente Reivindicador desejar registrar a Conclusão de uma Reivindicação, ou seja, o Cliente Reivindicador conclui o processo e que a Chave de Endereçamento em disputa já pode ser associada à sua Conta.<br /><br />
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de PIX, quando o Cliente Reivindicador desejar registrar a Conclusão de uma Reivindicação, ou seja, o Cliente Reivindicador conclui o processo e que a Chave de PIX em disputa já pode ser associada à sua Conta.<br /><br />
         Obs.: No caso da Reivindicação de Posse o PSP Reivindicador deve fazer a validação ativa da posse da chave com o usuário final, antes de chamar essa API.<br />
       operationId: completeUsingPUT
       consumes:
@@ -507,9 +507,9 @@ paths:
     post:
       tags:
         - claim
-      summary: Confirmar Reivindicação de Chave de Endereçamento
+      summary: Confirmar Reivindicação de Chave de PIX
       description: |
-        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de Endereçamento, o Cliente Doador desejar registrar a Confirmação de uma Reivindicação, ou seja, o Cliente Doador registra que está disposto em ceder ao Cliente Reivindicador a chave reivindicada.<br /><br />
+        O Sistema Cliente deve consumir essa API quando, no processo de Reivindicação de uma Chave de PIX, o Cliente Doador desejar registrar a Confirmação de uma Reivindicação, ou seja, o Cliente Doador registra que está disposto em ceder ao Cliente Reivindicador a chave reivindicada.<br /><br />
       operationId: confirmUsingPOST
       consumes:
         - application/json
@@ -568,7 +568,7 @@ definitions:
           - FRAUDS_CONFIRMATION
           - PREVENTION_LAUNDERING_CONFIRMATION
     title: Accountant
-  AddressingKey:
+  PixKey:
     type: object
     properties:
       accountNumber:
@@ -625,8 +625,8 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
-    title: AddressingKey
+          - RANDOM
+    title: PixKey
   Claim:
     type: object
     properties:
@@ -685,7 +685,7 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
+          - RANDOM
       lastModifiedDate:
         type: string
         format: date-time
@@ -776,7 +776,7 @@ definitions:
         type: string
         description: Chave de Idempotência. Utiliza tipagem GUID (v4).
     title: CompleteClaimRequestWebDTO
-  CreateAddressingKeyRequestWebDTO:
+  CreatePixKeyRequestWebDTO:
     type: object
     required:
       - accountNumber
@@ -820,7 +820,7 @@ definitions:
         description: ISPB do PSP
       key:
         type: string
-        description: 'Valor da chave {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{EVP}'
+        description: 'Valor da chave {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}'
       name:
         type: string
         description: Razão Social
@@ -846,8 +846,8 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
-    title: CreateAddressingKeyRequestWebDTO
+          - RANDOM
+    title: CreatePixKeyRequestWebDTO
   CreateClaimRequestWebDTO:
     type: object
     required:
@@ -898,7 +898,7 @@ definitions:
         description: Código ISPB do PSP
       key:
         type: string
-        description: 'Chave CPF/CNPJ/E-mail/Telefone Celular/EVP.'
+        description: 'Chave CPF/CNPJ/E-mail/Telefone Celular/Aleatória.'
       keyType:
         type: string
         description: Tipo da chave.
@@ -907,7 +907,7 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
+          - RANDOM
       name:
         type: string
         description: Razão Social/Nome completo do cliente.
@@ -957,7 +957,7 @@ definitions:
           - INDIVIDUAL_PERSON
           - LEGAL_ENTITY
     title: DonorData
-  RemoveAddressingKeyRequestWebDTO:
+  RemovePixKeyRequestWebDTO:
     type: object
     required:
       - ispb
@@ -987,8 +987,8 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
-    title: RemoveAddressingKeyRequestWebDTO
+          - RANDOM
+    title: RemovePixKeyRequestWebDTO
   Statistic:
     type: object
     properties:
@@ -1000,7 +1000,7 @@ definitions:
         type: string
         format: date-time
     title: Statistic
-  UpdateAccountAddressingKeyDTO:
+  UpdateAccountPixKeyDTO:
     type: object
     required:
       - accountNumber
@@ -1047,5 +1047,5 @@ definitions:
           - CNPJ
           - EMAIL
           - CELLPHONE
-          - EVP
-    title: UpdateAccountAddressingKeyDTO
+          - RANDOM
+    title: UpdateAccountPixKeyDTO

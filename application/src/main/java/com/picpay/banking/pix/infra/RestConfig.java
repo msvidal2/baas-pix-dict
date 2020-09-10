@@ -31,8 +31,8 @@ public class RestConfig {
 	public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
 		return builder -> {
 			builder.simpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-			builder.serializers(new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
-			builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
+			builder.serializers(new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE));
+			builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		};
 	}
 

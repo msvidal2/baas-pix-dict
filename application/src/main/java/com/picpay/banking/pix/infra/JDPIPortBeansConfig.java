@@ -1,36 +1,10 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.jdpi.clients.AddressingKeyJDClient;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
-import com.picpay.banking.jdpi.converter.CreateAddressingKeyConverter;
-import com.picpay.banking.jdpi.converter.CreateClaimConverter;
-import com.picpay.banking.jdpi.converter.FindAddressingKeyConverter;
-import com.picpay.banking.jdpi.converter.ListAddressingKeyConverter;
-import com.picpay.banking.jdpi.converter.ListClaimConverter;
-import com.picpay.banking.jdpi.ports.ClaimCancelPortImpl;
-import com.picpay.banking.jdpi.ports.ClaimConfirmationPortImpl;
-import com.picpay.banking.jdpi.ports.CompleteClaimPortImpl;
-import com.picpay.banking.jdpi.ports.CreateAddressingKeyPortImpl;
-import com.picpay.banking.jdpi.ports.CreateClaimPortImpl;
-import com.picpay.banking.jdpi.ports.FindAddressingKeyPortImpl;
-import com.picpay.banking.jdpi.ports.FindClaimPortImpl;
-import com.picpay.banking.jdpi.ports.ListAddressingKeyPortImpl;
-import com.picpay.banking.jdpi.ports.ListClaimPortImpl;
-import com.picpay.banking.jdpi.ports.ListPendingClaimPortImpl;
-import com.picpay.banking.jdpi.ports.RemoveAddressingKeyPortImpl;
-import com.picpay.banking.jdpi.ports.UpdateAccountAddressingKeyPortImpl;
-import com.picpay.banking.pix.core.ports.ClaimCancelPort;
-import com.picpay.banking.pix.core.ports.ClaimConfirmationPort;
-import com.picpay.banking.pix.core.ports.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.CreateAddressingKeyPort;
-import com.picpay.banking.pix.core.ports.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.FindAddressingKeyPort;
-import com.picpay.banking.pix.core.ports.FindClaimPort;
-import com.picpay.banking.pix.core.ports.ListAddressingKeyPort;
-import com.picpay.banking.pix.core.ports.ListClaimPort;
-import com.picpay.banking.pix.core.ports.ListPendingClaimPort;
-import com.picpay.banking.pix.core.ports.RemoveAddressingKeyPort;
-import com.picpay.banking.pix.core.ports.UpdateAccountAddressingKeyPort;
+import com.picpay.banking.jdpi.clients.PixKeyJDClient;
+import com.picpay.banking.jdpi.converter.*;
+import com.picpay.banking.jdpi.ports.*;
+import com.picpay.banking.pix.core.ports.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -53,8 +27,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public CreateAddressingKeyPort createAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient,  CreateAddressingKeyConverter converter) {
-        return new CreateAddressingKeyPortImpl(addressingKeyJDClient,converter);
+    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient, CreatePixKeyConverter converter) {
+        return new CreatePixKeyPortImpl(pixKeyJDClient,converter);
     }
 
     @Bean
@@ -63,9 +37,9 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public FindAddressingKeyPort findAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient,
-        FindAddressingKeyConverter findAddressingKeyConverter) {
-        return new FindAddressingKeyPortImpl(addressingKeyJDClient, findAddressingKeyConverter);
+    public FindPixKeyPort findPixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                                       FindPixKeyConverter findPixKeyConverter) {
+        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter);
     }
 
     @Bean
@@ -74,8 +48,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ListAddressingKeyPort listAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient, ListAddressingKeyConverter listAddressingKeyConverter) {
-        return new ListAddressingKeyPortImpl(addressingKeyJDClient,listAddressingKeyConverter);
+    public ListPixKeyPort listPixKeyPort(PixKeyJDClient pixKeyJDClient, ListPixKeyConverter listPixKeyConverter) {
+        return new ListPixKeyPortImpl(pixKeyJDClient, listPixKeyConverter);
     }
 
     @Bean
@@ -89,13 +63,13 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public RemoveAddressingKeyPort removeAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient, CreateClaimConverter createClaimConverter) {
-        return new RemoveAddressingKeyPortImpl(addressingKeyJDClient);
+    public RemovePixKeyPort removePixKeyPort(PixKeyJDClient pixKeyJDClient, CreateClaimConverter createClaimConverter) {
+        return new RemovePixKeyPortImpl(pixKeyJDClient);
     }
 
     @Bean
-    public UpdateAccountAddressingKeyPort updateAccountAddressingKeyPort(AddressingKeyJDClient addressingKeyJDClient) {
-        return new UpdateAccountAddressingKeyPortImpl(addressingKeyJDClient);
+    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient) {
+        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient);
     }
 
 }
