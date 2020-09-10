@@ -39,7 +39,7 @@ public class CreateInfractionReportRequestWebDTO {
     @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction", required = true)
     private String details;
 
-    public InfractionReport toInfraction() {
+    public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
             .requestIdentifier(requestIdentifier)
             .ispbRequester(ispbRequester)

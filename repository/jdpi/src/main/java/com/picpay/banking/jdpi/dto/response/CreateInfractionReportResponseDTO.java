@@ -1,8 +1,7 @@
 package com.picpay.banking.jdpi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.picpay.banking.pix.core.domain.AccountantType;
-import com.picpay.banking.pix.core.domain.Aggregate;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
@@ -36,5 +35,17 @@ public class CreateInfractionReportResponseDTO {
 
     @JsonProperty("dtHrUltModificacao")
     private String dateLastUpdate;
+
+    public InfractionReport toInfractionReport() {
+        return InfractionReport.builder()
+            .infractionReportId(infractionReportId)
+            .reportedBy(reportedBy)
+            .situation(situation)
+            .ispbDebited(ispbDebited)
+            .ispbCredited(ispbCredited)
+            .dateCreate(dateCreate)
+            .dateLastUpdate(dateLastUpdate)
+            .build();
+    }
 
 }

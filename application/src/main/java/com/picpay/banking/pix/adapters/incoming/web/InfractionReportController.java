@@ -28,7 +28,7 @@ public class InfractionReportController {
     @PostMapping
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestBody @Validated CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfraction(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
         return InfractionReportCreatedDTO.from(infractionReport);
     }
 
