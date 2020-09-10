@@ -7,10 +7,10 @@ import com.picpay.banking.jdpi.fallbacks.InfractionJDClientFallbackFactory;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "infractionJDClient",
         url = "${pix.services.jdpi.dict.url}",
@@ -26,7 +26,7 @@ public interface InfractionJDClient {
     CreateInfractionReportResponseDTO create(@RequestBody CreateInfractionReportRequestDTO request,
                                             @RequestHeader("Chave-Idempotencia") String requestIdentifier);
 
-    @GetMapping("/v1/relato-infracao/listar/pendentes/{ispb}/{nrLimite}")
-    ListPendingInfractionReportDTO listPendings(@PathVariable("ispb") Integer ispb, @PathVariable("nrLimite") Integer nrLimite);
+    @GetMapping("/v1/relato-infracao/listar")
+    ListPendingInfractionReportDTO listPendings(@RequestParam("ispb") Integer ispb, @RequestParam("nrLimite") Integer nrLimite);
 
 }
