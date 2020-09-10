@@ -5,5 +5,5 @@ import com.picpay.banking.pix.core.domain.Claim;
 
 public interface CreateClaimPort {
 
-    Claim createAddressingKey(final Claim claim, final String requestIdentifier);
+    Claim createPixKey(final Claim claim, final String requestIdentifier);
 }

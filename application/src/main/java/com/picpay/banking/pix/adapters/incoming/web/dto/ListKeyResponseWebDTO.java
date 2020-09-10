@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.picpay.banking.pix.core.domain.ClaimType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,6 @@ public class ListKeyResponseWebDTO {
     private String fantasyName;
     private LocalDateTime createdAt;
     private LocalDateTime startPossessionAt;
-    private Integer claim;
+    private int claim;
 
 }

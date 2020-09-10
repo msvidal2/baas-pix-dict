@@ -21,7 +21,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
     }
 
     @Override
-    public Claim createAddressingKey(final Claim claim, final String requestIdentifier) {
+    public Claim createPixKey(final Claim claim, final String requestIdentifier) {
         CreateClaimRequestDTO requestDTO = converter.convert(claim);
 
         ClaimResponseDTO responseDTO = claimJDClient.createClaim(requestIdentifier, requestDTO);

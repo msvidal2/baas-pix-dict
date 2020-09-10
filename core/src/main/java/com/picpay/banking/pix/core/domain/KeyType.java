@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.domain;
 import com.picpay.banking.pix.core.validators.key.CNPJKeyValidator;
 import com.picpay.banking.pix.core.validators.key.CPFKeyValidator;
 import com.picpay.banking.pix.core.validators.key.CellPhoneKeyValidator;
-import com.picpay.banking.pix.core.validators.key.EVPKeyValidator;
+import com.picpay.banking.pix.core.validators.key.RandomKeyValidator;
 import com.picpay.banking.pix.core.validators.key.EmailKeyValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
@@ -18,7 +18,7 @@ public enum KeyType {
     CNPJ(1, new CNPJKeyValidator()),
     EMAIL(2, new EmailKeyValidator()),
     CELLPHONE(3, new CellPhoneKeyValidator()),
-    EVP(4, new EVPKeyValidator());
+    RANDOM(4, new RandomKeyValidator());
 
     private int value;
 

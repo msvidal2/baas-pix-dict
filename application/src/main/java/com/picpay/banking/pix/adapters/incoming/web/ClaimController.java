@@ -61,7 +61,7 @@ public class ClaimController {
         return createAddressKeyUseCase.createClaim(claim, requestDTO.getRequestIdentifier());
     }
 
-    @ApiOperation("Confirm an addressing key claim")
+    @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
     public Claim confirm(@PathVariable String claimId, @RequestBody @Validated ClaimConfirmationDTO dto) {
 
@@ -91,7 +91,7 @@ public class ClaimController {
         return listClaimUseCase.listClaimUseCase(claim, requestDTO.isPending(), requestDTO.getLimit(), requestIdentifier);
     }
 
-    @ApiOperation("Cancel an addressing key claim")
+    @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
     public Claim cancel(@PathVariable String claimId, @RequestBody @Validated ClaimCancelDTO dto) {
         var claim = Claim.builder()
@@ -102,7 +102,7 @@ public class ClaimController {
         return claimCancelUseCase.cancel(claim, dto.isCanceledClaimant(), dto.getReason(), dto.getRequestIdentifier());
     }
 
-    @ApiOperation("Complete an aaddressing key claim")
+    @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
     public Claim complete(@PathVariable String claimId, @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
         return completeClaimUseCase.complete(Claim.builder()
