@@ -134,7 +134,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_CreateRequestWithoutRequestIdentifier_expect_statusBadRequest() throws Exception {
+    void when_createRequestWithoutRequestIdentifier_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
             .endToEndId("E9999901012341234123412345678900")
@@ -150,7 +150,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_CreateRequestWithoutIspbRequester_expect_statusBadRequest() throws Exception {
+    void when_createRequestWithoutIspbRequester_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
@@ -166,7 +166,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_CreateRequestWithoutEndToEndId_expect_statusBadRequest() throws Exception {
+    void when_createRequestWithoutEndToEndId_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
@@ -182,7 +182,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_CreateRequestWithoutInfractionType_expect_statusBadRequest() throws Exception {
+    void when_createRequestWithoutInfractionType_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
             .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
@@ -198,7 +198,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_CreateRequestWithoutDetails_expect_statusOk() throws Exception {
+    void when_createRequestWithoutDetails_expect_statusOk() throws Exception {
         when(createInfractionReportUseCase.execute(any(), anyString())).thenReturn(infractionReport);
 
         var request = CreateInfractionReportRequestWebDTO.builder()
@@ -265,7 +265,7 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_FindRequestWithSuccess_expect_statusOk() throws Exception {
+    void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
         when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
 
         mockMvc.perform(get("/v1/infraction-report/find/{infractionReportId}", UUID.randomUUID().toString())
