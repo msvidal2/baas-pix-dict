@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import lombok.AllArgsConstructor;
@@ -23,21 +24,25 @@ public class CancelResponseInfractionDTO {
 
     private String endToEndId;
 
-    private String idRelatoInfracao;
+    @JsonProperty("idRelatoInfracao")
+    private String infractionReportId;
 
-    private Integer stRelatoInfracao;
+    @JsonProperty("stRelatoInfracao")
+    private Integer situation;
 
-    private LocalDateTime dtHrCriacaoRelatoInfracao;
+    @JsonProperty("dtHrCriacaoRelatoInfracao")
+    private LocalDateTime dateCreate;
 
-    private LocalDateTime dtHrUltModificacao;
+    @JsonProperty("dtHrUltModificacao")
+    private LocalDateTime dateLastUpdate;
 
     public InfractionReport toInfraction() {
         return InfractionReport.builder()
-            .situation(InfractionReportSituation.resolve(stRelatoInfracao))
+            .situation(InfractionReportSituation.resolve(situation))
             .endToEndId(endToEndId)
-            .infractionReportId(idRelatoInfracao)
-            .dateCreate(dtHrCriacaoRelatoInfracao)
-            .dateLastUpdate(dtHrUltModificacao)
+            .infractionReportId(infractionReportId)
+            .dateCreate(dateCreate)
+            .dateLastUpdate(dateLastUpdate)
             .build();
     }
 

@@ -57,19 +57,19 @@ class InfractionReportPortImplTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
 
-        var infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(
-            LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
-            .idRelatoInfracao(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCreditado(1).ispbDebitado(2).reportadoPor(ReportedBy.CREDITED_PARTICIPANT.getValue())
-            .stRelatoInfracao(InfractionReportSituation.OPEN.getValue())
-            .tpInfracao(InfractionType.FRAUD.getValue())
-            .detalhesAnalise("details")
-            .resultadoAnalise(InfractionAnalyzeResult.ACCEPTED.getValue())
+        var infractionReport = PendingInfractionReportDTO.builder().details("details").dateCreate(
+            LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
+            .infractionReportId(randomUUID().toString())
+            .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).reportedBy(ReportedBy.CREDITED_PARTICIPANT.getValue())
+            .situation(InfractionReportSituation.OPEN.getValue())
+            .type(InfractionType.FRAUD.getValue())
+            .analyzeDetails("details")
+            .analyzeResult(InfractionAnalyzeResult.ACCEPTED.getValue())
             .build();
 
-        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().dtHrJdPi("10/04/2020 22:22:22")
-            .temMaisElementos(true)
-            .reporteInfracao(List.of(infractionReport))
+        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().date("10/04/2020 22:22:22")
+            .hasNext(true)
+            .infractionReports(List.of(infractionReport))
             .build();
     }
 
@@ -122,7 +122,7 @@ class InfractionReportPortImplTest {
 
         when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
             CancelResponseInfractionDTO.builder()
-                .stRelatoInfracao(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
+                .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
                 .build()
        );
 

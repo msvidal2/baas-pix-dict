@@ -27,7 +27,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     @Override
     public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit) {
         var infractionReportDTO = this.infractionJDClient.listPendings(ispb, limit);
-        return infractionReportDTO.getReporteInfracao().stream().map(PendingInfractionReportDTO::toInfraction)
+        return infractionReportDTO.getInfractionReports().stream().map(PendingInfractionReportDTO::toInfraction)
             .collect(Collectors.toList());
     }
 
