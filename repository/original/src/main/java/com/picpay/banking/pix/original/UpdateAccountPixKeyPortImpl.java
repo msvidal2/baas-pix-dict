@@ -14,20 +14,11 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
     @Override
     public PixKey updateAccount(PixKey pixKey, UpdateReason reason, String requestIdentifier) {
-        final var requestDTO = UpdateAccessKeyAccountDTO.builder()
-                .key(pixKey.getKey())
-                .accountType(pixKey.getAccountType().name()) //TODO: fazer de-para
-                .accountNumber(pixKey.getAccountNumber())
-                .accountOpeningDate(pixKey.getAccountOpeningDate())
-                .reason(reason.name()) //TODO: fazer de-para
-                .build();
+        final var requestDTO = UpdateAccessKeyAccountDTO.from(pixKey, reason);
 
         final var responseDTO = maintenancePixKeyClient.update(requestDTO);
 
-        return PixKey.builder()
-                .createdAt(responseDTO.getData().getCreationDate())
-                .startPossessionAt(responseDTO.getData().getKeyOwnershipDate())
-                .build();
+        return responseDTO.getData().toDomain();
     }
 
 }

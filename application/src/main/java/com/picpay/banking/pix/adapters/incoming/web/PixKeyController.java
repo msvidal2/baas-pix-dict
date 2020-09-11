@@ -91,15 +91,7 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyDTO dto) {
-        var pixKey = PixKey.builder()
-                .key(key)
-                .type(dto.getType())
-                .ispb(dto.getIspb())
-                .branchNumber(dto.getBranchNumber())
-                .accountType(dto.getAccountType())
-                .accountNumber(dto.getAccountNumber())
-                .accountOpeningDate(dto.getAccountOpeningDate())
-                .build();
+        var pixKey = dto.toDomain(key);
 
         updateAccountUseCase.update(pixKey, dto.getReason(), dto.getRequestIdentifier());
 

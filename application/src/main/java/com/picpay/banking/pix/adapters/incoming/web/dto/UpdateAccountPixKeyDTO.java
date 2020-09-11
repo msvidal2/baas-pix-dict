@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -51,4 +52,17 @@ public class UpdateAccountPixKeyDTO {
                     +" DICT para calcular o rate-limiting.", required = true)
     @NonNull
     private String userId;
+
+    public PixKey toDomain(String key) {
+        return PixKey.builder()
+                .key(key)
+                .type(type)
+                .ispb(ispb)
+                .branchNumber(branchNumber)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .accountOpeningDate(accountOpeningDate)
+                .build();
+    }
+
 }
