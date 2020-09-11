@@ -25,7 +25,7 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
             .accountNumber(requestDTO.getAccountNumber())
             .accountOpeningDate(requestDTO.getAccountOpeningDate())
             .personType(requestDTO.getPersonType())
-            .taxId(Long.valueOf(requestDTO.getCpfCnpj()).longValue())
+            .taxId(requestDTO.getCpfCnpj())
             .name(requestDTO.getName())
             .fantasyName(requestDTO.getFantasyName())
             .accountOpeningDate(requestDTO.getAccountOpeningDate())
