@@ -10,18 +10,17 @@ import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Builder
+@Getter
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
-public class PendingInfractionReportDTO {
+public class FindInfractionReportResponseDTO {
 
+    @JsonProperty("endToEndId")
     private String endToEndId;
 
     @JsonProperty("tpInfracao")
@@ -34,16 +33,16 @@ public class PendingInfractionReportDTO {
     private String infractionReportId;
 
     @JsonProperty("reportadoPor")
-    private Integer reportedBy;
+    private int reportedBy;
 
     @JsonProperty("stRelatoInfracao")
-    private Integer situation;
+    private int situation;
 
     @JsonProperty("ispbDebitado")
-    private Integer ispbDebited;
+    private int ispbDebited;
 
     @JsonProperty("ispbCreditado")
-    private Integer ispbCredited;
+    private int ispbCredited;
 
     @JsonProperty("dtHrCriacaoRelatoInfracao")
     private LocalDateTime dateCreate;
@@ -52,12 +51,12 @@ public class PendingInfractionReportDTO {
     private LocalDateTime dateLastUpdate;
 
     @JsonProperty("resultadoAnalise")
-    private Integer analyzeResult;
+    private int analyzeResult;
 
     @JsonProperty("detalhesAnalise")
     private String analyzeDetails;
 
-    public InfractionReport toInfraction() {
+    public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
             .endToEndId(endToEndId)
             .type(InfractionType.resolve(type))
