@@ -22,7 +22,7 @@ public class ListPixKeyConverter implements DataConverter<ResponseWrapperDTO<Lis
             .key(listPixKeyDTO.getKeyCod())
             .ispb(Integer.valueOf(listPixKeyDTO.getIspb()))
             .name(listPixKeyDTO.getName())
-            .fantasyName(listPixKeyDTO.getName())
+            .fantasyName(listPixKeyDTO.getName()) /** Revisar os de--para **/
             .accountNumber(listPixKeyDTO.getAccount())
             .cpfCnpj(Long.valueOf(listPixKeyDTO.getTaxId()))
             .accountOpeningDate(listPixKeyDTO.getAccountOpeningDate())
