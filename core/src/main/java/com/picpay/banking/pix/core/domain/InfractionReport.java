@@ -9,8 +9,8 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
 @Builder(toBuilder = true)
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class InfractionReport {
@@ -27,4 +27,7 @@ public class InfractionReport {
     private InfractionType type;
     private String details;
     private String requestIdentifier;
+
+    private InfractionAnalyze analyze;
+
 }

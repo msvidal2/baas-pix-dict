@@ -7,7 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum InfractionReportSituation {
 
-    OPEN (0);
+    OPEN (0),
+    RECEIVED (1),
+    CANCELED (2),
+    ANALYZED (3);
 
     private int value;
 

@@ -2,11 +2,14 @@ package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,13 +21,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +48,12 @@ class InfractionReportControllerTest {
     @Mock
     private CreateInfractionReportUseCase createInfractionReportUseCase;
 
+    @Mock
+    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
+
     private InfractionReport infractionReport;
 
+    private List<InfractionReport> listInfractionReport;
 
     @BeforeEach
     void setup() {
@@ -53,11 +66,15 @@ class InfractionReportControllerTest {
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
             .situation(InfractionReportSituation.OPEN)
-            .ispbDebited(01234)
+            .ispbDebited(1234)
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
+            .type(InfractionType.FRAUD)
+            .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
+
+        this.listInfractionReport = List.of(this.infractionReport);
     }
 
     @Test
@@ -180,6 +197,47 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReportCreatedDTO.getIspbCredited())))
             .andExpect(jsonPath("$.dateCreate", equalTo(infractionReportCreatedDTO.getDateCreate())))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReportCreatedDTO.getDateLastUpdate())));
+
+    }
+
+    @Test
+    void when_RequestListInfractions_expect_statusOk() throws Exception {
+        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
+
+        mockMvc.perform(get("/v1/infraction-report/pendings/{ispb}",1)
+            .queryParam("limit", "1")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].infractionReportId").exists())
+            .andExpect(jsonPath("$.[0].reportedBy"  ).exists())
+            .andExpect(jsonPath("$.[0].situation"   ).exists())
+            .andExpect(jsonPath("$.[0].ispbDebited" ).exists())
+            .andExpect(jsonPath("$.[0].ispbCredited").exists())
+            .andExpect(jsonPath("$.[0].dateCreate"  ).exists())
+            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
+
+        verify(listPendingInfractionReportUseCase).execute(anyInt(),anyInt());
+
+    }
+
+    @Test
+    void when_RequestListInfractionsWithoutLimit_expect_statusOk() throws Exception {
+        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
+
+        mockMvc.perform(get("/v1/infraction-report/pendings/{ispb}",1)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].infractionReportId").exists())
+            .andExpect(jsonPath("$.[0].reportedBy"  ).exists())
+            .andExpect(jsonPath("$.[0].situation"   ).exists())
+            .andExpect(jsonPath("$.[0].ispbDebited" ).exists())
+            .andExpect(jsonPath("$.[0].ispbCredited").exists())
+            .andExpect(jsonPath("$.[0].dateCreate"  ).exists())
+            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
+
+        verify(listPendingInfractionReportUseCase).execute(anyInt(),argThat(limitDefault -> limitDefault == 10));
 
     }
 

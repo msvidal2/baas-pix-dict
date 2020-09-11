@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients(basePackages = "com.picpay.banking.jdpi.clients")
+@EnableFeignClients(basePackages = {"com.picpay.banking.jdpi.clients", "com.picpay.banking.pix.original.clients"} )
 @SpringBootApplication(scanBasePackages = "com.picpay.banking")
 public class DictApiApplication {
 
