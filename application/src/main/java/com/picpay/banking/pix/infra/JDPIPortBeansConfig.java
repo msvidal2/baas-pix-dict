@@ -40,8 +40,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
+//@Configuration
+//@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
 public class JDPIPortBeansConfig {
 
     @Bean

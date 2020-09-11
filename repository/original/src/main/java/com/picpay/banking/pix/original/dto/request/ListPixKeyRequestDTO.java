@@ -20,7 +20,7 @@ public class ListPixKeyRequestDTO {
     public static ListPixKeyRequestDTO from(final PixKey pixKey) {
         var pixKeyRequestDTO = PixKeyRequestDTO.builder()
             .key(pixKey.getKey())
-            .responsibleKey(String.valueOf(pixKey.getCpfCnpj()))
+            .responsibleKey(String.valueOf(pixKey.getTaxId()))
             .build();
 
         return ListPixKeyRequestDTO.builder()

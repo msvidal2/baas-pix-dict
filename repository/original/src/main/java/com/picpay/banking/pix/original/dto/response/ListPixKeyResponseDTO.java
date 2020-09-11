@@ -27,7 +27,7 @@ public class ListPixKeyResponseDTO {
             .name(listPixKeyDTO.getName())
             .fantasyName(listPixKeyDTO.getName()) /** Revisar os de--para **/
             .accountNumber(listPixKeyDTO.getAccount())
-            .cpfCnpj(Long.valueOf(listPixKeyDTO.getTaxId()))
+            .taxId(listPixKeyDTO.getTaxId())
             .accountOpeningDate(listPixKeyDTO.getAccountOpeningDate())
             .startPossessionAt(listPixKeyDTO.getCreationDate()).build();
     }
