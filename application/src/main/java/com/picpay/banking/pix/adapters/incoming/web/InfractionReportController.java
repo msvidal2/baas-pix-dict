@@ -1,9 +1,12 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.CancelResponseInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import io.swagger.annotations.Api;
@@ -34,6 +37,7 @@ public class InfractionReportController {
 
     private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
     private CreateInfractionReportUseCase infractionReportUseCase;
+    private CancelInfractionReportUseCase cancelInfractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
@@ -43,12 +47,19 @@ public class InfractionReportController {
         return InfractionReportCreatedDTO.from(infractionReport);
     }
 
-
     @ApiOperation(value = "List pendings infractions")
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
        return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Cancel Infraction Report")
+    @PostMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public CancelResponseInfractionDTO cancel(@Valid @RequestBody CancelInfractionDTO dto) {
+        var infractionReport = this.cancelInfractionReportUseCase.execute(dto.getInfractionReportId().toString(), dto.getIspb(), dto.getRequestIdentifier().toString());
+        return CancelResponseInfractionDTO.from(infractionReport);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.picpay.banking.jdpi.ports;
 
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
+import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
+import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
@@ -55,7 +57,8 @@ class InfractionReportPortImplTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
 
-        PendingInfractionReportDTO infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
+        var infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(
+            LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
             .idRelatoInfracao(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCreditado(1).ispbDebitado(2).reportadoPor(ReportedBy.CREDITED_PARTICIPANT.getValue())
             .stRelatoInfracao(InfractionReportSituation.OPEN.getValue())
@@ -105,13 +108,29 @@ class InfractionReportPortImplTest {
     @Test
     void when_listInfractions_expect_ok() {
 
-        when(client.listPendings(anyInt(),anyInt()))
+        when(client.listPendings(anyInt(), anyInt()))
             .thenReturn(listPendingInfractionReportDTO);
 
-        List<InfractionReport> pagination = this.port.listPendingInfractionReport(1, 1);
-        assertThat(pagination).isNotEmpty();
+        var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
+        assertThat(listPendingInfractionReport).isNotEmpty();
 
-        verify(client).listPendings(anyInt(),anyInt());
+        verify(client).listPendings(anyInt(), anyInt());
+    }
+
+    @Test
+    void when_cancelInfraction_expect_ok() {
+
+        when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
+            CancelResponseInfractionDTO.builder()
+                .stRelatoInfracao(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
+                .build()
+       );
+
+        var response = this.port.cancel("1", 1, "1");
+        assertThat(response.getEndToEndId()).isNotEmpty();
+        assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
+
+        verify(client).cancel(any(CancelInfractionDTO.class), anyString());
     }
 
 }
