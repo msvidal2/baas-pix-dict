@@ -24,8 +24,8 @@ public class FindInfractionReportDTO {
     private InfractionReportSituation situation;
     private int ispbDebited;
     private int ispbCredited;
-    private LocalDateTime dateCreate;
-    private LocalDateTime dateLastUpdate;
+    private String dateCreate;
+    private String dateLastUpdate;
     private InfractionAnalyze infractionAnalyze;
 
     public static FindInfractionReportDTO from(InfractionReport infractionReport) {
@@ -38,8 +38,8 @@ public class FindInfractionReportDTO {
             .situation(infractionReport.getSituation())
             .ispbDebited(infractionReport.getIspbDebited())
             .ispbCredited(infractionReport.getIspbCredited())
-            .dateCreate(infractionReport.getDateCreate())
-            .dateLastUpdate(infractionReport.getDateLastUpdate())
+            .dateCreate(infractionReport.getDateCreate().toString())
+            .dateLastUpdate(infractionReport.getDateLastUpdate().toString())
             .infractionAnalyze(infractionReport.getAnalyze())
             .build();
     }
