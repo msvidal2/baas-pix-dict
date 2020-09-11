@@ -11,4 +11,6 @@ public interface InfractionReportPort {
 
     List<InfractionReport> listPendingInfractionReport(Integer ispb, Integer limit);
 
+    InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
+
 }

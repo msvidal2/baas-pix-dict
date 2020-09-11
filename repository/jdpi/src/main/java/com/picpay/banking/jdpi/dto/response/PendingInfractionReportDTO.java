@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
@@ -23,31 +24,53 @@ public class PendingInfractionReportDTO {
 
 
     private String endToEndId;
-    private String tpInfracao;
-    private String detalhes;
-    private String idRelatoInfracao;
-    private Integer reportadoPor;
-    private Integer stRelatoInfracao;
-    private Integer ispbDebitado;
-    private Integer ispbCreditado;
-    private LocalDateTime dtHrCriacaoRelatoInfracao;
-    private LocalDateTime dtHrUltModificacao;
-    private Integer resultadoAnalise;
-    private String detalhesAnalise;
+
+    @JsonProperty("tpInfracao")
+    private String type;
+
+    @JsonProperty("detalhes")
+    private String details;
+
+    @JsonProperty("idRelatoInfracao")
+    private String infractionReportId;
+
+    @JsonProperty("reportadoPor")
+    private Integer reportedBy;
+
+    @JsonProperty("stRelatoInfracao")
+    private Integer situation;
+
+    @JsonProperty("ispbDebitado")
+    private Integer ispbDebited;
+
+    @JsonProperty("ispbCreditado")
+    private Integer ispbCredited;
+
+    @JsonProperty("dtHrCriacaoRelatoInfracao")
+    private LocalDateTime dateCreate;
+
+    @JsonProperty("dtHrUltModificacao")
+    private LocalDateTime dateLastUpdate;
+
+    @JsonProperty("resultadoAnalise")
+    private Integer analyzeResult;
+
+    @JsonProperty("detalhesAnalise")
+    private String analyzeDetails;
 
     public InfractionReport toInfraction() {
         return InfractionReport.builder()
             .endToEndId(endToEndId)
-            .type(InfractionType.resolve(tpInfracao))
-            .details(detalhes)
-            .infractionReportId(idRelatoInfracao)
-            .reportedBy(ReportedBy.resolve(reportadoPor))
-            .situation(InfractionReportSituation.resolve(stRelatoInfracao))
-            .ispbDebited(ispbDebitado)
-            .ispbCredited(ispbCreditado)
-            .dateCreate(dtHrCriacaoRelatoInfracao)
-            .dateLastUpdate(dtHrUltModificacao)
-            .analyze(new InfractionAnalyze(InfractionAnalyzeResult.resolve(resultadoAnalise), detalhesAnalise))
+            .type(InfractionType.resolve(type))
+            .details(details)
+            .infractionReportId(infractionReportId)
+            .reportedBy(ReportedBy.resolve(reportedBy))
+            .situation(InfractionReportSituation.resolve(situation))
+            .ispbDebited(ispbDebited)
+            .ispbCredited(ispbCredited)
+            .dateCreate(dateCreate)
+            .dateLastUpdate(dateLastUpdate)
+            .analyze(new InfractionAnalyze(InfractionAnalyzeResult.resolve(analyzeResult), analyzeDetails))
             .build();
     }
 

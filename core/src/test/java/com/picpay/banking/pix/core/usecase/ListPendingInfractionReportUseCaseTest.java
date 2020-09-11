@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.InfractionReportPort;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +38,7 @@ class ListPendingInfractionReportUseCaseTest {
     @BeforeEach
     void setup() {
 
-        InfractionReport infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
+        var infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .requestIdentifier("IDENTIFIER")
@@ -53,10 +54,15 @@ class ListPendingInfractionReportUseCaseTest {
     void when_listPendingInfractionsWithSuccess_expect_OkWithValidResult() {
         when(infractionReportPort.listPendingInfractionReport(anyInt(), anyInt())).thenReturn(this.listInfractionReport);
 
-        List<InfractionReport> list = this.listPendingInfractionReportUseCase.execute(1, 1);
-        Assertions.assertThat(list).isNotEmpty();
+        var list = this.listPendingInfractionReportUseCase.execute(1, 1);
+        assertThat(list).isNotEmpty();
 
         verify(infractionReportPort).listPendingInfractionReport(anyInt(), anyInt());
+    }
+
+   @Test
+    void when_trylistPendingInfractionsWithNullIspb_expect_throwsANullException() {
+        assertThrows(NullPointerException.class, () ->  this.listPendingInfractionReportUseCase.execute(null, 1));
     }
 
 

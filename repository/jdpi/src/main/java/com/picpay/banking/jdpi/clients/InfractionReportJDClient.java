@@ -1,6 +1,8 @@
 package com.picpay.banking.jdpi.clients;
 
+import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
+import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.fallbacks.InfractionReportJDClientFallbackFactory;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
@@ -28,5 +30,8 @@ public interface InfractionReportJDClient {
 
     @GetMapping("/v1/relato-infracao/listar")
     ListPendingInfractionReportDTO listPendings(@RequestParam("ispb") Integer ispb, @RequestParam("nrLimite") Integer nrLimite);
+
+    @PostMapping("/v1/relato-infracao/cancelar")
+    CancelResponseInfractionDTO cancel(@RequestBody CancelInfractionDTO cancelInfractionDTO, @RequestHeader("Chave-Idempotencia") String requestIdentifier);
 
 }

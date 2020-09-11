@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.InfractionReportPort;
+import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,11 @@ public class InfractionReportUseCaseBeansConfig {
     @Bean
     public ListPendingInfractionReportUseCase listPendingInfractionReportUseCase(InfractionReportPort infractionReportPort) {
         return new ListPendingInfractionReportUseCase(infractionReportPort);
+    }
+
+    @Bean
+    public CancelInfractionReportUseCase cancelInfractionReportUseCase(InfractionReportPort infractionReportPort) {
+        return new CancelInfractionReportUseCase(infractionReportPort);
     }
 
 }
