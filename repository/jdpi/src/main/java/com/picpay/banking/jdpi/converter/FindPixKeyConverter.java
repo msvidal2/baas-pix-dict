@@ -26,7 +26,7 @@ public class FindPixKeyConverter {
             .accountType((from.getTpConta() == null? null: AccountType.resolve(from.getTpConta())))
             .accountOpeningDate(from.getDtHrAberturaConta())
             .personType((from.getTpPessoa() == null? null: PersonType.resolve(from.getTpPessoa())))
-            .cpfCnpj(Long.valueOf(from.getCpfCnpj()).longValue())
+            .taxId(Long.valueOf(from.getCpfCnpj()).longValue())
             .name(from.getNome())
             .fantasyName(from.getNomeFantasia())
             .createdAt(from.getDtHrCriacaoChave())
