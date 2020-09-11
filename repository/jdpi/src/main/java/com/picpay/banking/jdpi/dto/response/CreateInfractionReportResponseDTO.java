@@ -21,10 +21,10 @@ public class CreateInfractionReportResponseDTO {
     private String infractionReportId;
 
     @JsonProperty("reportadoPor")
-    private ReportedBy reportedBy;
+    private int reportedBy;
 
     @JsonProperty("stRelatoInfracao")
-    private InfractionReportSituation situation;
+    private int situation;
 
     @JsonProperty("ispbDebitado")
     private int ispbDebited;
@@ -41,8 +41,8 @@ public class CreateInfractionReportResponseDTO {
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
             .infractionReportId(infractionReportId)
-            .reportedBy(reportedBy)
-            .situation(situation)
+            .reportedBy(ReportedBy.resolve(reportedBy))
+            .situation(InfractionReportSituation.resolve(situation))
             .ispbDebited(ispbDebited)
             .ispbCredited(ispbCredited)
             .dateCreate(dateCreate)
