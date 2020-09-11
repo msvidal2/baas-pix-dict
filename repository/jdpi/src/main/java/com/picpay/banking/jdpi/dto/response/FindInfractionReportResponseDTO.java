@@ -59,7 +59,7 @@ public class FindInfractionReportResponseDTO {
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
             .endToEndId(endToEndId)
-            .type(InfractionType.resolve(String.valueOf(type))) //FIXME:HENRIQUE passar para int
+            .type(InfractionType.resolve(type))
             .details(details)
             .infractionReportId(infractionReportId)
             .reportedBy(ReportedBy.resolve(reportedBy))

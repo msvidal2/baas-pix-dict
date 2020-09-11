@@ -21,9 +21,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PendingInfractionReportDTO {
 
-
     private String endToEndId;
-    private String tpInfracao;
+    private int tpInfracao;
     private String detalhes;
     private String idRelatoInfracao;
     private Integer reportadoPor;
