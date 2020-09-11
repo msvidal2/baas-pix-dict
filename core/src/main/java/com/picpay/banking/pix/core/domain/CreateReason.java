@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CreateReason {
-    CUSTOMER_REQUEST(0);
+
+    CUSTOMER_REQUEST(Reason.CLIENT_REQUEST.getValue());
 
     private Integer value;
 
