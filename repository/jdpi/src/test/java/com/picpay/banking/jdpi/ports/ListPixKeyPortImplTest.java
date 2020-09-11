@@ -53,7 +53,7 @@ class ListPixKeyPortImplTest {
             .accountNumber("1")
             .startPossessionAt(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
-            .taxId(1111111111111l)
+            .taxId("1111111111111")
             .name("Joao da Silva")
             .fantasyName("Nome Fantasia")
             .endToEndId("endToEndId").build();
@@ -75,7 +75,7 @@ class ListPixKeyPortImplTest {
             .accountNumber("1")
             .startPossessionAt(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
-            .taxId(1111111111111l)
+            .taxId("1111111111111")
             .name("Joao da Silva")
             .fantasyName("Nome Fantasia")
             .endToEndId("endToEndId").build();
@@ -90,7 +90,7 @@ class ListPixKeyPortImplTest {
             .accountNumber("1")
             .startPossessionAt(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
-            .taxId(1111111111111l)
+            .taxId("1111111111111")
             .name("Joao da Silva")
             .fantasyName("Nome Fantasia")
             .endToEndId("endToEndId").build();
