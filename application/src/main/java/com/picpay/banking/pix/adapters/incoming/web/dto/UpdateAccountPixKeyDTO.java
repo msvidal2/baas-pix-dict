@@ -5,14 +5,17 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Builder
 @Setter
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateAccountPixKeyDTO {
 
     @ApiModelProperty(value = "Key type of key of AdressingKey", dataType="java.lang.String", required = true)

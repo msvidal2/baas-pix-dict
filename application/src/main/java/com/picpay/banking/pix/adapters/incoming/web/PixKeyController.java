@@ -8,15 +8,13 @@ import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.*;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
@@ -48,7 +46,7 @@ public class PixKeyController {
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_LIST)
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     public Collection<ListKeyResponseWebDTO> list(
             @RequestHeader String requestIdentifier, @Valid ListPixKeyRequestWebDTO requestDTO) {
 
@@ -66,7 +64,7 @@ public class PixKeyController {
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_FIND)
     @GetMapping("/{key}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     public PixKey find(@PathVariable String key, @RequestHeader String userId) {
         var pixKey = PixKey.builder()
                 .key(key)
