@@ -2,7 +2,6 @@ package com.picpay.banking.original.ports;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
-import com.picpay.banking.pix.original.converter.ListPixKeyConverter;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyDTO;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
@@ -32,17 +31,12 @@ class ListPixKeyPortImplTest {
     @Mock
     private SearchPixKeyClient searchPixKeyClient;
 
-    @Mock
-    private ListPixKeyConverter converter;
-
     @Test
     void testListAccount() {
 
         ResponseWrapperDTO<ListPixKeyResponseDTO> listPixKeyResponseDTO = getListPixKeyResponseDTO();
 
         when(searchPixKeyClient.listPixKey(any())).thenReturn(listPixKeyResponseDTO);
-
-        when(converter.convert(any())).thenReturn(getListPixKey());
 
         var pixKey = PixKey.builder()
             .type(KeyType.EMAIL)
