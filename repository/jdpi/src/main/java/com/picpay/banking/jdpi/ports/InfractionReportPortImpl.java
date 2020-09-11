@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InfractionReportPortImpl implements InfractionReportPort {
 
-    InfractionReportJDClient infractionJDClient;
+    private final InfractionReportJDClient infractionJDClient;
 
     @Override
-    public InfractionReport create(InfractionReport infractionReport, String requestIdentifier) {
+    public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
 
         return infractionJDClient.create(CreateInfractionReportRequestDTO.from(infractionReport), requestIdentifier)
             .toInfractionReport();
@@ -30,6 +30,11 @@ public class InfractionReportPortImpl implements InfractionReportPort {
         ListPendingInfractionReportDTO infractionReportDTO = this.infractionJDClient.listPendings(ispb, limit);
         return infractionReportDTO.getReporteInfracao().stream().map(PendingInfractionReportDTO::toInfraction)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public InfractionReport find(final String infractionReportId) {
+        return infractionJDClient.find(infractionReportId).toInfractionReport();
     }
 
 }

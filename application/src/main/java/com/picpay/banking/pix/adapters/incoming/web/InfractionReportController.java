@@ -1,10 +1,12 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,22 +35,30 @@ import static org.springframework.http.HttpStatus.OK;
 public class InfractionReportController {
 
     private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
-    private CreateInfractionReportUseCase infractionReportUseCase;
+    private CreateInfractionReportUseCase createInfractionReportUseCase;
+    private FindInfractionReportUseCase findInfractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final InfractionReport infractionReport = infractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+        final InfractionReport infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
         return InfractionReportCreatedDTO.from(infractionReport);
     }
-
 
     @ApiOperation(value = "List pendings infractions")
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
        return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "find an infraction report")
+    @GetMapping(value = "/find/{infractionReportId}")
+    @ResponseStatus(OK)
+    public FindInfractionReportDTO find(@PathVariable String infractionReportId) {
+        final InfractionReport infractionReport = findInfractionReportUseCase.execute(infractionReportId);
+        return FindInfractionReportDTO.from(infractionReport);
     }
 
 }

@@ -3,6 +3,7 @@ package com.picpay.banking.jdpi.fallbacks;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
+import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +22,11 @@ public class InfractionReportJDClientFallback extends JDClientFallback implement
 
     @Override
     public ListPendingInfractionReportDTO listPendings(final Integer ispb, final Integer nrLimite) {
+        throw resolveException();
+    }
+
+    @Override
+    public FindInfractionReportResponseDTO find(final String infractionReportId) {
         throw resolveException();
     }
 
