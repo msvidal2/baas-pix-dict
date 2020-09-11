@@ -201,8 +201,6 @@ class InfractionReportControllerTest {
             .infractionType(InfractionType.FRAUD)
             .build();
 
-        final InfractionReportCreatedDTO infractionReportCreatedDTO = InfractionReportCreatedDTO.from(infractionReport);
-
         mockMvc.perform(post("/v1/infraction-report")
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
@@ -215,6 +213,9 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
+
+        verify(createInfractionReportUseCase).execute(any(), anyString());
+
     }
 
     @Test
@@ -276,6 +277,8 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")))
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
+
+        verify(findInfractionReportUseCase).execute(anyString());
 
     }
 
