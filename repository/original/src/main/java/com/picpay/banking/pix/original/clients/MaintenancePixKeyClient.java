@@ -10,6 +10,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "maintenancePixKeyClient",
         url = "${pix.services.original.url}",
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MaintenancePixKeyClient {
 
     @PostMapping("/v1/access-keys")
-    ResponseWrapperDTO<AccessKeyCreateDTO> create(@RequestBody CreateAccessKeyDTO createAccessKeyDTO);
+    ResponseWrapperDTO<AccessKeyCreateDTO> create(@RequestHeader("x-transaction-id") String requestIdentifier,
+            @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
 
     @PutMapping("/v1/access-keys")
     ResponseWrapperDTO<AccessKeyAccountUpdateDTO> update(@RequestBody UpdateAccessKeyAccountDTO updateAccessKeyAccountDTO);
