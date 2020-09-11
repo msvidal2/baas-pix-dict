@@ -1,7 +1,9 @@
 package com.picpay.banking.jdpi.fallbacks;
 
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
+import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
+import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
@@ -27,6 +29,11 @@ public class InfractionReportJDClientFallback extends JDClientFallback implement
 
     @Override
     public FindInfractionReportResponseDTO find(final String infractionReportId) {
+        throw resolveException();
+    }
+
+    @Override
+    public CancelResponseInfractionDTO cancel(final CancelInfractionDTO cancelInfractionDTO, final String requestIdentifier) {
         throw resolveException();
     }
 

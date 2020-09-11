@@ -13,4 +13,6 @@ public interface InfractionReportPort {
 
     InfractionReport find(String infractionReportId);
 
+    InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
+
 }

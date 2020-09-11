@@ -1,14 +1,15 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
+import static com.picpay.banking.pix.core.domain.InfractionReportSituation.CANCELED;
+import static com.picpay.banking.pix.core.domain.InfractionReportSituation.OPEN;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -55,6 +58,9 @@ class InfractionReportControllerTest {
     private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
 
     @Mock
+    private CancelInfractionReportUseCase cancelInfractionReportUseCase;
+
+    @Mock
     private FindInfractionReportUseCase findInfractionReportUseCase;
 
     private InfractionReport infractionReport;
@@ -76,7 +82,7 @@ class InfractionReportControllerTest {
             .details("situacao irregular da cartao")
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
-            .situation(InfractionReportSituation.OPEN)
+            .situation(OPEN)
             .ispbDebited(1234)
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
@@ -87,7 +93,8 @@ class InfractionReportControllerTest {
         infractionReport = InfractionReport.builder()
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
-            .situation(InfractionReportSituation.OPEN)
+            .endToEndId("E9999901012341234123412345678900")
+            .situation(OPEN)
             .ispbDebited(1234)
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
@@ -279,6 +286,41 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
         verify(findInfractionReportUseCase).execute(anyString());
+
+    }
+
+    @Test
+    void when_RequestCancelInfractionsWithInvalidRequest_expect_statusOk() throws Exception {
+        var infractionCanceled = infractionReport.toBuilder().situation(CANCELED).build();
+
+        when(cancelInfractionReportUseCase.execute(anyString(), anyInt(),anyString())).thenReturn(infractionCanceled);
+
+        var request = CancelInfractionDTO.builder().ispb(1).infractionReportId("1").requestIdentifier("1").build();
+
+        mockMvc.perform(post("/v1/infraction-report/cancel")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endToEndId").exists())
+            .andExpect(jsonPath("$.infractionReportId").exists())
+            .andExpect(jsonPath("$.situation",equalTo(CANCELED.name())));
+
+        verify(cancelInfractionReportUseCase).execute(anyString(), anyInt(),anyString());
+
+    }
+
+    @Test
+    void when_RequestCancelInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
+        var request = CancelInfractionDTO.builder().build();
+
+        mockMvc.perform(post("/v1/infraction-report/cancel")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code",equalTo(400)))
+            .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
 

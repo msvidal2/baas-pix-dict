@@ -1,6 +1,8 @@
 package com.picpay.banking.jdpi.ports;
 
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
+import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
+import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
@@ -58,18 +60,19 @@ class InfractionReportPortImplTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
 
-        PendingInfractionReportDTO infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
-            .idRelatoInfracao(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCreditado(1).ispbDebitado(2).reportadoPor(ReportedBy.CREDITED_PARTICIPANT.getValue())
-            .stRelatoInfracao(InfractionReportSituation.OPEN.getValue())
-            .tpInfracao(InfractionType.FRAUD.getValue())
-            .detalhesAnalise("details")
-            .resultadoAnalise(InfractionAnalyzeResult.ACCEPTED.getValue())
+        var infractionReport = PendingInfractionReportDTO.builder().details("details").dateCreate(
+            LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
+            .infractionReportId(randomUUID().toString())
+            .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).reportedBy(ReportedBy.CREDITED_PARTICIPANT.getValue())
+            .situation(InfractionReportSituation.OPEN.getValue())
+            .type(InfractionType.FRAUD.getValue())
+            .analyzeDetails("details")
+            .analyzeResult(InfractionAnalyzeResult.ACCEPTED.getValue())
             .build();
 
-        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().dtHrJdPi("10/04/2020 22:22:22")
-            .temMaisElementos(true)
-            .reporteInfracao(List.of(infractionReport))
+        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().date("10/04/2020 22:22:22")
+            .hasNext(true)
+            .infractionReports(List.of(infractionReport))
             .build();
 
         findResponseDTO = FindInfractionReportResponseDTO.builder()
@@ -125,10 +128,26 @@ class InfractionReportPortImplTest {
         when(client.listPendings(anyInt(), anyInt()))
             .thenReturn(listPendingInfractionReportDTO);
 
-        List<InfractionReport> pagination = this.port.listPendingInfractionReport(1, 1);
-        assertThat(pagination).isNotEmpty();
+        var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
+        assertThat(listPendingInfractionReport).isNotEmpty();
 
-        verify(client).listPendings(anyInt(),anyInt());
+        verify(client).listPendings(anyInt(), anyInt());
+    }
+
+    @Test
+    void when_cancelInfraction_expect_ok() {
+
+        when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
+            CancelResponseInfractionDTO.builder()
+                .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
+                .build()
+       );
+
+        var response = this.port.cancel("1", 1, "1");
+        assertThat(response.getEndToEndId()).isNotEmpty();
+        assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
+
+        verify(client).cancel(any(CancelInfractionDTO.class), anyString());
     }
 
     @Test
