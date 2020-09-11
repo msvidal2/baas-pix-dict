@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.ports;
 
 
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface InfractionReportPort {
     List<InfractionReport> listPendingInfractionReport(Integer ispb, Integer limit);
 
     InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
+
+    InfractionReport analyze(String infractionReportId, Integer ispb, InfractionAnalyze analyze, String requestIdentifier);
 
 }

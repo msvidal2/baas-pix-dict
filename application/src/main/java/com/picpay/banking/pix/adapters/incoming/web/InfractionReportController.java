@@ -1,11 +1,13 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelResponseInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.usecase.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
@@ -35,9 +37,10 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 public class InfractionReportController {
 
-    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
-    private CreateInfractionReportUseCase infractionReportUseCase;
-    private CancelInfractionReportUseCase cancelInfractionReportUseCase;
+    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
+    private final CreateInfractionReportUseCase infractionReportUseCase;
+    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
+    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
@@ -55,10 +58,18 @@ public class InfractionReportController {
     }
 
     @ApiOperation(value = "Cancel Infraction Report")
-    @PostMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{infractionReportId}/cancel", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public CancelResponseInfractionDTO cancel(@Valid @RequestBody CancelInfractionDTO dto) {
-        var infractionReport = this.cancelInfractionReportUseCase.execute(dto.getInfractionReportId().toString(), dto.getIspb(), dto.getRequestIdentifier().toString());
+    public CancelResponseInfractionDTO cancel(@PathVariable("infractionReportId") String infractionReportId,@Valid @RequestBody CancelInfractionDTO dto) {
+        var infractionReport = this.cancelInfractionReportUseCase.execute(infractionReportId, dto.getIspb(), dto.getRequestIdentifier());
+        return CancelResponseInfractionDTO.from(infractionReport);
+    }
+
+    @ApiOperation(value = "Analyze Infraction Report")
+    @PostMapping(value = "/{infractionReportId}/analyze", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public CancelResponseInfractionDTO analyze(@PathVariable("infractionReportId") String infractionReportId, @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
+        var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze() , dto.getRequestIdentifier());
         return CancelResponseInfractionDTO.from(infractionReport);
     }
 

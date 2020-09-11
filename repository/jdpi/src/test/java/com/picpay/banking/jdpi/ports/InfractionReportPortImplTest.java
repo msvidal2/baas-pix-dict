@@ -1,11 +1,14 @@
 package com.picpay.banking.jdpi.ports;
 
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
+import com.picpay.banking.jdpi.dto.request.AnalyzeInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
+import com.picpay.banking.jdpi.dto.response.AnalyzeResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
@@ -123,6 +126,7 @@ class InfractionReportPortImplTest {
         when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
             CancelResponseInfractionDTO.builder()
                 .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
+                .infractionReportId("1")
                 .build()
        );
 
@@ -131,6 +135,29 @@ class InfractionReportPortImplTest {
         assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
 
         verify(client).cancel(any(CancelInfractionDTO.class), anyString());
+    }
+
+    @Test
+    void when_analyzeInfraction_expect_ok() {
+
+        var analyzeResponseInfractionDTO = AnalyzeResponseInfractionDTO.builder()
+            .situation(InfractionReportSituation.ANALYZED.getValue()).endToEndId("123123")
+            .infractionReportId("1")
+            .build();
+
+        when(client.analyze(any(AnalyzeInfractionReportDTO.class), anyString())).thenReturn(
+            analyzeResponseInfractionDTO
+                                                                                           );
+
+        var infractionAnalyze = InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build();
+
+        var response = this.port.analyze("1", 1,
+            infractionAnalyze,"1");
+
+        assertThat(response.getEndToEndId()).isNotEmpty();
+        assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
+
+        verify(client).analyze(any(AnalyzeInfractionReportDTO.class), anyString());
     }
 
 }
