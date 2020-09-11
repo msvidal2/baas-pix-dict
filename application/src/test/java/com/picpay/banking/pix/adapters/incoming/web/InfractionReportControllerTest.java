@@ -117,13 +117,13 @@ class InfractionReportControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.infractionReportId", equalTo(infractionReportCreatedDTO.getInfractionReportId())))
-            .andExpect(jsonPath("$.reportedBy", equalTo(infractionReportCreatedDTO.getReportedBy().toString())))
-            .andExpect(jsonPath("$.situation", equalTo(infractionReportCreatedDTO.getSituation().toString())))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(infractionReportCreatedDTO.getIspbDebited())))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(infractionReportCreatedDTO.getIspbCredited())))
-            .andExpect(jsonPath("$.dateCreate", equalTo(infractionReportCreatedDTO.getDateCreate())))
-            .andExpect(jsonPath("$.dateLastUpdate", equalTo(infractionReportCreatedDTO.getDateLastUpdate())));
+            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
     }
 
     @Test
