@@ -12,7 +12,7 @@ public class MaintenancePixKeyClientFallback extends ClientFallback implements M
     }
 
     @Override
-    public ResponseWrapperDTO<AccessKeyCreateDTO> create(CreateAccessKeyDTO createAccessKeyDTO) {
+    public ResponseWrapperDTO<AccessKeyCreateDTO> create(final String requestIdentifier, final CreateAccessKeyDTO createAccessKeyDTO) {
         return null;
     }
 
