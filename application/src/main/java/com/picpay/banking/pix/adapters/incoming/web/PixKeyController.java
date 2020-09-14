@@ -77,18 +77,14 @@ public class PixKeyController {
     @DeleteMapping("{key}")
     @ResponseStatus(NO_CONTENT)
     public void remove(@PathVariable String key, @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
-        var pixKey = PixKey.builder()
-                .key(key)
-                .ispb(dto.getIspb())
-                .type(dto.getType())
-                .build();
+        var pixKey = dto.toDomain(key);
 
         removePixKeyUseCase.remove(pixKey, dto.getReason(), dto.getRequestIdentifier());
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
-    public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyDTO dto) {
+    public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
         updateAccountUseCase.update(pixKey, dto.getReason(), dto.getRequestIdentifier());

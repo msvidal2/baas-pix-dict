@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+import com.picpay.banking.pix.original.ports.UpdateAccountPixKeyPortImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,15 +33,13 @@ class UpdateAccountPixKeyPortImplTest {
 
     @Test
     void when_updateAccountSuccessfully_expect_equalResults() {
-        var key = randomUUID().toString();
-
         var responseDTO = new ResponseWrapperDTO<>(AccessKeyAccountUpdateDTO.builder()
                 .creationDate(LocalDateTime.now())
                 .keyOwnershipDate(LocalDateTime.now())
                 .build());
 
         var pixKey = PixKey.builder()
-                .key(key)
+                .key(randomUUID().toString())
                 .ispb(4324323)
                 .branchNumber("0001")
                 .accountType(AccountType.SALARY)
@@ -47,7 +47,7 @@ class UpdateAccountPixKeyPortImplTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(jdClient.update(any())).thenReturn(responseDTO);
+        when(jdClient.update(anyString(), any())).thenReturn(responseDTO);
 
         assertDoesNotThrow(() -> {
             var response = port.updateAccount(pixKey, UpdateReason.CLIENT_REQUEST, randomUUID().toString());

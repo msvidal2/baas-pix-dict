@@ -1,6 +1,8 @@
 package com.picpay.banking.jdpi.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.RemoveReason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,5 +19,13 @@ public class RemovePixKeyRequestDTO {
     private long ispb;
     @JsonProperty("motivo")
     private int reason;
+
+    public static RemovePixKeyRequestDTO from(PixKey pixKey, RemoveReason reason) {
+        return RemovePixKeyRequestDTO.builder()
+                .key(pixKey.getKey())
+                .reason(reason.getValue())
+                .ispb(pixKey.getIspb())
+                .build();
+    }
 
 }

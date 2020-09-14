@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateAccountPixKeyDTO {
+public class UpdateAccountPixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "Key type of key of AdressingKey", dataType="java.lang.String", required = true)
     @NonNull

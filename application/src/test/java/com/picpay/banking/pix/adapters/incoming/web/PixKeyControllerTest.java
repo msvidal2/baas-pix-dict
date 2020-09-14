@@ -1,8 +1,10 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.RemovePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.usecase.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.RemovePixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.UpdateAccountPixKeyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +42,9 @@ public class PixKeyControllerTest {
 
     @Mock
     private FindPixKeyUseCase findPixKeyUseCase;
+
+    @Mock
+    private RemovePixKeyUseCase removePixKeyUseCase;
 
     private PixKey pixKey;
 
@@ -73,7 +80,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(put("/v1/keys/joao@picpay")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyDTO.builder()
+                .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyRequestWebDTO.builder()
                         .ispb(1)
                         .accountNumber("15242")
                         .accountOpeningDate(LocalDateTime.now())
@@ -90,6 +97,21 @@ public class PixKeyControllerTest {
                 .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
                 .andExpect(jsonPath("$.accountType", equalTo("SALARY")))
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
+    }
+
+    @Test
+    public void when_removePixKeySuccessfully_expect_statusNoContent() throws Exception {
+        doNothing().when(removePixKeyUseCase).remove(any(), any(), anyString());
+
+        mockMvc.perform(delete("/v1/keys/joao@picpay")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(RemovePixKeyRequestWebDTO.builder()
+                        .ispb(1)
+                        .reason(RemoveReason.CLIENT_REQUEST)
+                        .type(KeyType.EMAIL)
+                        .requestIdentifier("abc")
+                        .build())))
+                .andExpect(status().isNoContent());
     }
 
 }
