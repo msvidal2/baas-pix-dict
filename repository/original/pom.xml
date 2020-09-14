@@ -11,22 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.picpay.banking.pix.dict</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>original</artifactId>
 
     <dependencies>
         <dependency>
@@ -44,5 +29,4 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
-
 </project>
