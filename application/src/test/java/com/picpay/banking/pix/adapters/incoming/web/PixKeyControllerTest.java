@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -49,7 +50,7 @@ public class PixKeyControllerTest {
 
         pixKey = PixKey.builder()
                 .type(KeyType.EMAIL)
-                .key("joao@ppicpay.com")
+                .key("joao@picpay.com")
                 .ispb(1)
                 .nameIspb("Empresa Picpay")
                 .branchNumber("1")
@@ -66,26 +67,29 @@ public class PixKeyControllerTest {
     }
 
     @Test
-    public void when_updateAccountSuccessfully_expect_statusOk() {
+    public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
         when(updateAccountUseCase.update(any(), any(), anyString())).thenReturn(pixKey);
         when(findPixKeyUseCase.findPixKeyUseCase(any(), anyString())).thenReturn(pixKey);
 
-        assertDoesNotThrow(() -> {
-            mockMvc.perform(put("/v1/keys/joao@ppicpay.com")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyDTO.builder()
-                            .ispb(1)
-                            .accountNumber("15242")
-                            .accountOpeningDate(LocalDateTime.now())
-                            .accountType(AccountType.SALARY)
-                            .branchNumber("4123")
-                            .reason(UpdateReason.CLIENT_REQUEST)
-                            .type(KeyType.EMAIL)
-                            .requestIdentifier("abc")
-                            .userId("123")
-                            .build())))
-                    .andExpect(status().isOk());
-        });
+        mockMvc.perform(put("/v1/keys/joao@picpay")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyDTO.builder()
+                        .ispb(1)
+                        .accountNumber("15242")
+                        .accountOpeningDate(LocalDateTime.now())
+                        .accountType(AccountType.SALARY)
+                        .branchNumber("4123")
+                        .reason(UpdateReason.CLIENT_REQUEST)
+                        .type(KeyType.EMAIL)
+                        .requestIdentifier("abc")
+                        .userId("123")
+                        .build())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.key", equalTo("joao@picpay.com")))
+                .andExpect(jsonPath("$.ispb", equalTo(1)))
+                .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
+                .andExpect(jsonPath("$.accountType", equalTo("SALARY")))
+                .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
 }
