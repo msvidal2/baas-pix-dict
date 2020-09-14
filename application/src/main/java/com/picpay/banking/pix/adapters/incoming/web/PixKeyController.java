@@ -51,6 +51,7 @@ public class PixKeyController {
             @RequestHeader String requestIdentifier, @Valid ListPixKeyRequestWebDTO requestDTO) {
 
         var pixKey = PixKey.builder()
+            .key(requestDTO.getKey())
             .taxId(requestDTO.getCpfCnpj())
             .personType(requestDTO.getPersonType())
             .accountNumber(requestDTO.getAccountNumber())
