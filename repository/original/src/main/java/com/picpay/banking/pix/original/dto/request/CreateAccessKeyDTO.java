@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Builder
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 public class CreateAccessKeyDTO {
 
     private String accountNumber;
-    private LocalDateTime accountOpeningDate;
+    private String accountOpeningDate;
     private AccountTypeOriginal accountType;
     private String branch;
     private String businessPerson;
@@ -33,9 +34,12 @@ public class CreateAccessKeyDTO {
     private PersonTypeOriginal typePerson;
 
     public static CreateAccessKeyDTO fromPixKey(final PixKey pixKey, final CreateReason reason) {
+
+        final var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
         return CreateAccessKeyDTO.builder()
                 .accountNumber(pixKey.getAccountNumber())
-                .accountOpeningDate(pixKey.getAccountOpeningDate())
+                .accountOpeningDate(dateTimeFormatter.format(pixKey.getAccountOpeningDate()))
                 .accountType(AccountTypeOriginal.resolveFromDomain(pixKey.getAccountType()))
                 .branch(pixKey.getBranchNumber())
                 .businessPerson(pixKey.getFantasyName())
@@ -43,7 +47,7 @@ public class CreateAccessKeyDTO {
                 .keyType(KeyTypeOriginal.resolveFromDomain(pixKey.getType()))
                 .name(pixKey.getName())
                 .reason(ReasonOriginal.resolve(reason.getValue()))
-//                .status("ATIVO") // TODO: analisar o caso
+                .status("ATIVO")
                 .taxId(pixKey.getTaxId())
                 .typePerson(PersonTypeOriginal.resolveFromDomain(pixKey.getPersonType()))
                 .build();
