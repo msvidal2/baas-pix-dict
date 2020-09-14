@@ -2,6 +2,7 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.*;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
 import com.picpay.banking.pix.original.interceptors.FeignClientInterceptor;
 import com.picpay.banking.pix.original.ports.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -68,8 +69,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public ListPixKeyPort listPixKeyPort() {
-        return new ListPixKeyPortImpl();
+    public ListPixKeyPort listPixKeyPort(SearchPixKeyClient searchPixKeyClient) {
+        return new ListPixKeyPortImpl(searchPixKeyClient);
     }
 
     @Bean

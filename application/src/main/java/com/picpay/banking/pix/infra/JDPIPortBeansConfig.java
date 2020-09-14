@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
+//@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
 public class JDPIPortBeansConfig {
 
     @Bean
