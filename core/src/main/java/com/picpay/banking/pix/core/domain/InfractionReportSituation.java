@@ -12,11 +12,11 @@ public enum InfractionReportSituation {
     CANCELED (2),
     ANALYZED (3);
 
-    private int value;
+    private Integer value;
 
-    public static InfractionReportSituation resolve(int value) {
+    public static InfractionReportSituation resolve(Integer value) {
         for(InfractionReportSituation infractionReportSituation : values()) {
-            if (infractionReportSituation.value == value) {
+            if (infractionReportSituation.value.equals(value)) {
                 return infractionReportSituation;
             }
         }

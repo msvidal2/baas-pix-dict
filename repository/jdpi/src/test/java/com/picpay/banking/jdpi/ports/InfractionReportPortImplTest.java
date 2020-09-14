@@ -7,8 +7,8 @@ import com.picpay.banking.jdpi.dto.response.AnalyzeResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
-import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
-import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
+import com.picpay.banking.jdpi.dto.response.ListInfractionReportDTO;
+import com.picpay.banking.jdpi.dto.response.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
@@ -49,7 +49,7 @@ class InfractionReportPortImplTest {
 
     private FindInfractionReportResponseDTO findResponseDTO;
 
-    private ListPendingInfractionReportDTO listPendingInfractionReportDTO;
+    private ListInfractionReportDTO listInfractionReportDTO;
 
     @BeforeEach
     void setup() {
@@ -63,7 +63,7 @@ class InfractionReportPortImplTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
 
-        var infractionReport = PendingInfractionReportDTO.builder().details("details").dateCreate(
+        var infractionReport = InfractionReportDTO.builder().details("details").dateCreate(
             LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).reportedBy(ReportedBy.CREDITED_PARTICIPANT.getValue())
@@ -73,7 +73,7 @@ class InfractionReportPortImplTest {
             .analyzeResult(InfractionAnalyzeResult.ACCEPTED.getValue())
             .build();
 
-        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().date("10/04/2020 22:22:22")
+        this.listInfractionReportDTO = ListInfractionReportDTO.builder().date("10/04/2020 22:22:22")
             .hasNext(true)
             .infractionReports(List.of(infractionReport))
             .build();
@@ -129,7 +129,7 @@ class InfractionReportPortImplTest {
     void when_listInfractions_expect_ok() {
 
         when(client.listPendings(anyInt(), anyInt()))
-            .thenReturn(listPendingInfractionReportDTO);
+            .thenReturn(listInfractionReportDTO);
 
         var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
         assertThat(listPendingInfractionReport).isNotEmpty();

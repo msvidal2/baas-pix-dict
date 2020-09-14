@@ -34,6 +34,9 @@ public class InfractionReportDTO {
 
     public static InfractionReportDTO from(InfractionReport infraction) {
         return InfractionReportDTO.builder()
+            .endToEndId(infraction.getEndToEndId())
+            .infractionType(infraction.getType())
+            .details(builder().details)
             .infractionReportId(infraction.getInfractionReportId())
             .reportedBy(infraction.getReportedBy())
             .situation(infraction.getSituation())

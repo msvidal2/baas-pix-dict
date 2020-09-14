@@ -3,7 +3,9 @@ package com.picpay.banking.pix.core.ports;
 
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface InfractionReportPort {
@@ -17,5 +19,8 @@ public interface InfractionReportPort {
     InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
 
     InfractionReport analyze(String infractionReportId, Integer ispb, InfractionAnalyze analyze, String requestIdentifier);
+
+    List<InfractionReport> filter(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
+        LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit);
 
 }
