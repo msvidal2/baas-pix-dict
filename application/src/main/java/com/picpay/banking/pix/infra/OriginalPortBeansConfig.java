@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 public class OriginalPortBeansConfig {
 
     @Bean
+    @Primary
     public FeignClientInterceptor feignClientInterceptor(){
         return new FeignClientInterceptor();
     }

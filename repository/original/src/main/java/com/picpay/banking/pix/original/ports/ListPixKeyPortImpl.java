@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.ListPixKeyPort;
 import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
 import com.picpay.banking.pix.original.dto.request.ListPixKeyRequestDTO;
+import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import lombok.AllArgsConstructor;
 
 import java.util.Collection;
@@ -19,7 +20,9 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
 
         var listPixKeyRequestDTO = ListPixKeyRequestDTO.from(pixKey);
 
-        return searchPixKeyClient.listPixKey(listPixKeyRequestDTO).getData().toDomain();
+        var response = searchPixKeyClient.listPixKey(listPixKeyRequestDTO);
+
+        return response.getData().toDomain();
 
     }
 }
