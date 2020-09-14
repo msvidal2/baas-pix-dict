@@ -2,10 +2,8 @@ package com.picpay.banking.pix.core.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
 @AllArgsConstructor
 public enum InfractionAnalyzeResult {
 
