@@ -1,127 +1,95 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picpay.banking.jdpi.clients.PixKeyJDClient;
-import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.dto.response.CreatePixKeyResponseDTO;
-import com.picpay.banking.jdpi.dto.response.TokenDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreatePixKeyRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.RemovePixKeyRequestWebDTO;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.RemoveReason;
+import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyDTO;
+import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.usecase.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.UpdateAccountPixKeyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.net.URI;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class PixKeyControllerTest {
 
-    private MockRestServiceServer mockServer;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private MockMvc mockMvc;
 
-    @Autowired
+    @InjectMocks
     private PixKeyController controller;
 
-    @MockBean
-    private TokenManagerClient tokenManagerClient;
+    @Mock
+    private UpdateAccountPixKeyUseCase updateAccountUseCase;
 
-    @MockBean
-    private PixKeyJDClient pixKeyJDClient;
+    @Mock
+    private FindPixKeyUseCase findPixKeyUseCase;
+
+    private PixKey pixKey;
 
     @BeforeEach
     public void setup() {
-        mockServer = MockRestServiceServer.createServer(new RestTemplate());
-
-        var token = new TokenDTO();
-        token.setAccessToken("SKDFGNSDUNFSD877S6DTF67SBASG7ASB67AST");
-        token.setScope("dict_api");
-        token.setTokenType("Bearer");
-
-        when(tokenManagerClient.getToken(any())).thenReturn(token);
-    }
-
-    @Test
-    public void when_deletePixKeyWithSuccess_expect_statusNoContent() {
-        var dto = RemovePixKeyRequestWebDTO.builder()
-                .reason(RemoveReason.CLIENT_REQUEST)
-                .type(KeyType.CPF)
-                .requestIdentifier(UUID.randomUUID().toString())
-                .ispb(354344)
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(new CustomExceptionHandler())
                 .build();
 
-        assertDoesNotThrow(() -> {
-            mockServer.expect(requestTo("http://localhost:8080/keys/02942765054"))
-                    .andExpect(method(HttpMethod.DELETE))
-                    .andExpect(content().json(objectMapper.writeValueAsString(dto)))
-                    .andRespond(withNoContent());
-        });
+        pixKey = PixKey.builder()
+                .type(KeyType.EMAIL)
+                .key("joao@picpay.com")
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048L")
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
+                .createdAt(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now())
+                .endToEndId("endToEndId").build();
     }
 
     @Test
-    public void when_deletePixKeyWithInvalidCPF_expect_statusBadRequest() {
-        var dto = RemovePixKeyRequestWebDTO.builder()
-                .reason(RemoveReason.CLIENT_REQUEST)
-                .type(KeyType.CPF)
-                .requestIdentifier(UUID.randomUUID().toString())
-                .ispb(353454)
-                .build();
+    public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
+        when(updateAccountUseCase.update(any(), any(), anyString())).thenReturn(pixKey);
+        when(findPixKeyUseCase.findPixKeyUseCase(any(), anyString())).thenReturn(pixKey);
 
-        assertDoesNotThrow(() -> {
-            mockServer.expect(requestTo("http://localhost:8080/keys/02942765000"))
-                    .andExpect(method(HttpMethod.DELETE))
-                    .andExpect(content().json(objectMapper.writeValueAsString(dto)))
-                    .andRespond(withBadRequest());
-        });
+        mockMvc.perform(put("/v1/keys/joao@picpay")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyDTO.builder()
+                        .ispb(1)
+                        .accountNumber("15242")
+                        .accountOpeningDate(LocalDateTime.now())
+                        .accountType(AccountType.SALARY)
+                        .branchNumber("4123")
+                        .reason(UpdateReason.CLIENT_REQUEST)
+                        .type(KeyType.EMAIL)
+                        .requestIdentifier("abc")
+                        .userId("123")
+                        .build())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.key", equalTo("joao@picpay.com")))
+                .andExpect(jsonPath("$.ispb", equalTo(1)))
+                .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
+                .andExpect(jsonPath("$.accountType", equalTo("SALARY")))
+                .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
-    @Test
-    public void when_deletePixKeyWithInvalidType_expect_statusBadRequest() {
-        var dto = new RemovePixKeyRequestWebDTO();
-        dto.setReason(RemoveReason.CLIENT_REQUEST);
-        dto.setRequestIdentifier(UUID.randomUUID().toString());
-
-        assertDoesNotThrow(() -> {
-            mockServer.expect(requestTo("http://localhost:8080/keys/02942765000"))
-                    .andExpect(method(HttpMethod.DELETE))
-                    .andExpect(content().json(objectMapper.writeValueAsString(dto)))
-                    .andRespond(withBadRequest());
-        });
-    }
-
-    @Test
-    public void when_createValidAddressKey_expect_statusCreated() {
-        CreatePixKeyRequestWebDTO request = new CreatePixKeyRequestWebDTO();
-        CreatePixKeyResponseDTO response = new CreatePixKeyResponseDTO();
-
-        assertAll(() -> {
-        mockServer.expect(
-                requestTo(new URI("http://localhost:8080/keys")))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().json(objectMapper.writeValueAsString(request)))
-                .andRespond(
-                        withStatus(HttpStatus.CREATED)
-                        .body(String.valueOf(content().json(objectMapper.writeValueAsString(response))))
-                );
-        });
-    }
 }

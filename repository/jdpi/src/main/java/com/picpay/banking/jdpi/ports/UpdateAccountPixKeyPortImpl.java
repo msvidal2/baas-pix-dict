@@ -5,14 +5,12 @@ import com.picpay.banking.jdpi.dto.request.UpdateAccountPixKeyRequestDTO;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.ports.UpdateAccountPixKeyPort;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
     private PixKeyJDClient pixKeyJDClient;
-
-    public UpdateAccountPixKeyPortImpl(PixKeyJDClient pixKeyJDClient) {
-        this.pixKeyJDClient = pixKeyJDClient;
-    }
 
     @Override
     public PixKey updateAccount(PixKey pixKey, UpdateReason reason, String requestIdentifier) {
