@@ -1,5 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +19,22 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @ToString
-public class CancelInfractionDTO {
+public class AnalyzeInfractionReportDTO {
 
     @NotNull
     private Integer ispb;
 
     @NotNull
     private String requestIdentifier;
+
+    @NotNull
+    private String details;
+
+    @NotNull
+    private InfractionAnalyzeResult result;
+
+    public InfractionAnalyze toInfractionAnalyze(){
+        return InfractionAnalyze.builder().details(details).analyzeResult(result).build();
+    }
 
 }

@@ -1,14 +1,19 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelResponseInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.FilterInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.usecase.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import io.swagger.annotations.Api;
@@ -37,24 +42,28 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 public class InfractionReportController {
 
-    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
-    private CreateInfractionReportUseCase createInfractionReportUseCase;
-    private FindInfractionReportUseCase findInfractionReportUseCase;
-    private CancelInfractionReportUseCase cancelInfractionReportUseCase;
+    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
+    private final CreateInfractionReportUseCase createInfractionReportUseCase;
+    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
+    private final FindInfractionReportUseCase findInfractionReportUseCase;
+    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
+    private final FilterInfractionReportUseCase filterInfractionReportUseCase;
 
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        final InfractionReport infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), createInfractionReportRequestWebDTO.getRequestIdentifier());
+        final InfractionReport infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(),
+            createInfractionReportRequestWebDTO.getRequestIdentifier());
         return InfractionReportCreatedDTO.from(infractionReport);
     }
 
     @ApiOperation(value = "List pendings infractions")
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb, @RequestParam(value = "limit",defaultValue = "10") Integer limit) {
-       return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+    public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb,
+        @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "find an infraction report")
@@ -66,11 +75,33 @@ public class InfractionReportController {
     }
 
     @ApiOperation(value = "Cancel Infraction Report")
-    @PostMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{infractionReportId}/cancel", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public CancelResponseInfractionDTO cancel(@Valid @RequestBody CancelInfractionDTO dto) {
-        var infractionReport = this.cancelInfractionReportUseCase.execute(dto.getInfractionReportId().toString(), dto.getIspb(), dto.getRequestIdentifier().toString());
+    public CancelResponseInfractionDTO cancel(@PathVariable("infractionReportId") String infractionReportId,
+        @Valid @RequestBody CancelInfractionDTO dto) {
+        var infractionReport = this.cancelInfractionReportUseCase.execute(infractionReportId, dto.getIspb(), dto.getRequestIdentifier());
         return CancelResponseInfractionDTO.from(infractionReport);
+    }
+
+    @ApiOperation(value = "Analyze Infraction Report")
+    @PostMapping(value = "/{infractionReportId}/analyze", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public CancelResponseInfractionDTO analyze(@PathVariable("infractionReportId") String infractionReportId,
+        @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
+        var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(),
+            dto.getRequestIdentifier());
+        return CancelResponseInfractionDTO.from(infractionReport);
+    }
+
+    @ApiOperation(value = "List Infraction Report")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public List<InfractionReportDTO> filter(@Valid FilterInfractionReportDTO filter) {
+        var listInfractionReport = this.filterInfractionReportUseCase.execute(
+            filter.getIspb(), filter.getEhDebitado(), filter.getEhCreditado(), InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
+            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim(), filter.getNrLimite());
+
+        return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
 }

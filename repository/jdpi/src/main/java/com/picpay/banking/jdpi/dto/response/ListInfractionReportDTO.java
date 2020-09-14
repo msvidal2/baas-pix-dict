@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListPendingInfractionReportDTO {
+public class ListInfractionReportDTO {
 
     @JsonProperty("dtHrJdPi")
     private String date;
@@ -23,6 +23,6 @@ public class ListPendingInfractionReportDTO {
     private Boolean hasNext;
 
     @JsonProperty("reporteInfracao")
-    private List<PendingInfractionReportDTO> infractionReports;
+    private List<InfractionReportDTO> infractionReports;
 
 }

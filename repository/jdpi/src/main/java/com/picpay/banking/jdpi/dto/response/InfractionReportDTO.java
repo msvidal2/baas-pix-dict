@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PendingInfractionReportDTO {
+public class InfractionReportDTO {
 
     private String endToEndId;
 

@@ -1,16 +1,19 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.usecase.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.ListPendingInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
+import static com.picpay.banking.pix.core.domain.InfractionReportSituation.ANALYZED;
 import static com.picpay.banking.pix.core.domain.InfractionReportSituation.CANCELED;
 import static com.picpay.banking.pix.core.domain.InfractionReportSituation.OPEN;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -35,6 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,6 +67,12 @@ class InfractionReportControllerTest {
 
     @Mock
     private FindInfractionReportUseCase findInfractionReportUseCase;
+
+    @Mock
+    private AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
+
+    @Mock
+    private FilterInfractionReportUseCase filterInfractionReportUseCase;
 
     private InfractionReport infractionReport;
 
@@ -290,14 +301,14 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_RequestCancelInfractionsWithInvalidRequest_expect_statusOk() throws Exception {
+    void when_RequestCancelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionCanceled = infractionReport.toBuilder().situation(CANCELED).build();
 
         when(cancelInfractionReportUseCase.execute(anyString(), anyInt(),anyString())).thenReturn(infractionCanceled);
 
-        var request = CancelInfractionDTO.builder().ispb(1).infractionReportId("1").requestIdentifier("1").build();
+        var request = CancelInfractionDTO.builder().ispb(1).requestIdentifier("1").build();
 
-        mockMvc.perform(post("/v1/infraction-report/cancel")
+        mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
             .andDo(print())
@@ -314,9 +325,73 @@ class InfractionReportControllerTest {
     void when_RequestCancelInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = CancelInfractionDTO.builder().build();
 
-        mockMvc.perform(post("/v1/infraction-report/cancel")
+        mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
             .contentType(MediaType.APPLICATION_JSON)
             .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code",equalTo(400)))
+            .andExpect(jsonPath("$.fieldErrors").exists());
+
+    }
+
+    @Test
+    void when_RequestAnalyzelInfractionsWithValidRequest_expect_statusOk() throws Exception {
+        var infractionAnalyzed = infractionReport.toBuilder().situation(ANALYZED).build();
+
+        when(analyzeInfractionReportUseCase.execute(anyString(), anyInt(),any(),anyString())).thenReturn(infractionAnalyzed);
+
+        var request = AnalyzeInfractionReportDTO.builder().ispb(1).result(InfractionAnalyzeResult.ACCEPTED).details("details").requestIdentifier("1").build();
+
+        mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endToEndId").exists())
+            .andExpect(jsonPath("$.infractionReportId").exists())
+            .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
+
+        verify(analyzeInfractionReportUseCase).execute(anyString(), anyInt(),any(),anyString());
+
+    }
+
+    @Test
+    void when_RequestAnalyzeInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
+        var request = AnalyzeInfractionReportDTO.builder().build();
+
+        mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code",equalTo(400)))
+            .andExpect(jsonPath("$.fieldErrors").exists());
+
+    }
+
+    @Test
+    void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
+
+        when(filterInfractionReportUseCase.execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
+            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class))).thenReturn(List.of(findInfractionReport));
+
+        mockMvc.perform(get("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON)
+            .queryParam("ispb", "1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].endToEndId").exists());
+
+        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
+            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class));
+
+    }
+
+    @Test
+    void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
+        mockMvc.perform(get("/v1/infraction-report")
+            .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))

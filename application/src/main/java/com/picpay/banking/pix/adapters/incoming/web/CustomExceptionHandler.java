@@ -7,13 +7,13 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,10 +62,20 @@ public class CustomExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleMethodArgumentNotValid(final MethodArgumentNotValidException ex) {
-        List<FieldErrorDTO> fieldErrors = new ArrayList<>(ex.getBindingResult().getFieldErrors()
+        List<FieldErrorDTO> fieldErrors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldErrorDTO::from)
-                .collect(toList()));
+                .collect(toList());
+
+        return ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+    }
+
+    @ExceptionHandler({BindException.class})
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorDTO handleMethodArgumentNotValid(final BindException ex) {
+        List<FieldErrorDTO> fieldErrors = ex.getFieldErrors()
+            .stream()
+            .map(FieldErrorDTO::from).collect(toList());
 
         return ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
     }
