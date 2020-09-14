@@ -1,7 +1,10 @@
 package com.picpay.banking.jdpi.ports;
 
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
+import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
+import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
+import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPendingInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.PendingInfractionReportDTO;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
@@ -41,6 +44,8 @@ class InfractionReportPortImplTest {
 
     private CreateInfractionReportResponseDTO responseDTO;
 
+    private FindInfractionReportResponseDTO findResponseDTO;
+
     private ListPendingInfractionReportDTO listPendingInfractionReportDTO;
 
     @BeforeEach
@@ -55,23 +60,39 @@ class InfractionReportPortImplTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();
 
-        PendingInfractionReportDTO infractionReport = PendingInfractionReportDTO.builder().detalhes("details").dtHrCriacaoRelatoInfracao(LocalDateTime.now()).dtHrUltModificacao(LocalDateTime.now())
-            .idRelatoInfracao(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCreditado(1).ispbDebitado(2).reportadoPor(ReportedBy.CREDITED_PARTICIPANT.getValue())
-            .stRelatoInfracao(InfractionReportSituation.OPEN.getValue())
-            .tpInfracao(InfractionType.FRAUD.getValue())
-            .detalhesAnalise("details")
-            .resultadoAnalise(InfractionAnalyzeResult.ACCEPTED.getValue())
+        var infractionReport = PendingInfractionReportDTO.builder().details("details").dateCreate(
+            LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
+            .infractionReportId(randomUUID().toString())
+            .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).reportedBy(ReportedBy.CREDITED_PARTICIPANT.getValue())
+            .situation(InfractionReportSituation.OPEN.getValue())
+            .type(InfractionType.FRAUD.getValue())
+            .analyzeDetails("details")
+            .analyzeResult(InfractionAnalyzeResult.ACCEPTED.getValue())
             .build();
 
-        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().dtHrJdPi("10/04/2020 22:22:22")
-            .temMaisElementos(true)
-            .reporteInfracao(List.of(infractionReport))
+        this.listPendingInfractionReportDTO = ListPendingInfractionReportDTO.builder().date("10/04/2020 22:22:22")
+            .hasNext(true)
+            .infractionReports(List.of(infractionReport))
+            .build();
+
+        findResponseDTO = FindInfractionReportResponseDTO.builder()
+            .endToEndId("E9999901012341234123412345678900")
+            .type(0)
+            .details("suspeita por uso contínuo")
+            .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
+            .reportedBy(0)
+            .situation(0)
+            .ispbDebited(01234)
+            .ispbCredited(56789)
+            .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
+            .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
+            .analyzeResult(0)
+            .analyzeDetails("análise dos casos em andamento")
             .build();
     }
 
     @Test
-    void when_executeWithSuccess_expect_noException() {
+    void when_executeCreateWithSuccess_expect_noException() {
         when(client.create(any(), anyString())).thenReturn(responseDTO);
 
         var infractionReport = InfractionReport.builder()
@@ -82,8 +103,8 @@ class InfractionReportPortImplTest {
             .build();
 
         assertDoesNotThrow(() -> {
-            var devolutionCreated = port.create(infractionReport, randomUUID().toString());
-            assertNotNull(devolutionCreated);
+            var infractionReportCreated = port.create(infractionReport, randomUUID().toString());
+            assertNotNull(infractionReportCreated);
         });
     }
 
@@ -101,17 +122,42 @@ class InfractionReportPortImplTest {
         assertThrows(NullPointerException.class, () -> port.create(infractionReport, randomUUID().toString()));
     }
 
-
     @Test
     void when_listInfractions_expect_ok() {
 
-        when(client.listPendings(anyInt(),anyInt()))
+        when(client.listPendings(anyInt(), anyInt()))
             .thenReturn(listPendingInfractionReportDTO);
 
-        List<InfractionReport> pagination = this.port.listPendingInfractionReport(1, 1);
-        assertThat(pagination).isNotEmpty();
+        var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
+        assertThat(listPendingInfractionReport).isNotEmpty();
 
-        verify(client).listPendings(anyInt(),anyInt());
+        verify(client).listPendings(anyInt(), anyInt());
+    }
+
+    @Test
+    void when_cancelInfraction_expect_ok() {
+
+        when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
+            CancelResponseInfractionDTO.builder()
+                .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
+                .build()
+       );
+
+        var response = this.port.cancel("1", 1, "1");
+        assertThat(response.getEndToEndId()).isNotEmpty();
+        assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
+
+        verify(client).cancel(any(CancelInfractionDTO.class), anyString());
+    }
+
+    @Test
+    void when_executeFindWithSuccess_expect_noException() {
+        when(client.find(anyString())).thenReturn(findResponseDTO);
+
+        assertDoesNotThrow(() -> {
+            var infractionReport = port.find(randomUUID().toString());
+            assertNotNull(infractionReport);
+        });
     }
 
 }

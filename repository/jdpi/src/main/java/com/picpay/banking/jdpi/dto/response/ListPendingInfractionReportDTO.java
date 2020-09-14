@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 public class ListPendingInfractionReportDTO {
 
+    @JsonProperty("dtHrJdPi")
+    private String date;
 
-    private String dtHrJdPi;
-    private Boolean temMaisElementos;
-    private List<PendingInfractionReportDTO> reporteInfracao;
+    @JsonProperty("temMaisElementos")
+    private Boolean hasNext;
+
+    @JsonProperty("reporteInfracao")
+    private List<PendingInfractionReportDTO> infractionReports;
 
 }
