@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.original;
+package com.picpay.banking.pix.original.ports;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+import com.picpay.banking.pix.original.ports.UpdateAccountPixKeyPortImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
