@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Builder
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 public class UpdateAccessKeyAccountDTO {
 
     private String accountNumber;
-    private LocalDateTime accountOpeningDate;
+    private String accountOpeningDate;
     private AccountTypeOriginal accountType;
     private String branch;
     private String key;
@@ -29,7 +30,9 @@ public class UpdateAccessKeyAccountDTO {
                 .key(pixKey.getKey())
                 .accountType(AccountTypeOriginal.resolveFromDomain(pixKey.getAccountType()))
                 .accountNumber(pixKey.getAccountNumber())
-                .accountOpeningDate(pixKey.getAccountOpeningDate())
+                .branch(pixKey.getBranchNumber())
+                .accountOpeningDate(
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(pixKey.getAccountOpeningDate()))
                 .reason(ReasonOriginal.resolve(reason.getValue()))
                 .build();
     }
