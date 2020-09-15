@@ -2,8 +2,10 @@ package com.picpay.banking.pix.original.fallbacks;
 
 import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
 import com.picpay.banking.pix.original.dto.request.ListPixKeyRequestDTO;
-import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
+import com.picpay.banking.pix.original.dto.response.ListPixKeyDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+
+import java.util.List;
 
 public class SearchPixKeyClientFallback extends ClientFallback implements SearchPixKeyClient {
 
@@ -12,8 +14,6 @@ public class SearchPixKeyClientFallback extends ClientFallback implements Search
     }
 
     @Override
-    public ResponseWrapperDTO<ListPixKeyResponseDTO> listPixKey(final ListPixKeyRequestDTO dto) {
-        return null;
-    }
+    public ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(final String requestIdentifier, final ListPixKeyRequestDTO dto) { throw resolveException(); }
 
 }
