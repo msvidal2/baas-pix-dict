@@ -68,22 +68,4 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
             .startPossessionAt(createPixKeyResponseJDDTO.getDtHrInicioPosseChave())
             .build();
     }
-
-    public Collection<ListKeyResponseWebDTO> convert(final Collection<PixKey> from) {
-        return from.stream()
-                .map(this::getPixKey)
-                .collect(Collectors.toList());
-    }
-
-    private ListKeyResponseWebDTO getPixKey(final PixKey pixKey) {
-        return ListKeyResponseWebDTO.builder()
-            .key(pixKey.getKey())
-            .name(pixKey.getName())
-            .fantasyName(pixKey.getFantasyName())
-            .createdAt(pixKey.getCreatedAt())
-            .startPossessionAt(pixKey.getStartPossessionAt())
-            .claim(pixKey.getClaim() != null ? pixKey.getClaim().getValue() : null)
-            .build();
-    }
-
 }

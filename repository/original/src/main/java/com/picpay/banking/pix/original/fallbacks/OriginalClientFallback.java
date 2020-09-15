@@ -7,15 +7,17 @@ import com.picpay.banking.pix.original.exception.OriginalClientException;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.*;
-
 import java.io.IOException;
 
-public abstract class ClientFallback {
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+public abstract class OriginalClientFallback {
 
     private Throwable cause;
 
-    public ClientFallback(Throwable cause) {
+    public OriginalClientFallback(Throwable cause) {
         this.cause = cause;
     }
 

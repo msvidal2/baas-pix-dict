@@ -20,9 +20,7 @@ public class PixKeyJDClientFallback extends JDClientFallback implements PixKeyJD
     }
 
     @Override
-    public CreatePixKeyResponseJDDTO createPixKey(String requestIdentifier, CreatePixKeyRequestDTO dto) {
-        throw resolveException();
-    }
+    public CreatePixKeyResponseJDDTO createPixKey(String requestIdentifier, CreatePixKeyRequestDTO dto) { throw resolveException(); }
 
     @Override
     public RemovePixKeyResponseDTO removeKey(String requestIdentifier, String key, RemovePixKeyRequestDTO dto) {

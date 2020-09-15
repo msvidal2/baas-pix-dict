@@ -2,6 +2,9 @@ package com.picpay.banking.original.ports;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
+import com.picpay.banking.pix.original.dto.AccountTypeOriginal;
+import com.picpay.banking.pix.original.dto.KeyTypeOriginal;
+import com.picpay.banking.pix.original.dto.PersonTypeOriginal;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyDTO;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -34,9 +38,7 @@ class ListPixKeyPortImplTest {
     @Test
     void testListAccount() {
 
-        ResponseWrapperDTO<ListPixKeyResponseDTO> listPixKeyResponseDTO = getListPixKeyResponseDTO();
-
-        when(searchPixKeyClient.listPixKey(any())).thenReturn(listPixKeyResponseDTO);
+        when(searchPixKeyClient.listPixKey(any(),any())).thenReturn(getListPixKeyResponseDTO());
 
         var pixKey = PixKey.builder()
             .type(KeyType.EMAIL)
@@ -46,7 +48,6 @@ class ListPixKeyPortImplTest {
             .accountNumber("1")
             .accountType(AccountType.SALARY)
             .accountNumber("1")
-            .startPossessionAt(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
             .taxId("1111111111111")
             .name("Joao da Silva")
@@ -93,25 +94,23 @@ class ListPixKeyPortImplTest {
         return Arrays.asList(pixKey1,pixKey2);
     }
 
-    private ResponseWrapperDTO<ListPixKeyResponseDTO> getListPixKeyResponseDTO() {
-        var listPixKeyDTO = ListPixKeyDTO.builder()
+    private ResponseWrapperDTO<List<ListPixKeyDTO>> getListPixKeyResponseDTO() {
+
+        var listPixKeyResponseDTO = ListPixKeyResponseDTO.builder()
             .keyCod("joao.santos@ppicpay.com")
-            .name("Joao da Silva")
-            .businessPerson("Nome Fantasia")
+            .keyType(KeyTypeOriginal.EMAIL)
             .account("1")
-            .accountType("1")
+            .accountType(AccountTypeOriginal.CACC)
             .branch("1234")
             .ispb("1234")
             .taxId("12345678")
-            .typePerson("1")
-            .accountOpeningDate(LocalDateTime.now())
-            .keyOwnershipDate(LocalDateTime.now()).build();
+            .typePerson(PersonTypeOriginal.LEGAL_PERSON).build();
 
-        var listPixKeyResponseDTO = ListPixKeyResponseDTO.builder()
-            .response(Arrays.asList(listPixKeyDTO)).build();
+        var listPixKeyDTO = ListPixKeyDTO.builder()
+            .response(listPixKeyResponseDTO).build();
 
-        ResponseWrapperDTO<ListPixKeyResponseDTO> responseWrapperDTO = new ResponseWrapperDTO<>();
-        responseWrapperDTO.setData(listPixKeyResponseDTO);
+        ResponseWrapperDTO<List<ListPixKeyDTO>> responseWrapperDTO = new ResponseWrapperDTO<>();
+        responseWrapperDTO.setData(Arrays.asList(listPixKeyDTO));
 
         return responseWrapperDTO;
     }

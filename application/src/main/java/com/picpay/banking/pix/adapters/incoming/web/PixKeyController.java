@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -47,20 +48,10 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_LIST)
     @GetMapping
     @ResponseStatus(OK)
-    public Collection<ListKeyResponseWebDTO> list(
+    public List<ListKeyResponseWebDTO> list(
             @RequestHeader String requestIdentifier, @Valid ListPixKeyRequestWebDTO requestDTO) {
 
-        var pixKey = PixKey.builder()
-            .key(requestDTO.getKey())
-            .taxId(requestDTO.getCpfCnpj())
-            .personType(requestDTO.getPersonType())
-            .accountNumber(requestDTO.getAccountNumber())
-            .accountType(requestDTO.getAccountType())
-            .branchNumber(requestDTO.getBranchNumber())
-            .ispb(requestDTO.getIspb())
-            .build();
-
-        return converter.convert(listPixKeyUseCase.execute(requestIdentifier, pixKey));
+        return ListKeyResponseWebDTO.from(listPixKeyUseCase.execute(requestIdentifier, requestDTO.toDomain()));
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_FIND)
