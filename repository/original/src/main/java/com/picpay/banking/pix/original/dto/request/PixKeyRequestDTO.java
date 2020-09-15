@@ -1,18 +1,17 @@
-package com.picpay.banking.pix.original.dto.response;
+package com.picpay.banking.pix.original.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseWrapperDTO<T> {
+@Builder
+public class PixKeyRequestDTO {
 
-    private T data;
+    private String key;
+    private String responsibleKey;
 
 }

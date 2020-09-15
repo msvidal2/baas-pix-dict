@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.original;
+package com.picpay.banking.pix.original.ports;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PixKey;

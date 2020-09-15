@@ -6,9 +6,7 @@ import com.picpay.banking.pix.core.ports.CreatePixKeyPort;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
 @AllArgsConstructor
 public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
@@ -20,9 +18,11 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
         final var response = maintenancePixKeyClient.create(requestIdentifier, createAccessKeyDTO);
 
-        // TODO: implementar response
-
-        return null;
+        return PixKey.builder()
+                .key(response.getData().getKey())
+                .createdAt(response.getData().getCreationDate())
+                .startPossessionAt(response.getData().getKeyOwnershipDate())
+                .build();
     }
 
 }
