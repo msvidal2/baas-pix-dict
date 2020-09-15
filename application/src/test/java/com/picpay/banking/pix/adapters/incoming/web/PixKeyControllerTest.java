@@ -149,7 +149,7 @@ public class PixKeyControllerTest {
     public void when_removePixKeySuccessfully_expect_statusNoContent() throws Exception {
         doNothing().when(removePixKeyUseCase).execute(any(), any(), anyString());
 
-        mockMvc.perform(delete("/v1/keys/joao@picpay")
+        mockMvc.perform(delete(BASE_URL +"/joao@picpay")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(RemovePixKeyRequestWebDTO.builder()
                         .ispb(1)
@@ -198,7 +198,7 @@ public class PixKeyControllerTest {
 
         when(listPixKeyUseCase.execute(anyString(), any())).thenReturn(List.of(pixKey1, pixKey2));
 
-        mockMvc.perform(get("/v1/keys")
+        mockMvc.perform(get(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
                 .param("key", "joao@ppicpay.com")
                 .param("cpfCnpj", "57950197048")
