@@ -58,7 +58,7 @@ public class ClaimController {
     public Claim create(@RequestBody @Validated CreateClaimRequestWebDTO requestDTO) {
         Claim claim = converter.convert(requestDTO);
 
-        return createAddressKeyUseCase.createClaim(claim, requestDTO.getRequestIdentifier());
+        return createAddressKeyUseCase.execute(claim, requestDTO.getRequestIdentifier());
     }
 
     @ApiOperation("Confirm an pix key claim")
@@ -69,7 +69,7 @@ public class ClaimController {
             .claimId(claimId)
             .ispb(dto.getIspb()).build();
 
-        return claimConfirmationUseCase.confirm(claim,
+        return claimConfirmationUseCase.execute(claim,
                 dto.getReason(),
                 dto.getRequestIdentifier());
     }
@@ -88,7 +88,7 @@ public class ClaimController {
             .accountType(requestDTO.getAccountType())
             .build();
 
-        return listClaimUseCase.listClaimUseCase(claim, requestDTO.isPending(), requestDTO.getLimit(), requestIdentifier);
+        return listClaimUseCase.execute(claim, requestDTO.isPending(), requestDTO.getLimit(), requestIdentifier);
     }
 
     @ApiOperation("Cancel an pix key claim")
@@ -99,13 +99,13 @@ public class ClaimController {
                 .ispb(dto.getIspb())
                 .build();
 
-        return claimCancelUseCase.cancel(claim, dto.isCanceledClaimant(), dto.getReason(), dto.getRequestIdentifier());
+        return claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), dto.getRequestIdentifier());
     }
 
     @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
     public Claim complete(@PathVariable String claimId, @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
-        return completeClaimUseCase.complete(Claim.builder()
+        return completeClaimUseCase.execute(Claim.builder()
                         .claimId(claimId)
                         .ispb(dto.getIspb())
                         .build(),
@@ -120,7 +120,7 @@ public class ClaimController {
                 .claimId(claimId)
                 .build();
 
-        return findClaimUseCase.findClaimUseCase(claim);
+        return findClaimUseCase.execute(claim);
     }
 
 }

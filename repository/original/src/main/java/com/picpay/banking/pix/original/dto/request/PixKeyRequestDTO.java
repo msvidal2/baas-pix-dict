@@ -13,4 +13,5 @@ public class PixKeyRequestDTO {
 
     private String key;
     private String responsibleKey;
+
 }

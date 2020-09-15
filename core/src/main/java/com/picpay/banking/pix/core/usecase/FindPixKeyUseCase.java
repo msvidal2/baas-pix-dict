@@ -12,8 +12,8 @@ public class FindPixKeyUseCase {
     private FindPixKeyPort findPixKeyPort;
     private DictItemValidator dictItemValidator;
 
-    public PixKey findPixKeyUseCase(@NonNull final PixKey pixKey,
-                                    @NonNull final String userId)  {
+    public PixKey execute(@NonNull final PixKey pixKey,
+                          @NonNull final String userId)  {
 
         if(userId.isBlank()) {
             throw new IllegalArgumentException("The userId can not be null");

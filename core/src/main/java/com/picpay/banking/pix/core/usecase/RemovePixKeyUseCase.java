@@ -13,7 +13,7 @@ public class RemovePixKeyUseCase {
     private RemovePixKeyPort removePixKeyPort;
     private DictItemValidator dictItemValidator;
 
-    public void remove(final PixKey pixKey, final RemoveReason reason, final String requestIdentifier) {
+    public void execute(final PixKey pixKey, final RemoveReason reason, final String requestIdentifier) {
         dictItemValidator.validate(pixKey);
 
         validateRequestFields(reason, requestIdentifier);

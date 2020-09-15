@@ -13,7 +13,7 @@ public class CreatePixKeyUseCase {
     private CreatePixKeyPort createPixKeyPort;
     private DictItemValidator dictItemValidator;
 
-    public PixKey createAddressKeyUseCase(
+    public PixKey execute(
             final PixKey pixKey, final CreateReason reason, final String requestIdentifier) {
 
         dictItemValidator.validate(pixKey);

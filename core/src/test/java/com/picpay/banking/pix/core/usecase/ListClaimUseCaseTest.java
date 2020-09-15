@@ -98,7 +98,7 @@ class ListClaimUseCaseTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var claimIterable = useCase.listClaimUseCase(claimRequest,false, 10, randomUUID().toString());
+            var claimIterable = useCase.execute(claimRequest,false, 10, randomUUID().toString());
 
             assertNotNull(claimIterable.getClaims());
             assertEquals(1,claimIterable.getClaims().size());
@@ -113,7 +113,7 @@ class ListClaimUseCaseTest {
                 .accountType(CHECKING)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.listClaimUseCase(claimRequest,false, 10, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, randomUUID().toString()));
     }
 
 }

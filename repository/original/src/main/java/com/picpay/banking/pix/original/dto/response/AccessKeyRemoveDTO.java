@@ -1,20 +1,20 @@
-package com.picpay.banking.jdpi.dto.response;
+package com.picpay.banking.pix.original.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class RemovePixKeyResponseDTO {
+public class AccessKeyRemoveDTO {
 
-    @JsonProperty("chave")
     private String key;
+    private Integer returnCode;
+    private String returnMessage;
 
     public PixKey toDomain() {
         return PixKey.builder()

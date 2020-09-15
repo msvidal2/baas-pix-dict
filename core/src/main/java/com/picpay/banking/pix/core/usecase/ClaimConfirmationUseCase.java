@@ -16,7 +16,7 @@ public class ClaimConfirmationUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public Claim confirm(Claim claim,
+    public Claim execute(Claim claim,
                          @NonNull final ClaimConfirmationReason reason,
                          @NonNull final String requestIdentifier) {
 

@@ -6,7 +6,9 @@ import com.picpay.banking.pix.core.ports.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
@@ -16,7 +18,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
     public PixKey updateAccount(PixKey pixKey, UpdateReason reason, String requestIdentifier) {
         final var requestDTO = UpdateAccessKeyAccountDTO.from(pixKey, reason);
 
-        final var responseDTO = maintenancePixKeyClient.update(requestDTO);
+        final var responseDTO = maintenancePixKeyClient.update(requestIdentifier, requestDTO);
 
         return responseDTO.getData().toDomain();
     }

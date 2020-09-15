@@ -61,7 +61,7 @@ class ClaimCancelUseCaseTest {
         when(claimCancelPort.cancel(any(), anyBoolean(), any(), anyString())).thenReturn(claimPortResponse);
 
         assertDoesNotThrow(() -> {
-            var claimCancelResult = useCase.cancel(claim, false, CLIENT_REQUEST, randomUUID().toString());
+            var claimCancelResult = useCase.execute(claim, false, CLIENT_REQUEST, randomUUID().toString());
 
             Assertions.assertEquals(claimId, claimCancelResult.getClaimId());
         });
@@ -75,11 +75,11 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(NullPointerException.class,
-                () -> useCase.cancel(null, false, CLIENT_REQUEST, randomUUID().toString()));
+                () -> useCase.execute(null, false, CLIENT_REQUEST, randomUUID().toString()));
         assertThrows(NullPointerException.class,
-                () -> useCase.cancel(claim, false, null, randomUUID().toString()));
+                () -> useCase.execute(claim, false, null, randomUUID().toString()));
         assertThrows(NullPointerException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, null));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, null));
     }
 
     @Test
@@ -89,7 +89,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, randomUUID().toString()));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -100,7 +100,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, randomUUID().toString()));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -111,7 +111,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, randomUUID().toString()));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -122,7 +122,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(NullPointerException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, null));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, null));
     }
 
     @Test
@@ -133,7 +133,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> useCase.cancel(claim, false, CLIENT_REQUEST, ""));
+                () -> useCase.execute(claim, false, CLIENT_REQUEST, ""));
     }
 
 }

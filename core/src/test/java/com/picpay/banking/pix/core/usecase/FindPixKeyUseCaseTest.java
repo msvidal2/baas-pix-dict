@@ -55,7 +55,7 @@ class FindPixKeyUseCaseTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var pixKey = useCase.findPixKeyUseCase(pixKeyRequest, "59375566072");
+            var pixKey = useCase.execute(pixKeyRequest, "59375566072");
 
             assertNotNull(pixKey);
             assertEquals(PersonType.INDIVIDUAL_PERSON, pixKey.getPersonType());
@@ -67,7 +67,7 @@ class FindPixKeyUseCaseTest {
     @Test
     void when_findPixKeyWithoutPixKey_expect_exception() {
         assertThrows(NullPointerException.class, () ->
-            useCase.findPixKeyUseCase(null, "59375566072"));
+            useCase.execute(null, "59375566072"));
     }
 
     @Test
@@ -77,7 +77,7 @@ class FindPixKeyUseCaseTest {
                 .build();
 
         assertThrows(NullPointerException.class, () ->
-                useCase.findPixKeyUseCase(pixKeyRequest, null));
+                useCase.execute(pixKeyRequest, null));
     }
 
     @Test
@@ -87,7 +87,7 @@ class FindPixKeyUseCaseTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.findPixKeyUseCase(pixKeyRequest, ""));
+                useCase.execute(pixKeyRequest, ""));
     }
 
 }

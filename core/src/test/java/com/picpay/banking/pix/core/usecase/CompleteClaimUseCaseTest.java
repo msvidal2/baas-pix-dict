@@ -53,7 +53,7 @@ public class CompleteClaimUseCaseTest {
         when(completeClaimPort.complete(any(), anyString())).thenReturn(claimPortResponse);
 
         assertDoesNotThrow(() -> {
-            var completeClaimResponse = useCase.complete(
+            var completeClaimResponse = useCase.execute(
                     Claim.builder()
                             .claimId(randomUUID().toString())
                             .ispb(23542432)
@@ -71,7 +71,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompletemNullClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId(null)
                             .ispb(23542432)
                             .build(),
@@ -81,7 +81,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteEmptyClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId("")
                             .ispb(23542432)
                             .build(),
@@ -91,7 +91,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteInvalidClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId("adncyt3874yt837y")
                             .ispb(23542432)
                             .build(),
@@ -101,7 +101,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteNullRequestIdentifier() {
         assertThrows(NullPointerException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId(randomUUID().toString())
                             .ispb(23423)
                             .build(),
@@ -111,7 +111,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteInvalidIspb() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId(randomUUID().toString())
                             .ispb(0)
                             .build(),
@@ -121,7 +121,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteNegativeIspb() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                             .claimId(randomUUID().toString())
                             .ispb(-42432)
                             .build(),
@@ -131,7 +131,7 @@ public class CompleteClaimUseCaseTest {
     @Test
     void testCompleteEmptyRequestIdentifier() {
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.complete(Claim.builder()
+                useCase.execute(Claim.builder()
                                 .claimId(randomUUID().toString())
                                 .ispb(-42432)
                                 .build(),

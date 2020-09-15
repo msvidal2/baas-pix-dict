@@ -11,9 +11,10 @@ public class FindClaimUseCase {
     private FindClaimPort findClaimPort;
     private DictItemValidator dictItemValidator;
 
-    public Claim findClaimUseCase(final Claim claim)  {
+    public Claim execute(final Claim claim)  {
         dictItemValidator.validate(claim);
 
         return findClaimPort.findClaim(claim);
     }
+
 }

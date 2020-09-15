@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.original.dto.response;
 
+import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -25,4 +26,18 @@ public class ListPixKeyDTO {
     private String businessPerson;
     private LocalDateTime creationDate;
     private LocalDateTime keyOwnershipDate;
+
+    public PixKey toDomain() {
+        return PixKey.builder()
+                .key(keyCod)
+                .ispb(Integer.valueOf(ispb))
+                .name(name)
+                .fantasyName(name)
+                .accountNumber(account)
+                .taxId(taxId)
+                .accountOpeningDate(accountOpeningDate)
+                .startPossessionAt(creationDate)
+                .build();
+    }
+
 }

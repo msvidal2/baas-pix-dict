@@ -74,8 +74,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public RemovePixKeyPort removePixKeyPort() {
-        return new RemovePixKeyPortImpl();
+    public RemovePixKeyPort removePixKeyPort(MaintenancePixKeyClient maintenancePixKeyClient) {
+        return new RemovePixKeyPortImpl(maintenancePixKeyClient);
     }
 
     @Bean

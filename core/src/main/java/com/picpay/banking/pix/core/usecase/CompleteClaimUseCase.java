@@ -14,7 +14,7 @@ public class CompleteClaimUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public Claim complete(@NonNull final Claim claim,
+    public Claim execute(@NonNull final Claim claim,
                          @NonNull final String requestIdentifier) {
 
         validator.validate(claim);

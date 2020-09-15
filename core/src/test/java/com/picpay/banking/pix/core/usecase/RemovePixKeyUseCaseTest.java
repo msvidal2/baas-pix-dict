@@ -44,7 +44,7 @@ public class RemovePixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        assertDoesNotThrow(() -> useCase.remove(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
+        assertDoesNotThrow(() -> useCase.execute(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class RemovePixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        assertThrows(KeyValidatorException.class, () -> useCase.remove(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
+        assertThrows(KeyValidatorException.class, () -> useCase.execute(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class RemovePixKeyUseCaseTest {
                 .key("43129115099")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.remove(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(pixKey, RemoveReason.CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class RemovePixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.remove(pixKey, null, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(pixKey, null, randomUUID().toString()));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class RemovePixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.remove(pixKey, RemoveReason.CLIENT_REQUEST, null));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(pixKey, RemoveReason.CLIENT_REQUEST, null));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class RemovePixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.remove(pixKey, RemoveReason.CLIENT_REQUEST, ""));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(pixKey, RemoveReason.CLIENT_REQUEST, ""));
     }
 
 }

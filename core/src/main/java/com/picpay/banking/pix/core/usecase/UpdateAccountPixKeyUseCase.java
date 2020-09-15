@@ -15,9 +15,9 @@ public class UpdateAccountPixKeyUseCase {
     private UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private DictItemValidator dictItemValidator;
 
-    public PixKey update(@NonNull final PixKey pixKey,
-                         @NonNull final UpdateReason reason,
-                         @NonNull final String requestIdentifier) {
+    public PixKey execute(@NonNull final PixKey pixKey,
+                          @NonNull final UpdateReason reason,
+                          @NonNull final String requestIdentifier) {
 
         dictItemValidator.validate(pixKey);
 
