@@ -40,8 +40,8 @@ public class ListPixKeyResponseDTO {
             .taxId(taxId)
             .personType(typePerson.getPersonType())
             .name(name)
-            .accountOpeningDate(LocalDateTime.parse(accountOpeningDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
-            .createdAt(LocalDateTime.parse(creationDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")))
+            .accountOpeningDate(accountOpeningDate != null ? LocalDateTime.parse(accountOpeningDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")) : null)
+            .createdAt(creationDate != null ? LocalDateTime.parse(creationDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")) : null)
             .ispb(Integer.valueOf(ispb))
             .build();
     }
