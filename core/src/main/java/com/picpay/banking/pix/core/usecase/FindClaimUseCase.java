@@ -16,4 +16,5 @@ public class FindClaimUseCase {
 
         return findClaimPort.findClaim(claim);
     }
+
 }
