@@ -17,7 +17,7 @@ public class ListClaimUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public ClaimIterable listClaimUseCase(final Claim claim, final Boolean isPending, final Integer limit, final String requestIdentifier){
+    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final String requestIdentifier){
 
         validator.validate(claim);
 

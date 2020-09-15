@@ -11,7 +11,7 @@ public class CreateClaimUseCase {
     private CreateClaimPort createClaimPort;
     private DictItemValidator validator;
 
-    public Claim createClaim(final Claim claim, final String requestIdentifier) {
+    public Claim execute(final Claim claim, final String requestIdentifier) {
 
         validator.validate(claim);
 

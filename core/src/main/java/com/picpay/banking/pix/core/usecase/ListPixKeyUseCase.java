@@ -15,7 +15,7 @@ public class ListPixKeyUseCase {
 
     private DictItemValidator dictItemValidator;
 
-    public Collection<PixKey> listAddressKeyUseCase(
+    public Collection<PixKey> execute(
             final String requestIdentifier, final PixKey pixKey) {
 
         dictItemValidator.validate(pixKey);

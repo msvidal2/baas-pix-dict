@@ -59,7 +59,7 @@ class ClaimConfirmationUseCaseTest {
             var claim = Claim.builder()
                         .claimId(randomUUID().toString())
                         .ispb(23542432).build();
-            var claimConfirmationResponse = useCase.confirm(claim, CLIENT_REQUEST, randomUUID().toString());
+            var claimConfirmationResponse = useCase.execute(claim, CLIENT_REQUEST, randomUUID().toString());
             Assertions.assertEquals(claimPortResponse.getClaimId(), claimConfirmationResponse.getClaimId());
             assertEquals(claimPortResponse.getClaimSituation(), claimConfirmationResponse.getClaimSituation());
             Assertions.assertEquals(claimPortResponse.getResolutionThresholdDate(), claimConfirmationResponse.getResolutionThresholdDate());
@@ -74,7 +74,7 @@ class ClaimConfirmationUseCaseTest {
         assertThrows(IllegalArgumentException.class, () -> {
             var claim = Claim.builder()
             .ispb(23542432).build();
-        useCase.confirm(claim, CLIENT_REQUEST, randomUUID().toString());});
+        useCase.execute(claim, CLIENT_REQUEST, randomUUID().toString());});
     }
 
     @Test
@@ -83,7 +83,7 @@ class ClaimConfirmationUseCaseTest {
             var claim = Claim.builder()
                 .claimId("")
                 .ispb(23542432).build();
-            useCase.confirm(claim, CLIENT_REQUEST, randomUUID().toString());});
+            useCase.execute(claim, CLIENT_REQUEST, randomUUID().toString());});
     }
 
 
@@ -93,7 +93,7 @@ class ClaimConfirmationUseCaseTest {
             var claim = Claim.builder()
                 .claimId("adncyt3874yt837y")
                 .ispb(23542432).build();
-            useCase.confirm(claim, CLIENT_REQUEST, randomUUID().toString());});
+            useCase.execute(claim, CLIENT_REQUEST, randomUUID().toString());});
     }
 
     @Test
@@ -102,7 +102,7 @@ class ClaimConfirmationUseCaseTest {
             var claim = Claim.builder()
                 .claimId(randomUUID().toString())
                 .ispb(23542432).build();
-            useCase.confirm(claim, null, randomUUID().toString());});
+            useCase.execute(claim, null, randomUUID().toString());});
     }
 
     @Test
@@ -111,6 +111,6 @@ class ClaimConfirmationUseCaseTest {
             var claim = Claim.builder()
                 .claimId(randomUUID().toString())
                 .ispb(23542432).build();
-            useCase.confirm(claim, CLIENT_REQUEST, null);});
+            useCase.execute(claim, CLIENT_REQUEST, null);});
     }
 }

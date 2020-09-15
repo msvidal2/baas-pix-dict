@@ -40,7 +40,7 @@ public class PixKeyController {
     public PixKey create(@RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
         var pixKey = converter.convert(requestDTO);
 
-        return createPixKeyUseCase.createAddressKeyUseCase(
+        return createPixKeyUseCase.execute(
                 pixKey, requestDTO.getReason(), requestDTO.getRequestIdentifier());
     }
 
@@ -60,7 +60,7 @@ public class PixKeyController {
             .ispb(requestDTO.getIspb())
             .build();
 
-        return converter.convert(listPixKeyUseCase.listAddressKeyUseCase(requestIdentifier, pixKey));
+        return converter.convert(listPixKeyUseCase.execute(requestIdentifier, pixKey));
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_FIND)
@@ -71,7 +71,7 @@ public class PixKeyController {
                 .key(key)
                 .build();
 
-        return findPixKeyUseCase.findPixKeyUseCase(pixKey, userId);
+        return findPixKeyUseCase.execute(pixKey, userId);
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
@@ -80,7 +80,7 @@ public class PixKeyController {
     public void remove(@PathVariable String key, @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
-        removePixKeyUseCase.remove(pixKey, dto.getReason(), dto.getRequestIdentifier());
+        removePixKeyUseCase.execute(pixKey, dto.getReason(), dto.getRequestIdentifier());
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
@@ -88,8 +88,8 @@ public class PixKeyController {
     public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
-        updateAccountUseCase.update(pixKey, dto.getReason(), dto.getRequestIdentifier());
+        updateAccountUseCase.execute(pixKey, dto.getReason(), dto.getRequestIdentifier());
 
-        return findPixKeyUseCase.findPixKeyUseCase(pixKey, dto.getUserId());
+        return findPixKeyUseCase.execute(pixKey, dto.getUserId());
     }
 }

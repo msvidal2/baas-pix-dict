@@ -106,7 +106,7 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_createPixKeyWithSuccess_expect_statusCreated() throws Exception {
-        when(createPixKeyUseCase.createAddressKeyUseCase(any(), any(), anyString())).thenReturn(pixKey);
+        when(createPixKeyUseCase.execute(any(), any(), anyString())).thenReturn(pixKey);
 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +121,8 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
-        when(updateAccountUseCase.update(any(), any(), anyString())).thenReturn(pixKey);
-        when(findPixKeyUseCase.findPixKeyUseCase(any(), anyString())).thenReturn(pixKey);
+        when(updateAccountUseCase.execute(any(), any(), anyString())).thenReturn(pixKey);
+        when(findPixKeyUseCase.execute(any(), anyString())).thenReturn(pixKey);
 
         mockMvc.perform(put(BASE_URL +"/joao@picpay")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_removePixKeySuccessfully_expect_statusNoContent() throws Exception {
-        doNothing().when(removePixKeyUseCase).remove(any(), any(), anyString());
+        doNothing().when(removePixKeyUseCase).execute(any(), any(), anyString());
 
         mockMvc.perform(delete("/v1/keys/joao@picpay")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@ public class PixKeyControllerTest {
                 .startPossessionAt(LocalDateTime.now())
                 .endToEndId("endToEndId").build();
 
-        when(listPixKeyUseCase.listAddressKeyUseCase(anyString(), any())).thenReturn(List.of(pixKey1, pixKey2));
+        when(listPixKeyUseCase.execute(anyString(), any())).thenReturn(List.of(pixKey1, pixKey2));
 
         mockMvc.perform(get("/v1/keys")
                 .header("requestIdentifier", UUID.randomUUID().toString())
@@ -213,7 +213,7 @@ public class PixKeyControllerTest {
 
     @Test
     void when_findPixKeyWithSuccess_expect_statusOk() throws Exception {
-        when(findPixKeyUseCase.findPixKeyUseCase(any(), anyString()))
+        when(findPixKeyUseCase.execute(any(), anyString()))
                 .thenReturn(pixKey);
 
         mockMvc.perform(get("/v1/keys/joao@picpay")

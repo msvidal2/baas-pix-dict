@@ -14,10 +14,10 @@ public class ClaimCancelUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public Claim cancel(@NonNull final Claim claim,
-                        final boolean canceledClaimant,
-                        @NonNull final ClaimCancelReason reason,
-                        @NonNull final String requestIdentifier) {
+    public Claim execute(@NonNull final Claim claim,
+                         final boolean canceledClaimant,
+                         @NonNull final ClaimCancelReason reason,
+                         @NonNull final String requestIdentifier) {
 
         validator.validate(claim);
 

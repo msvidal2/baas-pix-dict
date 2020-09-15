@@ -63,7 +63,7 @@ public class ClaimControllerCompleteTest {
 
     @Test
     void when_completeClaimsWithSuccess_expect_statusOk() throws Exception {
-        when(completeClaimUseCase.complete(any(), anyString())).thenReturn(claimResponse);
+        when(completeClaimUseCase.execute(any(), anyString())).thenReturn(claimResponse);
 
         mockMvc.perform(put("/v1/claims/1/complete")
                 .contentType(MediaType.APPLICATION_JSON)
