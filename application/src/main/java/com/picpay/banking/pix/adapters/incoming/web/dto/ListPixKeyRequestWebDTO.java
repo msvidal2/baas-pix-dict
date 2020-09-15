@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,17 @@ public class ListPixKeyRequestWebDTO {
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
     @NotNull
     private Integer ispb;
+
+    public PixKey toDomain() {
+        return PixKey.builder()
+            .key(key)
+            .taxId(cpfCnpj)
+            .personType(personType)
+            .accountNumber(accountNumber)
+            .accountType(accountType)
+            .branchNumber(branchNumber)
+            .ispb(ispb)
+            .build();
+    }
+
 }
