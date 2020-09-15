@@ -33,12 +33,10 @@ public class CreateAccessKeyDTO {
     private PersonTypeOriginal typePerson;
 
     public static CreateAccessKeyDTO fromPixKey(final PixKey pixKey, final CreateReason reason) {
-
-        final var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
         return CreateAccessKeyDTO.builder()
                 .accountNumber(pixKey.getAccountNumber())
-                .accountOpeningDate(dateTimeFormatter.format(pixKey.getAccountOpeningDate()))
+                .accountOpeningDate(
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").format(pixKey.getAccountOpeningDate()))
                 .accountType(AccountTypeOriginal.resolveFromDomain(pixKey.getAccountType()))
                 .branch(pixKey.getBranchNumber())
                 .businessPerson(pixKey.getFantasyName())
