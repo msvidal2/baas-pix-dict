@@ -54,7 +54,7 @@ public class FindClaimResponseDTO {
                 .accountNumber(nrConta)
                 .accountOpeningDate(dtHrAberturaConta)
                 .personType(PersonType.resolve(tpPessoa))
-                .cpfCnpj(cpfCnpj)
+                .cpfCnpj(String.valueOf(cpfCnpj))
                 .donorIspb(ispbDoador)
                 .donorData((dadosDoador == null? null: dadosDoador.toDonorData()))
                 .claimId(idReivindicacao)

@@ -42,7 +42,7 @@ public class ListClaimConverter implements DataConverter<ListClaimResponseDTO, C
             .accountType(AccountType.resolve(listClaimDTO.getTpConta()))
             .accountNumber(listClaimDTO.getNrConta())
             .personType(PersonType.resolve(listClaimDTO.getTpPessoa()))
-            .cpfCnpj(listClaimDTO.getCpfCnpj())
+            .cpfCnpj(String.valueOf(listClaimDTO.getCpfCnpj()))
             .donorIspb(listClaimDTO.getIspbDoador())
             .donorData(getDonorData(listClaimDTO))
             .accountOpeningDate(listClaimDTO.getDtHrAberturaConta())

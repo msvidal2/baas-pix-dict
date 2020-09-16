@@ -52,7 +52,7 @@ public class ListClaimDTO {
                 .accountNumber(nrConta)
                 .accountOpeningDate(dtHrAberturaConta)
                 .personType(PersonType.resolve(tpPessoa))
-                .cpfCnpj(cpfCnpj)
+                .cpfCnpj(String.valueOf(cpfCnpj))
                 .donorIspb(ispbDoador)
                 .donorData(doador.toDonorData())
                 .claimId(idReivindicacao)

@@ -21,7 +21,7 @@ public class ListClaimPortImpl implements ListClaimPort {
         var listClaimRequestDTO = ListClaimRequestDTO.builder()
             .ispb(claim.getIspb())
             .tpPessoaLogada(claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
-            .cpfCnpjLogado(claim.getCpfCnpj())
+            .cpfCnpjLogado(Long.parseLong(claim.getCpfCnpj()))
             .nrAgenciaLogada(claim.getBranchNumber())
             .nrContaLogada(claim.getAccountNumber())
             .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
