@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.*;
-import com.picpay.banking.pix.core.usecase.*;
+import com.picpay.banking.pix.core.ports.pixkey.*;
+import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -18,19 +18,18 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public RemovePixKeyUseCase removePixKeyUseCase(RemovePixKeyPort removePixKeyPort,
-                                                          @Qualifier("removePixKeyItemValidator") DictItemValidator dictItemValidator) {
+                                                   @Qualifier("removePixKeyItemValidator") DictItemValidator dictItemValidator) {
         return new RemovePixKeyUseCase(removePixKeyPort, dictItemValidator);
     }
 
     @Bean
-    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort,
-                                                   @Qualifier("findPixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new FindPixKeyUseCase(findPixKeyPort, dictItemValidator);
+    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort) {
+        return new FindPixKeyUseCase(findPixKeyPort);
     }
 
     @Bean
     public ListPixKeyUseCase listPixKeyUseCase(ListPixKeyPort listPixKeyPort,
-                                                   @Qualifier("listPixKeyItemValidator") DictItemValidator dictItemValidator) {
+                                               @Qualifier("listPixKeyItemValidator") DictItemValidator dictItemValidator) {
         return new ListPixKeyUseCase(listPixKeyPort, dictItemValidator);
     }
 

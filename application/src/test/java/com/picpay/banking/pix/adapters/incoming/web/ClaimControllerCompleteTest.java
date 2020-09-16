@@ -3,7 +3,7 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.usecase.CompleteClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

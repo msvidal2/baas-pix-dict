@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -78,6 +79,14 @@ public class CustomExceptionHandler {
             .map(FieldErrorDTO::from).collect(toList());
 
         return ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+    }
+
+    @ExceptionHandler({MissingRequestHeaderException.class})
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorDTO handleMissingRequestHeaderException(final MissingRequestHeaderException ex) {
+        log.error("error", ex);
+
+        return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
     }
 
 }
