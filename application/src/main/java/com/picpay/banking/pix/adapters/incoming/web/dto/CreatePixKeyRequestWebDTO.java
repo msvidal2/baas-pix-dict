@@ -1,9 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,4 +69,20 @@ public class CreatePixKeyRequestWebDTO {
     @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
     @NotNull
     private String requestIdentifier;
+
+    public PixKey toPixKey() {
+        return PixKey.builder()
+                .type(type)
+                .key(key)
+                .ispb(ispb)
+                .branchNumber(branchNumber)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .accountOpeningDate(accountOpeningDate)
+                .personType(personType)
+                .taxId(cpfCnpj)
+                .name(name)
+                .fantasyName(fantasyName)
+                .build();
+    }
 }

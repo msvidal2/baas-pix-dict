@@ -14,6 +14,8 @@ public class SearchPixKeyClientFallback extends ClientFallback implements Search
     }
 
     @Override
-    public ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(final String requestIdentifier, final ListPixKeyRequestDTO dto) { throw resolveException(); }
+    public ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(final String requestIdentifier, final ListPixKeyRequestDTO dto) {
+        throw resolveException();
+    }
 
 }

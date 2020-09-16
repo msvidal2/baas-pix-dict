@@ -50,8 +50,8 @@ class CreatePixKeyPortImplTest {
     }
 
     @Test
-    void when_createKeyWithSuccess_expect_pixKeyWithCreatedAtAndKey() {
-        when(maintenancePixKeyClient.create(anyString(), any()))
+    void when_createNonRandomKeyWithSuccess_expect_pixKeyWithCreatedAtAndKey() {
+        when(maintenancePixKeyClient.createPixKey(anyString(), any()))
                 .thenReturn(responseWrapper);
 
         var pixKey = PixKey.builder()
@@ -77,6 +77,48 @@ class CreatePixKeyPortImplTest {
             assertEquals(responseWrapper.getData().getKey(), response.getKey());
             assertEquals(responseWrapper.getData().getCreationDate(), response.getCreatedAt());
             assertEquals(responseWrapper.getData().getKeyOwnershipDate(), response.getStartPossessionAt());
+        });
+    }
+
+    @Test
+    void when_createRandomKeyWithSuccess_expect_pixKeyWithCreatedAtAndKey() {
+        var accessKey = AccessKeyCreateDTO.builder()
+                .creationDate(LocalDateTime.now())
+                .key(randomUUID().toString())
+                .keyOwnershipDate(LocalDateTime.now())
+                .returnCode(200)
+                .returnMessage("OK")
+                .build();
+
+        var localResponseWrapper = ResponseWrapperDTO.<AccessKeyCreateDTO>builder()
+                .data(accessKey)
+                .build();
+
+        when(maintenancePixKeyClient.createEvpPixKey(anyString(), any()))
+                .thenReturn(localResponseWrapper);
+
+        var pixKey = PixKey.builder()
+                .type(KeyType.RANDOM)
+                .ispb(34534543)
+                .nameIspb("PicPay")
+                .branchNumber("0001")
+                .accountType(AccountType.CHECKING)
+                .accountNumber("123456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("26581707007")
+                .name("Maria Aparecida")
+                .fantasyName("Maria Aparecida")
+                .endToEndId("kiuhnfkv8743yt8347ynd738f3885yi34")
+                .build();
+
+        assertDoesNotThrow(() -> {
+            var response = port.createPixKey(pixKey, CUSTOMER_REQUEST, randomUUID().toString());
+
+            assertNotNull(response);
+            assertEquals(localResponseWrapper.getData().getKey(), response.getKey());
+            assertEquals(localResponseWrapper.getData().getCreationDate(), response.getCreatedAt());
+            assertEquals(localResponseWrapper.getData().getKeyOwnershipDate(), response.getStartPossessionAt());
         });
     }
 

@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
-import com.picpay.banking.pix.converters.CreatePixKeyWebConverter;
+import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.usecase.*;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -33,16 +32,14 @@ public class PixKeyController {
 
     private ListPixKeyUseCase listPixKeyUseCase;
 
-    private CreatePixKeyWebConverter converter;
-
     @ApiOperation(value = PixKeyControllerMessages.METHOD_CREATE)
     @PostMapping
     @ResponseStatus(CREATED)
-    public PixKey create(@RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
-        var pixKey = converter.convert(requestDTO);
+    public PixKeyResponseDTO create(@RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
+        var pixKey = createPixKeyUseCase.execute(
+                requestDTO.toPixKey(), requestDTO.getReason(), requestDTO.getRequestIdentifier());
 
-        return createPixKeyUseCase.execute(
-                pixKey, requestDTO.getReason(), requestDTO.getRequestIdentifier());
+        return PixKeyResponseDTO.from(pixKey);
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_LIST)
@@ -57,12 +54,12 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_FIND)
     @GetMapping("/{key}")
     @ResponseStatus(OK)
-    public PixKey find(@PathVariable String key, @RequestHeader String userId) {
+    public PixKeyResponseDTO find(@PathVariable String key, @RequestHeader String userId) {
         var pixKey = PixKey.builder()
                 .key(key)
                 .build();
 
-        return findPixKeyUseCase.execute(pixKey, userId);
+        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(pixKey, userId));
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
@@ -76,11 +73,11 @@ public class PixKeyController {
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
-    public PixKey updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
+    public PixKeyResponseDTO updateAccount(@PathVariable String key, @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
         updateAccountUseCase.execute(pixKey, dto.getReason(), dto.getRequestIdentifier());
 
-        return findPixKeyUseCase.execute(pixKey, dto.getUserId());
+        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(pixKey, dto.getUserId()));
     }
 }

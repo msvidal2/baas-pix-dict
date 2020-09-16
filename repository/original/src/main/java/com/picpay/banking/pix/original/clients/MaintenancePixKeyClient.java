@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "maintenancePixKeyClient",
         url = "${pix.services.original.url}",
-        path = "/intp-manutencao-chave-acesso-java",
+        path = "/dict",
         fallbackFactory = MaintenancePixKeyClientFallbackFactory.class)
 public interface MaintenancePixKeyClient {
 
     @PostMapping("/v1/access-keys")
-    ResponseWrapperDTO<AccessKeyCreateDTO> create(@RequestHeader("x-transaction-id") String requestIdentifier,
+    ResponseWrapperDTO<AccessKeyCreateDTO> createPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
+                                                        @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
+
+    @PostMapping("/v1/access-keys/evp")
+    ResponseWrapperDTO<AccessKeyCreateDTO> createEvpPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                   @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
 
     @PutMapping("/v1/access-keys")
@@ -28,7 +32,5 @@ public interface MaintenancePixKeyClient {
     @DeleteMapping("/v1/access-keys")
     ResponseWrapperDTO<AccessKeyRemoveDTO> remove(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                   @RequestBody RemoveAccessKeyDTO removeAccessKeyDTO);
-
-
 
 }
