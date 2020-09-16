@@ -16,18 +16,23 @@ public class MaintenancePixKeyClientFallback extends ClientFallback implements M
     }
 
     @Override
-    public ResponseWrapperDTO<AccessKeyCreateDTO> create(final String requestIdentifier, final CreateAccessKeyDTO createAccessKeyDTO) {
-        return null;
+    public ResponseWrapperDTO<AccessKeyCreateDTO> createPixKey(String requestIdentifier, CreateAccessKeyDTO createAccessKeyDTO) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<AccessKeyCreateDTO> createEvpPixKey(String requestIdentifier, CreateAccessKeyDTO createAccessKeyDTO) {
+        throw resolveException();
     }
 
     @Override
     public ResponseWrapperDTO<AccessKeyAccountUpdateDTO> update(final String requestIdentifier, final UpdateAccessKeyAccountDTO updateAccessKeyAccountDTO) {
-        return null;
+        throw resolveException();
     }
 
     @Override
     public ResponseWrapperDTO<AccessKeyRemoveDTO> remove(String requestIdentifier, RemoveAccessKeyDTO removeAccessKeyDTO) {
-        return null;
+        throw resolveException();
     }
 
 }
