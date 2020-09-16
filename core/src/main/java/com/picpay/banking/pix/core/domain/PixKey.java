@@ -30,12 +30,11 @@ public class PixKey {
     private ClaimType claim;
     private Statistic statistic;
 
-    public PixKey(String key, String name, String fantasyName, LocalDateTime createdAt, LocalDateTime startPossessionAt, ClaimType claim) {
-        this.key = key;
-        this.name = name;
-        this.fantasyName = fantasyName;
-        this.createdAt = createdAt;
-        this.startPossessionAt = startPossessionAt;
-        this.claim = claim;
+    public static PixKey from(String key) {
+        return PixKey.builder()
+                .key(key)
+                .build();
     }
+
+
 }

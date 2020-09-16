@@ -4,7 +4,6 @@ import com.picpay.banking.pix.core.ports.claim.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.*;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
-import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
 import com.picpay.banking.pix.original.interceptors.FeignClientInterceptor;
 import com.picpay.banking.pix.original.ports.claim.*;
 import com.picpay.banking.pix.original.ports.infraction.InfractionReportPortImpl;
@@ -73,8 +72,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public ListPixKeyPort listPixKeyPort(SearchPixKeyClient searchPixKeyClient) {
-        return new ListPixKeyPortImpl(searchPixKeyClient);
+    public ListPixKeyPort listPixKeyPort(MaintenancePixKeyClient maintenancePixKeyClient) {
+        return new ListPixKeyPortImpl(maintenancePixKeyClient);
     }
 
     @Bean

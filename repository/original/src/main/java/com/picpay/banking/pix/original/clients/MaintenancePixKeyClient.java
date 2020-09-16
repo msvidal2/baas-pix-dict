@@ -1,36 +1,40 @@
 package com.picpay.banking.pix.original.clients;
 
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
+import com.picpay.banking.pix.original.dto.request.ListPixKeyRequestDTO;
 import com.picpay.banking.pix.original.dto.request.RemoveAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyRemoveDTO;
-import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+import com.picpay.banking.pix.original.dto.response.*;
 import com.picpay.banking.pix.original.fallbacks.MaintenancePixKeyClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "maintenancePixKeyClient",
         url = "${pix.services.original.url}",
-        path = "/dict",
+        path = "/dict/v1/access-keys",
         fallbackFactory = MaintenancePixKeyClientFallbackFactory.class)
 public interface MaintenancePixKeyClient {
 
-    @PostMapping("/v1/access-keys")
+    @PostMapping
     ResponseWrapperDTO<AccessKeyCreateDTO> createPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                         @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
 
-    @PostMapping("/v1/access-keys/evp")
+    @PostMapping("/evp")
     ResponseWrapperDTO<AccessKeyCreateDTO> createEvpPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                   @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
 
-    @PutMapping("/v1/access-keys")
+    @PutMapping
     ResponseWrapperDTO<AccessKeyAccountUpdateDTO> update(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                          @RequestBody UpdateAccessKeyAccountDTO updateAccessKeyAccountDTO);
 
-    @DeleteMapping("/v1/access-keys")
+    @DeleteMapping
     ResponseWrapperDTO<AccessKeyRemoveDTO> remove(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                   @RequestBody RemoveAccessKeyDTO removeAccessKeyDTO);
+
+    @PostMapping("/v1/access-keys/searches")
+    ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier, @RequestBody ListPixKeyRequestDTO dto);
+
 
 }

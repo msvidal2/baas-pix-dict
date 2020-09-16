@@ -62,11 +62,7 @@ public class PixKeyController {
                                   @PathVariable String key,
                                   @RequestHeader String userId) {
 
-        var pixKey = PixKey.builder()
-                .key(key)
-                .build();
-
-        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, pixKey, userId));
+        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, PixKey.from(key), userId));
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
@@ -75,6 +71,7 @@ public class PixKeyController {
     public void remove(@RequestHeader String requestIdentifier,
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
+
         removePixKeyUseCase.execute(requestIdentifier, dto.toDomain(key), dto.getReason());
     }
 

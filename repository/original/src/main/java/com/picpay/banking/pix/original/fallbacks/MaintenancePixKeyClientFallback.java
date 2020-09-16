@@ -2,12 +2,12 @@ package com.picpay.banking.pix.original.fallbacks;
 
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
+import com.picpay.banking.pix.original.dto.request.ListPixKeyRequestDTO;
 import com.picpay.banking.pix.original.dto.request.RemoveAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyRemoveDTO;
-import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+import com.picpay.banking.pix.original.dto.response.*;
+
+import java.util.List;
 
 public class MaintenancePixKeyClientFallback extends ClientFallback implements MaintenancePixKeyClient {
 
@@ -32,6 +32,11 @@ public class MaintenancePixKeyClientFallback extends ClientFallback implements M
 
     @Override
     public ResponseWrapperDTO<AccessKeyRemoveDTO> remove(String requestIdentifier, RemoveAccessKeyDTO removeAccessKeyDTO) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(String requestIdentifier, ListPixKeyRequestDTO dto) {
         throw resolveException();
     }
 

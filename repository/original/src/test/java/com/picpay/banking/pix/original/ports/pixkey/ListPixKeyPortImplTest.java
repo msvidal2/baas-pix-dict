@@ -1,14 +1,13 @@
 package com.picpay.banking.pix.original.ports.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
+import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.dto.AccountTypeOriginal;
 import com.picpay.banking.pix.original.dto.KeyTypeOriginal;
 import com.picpay.banking.pix.original.dto.PersonTypeOriginal;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyDTO;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
-import com.picpay.banking.pix.original.ports.pixkey.ListPixKeyPortImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,12 +32,12 @@ class ListPixKeyPortImplTest {
     private ListPixKeyPortImpl port;
 
     @Mock
-    private SearchPixKeyClient searchPixKeyClient;
+    private MaintenancePixKeyClient maintenancePixKeyClient;
 
     @Test
     void testListAccount() {
 
-        when(searchPixKeyClient.listPixKey(any(),any())).thenReturn(getListPixKeyResponseDTO());
+        when(maintenancePixKeyClient.listPixKey(any(),any())).thenReturn(getListPixKeyResponseDTO());
 
         var pixKey = PixKey.builder()
             .type(KeyType.EMAIL)
