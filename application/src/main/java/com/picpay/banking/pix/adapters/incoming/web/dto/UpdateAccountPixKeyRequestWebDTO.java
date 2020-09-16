@@ -46,10 +46,6 @@ public class UpdateAccountPixKeyRequestWebDTO {
     @NonNull
     private UpdateReason reason;
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NonNull
-    private String requestIdentifier;
-
     @ApiModelProperty(value =
             "CPF ou algum outro identificador do usuário final que originou a consulta de chave. Será utilizado pelo"
                     +" DICT para calcular o rate-limiting.", required = true)

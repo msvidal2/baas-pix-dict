@@ -3,15 +3,13 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreatePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.RemovePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyRequestWebDTO;
-import com.picpay.banking.pix.converters.CreatePixKeyWebConverter;
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.usecase.*;
+import com.picpay.banking.pix.core.usecase.pixkey.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,9 +54,6 @@ public class PixKeyControllerTest {
     @Mock
     private ListPixKeyUseCase listPixKeyUseCase;
 
-    @Spy
-    private CreatePixKeyWebConverter converter;
-
     private PixKey pixKey;
 
     private CreatePixKeyRequestWebDTO createPixKeyDTO;
@@ -100,15 +95,15 @@ public class PixKeyControllerTest {
                 .name("Silva Silva")
                 .fantasyName("Fantasy Name")
                 .reason(CreateReason.CUSTOMER_REQUEST)
-                .requestIdentifier("1234")
                 .build();
     }
 
     @Test
     public void when_createPixKeyWithSuccess_expect_statusCreated() throws Exception {
-        when(createPixKeyUseCase.execute(any(), any(), anyString())).thenReturn(pixKey);
+        when(createPixKeyUseCase.execute(anyString(), any(), any())).thenReturn(pixKey);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isCreated())
@@ -121,10 +116,11 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
-        when(updateAccountUseCase.execute(any(), any(), anyString())).thenReturn(pixKey);
-        when(findPixKeyUseCase.execute(any(), anyString())).thenReturn(pixKey);
+        when(updateAccountUseCase.execute(anyString(), any(), any())).thenReturn(pixKey);
+        when(findPixKeyUseCase.execute(anyString(), any(), anyString())).thenReturn(pixKey);
 
         mockMvc.perform(put(BASE_URL +"/joao@picpay")
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyRequestWebDTO.builder()
                         .ispb(1)
@@ -134,7 +130,6 @@ public class PixKeyControllerTest {
                         .branchNumber("4123")
                         .reason(UpdateReason.CLIENT_REQUEST)
                         .type(KeyType.EMAIL)
-                        .requestIdentifier("abc")
                         .userId("123")
                         .build())))
                 .andExpect(status().isOk())
@@ -147,15 +142,15 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_removePixKeySuccessfully_expect_statusNoContent() throws Exception {
-        doNothing().when(removePixKeyUseCase).execute(any(), any(), anyString());
+        doNothing().when(removePixKeyUseCase).execute(anyString(), any(), any());
 
         mockMvc.perform(delete(BASE_URL +"/joao@picpay")
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(RemovePixKeyRequestWebDTO.builder()
                         .ispb(1)
                         .reason(RemoveReason.CLIENT_REQUEST)
                         .type(KeyType.EMAIL)
-                        .requestIdentifier("abc")
                         .build())))
                 .andExpect(status().isNoContent());
     }
@@ -213,10 +208,11 @@ public class PixKeyControllerTest {
 
     @Test
     void when_findPixKeyWithSuccess_expect_statusOk() throws Exception {
-        when(findPixKeyUseCase.execute(any(), anyString()))
+        when(findPixKeyUseCase.execute(anyString(), any(), anyString()))
                 .thenReturn(pixKey);
 
         mockMvc.perform(get("/v1/keys/joao@picpay")
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .header("userId", "59375566072"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.key", equalTo("joao@picpay.com")))
@@ -231,6 +227,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setType(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -246,6 +243,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setKey(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -261,6 +259,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setIspb(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -276,6 +275,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setAccountType(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -291,6 +291,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setAccountNumber(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -306,6 +307,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setAccountOpeningDate(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -321,6 +323,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setPersonType(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -336,6 +339,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setCpfCnpj(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -351,6 +355,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setName(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -366,6 +371,7 @@ public class PixKeyControllerTest {
         createPixKeyDTO.setReason(null);
 
         mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -378,17 +384,14 @@ public class PixKeyControllerTest {
 
     @Test
     public void when_createPixKeyWithNullRequestIdentifier_expect_statusBadRequest() throws Exception {
-        createPixKeyDTO.setRequestIdentifier(null);
-
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", equalTo(400)))
                 .andExpect(jsonPath("$.error", equalTo("Bad Request")))
-                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
-                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("requestIdentifier")))
-                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("must not be null")));
+                .andExpect(jsonPath("$.message",
+                        equalTo("Missing request header 'requestIdentifier' for method parameter of type String")));
     }
 
 }

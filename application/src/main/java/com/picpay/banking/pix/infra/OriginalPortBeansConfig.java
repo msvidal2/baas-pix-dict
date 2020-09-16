@@ -1,10 +1,14 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.*;
+import com.picpay.banking.pix.core.ports.claim.*;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import com.picpay.banking.pix.core.ports.pixkey.*;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import com.picpay.banking.pix.original.clients.SearchPixKeyClient;
 import com.picpay.banking.pix.original.interceptors.FeignClientInterceptor;
-import com.picpay.banking.pix.original.ports.*;
+import com.picpay.banking.pix.original.ports.claim.*;
+import com.picpay.banking.pix.original.ports.infraction.InfractionReportPortImpl;
+import com.picpay.banking.pix.original.ports.pixkey.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

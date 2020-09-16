@@ -26,11 +26,6 @@ public class RemovePixKeyRequestWebDTO {
     @NonNull
     private RemoveReason reason;
 
-    @ApiModelProperty(value = "CPF or some other identifier of the end user that originated the key query. " +
-            "It will be used by the DICT to calculate the rate-limiting.", required = true)
-    @NonNull
-    private String requestIdentifier;
-
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
     @NonNull
     protected Integer ispb;

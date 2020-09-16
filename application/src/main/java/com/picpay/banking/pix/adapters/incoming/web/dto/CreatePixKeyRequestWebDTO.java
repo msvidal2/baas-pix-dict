@@ -66,10 +66,6 @@ public class CreatePixKeyRequestWebDTO {
     @NotNull
     protected CreateReason reason;
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NotNull
-    private String requestIdentifier;
-
     public PixKey toPixKey() {
         return PixKey.builder()
                 .type(type)
