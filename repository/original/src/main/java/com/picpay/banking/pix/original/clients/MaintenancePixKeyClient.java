@@ -23,7 +23,7 @@ public interface MaintenancePixKeyClient {
 
     @PostMapping("/evp")
     ResponseWrapperDTO<AccessKeyCreateDTO> createEvpPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                  @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
+                                                           @RequestBody CreateAccessKeyDTO createAccessKeyDTO);
 
     @PutMapping
     ResponseWrapperDTO<AccessKeyAccountUpdateDTO> update(@RequestHeader("x-transaction-id") String requestIdentifier,
@@ -33,8 +33,13 @@ public interface MaintenancePixKeyClient {
     ResponseWrapperDTO<AccessKeyRemoveDTO> remove(@RequestHeader("x-transaction-id") String requestIdentifier,
                                                   @RequestBody RemoveAccessKeyDTO removeAccessKeyDTO);
 
-    @PostMapping("/v1/access-keys/searches")
-    ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier, @RequestBody ListPixKeyRequestDTO dto);
+    @GetMapping
+    ResponseWrapperDTO<FindPixKeyResponseDTO> findByKey(@RequestHeader("x-transaction-id") String requestIdentifier,
+                                                        @PathVariable String key,
+                                                        @PathVariable String responsableKey);
 
+    @PostMapping("/searches")
+    ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
+                                                       @RequestBody ListPixKeyRequestDTO dto);
 
 }

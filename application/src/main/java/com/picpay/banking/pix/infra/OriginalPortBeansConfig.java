@@ -52,8 +52,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public FindPixKeyPort findPixKeyPort() {
-        return new FindPixKeyPortImpl();
+    public FindPixKeyPort findPixKeyPort(final MaintenancePixKeyClient maintenancePixKeyClient) {
+        return new FindPixKeyPortImpl(maintenancePixKeyClient);
     }
 
     @Bean
