@@ -22,4 +22,9 @@ public class ClaimClientFallback extends ClientFallback implements ClaimClient {
         throw resolveException();
     }
 
+    @Override
+    public ResponseWrapperDTO<ClaimResponseDTO> cancel(String id, ClaimConfirmationRequestDTO claimConfirmationRequestDTO) {
+        throw resolveException();
+    }
+
 }

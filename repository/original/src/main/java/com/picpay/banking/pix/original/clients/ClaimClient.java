@@ -21,4 +21,8 @@ public interface ClaimClient {
     ResponseWrapperDTO<ClaimResponseDTO> confirm(@PathVariable String id,
                                                  @RequestBody ClaimConfirmationRequestDTO claimConfirmationRequestDTO);
 
+    @PatchMapping("/{id}/cancellations")
+    ResponseWrapperDTO<ClaimResponseDTO> cancel(@PathVariable String id,
+                                                 @RequestBody ClaimConfirmationRequestDTO claimConfirmationRequestDTO);
+
 }

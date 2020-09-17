@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.original.dto.request;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.original.dto.ClaimReasonOriginal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,10 +17,10 @@ public class ClaimConfirmationRequestDTO {
     private String reason;
     private String signature;
 
-    public static ClaimConfirmationRequestDTO from(Claim claim, ClaimConfirmationReason reason) {
+    public static ClaimConfirmationRequestDTO from(final Claim claim, final int reason) {
         return ClaimConfirmationRequestDTO.builder()
                 .claimId(claim.getClaimId())
-                .reason(ClaimReasonOriginal.from(reason.getValue()).name())
+                .reason(ClaimReasonOriginal.from(reason).name())
                 .signature("string") // TODO: verificar qual informação deve ser enviada
                 .build();
     }

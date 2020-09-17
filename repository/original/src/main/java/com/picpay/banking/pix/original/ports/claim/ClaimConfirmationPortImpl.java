@@ -14,7 +14,7 @@ public class ClaimConfirmationPortImpl implements ClaimConfirmationPort {
 
     @Override
     public Claim confirm(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
-        var requestDTO = ClaimConfirmationRequestDTO.from(claim, reason);
+        var requestDTO = ClaimConfirmationRequestDTO.from(claim, reason.getValue());
 
         var claimResponse = claimClient.confirm(claim.getClaimId(), requestDTO)
                 .getData();
