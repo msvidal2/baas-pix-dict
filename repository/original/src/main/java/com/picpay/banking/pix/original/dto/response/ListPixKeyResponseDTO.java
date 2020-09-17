@@ -37,13 +37,11 @@ public class ListPixKeyResponseDTO {
 
     public PixKey toDomain() {
         return PixKey.builder()
-            .type(Optional.ofNullable(Integer.valueOf(keyType)).map(KeyType::resolve).orElse(null))
             .ispb(Integer.valueOf(ispb))
             .branchNumber(branch)
             .accountNumber(account)
-            .accountType(Optional.ofNullable(Integer.valueOf(accountType)).map(AccountType::resolve).orElse(null))
+            .startPossessionAt(keyOwnershipDate)
             .accountOpeningDate(accountOpeningDate)
-            .personType(Optional.ofNullable(Integer.valueOf(typePerson)).map(PersonType::resolve).orElse(null))
             .taxId(taxId)
             .name(name)
             .fantasyName(businessPerson)
