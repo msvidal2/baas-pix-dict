@@ -6,9 +6,6 @@ import com.picpay.banking.pix.original.clients.ClaimClient;
 import com.picpay.banking.pix.original.dto.request.CreateClaimRequestDTO;
 import lombok.AllArgsConstructor;
 
-
-// TODO: Implementar testes
-
 @AllArgsConstructor
 public class CreateClaimPortImpl implements CreateClaimPort {
 
@@ -16,10 +13,14 @@ public class CreateClaimPortImpl implements CreateClaimPort {
 
     @Override
     public Claim createPixKey(Claim claim, String requestIdentifier) {
-        var response = claimClient.create(requestIdentifier, CreateClaimRequestDTO.fromClaim(claim));
+        var responseWrapper = claimClient.create(requestIdentifier, CreateClaimRequestDTO.fromClaim(claim));
+        var claimResponse = responseWrapper.getData();
 
-        // TODO: aguardando swagger do original para obter a definição do objeto de response
-        return null;
+        if(claimResponse == null) {
+            return null;
+        }
+
+        return claimResponse.getClaim().toDomain();
     }
 
 }
