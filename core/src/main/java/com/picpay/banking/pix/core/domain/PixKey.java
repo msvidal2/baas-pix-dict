@@ -30,11 +30,4 @@ public class PixKey {
     private ClaimType claim;
     private Statistic statistic;
 
-    public static PixKey from(String key) {
-        return PixKey.builder()
-                .key(key)
-                .build();
-    }
-
-
 }

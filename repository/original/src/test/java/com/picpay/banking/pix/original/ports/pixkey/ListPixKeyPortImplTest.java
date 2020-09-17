@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.original.ports.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class ListPixKeyPortImplTest {
     private ListPixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient maintenancePixKeyClient;
 
     @Test
     void testListAccount() {

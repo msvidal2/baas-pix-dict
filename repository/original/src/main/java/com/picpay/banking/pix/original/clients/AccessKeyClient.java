@@ -1,11 +1,10 @@
 package com.picpay.banking.pix.original.clients;
 
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
-import com.picpay.banking.pix.original.dto.request.ListPixKeyRequestDTO;
 import com.picpay.banking.pix.original.dto.request.RemoveAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
 import com.picpay.banking.pix.original.dto.response.*;
-import com.picpay.banking.pix.original.fallbacks.MaintenancePixKeyClientFallbackFactory;
+import com.picpay.banking.pix.original.fallbacks.AccessKeyClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,8 @@ import java.util.List;
 @FeignClient(name = "maintenancePixKeyClient",
         url = "${pix.services.original.url}",
         path = "/dict/v1/access-keys",
-        fallbackFactory = MaintenancePixKeyClientFallbackFactory.class)
-public interface MaintenancePixKeyClient {
+        fallbackFactory = AccessKeyClientFallbackFactory.class)
+public interface AccessKeyClient {
 
     @PostMapping
     ResponseWrapperDTO<AccessKeyCreateDTO> createPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,

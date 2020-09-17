@@ -4,7 +4,7 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
-    private final MaintenancePixKeyClient maintenancePixKeyClient;
+    private final AccessKeyClient maintenancePixKeyClient;
 
     @Override
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {

@@ -4,10 +4,9 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
-import com.picpay.banking.pix.original.ports.pixkey.CreatePixKeyPortImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,7 @@ class CreatePixKeyPortImplTest {
     private CreatePixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient maintenancePixKeyClient;
 
     private ResponseWrapperDTO<AccessKeyCreateDTO> responseWrapper;
 

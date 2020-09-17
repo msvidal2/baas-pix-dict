@@ -3,7 +3,7 @@ package com.picpay.banking.pix.original.ports.pixkey;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient maintenancePixKeyClient;
 
     @Override
     public PixKey updateAccount(String requestIdentifier, PixKey pixKey, UpdateReason reason) {

@@ -3,7 +3,7 @@ package com.picpay.banking.pix.infra;
 import com.picpay.banking.pix.core.ports.claim.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.*;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.interceptors.FeignClientInterceptor;
 import com.picpay.banking.pix.original.ports.claim.*;
 import com.picpay.banking.pix.original.ports.infraction.InfractionReportPortImpl;
@@ -37,8 +37,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public CreatePixKeyPort createPixKeyPort(final MaintenancePixKeyClient maintenancePixKeyClient) {
-        return new CreatePixKeyPortImpl(maintenancePixKeyClient);
+    public CreatePixKeyPort createPixKeyPort(final AccessKeyClient accessKeyClient) {
+        return new CreatePixKeyPortImpl(accessKeyClient);
     }
 
     @Bean
@@ -52,8 +52,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public FindPixKeyPort findPixKeyPort(final MaintenancePixKeyClient maintenancePixKeyClient) {
-        return new FindPixKeyPortImpl(maintenancePixKeyClient);
+    public FindPixKeyPort findPixKeyPort(final AccessKeyClient accessKeyClient) {
+        return new FindPixKeyPortImpl(accessKeyClient);
     }
 
     @Bean
@@ -72,18 +72,18 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public ListPixKeyPort listPixKeyPort(MaintenancePixKeyClient maintenancePixKeyClient) {
-        return new ListPixKeyPortImpl(maintenancePixKeyClient);
+    public ListPixKeyPort listPixKeyPort(AccessKeyClient accessKeyClient) {
+        return new ListPixKeyPortImpl(accessKeyClient);
     }
 
     @Bean
-    public RemovePixKeyPort removePixKeyPort(MaintenancePixKeyClient maintenancePixKeyClient) {
-        return new RemovePixKeyPortImpl(maintenancePixKeyClient);
+    public RemovePixKeyPort removePixKeyPort(AccessKeyClient accessKeyClient) {
+        return new RemovePixKeyPortImpl(accessKeyClient);
     }
 
     @Bean
-    public UpdateAccountPixKeyPort updateAccountPixKeyPort(final MaintenancePixKeyClient maintenancePixKeyClient) {
-        return new UpdateAccountPixKeyPortImpl(maintenancePixKeyClient);
+    public UpdateAccountPixKeyPort updateAccountPixKeyPort(final AccessKeyClient accessKeyClient) {
+        return new UpdateAccountPixKeyPortImpl(accessKeyClient);
     }
 
 }

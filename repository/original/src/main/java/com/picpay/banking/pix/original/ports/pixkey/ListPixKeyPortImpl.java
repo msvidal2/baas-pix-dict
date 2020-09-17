@@ -2,7 +2,7 @@ package com.picpay.banking.pix.original.ports.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.ListPixKeyResponseDTO;
 import lombok.AllArgsConstructor;
 
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ListPixKeyPortImpl implements ListPixKeyPort {
 
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient maintenancePixKeyClient;
 
     @Override
     public List<PixKey> listPixKey(final String requestIdentifier, final PixKey pixKey) {
