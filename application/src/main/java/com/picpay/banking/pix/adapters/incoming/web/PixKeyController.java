@@ -62,7 +62,7 @@ public class PixKeyController {
                                   @PathVariable String key,
                                   @RequestHeader String userId) {
 
-        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, PixKey.from(key), userId));
+        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, key, userId));
     }
 
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
@@ -84,6 +84,6 @@ public class PixKeyController {
 
         updateAccountUseCase.execute(requestIdentifier, pixKey, dto.getReason());
 
-        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, pixKey, dto.getUserId()));
+        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, pixKey.getKey(), dto.getUserId()));
     }
 }

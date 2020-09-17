@@ -13,8 +13,8 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     private MaintenancePixKeyClient maintenancePixKeyClient;
 
     @Override
-    public PixKey findPixKey(String requestIdentifier, PixKey pixKey, String userId) {
-        var responseDTO = maintenancePixKeyClient.findByKey(requestIdentifier, pixKey.getKey(), userId);
+    public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
+        var responseDTO = maintenancePixKeyClient.findByKey(requestIdentifier, pixKey, userId);
 
         return responseDTO.getData().toDomain();
     }

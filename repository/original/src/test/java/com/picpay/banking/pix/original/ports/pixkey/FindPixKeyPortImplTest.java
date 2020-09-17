@@ -56,9 +56,7 @@ class FindPixKeyPortImplTest {
         assertDoesNotThrow(() -> {
             var response = port.findPixKey(
                     randomUUID().toString(),
-                    PixKey.builder()
-                            .key("joao@picpay.com")
-                            .build(),
+                    "joao@picpay.com",
                     "065.633.164-09");
 
             assertEquals(responseWrapperDTO.getData().getTaxId(), response.getTaxId());
