@@ -4,9 +4,11 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
 import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
-public class FindPixKeyPortImpl  implements FindPixKeyPort {
+public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     private MaintenancePixKeyClient maintenancePixKeyClient;
 

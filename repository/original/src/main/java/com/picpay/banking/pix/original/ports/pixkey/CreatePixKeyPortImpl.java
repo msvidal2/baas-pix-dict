@@ -9,7 +9,9 @@ import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
