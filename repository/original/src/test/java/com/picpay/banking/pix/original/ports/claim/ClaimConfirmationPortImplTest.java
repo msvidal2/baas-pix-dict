@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.original.ports.claim;
 
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.original.clients.ClaimClient;
 import com.picpay.banking.pix.original.dto.AccountTypeOriginal;
 import com.picpay.banking.pix.original.dto.KeyTypeOriginal;
@@ -13,11 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
+import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,10 +25,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CreateClaimPortImplTest {
+class ClaimConfirmationPortImplTest {
 
     @InjectMocks
-    private CreateClaimPortImpl port;
+    private ClaimConfirmationPortImpl port;
 
     @Mock
     private ClaimClient claimClient;
@@ -40,16 +40,7 @@ class CreateClaimPortImplTest {
     @BeforeEach
     void setup() {
         claim = Claim.builder()
-                .accountNumber("123456")
-                .accountType(AccountType.CHECKING)
-                .branchNumber("0001")
-                .claimType(ClaimType.POSSESION_CLAIM)
-                .key("+5511998765499")
-                .keyType(KeyType.CELLPHONE)
-                .name("Deutonio Celso da Silva")
-                .ispb(92894922)
-                .cpfCnpj("12345678902")
-                .personType(PersonType.INDIVIDUAL_PERSON)
+                .claimId(randomUUID().toString())
                 .build();
 
         claimResponseDTO = ClaimResponseDTO.builder()
@@ -75,15 +66,15 @@ class CreateClaimPortImplTest {
     }
 
     @Test
-    void when_createClaimWithSuccess_expect_claim() {
+    void when_confirmWithSuccess_expect_claim() {
         var responseWrapper = ResponseWrapperDTO.<ClaimResponseDTO>builder()
                 .data(claimResponseDTO)
                 .build();
 
-        when(claimClient.create(any())).thenReturn(responseWrapper);
+        when(claimClient.confirm(anyString(), any())).thenReturn(responseWrapper);
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(claim, randomUUID().toString());
+            var response = port.confirm(claim, CLIENT_REQUEST, randomUUID().toString());
 
             assertNotNull(response);
             assertEquals("+5511998765499", response.getKey());
@@ -97,13 +88,14 @@ class CreateClaimPortImplTest {
     }
 
     @Test
-    void when_createClaimWithoutResponseData_expect_null() {
-        var responseWrapper = ResponseWrapperDTO.<ClaimResponseDTO>builder().build();
+    void when_confirmReturnWithoutClaim_expect_null() {
+        var responseWrapper = ResponseWrapperDTO.<ClaimResponseDTO>builder()
+                .build();
 
-        when(claimClient.create(any())).thenReturn(responseWrapper);
+        when(claimClient.confirm(anyString(), any())).thenReturn(responseWrapper);
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(claim, randomUUID().toString());
+            var response = port.confirm(claim, CLIENT_REQUEST, randomUUID().toString());
 
             assertNull(response);
         });

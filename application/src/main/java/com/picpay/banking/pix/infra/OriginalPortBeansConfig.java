@@ -29,8 +29,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationPort claimConfirmationPort() {
-        return new ClaimConfirmationPortImpl();
+    public ClaimConfirmationPort claimConfirmationPort(final ClaimClient claimClient) {
+        return new ClaimConfirmationPortImpl(claimClient);
     }
 
     @Bean

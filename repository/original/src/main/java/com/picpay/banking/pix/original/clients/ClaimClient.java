@@ -1,13 +1,12 @@
 package com.picpay.banking.pix.original.clients;
 
+import com.picpay.banking.pix.original.dto.request.ClaimConfirmationRequestDTO;
 import com.picpay.banking.pix.original.dto.request.CreateClaimRequestDTO;
 import com.picpay.banking.pix.original.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
 import com.picpay.banking.pix.original.fallbacks.ClaimClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "claimClient",
         url = "${pix.services.original.url}",
@@ -16,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface ClaimClient {
 
     @PostMapping
-    ResponseWrapperDTO<ClaimResponseDTO> create(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                @RequestBody CreateClaimRequestDTO createClaimRequestDTO);
+    ResponseWrapperDTO<ClaimResponseDTO> create(@RequestBody CreateClaimRequestDTO createClaimRequestDTO);
+
+    @PatchMapping("/{id}/confirmations")
+    ResponseWrapperDTO<ClaimResponseDTO> confirm(@PathVariable String id,
+                                                 @RequestBody ClaimConfirmationRequestDTO claimConfirmationRequestDTO);
 
 }
