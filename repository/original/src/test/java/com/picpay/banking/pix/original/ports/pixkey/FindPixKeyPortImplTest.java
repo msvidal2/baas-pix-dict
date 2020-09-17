@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.original.ports.pixkey;
 
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.AccountTypeOriginal;
 import com.picpay.banking.pix.original.dto.KeyTypeOriginal;
 import com.picpay.banking.pix.original.dto.PersonTypeOriginal;
@@ -29,7 +28,7 @@ class FindPixKeyPortImplTest {
     private FindPixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     private ResponseWrapperDTO<FindPixKeyResponseDTO> responseWrapperDTO;
 
@@ -51,7 +50,7 @@ class FindPixKeyPortImplTest {
 
     @Test
     void when_findPixKeySuccessfully_expect_equalResults() {
-        when(maintenancePixKeyClient.findByKey(anyString(), anyString(), anyString())).thenReturn(responseWrapperDTO);
+        when(accessKeyClient.findByKey(anyString(), anyString(), anyString())).thenReturn(responseWrapperDTO);
 
         assertDoesNotThrow(() -> {
             var response = port.findPixKey(

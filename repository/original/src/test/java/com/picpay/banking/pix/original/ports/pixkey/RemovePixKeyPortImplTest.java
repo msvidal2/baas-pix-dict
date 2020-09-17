@@ -2,10 +2,9 @@ package com.picpay.banking.pix.original.ports.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyRemoveDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
-import com.picpay.banking.pix.original.ports.pixkey.RemovePixKeyPortImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +25,7 @@ class RemovePixKeyPortImplTest {
     private RemovePixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient originalClient;
+    private AccessKeyClient originalClient;
 
     @Test
     void when_removePixKeySuccessfully_expect_equalResults() {
