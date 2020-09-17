@@ -38,8 +38,8 @@ public interface MaintenancePixKeyClient {
                                                         @PathVariable String key,
                                                         @PathVariable String responsableKey);
 
-    @PostMapping("/searches")
-    ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                       @RequestBody ListPixKeyRequestDTO dto);
+    @GetMapping
+    ResponseWrapperDTO<List<ListPixKeyResponseDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
+                                                       @PathVariable("tax-id") String taxId);
 
 }

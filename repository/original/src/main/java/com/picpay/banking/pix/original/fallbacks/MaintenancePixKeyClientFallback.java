@@ -41,7 +41,7 @@ public class MaintenancePixKeyClientFallback extends ClientFallback implements M
     }
 
     @Override
-    public ResponseWrapperDTO<List<ListPixKeyDTO>> listPixKey(String requestIdentifier, ListPixKeyRequestDTO dto) {
+    public ResponseWrapperDTO<List<ListPixKeyResponseDTO>> listPixKey(String requestIdentifier, String taxId) {
         throw resolveException();
     }
 
