@@ -40,6 +40,6 @@ public interface MaintenancePixKeyClient {
 
     @GetMapping
     ResponseWrapperDTO<List<ListPixKeyResponseDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                       @PathVariable("tax-id") String taxId);
+                                                       @RequestParam("tax-id") String taxId);
 
 }
