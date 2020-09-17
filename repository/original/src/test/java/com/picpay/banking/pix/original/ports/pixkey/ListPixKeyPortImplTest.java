@@ -26,12 +26,12 @@ class ListPixKeyPortImplTest {
     private ListPixKeyPortImpl port;
 
     @Mock
-    private AccessKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     @Test
     void testListAccount() {
 
-        when(maintenancePixKeyClient.listPixKey(any(),any())).thenReturn(getListPixKeyResponseDTO());
+        when(accessKeyClient.listPixKey(any(),any())).thenReturn(getListPixKeyResponseDTO());
 
         var pixKey = PixKey.builder()
             .type(KeyType.EMAIL)

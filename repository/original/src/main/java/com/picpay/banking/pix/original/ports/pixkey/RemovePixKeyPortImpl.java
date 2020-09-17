@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class RemovePixKeyPortImpl implements RemovePixKeyPort {
 
-    private AccessKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     @Override
     public PixKey remove(String requestIdentifier, PixKey pixKey, RemoveReason reason) {
         final var requestDTO = RemoveAccessKeyDTO.from(pixKey, reason);
 
-        final var responseDTO = maintenancePixKeyClient.remove(requestIdentifier, requestDTO);
+        final var responseDTO = accessKeyClient.remove(requestIdentifier, requestDTO);
 
         return responseDTO.getData().toDomain();
     }

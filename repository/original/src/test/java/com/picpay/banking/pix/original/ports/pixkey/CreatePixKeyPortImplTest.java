@@ -30,7 +30,7 @@ class CreatePixKeyPortImplTest {
     private CreatePixKeyPortImpl port;
 
     @Mock
-    private AccessKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     private ResponseWrapperDTO<AccessKeyCreateDTO> responseWrapper;
 
@@ -51,7 +51,7 @@ class CreatePixKeyPortImplTest {
 
     @Test
     void when_createNonRandomKeyWithSuccess_expect_pixKeyWithCreatedAtAndKey() {
-        when(maintenancePixKeyClient.createPixKey(anyString(), any()))
+        when(accessKeyClient.createPixKey(anyString(), any()))
                 .thenReturn(responseWrapper);
 
         var pixKey = PixKey.builder()
@@ -94,7 +94,7 @@ class CreatePixKeyPortImplTest {
                 .data(accessKey)
                 .build();
 
-        when(maintenancePixKeyClient.createEvpPixKey(anyString(), any()))
+        when(accessKeyClient.createEvpPixKey(anyString(), any()))
                 .thenReturn(localResponseWrapper);
 
         var pixKey = PixKey.builder()

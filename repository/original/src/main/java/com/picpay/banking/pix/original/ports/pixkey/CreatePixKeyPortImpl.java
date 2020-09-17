@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
-    private final AccessKeyClient maintenancePixKeyClient;
+    private final AccessKeyClient accessKeyClient;
 
     @Override
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
@@ -22,9 +22,9 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
         final ResponseWrapperDTO<AccessKeyCreateDTO> response;
 
         if(KeyType.RANDOM.equals(pixKey.getType())) {
-            response = maintenancePixKeyClient.createEvpPixKey(requestIdentifier, createAccessKeyDTO);
+            response = accessKeyClient.createEvpPixKey(requestIdentifier, createAccessKeyDTO);
         } else {
-            response = maintenancePixKeyClient.createPixKey(requestIdentifier, createAccessKeyDTO);
+            response = accessKeyClient.createPixKey(requestIdentifier, createAccessKeyDTO);
         }
 
         return PixKey.builder()

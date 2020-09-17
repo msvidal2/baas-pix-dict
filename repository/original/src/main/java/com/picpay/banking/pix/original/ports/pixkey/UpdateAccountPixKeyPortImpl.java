@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
-    private AccessKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     @Override
     public PixKey updateAccount(String requestIdentifier, PixKey pixKey, UpdateReason reason) {
         final var requestDTO = UpdateAccessKeyAccountDTO.from(pixKey, reason);
 
-        final var responseDTO = maintenancePixKeyClient.update(requestIdentifier, requestDTO);
+        final var responseDTO = accessKeyClient.update(requestIdentifier, requestDTO);
 
         return responseDTO.getData().toDomain();
     }

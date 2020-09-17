@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ListPixKeyPortImpl implements ListPixKeyPort {
 
-    private AccessKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     @Override
     public List<PixKey> listPixKey(final String requestIdentifier, final PixKey pixKey) {
 
-        var response = maintenancePixKeyClient.listPixKey(requestIdentifier, pixKey.getTaxId());
+        var response = accessKeyClient.listPixKey(requestIdentifier, pixKey.getTaxId());
 
         List<ListPixKeyResponseDTO> retorno = response.getData();
 

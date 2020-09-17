@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "maintenancePixKeyClient",
+@FeignClient(name = "accessKeyClient",
         url = "${pix.services.original.url}",
         path = "/dict/v1/access-keys",
         fallbackFactory = AccessKeyClientFallbackFactory.class)
