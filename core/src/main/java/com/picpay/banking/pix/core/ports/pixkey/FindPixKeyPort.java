@@ -5,5 +5,5 @@ import com.picpay.banking.pix.core.domain.PixKey;
 
 public interface FindPixKeyPort {
 
-    PixKey findPixKey(String requestIdentifier, PixKey pixKey, String userId);
+    PixKey findPixKey(String requestIdentifier, String key, String userId);
 }

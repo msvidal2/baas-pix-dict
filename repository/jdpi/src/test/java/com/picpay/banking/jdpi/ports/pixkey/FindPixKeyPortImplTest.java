@@ -73,15 +73,11 @@ class FindPixKeyPortImplTest {
         when(jdClient.findPixKey(anyString(), anyString(), nullable(String.class),nullable(String.class)))
                 .thenReturn(responseMockDTO);
 
-        var pixKey = PixKey.builder()
-                .key("joao@ppicpay.com")
-                .build();
-
         assertDoesNotThrow(() -> {
-            var response = port.findPixKey(randomUUID().toString(), pixKey, "1111111111111");
+            var response = port.findPixKey(randomUUID().toString(), "joao@ppicpay.com", "1111111111111");
 
             assertNotNull(response);
-            assertEquals(pixKey.getKey(), response.getKey());
+            assertEquals("joao@ppicpay.com", response.getKey());
             assertEquals(KeyType.EMAIL, response.getType());
         });
     }

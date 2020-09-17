@@ -3,10 +3,9 @@ package com.picpay.banking.pix.original.ports.pixkey;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
-import com.picpay.banking.pix.original.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +28,7 @@ class UpdateAccountPixKeyPortImplTest {
     private UpdateAccountPixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient jdClient;
+    private AccessKeyClient jdClient;
 
     @Test
     void when_updateAccountSuccessfully_expect_equalResults() {

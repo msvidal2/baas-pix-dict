@@ -1,8 +1,5 @@
 package com.picpay.banking.pix.original.dto.response;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,16 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListPixKeyResponseDTO {
+public class FindPixKeyResponseDTO {
 
     private String account;
-    private LocalDateTime accountOpeningDate;
+    private String accountOpeningDate;
     private String accountType;
     private String bankName;
     private String branch;
@@ -36,16 +32,9 @@ public class ListPixKeyResponseDTO {
     private LocalDateTime openClaimCreationDate;
 
     public PixKey toDomain() {
+        // TODO: implementar
         return PixKey.builder()
-            .ispb(Integer.valueOf(ispb))
-            .branchNumber(branch)
-            .accountNumber(account)
-            .startPossessionAt(keyOwnershipDate)
-            .accountOpeningDate(accountOpeningDate)
-            .taxId(taxId)
-            .name(name)
-            .fantasyName(businessPerson)
-            .createdAt(creationDate)
-            .build();
+                .build();
     }
+
 }

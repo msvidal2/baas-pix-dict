@@ -14,9 +14,9 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     private FindPixKeyConverter converter;
 
     @Override
-    public PixKey findPixKey(String requestIdentifier, PixKey pixKey, String userId) {
+    public PixKey findPixKey(String requestIdentifier, String key, String userId) {
         var findPixKeyResponseDTO =
-                pixKeyJDClient.findPixKey(pixKey.getKey(), userId, null, null);
+                pixKeyJDClient.findPixKey(key, userId, null, null);
 
         return converter.convert(findPixKeyResponseDTO);
     }

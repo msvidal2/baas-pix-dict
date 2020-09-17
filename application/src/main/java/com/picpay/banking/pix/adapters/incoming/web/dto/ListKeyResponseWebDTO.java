@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 @Builder
 @Getter
 @ToString
 @AllArgsConstructor
+@JsonInclude(NON_NULL)
 public class ListKeyResponseWebDTO {
 
     private String key;
