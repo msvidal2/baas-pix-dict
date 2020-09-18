@@ -1,17 +1,16 @@
 package com.picpay.banking.pix.original.fallbacks;
 
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.request.CreateAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.request.RemoveAccessKeyDTO;
 import com.picpay.banking.pix.original.dto.request.UpdateAccessKeyAccountDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyAccountUpdateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
-import com.picpay.banking.pix.original.dto.response.AccessKeyRemoveDTO;
-import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
+import com.picpay.banking.pix.original.dto.response.*;
 
-public class MaintenancePixKeyClientFallback extends ClientFallback implements MaintenancePixKeyClient {
+import java.util.List;
 
-    public MaintenancePixKeyClientFallback(Throwable cause) {
+public class AccessKeyClientFallback extends ClientFallback implements AccessKeyClient {
+
+    public AccessKeyClientFallback(Throwable cause) {
         super(cause);
     }
 
@@ -32,6 +31,16 @@ public class MaintenancePixKeyClientFallback extends ClientFallback implements M
 
     @Override
     public ResponseWrapperDTO<AccessKeyRemoveDTO> remove(String requestIdentifier, RemoveAccessKeyDTO removeAccessKeyDTO) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<FindPixKeyResponseDTO> findByKey(String requestIdentifier, String key, String responsableKey) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<List<ListPixKeyResponseDTO>> listPixKey(String requestIdentifier, String taxId) {
         throw resolveException();
     }
 

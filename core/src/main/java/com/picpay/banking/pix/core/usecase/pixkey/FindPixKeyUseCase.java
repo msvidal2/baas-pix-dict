@@ -11,7 +11,7 @@ public class FindPixKeyUseCase {
     private FindPixKeyPort findPixKeyPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
-                          @NonNull final PixKey pixKey,
+                          @NonNull final String pixKey,
                           @NonNull final String userId)  {
 
         if (requestIdentifier.isBlank()) {

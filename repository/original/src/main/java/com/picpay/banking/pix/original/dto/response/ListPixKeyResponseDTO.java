@@ -1,16 +1,16 @@
 package com.picpay.banking.pix.original.dto.response;
 
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.original.dto.AccountTypeOriginal;
-import com.picpay.banking.pix.original.dto.KeyTypeOriginal;
-import com.picpay.banking.pix.original.dto.PersonTypeOriginal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -18,31 +18,34 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class ListPixKeyResponseDTO {
 
-    private String keyCod;
-    private KeyTypeOriginal keyType;
-    private String ispb;
-    private String branch;
     private String account;
-    private String taxId;
-    private AccountTypeOriginal accountType;
-    private String accountOpeningDate;
-    private PersonTypeOriginal typePerson;
+    private LocalDateTime accountOpeningDate;
+    private String accountType;
+    private String bankName;
+    private String branch;
+    private String businessPerson;
+    private LocalDateTime creationDate;
+    private String ispb;
+    private LocalDateTime keyOwnershipDate;
+    private String keyType;
     private String name;
-    private String creationDate;
+    private String returnMessage;
+    private String taxId;
+    private String taxIdMask;
+    private String typePerson;
+    private LocalDateTime openClaimCreationDate;
 
     public PixKey toDomain() {
         return PixKey.builder()
-            .key(keyCod)
-            .type(keyType.getKeyType())
+            .ispb(Integer.valueOf(ispb))
             .branchNumber(branch)
             .accountNumber(account)
-            .accountType(accountType.getAccountTypeDomain())
+            .startPossessionAt(keyOwnershipDate)
+            .accountOpeningDate(accountOpeningDate)
             .taxId(taxId)
-            .personType(typePerson.getPersonType())
             .name(name)
-            .accountOpeningDate(accountOpeningDate != null ? LocalDateTime.parse(accountOpeningDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")) : null)
-            .createdAt(creationDate != null ? LocalDateTime.parse(creationDate,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")) : null)
-            .ispb(Integer.valueOf(ispb))
+            .fantasyName(businessPerson)
+            .createdAt(creationDate)
             .build();
     }
 }

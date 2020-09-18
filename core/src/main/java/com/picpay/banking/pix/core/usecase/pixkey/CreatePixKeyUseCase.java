@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
-import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;

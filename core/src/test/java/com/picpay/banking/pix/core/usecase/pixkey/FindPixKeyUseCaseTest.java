@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,12 +53,8 @@ class FindPixKeyUseCaseTest {
         when(findPixKeyPort.findPixKey(anyString(), any(), anyString()))
                 .thenReturn(pixKeyMockResponse);
 
-        var pixKeyRequest = PixKey.builder()
-                .key("59375566072")
-                .build();
-
         assertDoesNotThrow(() -> {
-            var pixKey = useCase.execute(randomUUID, pixKeyRequest, "59375566072");
+            var pixKey = useCase.execute(randomUUID, "59375566072", "59375566072");
 
             assertNotNull(pixKey);
             assertEquals(PersonType.INDIVIDUAL_PERSON, pixKey.getPersonType());
@@ -76,22 +71,14 @@ class FindPixKeyUseCaseTest {
 
     @Test
     void when_findPixKeyWithoutUseId_expect_exception() {
-        var pixKeyRequest = PixKey.builder()
-                .key("59375566072")
-                .build();
-
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(randomUUID, pixKeyRequest, null));
+                useCase.execute(randomUUID, "59375566072", null));
     }
 
     @Test
     void when_findPixKeyWithEmptyUseId_expect_exception() {
-        var pixKeyRequest = PixKey.builder()
-                .key("59375566072")
-                .build();
-
         assertThrows(IllegalArgumentException.class, () ->
-                useCase.execute(randomUUID, pixKeyRequest, ""));
+                useCase.execute(randomUUID, "59375566072", ""));
     }
 
 }
