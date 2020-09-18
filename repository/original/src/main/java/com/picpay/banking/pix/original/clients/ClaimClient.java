@@ -9,6 +9,8 @@ import com.picpay.banking.pix.original.fallbacks.ClaimClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "claimClient",
         url = "${pix.services.original.url}",
         path = "/dict/v1/claims",
@@ -29,5 +31,8 @@ public interface ClaimClient {
     @PatchMapping("/{id}/completions")
     ResponseWrapperDTO<ClaimResponseDTO> finish(@PathVariable String id,
                                                 @RequestBody ClaimCompletionRequestDTO claimCompletionRequestDTO);
+
+    @GetMapping
+    ResponseWrapperDTO<List<ClaimResponseDTO>> find();
 
 }

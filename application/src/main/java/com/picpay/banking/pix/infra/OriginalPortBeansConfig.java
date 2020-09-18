@@ -48,8 +48,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public FindClaimPort findClaimPort() {
-        return new FindClaimPortImpl();
+    public FindClaimPort findClaimPort(final ClaimClient claimClient) {
+        return new FindClaimPortImpl(claimClient);
     }
 
     @Bean

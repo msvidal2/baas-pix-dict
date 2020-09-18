@@ -28,9 +28,6 @@ class FindPixKeyUseCaseTest {
     @Mock
     private FindPixKeyPort findPixKeyPort;
 
-    @Mock
-    private DictItemValidator validator;
-
     @Test
     void when_findPixKeyWithSuccess_expect_pixKey() {
         var pixKeyMockResponse = PixKey.builder()

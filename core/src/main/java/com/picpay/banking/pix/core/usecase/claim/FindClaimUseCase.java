@@ -2,19 +2,15 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class FindClaimUseCase {
 
     private FindClaimPort findClaimPort;
-    private DictItemValidator dictItemValidator;
 
-    public Claim execute(final Claim claim)  {
-        dictItemValidator.validate(claim);
-
-        return findClaimPort.findClaim(claim);
+    public Claim execute(final String claimId)  {
+        return findClaimPort.findClaim(claimId);
     }
 
 }

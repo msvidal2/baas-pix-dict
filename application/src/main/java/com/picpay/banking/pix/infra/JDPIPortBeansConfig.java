@@ -80,8 +80,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, CreateClaimConverter createClaimConverter) {
-        return new FindClaimPortImpl(claimJDClient,createClaimConverter);
+    public FindClaimPort findClaimPort(ClaimJDClient claimJDClient) {
+        return new FindClaimPortImpl(claimJDClient);
     }
 
     @Bean

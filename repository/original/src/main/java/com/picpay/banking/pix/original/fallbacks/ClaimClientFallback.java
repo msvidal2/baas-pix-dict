@@ -7,6 +7,8 @@ import com.picpay.banking.pix.original.dto.request.CreateClaimRequestDTO;
 import com.picpay.banking.pix.original.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
 
+import java.util.List;
+
 public class ClaimClientFallback extends ClientFallback implements ClaimClient {
 
     public ClaimClientFallback(Throwable cause) {
@@ -30,6 +32,11 @@ public class ClaimClientFallback extends ClientFallback implements ClaimClient {
 
     @Override
     public ResponseWrapperDTO<ClaimResponseDTO> finish(String id, ClaimCompletionRequestDTO claimCompletionRequestDTO) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<List<ClaimResponseDTO>> find() {
         throw resolveException();
     }
 
