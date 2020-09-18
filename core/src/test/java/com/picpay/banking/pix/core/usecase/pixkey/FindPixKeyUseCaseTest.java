@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

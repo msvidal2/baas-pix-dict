@@ -11,7 +11,7 @@ public class FindPixKeyUseCase {
     private FindPixKeyPort findPixKeyPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
-                          @NonNull final String key,
+                          @NonNull final String pixKey,
                           @NonNull final String userId)  {
 
         if (requestIdentifier.isBlank()) {
@@ -22,7 +22,7 @@ public class FindPixKeyUseCase {
             throw new IllegalArgumentException("The userId can not be null");
         }
 
-        return findPixKeyPort.findPixKey(requestIdentifier, key, userId);
+        return findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
     }
 
 }
