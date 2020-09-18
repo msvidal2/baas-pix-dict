@@ -34,11 +34,11 @@ public interface AccessKeyClient {
 
     @GetMapping
     ResponseWrapperDTO<FindPixKeyResponseDTO> findByKey(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                        @PathVariable String key,
-                                                        @PathVariable String responsableKey);
+                                                        @RequestParam String key,
+                                                        @RequestParam("responsible-key") String responsableKey);
 
     @GetMapping
     ResponseWrapperDTO<List<ListPixKeyResponseDTO>> listPixKey(@RequestHeader("x-transaction-id") String requestIdentifier,
-                                                       @RequestParam("tax-id") String taxId);
+                                                               @RequestParam("tax-id") String taxId);
 
 }
