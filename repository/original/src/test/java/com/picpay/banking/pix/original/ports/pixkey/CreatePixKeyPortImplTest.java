@@ -4,10 +4,9 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.original.clients.MaintenancePixKeyClient;
+import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.dto.response.AccessKeyCreateDTO;
 import com.picpay.banking.pix.original.dto.response.ResponseWrapperDTO;
-import com.picpay.banking.pix.original.ports.pixkey.CreatePixKeyPortImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,7 @@ class CreatePixKeyPortImplTest {
     private CreatePixKeyPortImpl port;
 
     @Mock
-    private MaintenancePixKeyClient maintenancePixKeyClient;
+    private AccessKeyClient accessKeyClient;
 
     private ResponseWrapperDTO<AccessKeyCreateDTO> responseWrapper;
 
@@ -52,7 +51,7 @@ class CreatePixKeyPortImplTest {
 
     @Test
     void when_createNonRandomKeyWithSuccess_expect_pixKeyWithCreatedAtAndKey() {
-        when(maintenancePixKeyClient.createPixKey(anyString(), any()))
+        when(accessKeyClient.createPixKey(anyString(), any()))
                 .thenReturn(responseWrapper);
 
         var pixKey = PixKey.builder()
@@ -95,7 +94,7 @@ class CreatePixKeyPortImplTest {
                 .data(accessKey)
                 .build();
 
-        when(maintenancePixKeyClient.createEvpPixKey(anyString(), any()))
+        when(accessKeyClient.createEvpPixKey(anyString(), any()))
                 .thenReturn(localResponseWrapper);
 
         var pixKey = PixKey.builder()
