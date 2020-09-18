@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.original.clients;
 
+import com.picpay.banking.pix.original.dto.request.ClaimCompletionRequestDTO;
 import com.picpay.banking.pix.original.dto.request.ClaimConfirmationRequestDTO;
 import com.picpay.banking.pix.original.dto.request.CreateClaimRequestDTO;
 import com.picpay.banking.pix.original.dto.response.ClaimResponseDTO;
@@ -24,5 +25,9 @@ public interface ClaimClient {
     @PatchMapping("/{id}/cancellations")
     ResponseWrapperDTO<ClaimResponseDTO> cancel(@PathVariable String id,
                                                  @RequestBody ClaimConfirmationRequestDTO claimConfirmationRequestDTO);
+
+    @PatchMapping("/{id}/completions")
+    ResponseWrapperDTO<ClaimResponseDTO> finish(@PathVariable String id,
+                                                @RequestBody ClaimCompletionRequestDTO claimCompletionRequestDTO);
 
 }

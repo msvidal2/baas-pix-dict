@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.original.fallbacks;
 
 import com.picpay.banking.pix.original.clients.ClaimClient;
+import com.picpay.banking.pix.original.dto.request.ClaimCompletionRequestDTO;
 import com.picpay.banking.pix.original.dto.request.ClaimConfirmationRequestDTO;
 import com.picpay.banking.pix.original.dto.request.CreateClaimRequestDTO;
 import com.picpay.banking.pix.original.dto.response.ClaimResponseDTO;
@@ -24,6 +25,11 @@ public class ClaimClientFallback extends ClientFallback implements ClaimClient {
 
     @Override
     public ResponseWrapperDTO<ClaimResponseDTO> cancel(String id, ClaimConfirmationRequestDTO claimConfirmationRequestDTO) {
+        throw resolveException();
+    }
+
+    @Override
+    public ResponseWrapperDTO<ClaimResponseDTO> finish(String id, ClaimCompletionRequestDTO claimCompletionRequestDTO) {
         throw resolveException();
     }
 

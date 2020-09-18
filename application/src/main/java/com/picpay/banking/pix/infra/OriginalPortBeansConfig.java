@@ -33,8 +33,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public CompleteClaimPort completeClaimPort() {
-        return new CompleteClaimPortImpl();
+    public CompleteClaimPort completeClaimPort(final ClaimClient claimClient) {
+        return new CompleteClaimPortImpl(claimClient);
     }
 
     @Bean
