@@ -3,6 +3,7 @@ package com.picpay.banking.pix.infra;
 import com.picpay.banking.pix.core.ports.claim.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.*;
+import com.picpay.banking.pix.original.clients.ClaimClient;
 import com.picpay.banking.pix.original.clients.AccessKeyClient;
 import com.picpay.banking.pix.original.interceptors.FeignClientInterceptor;
 import com.picpay.banking.pix.original.ports.claim.*;
@@ -22,18 +23,18 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public ClaimCancelPort claimCancelPort() {
-        return new ClaimCancelPortImpl();
+    public ClaimCancelPort claimCancelPort(final ClaimClient claimClient) {
+        return new ClaimCancelPortImpl(claimClient);
     }
 
     @Bean
-    public ClaimConfirmationPort claimConfirmationPort() {
-        return new ClaimConfirmationPortImpl();
+    public ClaimConfirmationPort claimConfirmationPort(final ClaimClient claimClient) {
+        return new ClaimConfirmationPortImpl(claimClient);
     }
 
     @Bean
-    public CompleteClaimPort completeClaimPort() {
-        return new CompleteClaimPortImpl();
+    public CompleteClaimPort completeClaimPort(final ClaimClient claimClient) {
+        return new CompleteClaimPortImpl(claimClient);
     }
 
     @Bean
@@ -42,8 +43,8 @@ public class OriginalPortBeansConfig {
     }
 
     @Bean
-    public CreateClaimPort createClaimPort() {
-        return new CreateClaimPortImpl();
+    public CreateClaimPort createClaimPort(final ClaimClient claimClient) {
+        return new CreateClaimPortImpl(claimClient);
     }
 
     @Bean

@@ -25,7 +25,7 @@ public class Claim {
     private PersonType personType;
     private String name;
     private String fantasyName;
-    private Long cpfCnpj;
+    private String cpfCnpj;
     private int donorIspb;
     private DonorData donorData;
     private Boolean isClaim;

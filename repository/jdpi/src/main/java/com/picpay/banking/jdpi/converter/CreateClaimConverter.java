@@ -12,7 +12,7 @@ public class CreateClaimConverter {
     public CreateClaimRequestDTO convert(final Claim claim) {
         return CreateClaimRequestDTO.builder()
                 .chave(claim.getKey())
-                .cpfCnpj(claim.getCpfCnpj())
+                .cpfCnpj(Long.parseLong(claim.getCpfCnpj()))
                 .dtHrAberturaConta(claim.getAccountOpeningDate())
                 .ispb(claim.getIspb())
                 .nome(claim.getName())
