@@ -27,7 +27,7 @@ public class ListClaimRequestWebDTO {
     private PersonType personType;
 
     @ApiModelProperty(value = "CPF/CNPJ of client", dataType="java.lang.String")
-    private Long cpfCnpj;
+    private String cpfCnpj;
 
     @ApiModelProperty(value = "Branch number of client", dataType="java.lang.String")
     private String branchNumber;

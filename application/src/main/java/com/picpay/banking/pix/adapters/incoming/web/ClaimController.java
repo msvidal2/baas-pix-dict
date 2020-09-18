@@ -1,34 +1,19 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimCancelDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimConfirmationDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ListClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.converters.CreateClaimWebConverter;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -50,15 +35,13 @@ public class ClaimController {
 
     private FindClaimUseCase findClaimUseCase;
 
-    private CreateClaimWebConverter converter;
-
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Claim create(@RequestBody @Validated CreateClaimRequestWebDTO requestDTO) {
-        Claim claim = converter.convert(requestDTO);
+    public ClaimResponseDTO create(@RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
+        var claim = createAddressKeyUseCase.execute(requestDTO.toDomain(), requestDTO.getRequestIdentifier());
 
-        return createAddressKeyUseCase.execute(claim, requestDTO.getRequestIdentifier());
+        return ClaimResponseDTO.from(claim);
     }
 
     @ApiOperation("Confirm an pix key claim")

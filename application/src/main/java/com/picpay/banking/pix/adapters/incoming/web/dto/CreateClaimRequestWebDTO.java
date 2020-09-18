@@ -1,9 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.ClaimType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Builder
@@ -22,52 +20,70 @@ import java.time.LocalDateTime;
 public class CreateClaimRequestWebDTO {
 
     @ApiModelProperty(value = "Type of Claim: Portabilidade or Reivindicacao de Posse", required = true)
-    @NonNull
+    @NotNull
     private ClaimType claimType;
 
     @ApiModelProperty(value = "Key type of key of AdressingKey", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private KeyType keyType;
 
     @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}", required = true)
-    @NonNull
+    @NotNull
     private String key;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NonNull
+    @NotNull
     private int ispb;
 
     @ApiModelProperty(value = "Branch number of client", dataType="java.lang.String")
     private String branchNumber;
 
     @ApiModelProperty(value = "Account type of client", required = true)
-    @NonNull
+    @NotNull
     private AccountType accountType;
 
     @ApiModelProperty(value = "Account number of client", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private String accountNumber;
 
     @ApiModelProperty(value = "Person type of receiver", required = true)
-    @NonNull
+    @NotNull
     private PersonType personType;
 
     @ApiModelProperty(value = "Account opening date. Format: aaaa-mm-ddTHH:mm:ss.sssZ", required = true)
-    @NonNull
+    @NotNull
     protected LocalDateTime accountOpeningDate;
 
     @ApiModelProperty(value = "CPF/CNPJ of client", dataType="java.lang.String", required = true)
-    @NonNull
-    private long cpfCnpj;
+    @NotNull
+    private String cpfCnpj;
 
     @ApiModelProperty(value = "Razão Social/Full client name", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private String name;
 
     @ApiModelProperty(value = "Client's fantasy name", dataType="java.lang.String")
     private String fantasyName;
 
     @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NonNull
+    @NotNull
     private String requestIdentifier;
+
+    public Claim toDomain() {
+        return Claim.builder()
+                .accountNumber(accountNumber)
+                .accountType(accountType)
+                .branchNumber(branchNumber)
+                .claimType(claimType)
+                .cpfCnpj(cpfCnpj)
+                .ispb(ispb)
+                .key(key)
+                .keyType(keyType)
+                .personType(personType)
+                .name(name)
+                .fantasyName(fantasyName)
+                .accountOpeningDate(accountOpeningDate)
+                .build();
+    }
+
 }
