@@ -53,9 +53,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public FindClaimUseCase findClaimUseCase(FindClaimPort findClaimPort,
-                                             @Qualifier("findClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new FindClaimUseCase(findClaimPort, dictItemValidator);
+    public FindClaimUseCase findClaimUseCase(FindClaimPort findClaimPort) {
+        return new FindClaimUseCase(findClaimPort);
     }
 
 }

@@ -47,7 +47,6 @@ public class ClaimController {
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
     public Claim confirm(@PathVariable String claimId, @RequestBody @Validated ClaimConfirmationDTO dto) {
-
         var claim = Claim.builder()
             .claimId(claimId)
             .ispb(dto.getIspb()).build();
@@ -99,11 +98,7 @@ public class ClaimController {
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)
     public Claim find(@PathVariable String claimId) {
-        var claim = Claim.builder()
-                .claimId(claimId)
-                .build();
-
-        return findClaimUseCase.execute(claim);
+        return findClaimUseCase.execute(claimId);
     }
 
 }

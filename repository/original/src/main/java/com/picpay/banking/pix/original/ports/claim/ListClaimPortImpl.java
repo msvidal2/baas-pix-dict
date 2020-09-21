@@ -7,6 +7,6 @@ import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
 public class ListClaimPortImpl implements ListClaimPort {
     @Override
     public ClaimIterable list(Claim claim, Integer limit, String requestIdentifier) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

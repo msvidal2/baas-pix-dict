@@ -5,5 +5,5 @@ import com.picpay.banking.pix.core.domain.Claim;
 
 public interface FindClaimPort {
 
-    Claim findClaim(final Claim claim);
+    Claim findClaim(final String claimId);
 }

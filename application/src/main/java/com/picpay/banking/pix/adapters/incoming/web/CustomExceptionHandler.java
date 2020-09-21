@@ -1,11 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
-import com.picpay.banking.jdpi.dto.response.JDErrorDTO;
-import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -24,24 +23,17 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @RestControllerAdvice
+@Order(value = Ordered.LOWEST_PRECEDENCE)
 public class CustomExceptionHandler {
 
     @ExceptionHandler({HystrixRuntimeException.class})
-    public ResponseEntity<ErrorDTO> jdClientException(final HystrixRuntimeException hystrixRuntimeException) {
+    public ResponseEntity<ErrorDTO> handleClientException(final HystrixRuntimeException hystrixRuntimeException) {
         log.error(hystrixRuntimeException.getMessage(), hystrixRuntimeException);
 
-        var jdClientException = (JDClientException) hystrixRuntimeException
+        return ClientErrorResponseFactory.newErrorDTO(hystrixRuntimeException
                 .getFallbackException()
                 .getCause()
-                .getCause();
-
-        var message = jdClientException.getError()
-                .orElse(new JDErrorDTO("", "", Collections.emptyList()))
-                .getMessage();
-
-        var error = ErrorDTO.from(jdClientException.getStatus(), message);
-
-        return ResponseEntity.status(jdClientException.getStatus()).body(error);
+                .getCause());
     }
 
     @ExceptionHandler({IllegalArgumentException.class })
