@@ -57,11 +57,16 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/CreatePixKeyRequestWebDTO'
+        - name: requestIdentifier
+          in: header
+          description: requestIdentifier
+          required: true
+          type: string
       responses:
         '201':
           description: Created
           schema:
-            $ref: '#/definitions/PixKey'
+            $ref: '#/definitions/PixKeyResponseDTO'
         '401':
           description: Unauthorized
         '403':
@@ -138,7 +143,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/PixKey'
+              $ref: '#/definitions/ListKeyResponseWebDTO'
         '401':
           description: Unauthorized
         '403':
@@ -163,9 +168,9 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: key
-          in: path
-          description: Valor da Chave de PIX. <br />Pode ser CPF/CNPJ/E-mail/Telefone Celular/Aleatória
+        - name: requestIdentifier
+          in: header
+          description: requestIdentifier
           required: true
           type: string
         - name: userId
@@ -175,11 +180,16 @@ paths:
             rate-limiting.
           required: true
           type: string
+        - name: key
+          in: path
+          description: Valor da Chave de PIX. <br />Pode ser CPF/CNPJ/E-mail/Telefone Celular/Aleatória
+          required: true
+          type: string
       responses:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/PixKey'
+            $ref: '#/definitions/PixKeyResponseDTO'
         '401':
           description: Unauthorized
         '403':
@@ -217,17 +227,22 @@ paths:
           description: dto
           required: true
           schema:
-            $ref: '#/definitions/UpdateAccountPixKeyDTO'
+            $ref: '#/definitions/UpdateAccountPixKeyRequestWebDTO'
         - name: key
           in: path
           description: key
+          required: true
+          type: string
+        - name: requestIdentifier
+          in: header
+          description: requestIdentifier
           required: true
           type: string
       responses:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/PixKey'
+            $ref: '#/definitions/PixKeyResponseDTO'
         '201':
           description: Created
         '401':
@@ -266,6 +281,11 @@ paths:
           description: Valor da Chave de PIX a ser removida
           required: true
           type: string
+        - name: requestIdentifier
+          in: header
+          description: requestIdentifier
+          required: true
+          type: string
       responses:
         '204':
           description: No Content
@@ -275,6 +295,46 @@ paths:
           description: Forbidden
       deprecated: false
   /v1/claims:
+    post:
+      tags:
+        - claim
+      summary: Incluir Reivindicação de Chave de PIX.
+      description: |
+        O Sistema Cliente deve consumir essa API para iniciar um processo de Reivindicação de uma Chave de PIX.<br /><br />
+        Se, ao tentar incluir uma Chave de PIX, retornar um erro, informando que a chave já existe no DICT, o cliente pode solicitar uma Reivindicação de Chave de PIX.<br /><br />
+        Caso a chave existente esteja associada ao mesmo CPF/CNPJ do cliente em questão, será uma Reivindicação do tipo Portabilidade. Do contrário, será do tipo Reivindicação de Posse.<br /><br />
+        Não se pode reivindicar uma chave do tipo Aleatória – Endereço Virtual de Pagamento, visto que o valor de uma chave do tipo Aleatória não tem qualquer significado semântico. Ao invés de iniciar um processo de Reivindicação, basta o Cliente gerar uma nova chave Aleatória.<br /><br />
+        O processo de Reivindicação segue os seguintes passos:
+        <ul>
+          <li>O Cliente Reivindicador inclui a Reivindicação, com situação “Aberta”;</li>
+          <li>O cliente que detém a posse da chave, chamado de Cliente Doador tem um prazo para ler a Reivindicação. No momento que o fizer, a Reivindicação adota a situação “Aguardando Resolução”. A partir daí o Cliente Doador tem um prazo para aceitar ceder a chave ou não;</li>
+          <li>O Cliente Doador e o Cliente Reivindicador podem cancelar a Reivindicação, cadastrando a situação “Cancelada”;</li>
+          <li>Caso o Cliente Doador concorde em ceder a chave, ele altera a situação para “Confirmada”;</li>
+          <li>Quando o Cliente Reivindicador registra a situação “Concluída”, o DICT assume que o processo foi aceito pelas duas partes, e vincula a chave ao Cliente Reivindicador.</li>
+        </ul>
+      operationId: createUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: requestDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateClaimRequestWebDTO'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/ClaimResponseDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
     get:
       tags:
         - claim
@@ -292,6 +352,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - name: accountNumber
           in: query
           description: Número da conta do cliente
@@ -342,56 +407,11 @@ paths:
           enum:
             - INDIVIDUAL_PERSON
             - LEGAL_ENTITY
-        - name: requestIdentifier
-          in: header
-          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
-          required: true
-          type: string
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/ClaimIterable'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      deprecated: false
-    post:
-      tags:
-        - claim
-      summary: Incluir Reivindicação de Chave de PIX.
-      description: |
-        O Sistema Cliente deve consumir essa API para iniciar um processo de Reivindicação de uma Chave de PIX.<br /><br />
-        Se, ao tentar incluir uma Chave de PIX, retornar um erro, informando que a chave já existe no DICT, o cliente pode solicitar uma Reivindicação de Chave de PIX.<br /><br />
-        Caso a chave existente esteja associada ao mesmo CPF/CNPJ do cliente em questão, será uma Reivindicação do tipo Portabilidade. Do contrário, será do tipo Reivindicação de Posse.<br /><br />
-        Não se pode reivindicar uma chave do tipo Aleatória – Endereço Virtual de Pagamento, visto que o valor de uma chave do tipo Aleatória não tem qualquer significado semântico. Ao invés de iniciar um processo de Reivindicação, basta o Cliente gerar uma nova chave Aleatória.<br /><br />
-        O processo de Reivindicação segue os seguintes passos:
-        <ul>
-          <li>O Cliente Reivindicador inclui a Reivindicação, com situação “Aberta”;</li>
-          <li>O cliente que detém a posse da chave, chamado de Cliente Doador tem um prazo para ler a Reivindicação. No momento que o fizer, a Reivindicação adota a situação “Aguardando Resolução”. A partir daí o Cliente Doador tem um prazo para aceitar ceder a chave ou não;</li>
-          <li>O Cliente Doador e o Cliente Reivindicador podem cancelar a Reivindicação, cadastrando a situação “Cancelada”;</li>
-          <li>Caso o Cliente Doador concorde em ceder a chave, ele altera a situação para “Confirmada”;</li>
-          <li>Quando o Cliente Reivindicador registra a situação “Concluída”, o DICT assume que o processo foi aceito pelas duas partes, e vincula a chave ao Cliente Reivindicador.</li>
-        </ul>
-      operationId: createUsingPOST_1
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: requestDTO
-          required: true
-          schema:
-            $ref: '#/definitions/CreateClaimRequestWebDTO'
-      responses:
-        '201':
-          description: Created
-          schema:
-            $ref: '#/definitions/Claim'
         '401':
           description: Unauthorized
         '403':
@@ -540,6 +560,240 @@ paths:
         '404':
           description: Not Found
       deprecated: false
+  /v1/infraction-report:
+    get:
+      tags:
+        - infraction-report
+      summary: List Infraction Report
+      operationId: filterUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: dtHrModificacaoFim
+          in: query
+          required: false
+          type: string
+          format: date-time
+          description: Restringe a consulta aos relatos de infração com Data e Hora de Modificação menor ou igual ao informado. Formato= aaaa-mm-ddTHH:mm:ss.sssZ
+        - name: dtHrModificacaoInicio
+          in: query
+          required: false
+          type: string
+          format: date-time
+          description: Restringe a consulta aos relatos de infração com Data e Hora de Modificação maior ou igual ao informado. Formato= aaaa-mm-ddTHH:mm:ss.sssZ
+        - name: ehCreditado
+          in: query
+          required: false
+          type: boolean
+          description: Restringe a relatos em que o participante é o creditado.
+        - name: ehDebitado
+          in: query
+          required: false
+          type: boolean
+          description: Restringe a relatos em que o participante é o debitado.
+        - name: incluiDetalhes
+          in: query
+          required: false
+          type: boolean
+          description: Inclui os detalhes do relato de infração. Obs= Quando não informado recebe valor “false”.
+        - name: ispb
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: ISPB do Participante que identificou a Infração.
+        - name: nrLimite
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: Quantidade máxima de relatos de infração que serão retornados na consulta.
+        - name: stRelatoInfracao
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: Situação do Relato de Infração. Domínio= |
+            0 - Aberto = Notificação de infração foi realizada pelo PSP;
+            1 - Recebido = Notificação de infração foi recebida pelo PSP;
+            2 - Cancelado = Notificação de infração foi cancelada pelo PSP (enquanto a notificação de infração não estiver no estado “Analisada”, o PSP que realizou a notificação pode cancelá-la);
+            3 - Analisado = Notificação de infração foi analisada pelo PSP e o resultado dessa análise está disponível.
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfractionReportDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - infraction-report
+      summary: Create a new infraction report
+      operationId: reportUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: createInfractionReportRequestWebDTO
+          description: createInfractionReportRequestWebDTO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateInfractionReportRequestWebDTO'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/InfractionReportCreatedDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/infraction-report/find/{infractionReportId}':
+    get:
+      tags:
+        - infraction-report
+      summary: find an infraction report
+      operationId: findInfractionUsingGET_1
+      produces:
+        - application/json
+      parameters:
+        - name: infractionReportId
+          in: path
+          description: infractionReportId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindInfractionReportDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/infraction-report/pendings/{ispb}':
+    get:
+      tags:
+        - infraction-report
+      summary: List pendings infractions
+      operationId: listPendingUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: ispb
+          in: path
+          description: ispb
+          required: true
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfractionReportDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/infraction-report/{infractionReportId}/analyze':
+    post:
+      tags:
+        - infraction-report
+      summary: Analyze Infraction Report
+      operationId: analyzeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/AnalyzeInfractionReportDTO'
+        - name: infractionReportId
+          in: path
+          description: infractionReportId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CancelResponseInfractionDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/v1/infraction-report/{infractionReportId}/cancel':
+    post:
+      tags:
+        - infraction-report
+      summary: Cancel Infraction Report
+      operationId: cancelUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/CancelInfractionDTO'
+        - name: infractionReportId
+          in: path
+          description: infractionReportId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CancelResponseInfractionDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
 definitions:
   Accountant:
     type: object
@@ -568,6 +822,46 @@ definitions:
           - FRAUDS_CONFIRMATION
           - PREVENTION_LAUNDERING_CONFIRMATION
     title: Accountant
+  AnalyzeInfractionReportDTO:
+    type: object
+    properties:
+      details:
+        type: string
+      ispb:
+        type: integer
+        format: int32
+      requestIdentifier:
+        type: string
+      result:
+        type: string
+        enum:
+          - ACCEPTED
+          - REJECTED
+    title: AnalyzeInfractionReportDTO
+  CancelInfractionDTO:
+    type: object
+    properties:
+      ispb:
+        type: integer
+        format: int32
+      requestIdentifier:
+        type: string
+    title: CancelInfractionDTO
+  CancelResponseInfractionDTO:
+    type: object
+    properties:
+      endToEndId:
+        type: string
+      infractionReportId:
+        type: string
+      situation:
+        type: string
+        enum:
+          - OPEN
+          - RECEIVED
+          - CANCELED
+          - ANALYZED
+    title: CancelResponseInfractionDTO
   PixKey:
     type: object
     properties:
@@ -762,6 +1056,81 @@ definitions:
       hasNext:
         type: boolean
     title: ClaimIterable
+  ClaimResponseDTO:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountOpeningDate:
+        type: string
+        format: date-time
+      accountType:
+        type: string
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+      claimId:
+        type: string
+      claimSituation:
+        type: string
+        enum:
+          - OPEN
+          - AWAITING_CLAIM
+          - CONFIRMED
+          - CANCELED
+          - COMPLETED
+      claimType:
+        type: string
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      completionThresholdDate:
+        type: string
+        format: date-time
+      cpfCnpj:
+        type: string
+      donorData:
+        $ref: '#/definitions/DonorData'
+      donorIspb:
+        type: integer
+        format: int32
+      fantasyName:
+        type: string
+      isClaim:
+        type: boolean
+      ispb:
+        type: integer
+        format: int32
+      key:
+        type: string
+      keyType:
+        type: string
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - RANDOM
+      lastModifiedDate:
+        type: string
+        format: date-time
+      name:
+        type: string
+      participationFlow:
+        type: integer
+        format: int32
+      personType:
+        type: string
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      resolutionThresholdDate:
+        type: string
+        format: date-time
+    title: ClaimResponseDTO
   CompleteClaimRequestWebDTO:
     type: object
     required:
@@ -776,6 +1145,106 @@ definitions:
         type: string
         description: Chave de Idempotência. Utiliza tipagem GUID (v4).
     title: CompleteClaimRequestWebDTO
+  CreateClaimRequestWebDTO:
+    type: object
+    required:
+      - accountNumber
+      - accountOpeningDate
+      - accountType
+      - claimType
+      - cpfCnpj
+      - ispb
+      - key
+      - keyType
+      - name
+      - personType
+      - requestIdentifier
+    properties:
+      accountNumber:
+        type: string
+        description: Account number of client
+      accountOpeningDate:
+        type: string
+        format: date-time
+        description: 'Account opening date. Format: aaaa-mm-ddTHH:mm:ss.sssZ'
+      accountType:
+        type: string
+        description: Account type of client
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+        description: Branch number of client
+      claimType:
+        type: string
+        description: 'Type of Claim: Portabilidade or Reivindicacao de Posse'
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      cpfCnpj:
+        type: string
+        description: CPF/CNPJ of client
+      fantasyName:
+        type: string
+        description: Client's fantasy name
+      ispb:
+        type: integer
+        format: int32
+        description: ISPB of PSP
+      key:
+        type: string
+        description: 'Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}'
+      keyType:
+        type: string
+        description: Key type of key of AdressingKey
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - RANDOM
+      name:
+        type: string
+        description: Razão Social/Full client name
+      personType:
+        type: string
+        description: Person type of receiver
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      requestIdentifier:
+        type: string
+        description: 'We suggest using UUID (v4) typing, 36 characters long.'
+    title: CreateClaimRequestWebDTO
+  CreateInfractionReportRequestWebDTO:
+    type: object
+    required:
+      - endToEndId
+      - infractionType
+      - ispbRequester
+      - requestIdentifier
+    properties:
+      details:
+        type: string
+        description: Details that can help the receiving participant to analyze suspected infraction
+      endToEndId:
+        type: string
+        description: Unique payment transaction identifier
+      infractionType:
+        type: string
+        description: 'Infraction type '
+        enum:
+          - FRAUD
+          - PLD_FT
+      ispbRequester:
+        type: string
+        description: ISPB of the Participant who identified the infraction.
+      requestIdentifier:
+        type: string
+        description: 'We suggest using UUID (v4) typing, 36 characters long.'
+    title: CreateInfractionReportRequestWebDTO
   CreatePixKeyRequestWebDTO:
     type: object
     required:
@@ -788,7 +1257,6 @@ definitions:
       - name
       - personType
       - reason
-      - requestIdentifier
       - type
     properties:
       accountNumber:
@@ -835,9 +1303,6 @@ definitions:
         description: Motivo criação da chave
         enum:
           - CUSTOMER_REQUEST
-      requestIdentifier:
-        type: string
-        description: 'Chave de Idempotência. Utiliza tipagem GUID (v4).'
       type:
         type: string
         description: Tipo da chave endereçamento
@@ -848,79 +1313,6 @@ definitions:
           - CELLPHONE
           - RANDOM
     title: CreatePixKeyRequestWebDTO
-  CreateClaimRequestWebDTO:
-    type: object
-    required:
-      - accountNumber
-      - accountOpeningDate
-      - accountType
-      - claimType
-      - cpfCnpj
-      - ispb
-      - key
-      - keyType
-      - name
-      - personType
-      - requestIdentifier
-    properties:
-      accountNumber:
-        type: string
-        description: Número da conta do cliente.
-      accountOpeningDate:
-        type: string
-        format: date-time
-        description: 'Data de abertura da conta. (Formato: aaaa-mm-ddTHH:mm:ss.sssZ).'
-      accountType:
-        type: string
-        description: Tipo da conta do cliente.
-        enum:
-          - CHECKING
-          - SALARY
-          - SAVINGS
-      branchNumber:
-        type: string
-        description: Número da agência do cliente.
-      claimType:
-        type: string
-        description: 'Tipo da reivindicação: Portabilidade (PORTABILITY) ou Reivindicação de posse (POSSESION_CLAIM).'
-        enum:
-          - PORTABILITY
-          - POSSESION_CLAIM
-      cpfCnpj:
-        type: string
-        description: CPF/CNPJ do cliente.
-      fantasyName:
-        type: string
-        description: Nome fantasia do cliente.
-      ispb:
-        type: integer
-        format: int32
-        description: Código ISPB do PSP
-      key:
-        type: string
-        description: 'Chave CPF/CNPJ/E-mail/Telefone Celular/Aleatória.'
-      keyType:
-        type: string
-        description: Tipo da chave.
-        enum:
-          - CPF
-          - CNPJ
-          - EMAIL
-          - CELLPHONE
-          - RANDOM
-      name:
-        type: string
-        description: Razão Social/Nome completo do cliente.
-      personType:
-        type: string
-        description: Tipo de pessoa Física ou Jurídica.
-        enum:
-          - INDIVIDUAL_PERSON
-          - LEGAL_ENTITY
-      requestIdentifier:
-        type: string
-        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
-    title: CreateClaimRequestWebDTO
   DonorData:
     type: object
     properties:
@@ -962,7 +1354,6 @@ definitions:
     required:
       - ispb
       - reason
-      - requestIdentifier
       - type
     properties:
       ispb:
@@ -976,9 +1367,6 @@ definitions:
           - CLIENT_REQUEST
           - INACTIVITY
           - FRAUD
-      requestIdentifier:
-        type: string
-        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
       type:
         type: string
         description: Tipo de chave endereçamento
@@ -989,6 +1377,213 @@ definitions:
           - CELLPHONE
           - RANDOM
     title: RemovePixKeyRequestWebDTO
+  FindInfractionReportDTO:
+    type: object
+    properties:
+      dateCreate:
+        type: string
+      dateLastUpdate:
+        type: string
+      details:
+        type: string
+      endToEndId:
+        type: string
+      infractionAnalyze:
+        $ref: '#/definitions/InfractionAnalyze'
+      infractionReportId:
+        type: string
+      ispbCredited:
+        type: integer
+        format: int32
+      ispbDebited:
+        type: integer
+        format: int32
+      reportedBy:
+        type: string
+        enum:
+          - DEBITED_PARTICIPANT
+          - CREDITED_PARTICIPANT
+      situation:
+        type: string
+        enum:
+          - OPEN
+          - RECEIVED
+          - CANCELED
+          - ANALYZED
+      type:
+        type: string
+        enum:
+          - FRAUD
+          - PLD_FT
+    title: FindInfractionReportDTO
+  InfractionAnalyze:
+    type: object
+    properties:
+      analyzeResult:
+        type: string
+        enum:
+          - ACCEPTED
+          - REJECTED
+      details:
+        type: string
+    title: InfractionAnalyze
+  InfractionAnalyzeDTO:
+    type: object
+    properties:
+      analyzeResult:
+        type: string
+        enum:
+          - ACCEPTED
+          - REJECTED
+      details:
+        type: string
+    title: InfractionAnalyzeDTO
+  InfractionReportCreatedDTO:
+    type: object
+    properties:
+      dateCreate:
+        type: string
+      dateLastUpdate:
+        type: string
+      infractionReportId:
+        type: string
+      ispbCredited:
+        type: integer
+        format: int32
+      ispbDebited:
+        type: integer
+        format: int32
+      reportedBy:
+        type: string
+        enum:
+          - DEBITED_PARTICIPANT
+          - CREDITED_PARTICIPANT
+      situation:
+        type: string
+        enum:
+          - OPEN
+          - RECEIVED
+          - CANCELED
+          - ANALYZED
+    title: InfractionReportCreatedDTO
+  InfractionReportDTO:
+    type: object
+    properties:
+      analyze:
+        $ref: '#/definitions/InfractionAnalyzeDTO'
+      dateCreate:
+        type: string
+        format: date-time
+      dateLastUpdate:
+        type: string
+        format: date-time
+      details:
+        type: string
+      endToEndId:
+        type: string
+      infractionReportId:
+        type: string
+      infractionType:
+        type: string
+        enum:
+          - FRAUD
+          - PLD_FT
+      ispbCredited:
+        type: integer
+        format: int32
+      ispbDebited:
+        type: integer
+        format: int32
+      reportedBy:
+        type: string
+        enum:
+          - DEBITED_PARTICIPANT
+          - CREDITED_PARTICIPANT
+      situation:
+        type: string
+        enum:
+          - OPEN
+          - RECEIVED
+          - CANCELED
+          - ANALYZED
+    title: InfractionReportDTO
+  ListKeyResponseWebDTO:
+    type: object
+    properties:
+      claim:
+        type: integer
+        format: int32
+      createdAt:
+        type: string
+        format: date-time
+      fantasyName:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      startPossessionAt:
+        type: string
+        format: date-time
+    title: ListKeyResponseWebDTO
+  PixKeyResponseDTO:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountOpeningDate:
+        type: string
+        format: date-time
+      accountType:
+        type: string
+        enum:
+          - CHECKING
+          - SALARY
+          - SAVINGS
+      branchNumber:
+        type: string
+      claim:
+        type: string
+        enum:
+          - PORTABILITY
+          - POSSESION_CLAIM
+      createdAt:
+        type: string
+        format: date-time
+      endToEndId:
+        type: string
+      fantasyName:
+        type: string
+      ispb:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+      nameIspb:
+        type: string
+      personType:
+        type: string
+        enum:
+          - INDIVIDUAL_PERSON
+          - LEGAL_ENTITY
+      startPossessionAt:
+        type: string
+        format: date-time
+      statistic:
+        $ref: '#/definitions/Statistic'
+      taxId:
+        type: string
+      type:
+        type: string
+        enum:
+          - CPF
+          - CNPJ
+          - EMAIL
+          - CELLPHONE
+          - RANDOM
+    title: PixKeyResponseDTO
   Statistic:
     type: object
     properties:
@@ -1000,7 +1595,7 @@ definitions:
         type: string
         format: date-time
     title: Statistic
-  UpdateAccountPixKeyDTO:
+  UpdateAccountPixKeyRequestWebDTO:
     type: object
     required:
       - accountNumber
@@ -1009,8 +1604,8 @@ definitions:
       - branchNumber
       - ispb
       - reason
-      - requestIdentifier
       - type
+      - userId
     properties:
       accountNumber:
         type: string
@@ -1036,9 +1631,6 @@ definitions:
         enum:
           - CLIENT_REQUEST
           - BRANCH_TRANSFER
-      requestIdentifier:
-        type: string
-        description: 'Chave de Idempotência. Utiliza tipagem GUID (v4).'
       type:
         type: string
         description: Tipo chave endereçamento
@@ -1048,4 +1640,4 @@ definitions:
           - EMAIL
           - CELLPHONE
           - RANDOM
-    title: UpdateAccountPixKeyDTO
+    title: UpdateAccountPixKeyRequestWebDTO
