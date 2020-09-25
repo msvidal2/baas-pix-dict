@@ -20,10 +20,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ListPixKeyRequestWebDTO {
 
-    @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}")
-    @NotNull
-    protected String key;
-
     @ApiModelProperty(value = "CPF/CNPJ of client", dataType="java.lang.String", required = true)
     @NotNull
     private String cpfCnpj;
@@ -49,7 +45,6 @@ public class ListPixKeyRequestWebDTO {
 
     public PixKey toDomain() {
         return PixKey.builder()
-            .key(key)
             .taxId(cpfCnpj)
             .personType(personType)
             .accountNumber(accountNumber)
