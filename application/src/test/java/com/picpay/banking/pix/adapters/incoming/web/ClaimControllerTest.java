@@ -1,10 +1,10 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.original.exception.NotFoundOriginalClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,8 +50,7 @@ class ClaimControllerTest {
                 standaloneSetup(controller)
                 .setControllerAdvice(
                         new CustomExceptionHandler(),
-                        new JDExceptionHandler(),
-                        new OriginalExceptionHandler())
+                        new JDExceptionHandler())
                 .build();
 
         claim = Claim.builder()
@@ -88,7 +87,7 @@ class ClaimControllerTest {
 
     @Test
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
-        when(findClaimUseCase.execute(anyString())).thenThrow(NotFoundOriginalClientException.class);
+        when(findClaimUseCase.execute(anyString())).thenThrow(NotFoundJdClientException.class);
 
         mockMvc.perform(get(BASE_URL.concat("/999")))
                 .andExpect(status().isNotFound())
