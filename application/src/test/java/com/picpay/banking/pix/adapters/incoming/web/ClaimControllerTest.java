@@ -4,7 +4,6 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebD
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.original.exception.NotFoundOriginalClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,8 +49,7 @@ class ClaimControllerTest {
                 standaloneSetup(controller)
                 .setControllerAdvice(
                         new CustomExceptionHandler(),
-                        new JDExceptionHandler(),
-                        new OriginalExceptionHandler())
+                        new JDExceptionHandler())
                 .build();
 
         claim = Claim.builder()
@@ -84,17 +82,6 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.ispb", equalTo(92894922)))
                 .andExpect(jsonPath("$.cpfCnpj", equalTo("12345678902")))
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
-    }
-
-    @Test
-    void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
-        when(findClaimUseCase.execute(anyString())).thenThrow(NotFoundOriginalClientException.class);
-
-        mockMvc.perform(get(BASE_URL.concat("/999")))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code", equalTo(404)))
-                .andExpect(jsonPath("$.error", equalTo("Not Found")))
-                .andExpect(jsonPath("$.message", equalTo("Resource not found")));
     }
 
     @Test
