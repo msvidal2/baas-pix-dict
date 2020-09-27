@@ -23,7 +23,7 @@ public class CreatePixKeyRequestDTO {
     private String nrConta;
     private LocalDateTime dtHrAberturaConta;
     private int tpPessoa;
-    private Integer cpfCnpj;
+    private Long cpfCnpj;
     private String nome;
     private String nomeFantasia;
     private int motivo;
