@@ -42,7 +42,7 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
             .nrConta(from.getAccountNumber())
             .dtHrAberturaConta(from.getAccountOpeningDate())
             .tpPessoa(from.getPersonType().getValue())
-            .cpfCnpj(from.getTaxId())
+            .cpfCnpj(Integer.valueOf(from.getTaxId()))
             .nome(from.getName())
             .nomeFantasia(from.getFantasyName())
             .motivo(reason.getValue())
