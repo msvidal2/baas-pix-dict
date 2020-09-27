@@ -36,11 +36,12 @@ import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-//@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
+@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
 public class JDPIPortBeansConfig {
 
     @Bean

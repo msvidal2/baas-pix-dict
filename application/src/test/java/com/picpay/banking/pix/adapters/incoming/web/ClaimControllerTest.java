@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
@@ -82,6 +83,17 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.ispb", equalTo(92894922)))
                 .andExpect(jsonPath("$.cpfCnpj", equalTo("12345678902")))
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
+    }
+
+    @Test
+    void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
+        when(findClaimUseCase.execute(anyString())).thenThrow(NotFoundJdClientException.class);
+
+        mockMvc.perform(get(BASE_URL.concat("/999")))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", equalTo(404)))
+                .andExpect(jsonPath("$.error", equalTo("Not Found")))
+                .andExpect(jsonPath("$.message", equalTo("Resource not found")));
     }
 
     @Test

@@ -17,7 +17,6 @@ public class ClientErrorResponseFactory {
     public static ResponseEntity<ErrorDTO> newErrorDTO(final Throwable clientException) {
         if (clientException.getClass().isAssignableFrom(JDClientException.class)) {
             return getJDErrorResponse((JDClientException) clientException);
-
         }
 
         return ResponseEntity
