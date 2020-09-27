@@ -19,7 +19,7 @@ public class CreatePixKeyConverter {
                 .nrConta(           from.getAccountNumber())
                 .dtHrAberturaConta( from.getAccountOpeningDate())
                 .tpPessoa(          from.getPersonType().getValue())
-                .cpfCnpj(           Integer.valueOf(from.getTaxId()))
+                .cpfCnpj(           Long.valueOf(from.getTaxId()))
                 .nome(              from.getName())
                 .nomeFantasia(      from.getFantasyName())
                 .motivo(            reason.getValue())
