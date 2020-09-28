@@ -3,11 +3,14 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.picpay.banking.jdpi.dto.response.JDErrorDTO;
 import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -25,13 +28,18 @@ public class ClientErrorResponseFactory {
     }
 
     private static ResponseEntity<ErrorDTO> getJDErrorResponse(JDClientException clientException) {
-        var message = clientException.getError()
-                .orElse(new JDErrorDTO("", "", Collections.emptyList()))
-                .getMessage();
+        final var error = clientException.getError()
+                .orElse(new JDErrorDTO("", "", Collections.emptyList()));
+
+        final var fieldsErrors = Optional.ofNullable(error.getErrors())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(FieldErrorDTO::from)
+                .collect(Collectors.toList());
 
         return ResponseEntity
                 .status(clientException.getStatus())
-                .body(ErrorDTO.from(clientException.getStatus(), message));
+                .body(ErrorDTO.from(clientException.getStatus(), error.getMessage(), fieldsErrors));
     }
 
 }
