@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "tokenManagerClient",
-        url = "${pix.services.baas.token-manager.url}",
-        path = "/pix/token-manager")
+        url = "${pix.services.baas.token-manager.url}")
 public interface TokenManagerClient {
 
     @GetMapping("/v1/token")
