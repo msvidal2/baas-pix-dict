@@ -24,6 +24,6 @@ public class ListPixKeyConverter implements DataConverter<ListPixKeyResponseDTO,
             .fantasyName(listKeyResponseDTO.getNomeFantasia())
             .createdAt(listKeyResponseDTO.getDtHrCriacaoChave())
             .startPossessionAt(listKeyResponseDTO.getDtHrInicioPosseChave())
-            .claim(ClaimType.resolve(listKeyResponseDTO.getReivindicacao())).build();
+            .claim(listKeyResponseDTO.getReivindicacao() != null ? ClaimType.resolve(listKeyResponseDTO.getReivindicacao()) : null).build();
     }
 }
