@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "tokenManagerClient",
         url = "${pix.services.baas.token-manager.url}",
-        path = "/pix/token-manager",
         fallbackFactory = TokenManagerFallbackFactory.class)
 public interface TokenManagerClient {
 
