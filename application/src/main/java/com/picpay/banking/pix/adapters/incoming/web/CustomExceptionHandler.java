@@ -3,6 +3,8 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
+import com.picpay.banking.pix.core.validators.key.KeyValidator;
+import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -36,7 +38,10 @@ public class CustomExceptionHandler {
                 .getCause());
     }
 
-    @ExceptionHandler({IllegalArgumentException.class })
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            KeyValidatorException.class
+    })
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleRuntimeException(final RuntimeException ex, final WebRequest request) {
         log.error("error", ex);
