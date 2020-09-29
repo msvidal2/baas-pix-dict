@@ -6,6 +6,7 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
@@ -37,9 +38,15 @@ public class ClientErrorResponseFactory {
                 .map(FieldErrorDTO::from)
                 .collect(Collectors.toList());
 
+        var message = error.getMessage();
+
+        if(HttpStatus.CONFLICT.equals(clientException.getStatus())) {
+            message = clientException.getLocalizedMessage();
+        }
+
         return ResponseEntity
                 .status(clientException.getStatus())
-                .body(ErrorDTO.from(clientException.getStatus(), error.getMessage(), fieldsErrors));
+                .body(ErrorDTO.from(clientException.getStatus(), message, fieldsErrors));
     }
 
 }

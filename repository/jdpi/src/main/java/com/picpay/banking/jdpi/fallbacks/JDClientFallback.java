@@ -48,6 +48,8 @@ public abstract class JDClientFallback {
                 return new JDClientException("Not found", cause, error, NOT_FOUND);
             case BAD_REQUEST:
                 return new JDClientException("Bad Request", cause, error, BAD_REQUEST);
+            case CONFLICT:
+                return new JDClientException("Request identifier has already been used in another transaction", cause, null, CONFLICT);
         }
 
         return new JDClientException(cause.getMessage(), cause, null, BAD_GATEWAY);
