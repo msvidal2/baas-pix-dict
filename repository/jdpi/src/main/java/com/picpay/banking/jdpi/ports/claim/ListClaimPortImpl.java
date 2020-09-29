@@ -21,11 +21,11 @@ public class ListClaimPortImpl implements ListClaimPort {
         var listClaimRequestDTO = ListClaimRequestDTO.builder()
             .ispb(claim.getIspb())
             .tpPessoaLogada(claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
-            .cpfCnpjLogado(Long.parseLong(claim.getCpfCnpj()))
+            .cpfCnpjLogado((claim.getCpfCnpj() != null? Long.parseLong(claim.getCpfCnpj()): null))
             .nrAgenciaLogada(claim.getBranchNumber())
             .nrContaLogada(claim.getAccountNumber())
             .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
-            .nrLimite(limit)
+            .nrLimite((limit != null? limit: null))
             .build();
 
         return converter.convert(claimJDClient.list(requestIdentifier, listClaimRequestDTO));
