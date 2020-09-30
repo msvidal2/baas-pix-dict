@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelResponseInfractionDTO;
@@ -49,6 +50,7 @@ public class InfractionReportController {
     private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
     private final FilterInfractionReportUseCase filterInfractionReportUseCase;
 
+    @Trace
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
@@ -58,6 +60,7 @@ public class InfractionReportController {
         return InfractionReportCreatedDTO.from(infractionReport);
     }
 
+    @Trace
     @ApiOperation(value = "List pendings infractions")
     @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -66,6 +69,7 @@ public class InfractionReportController {
         return this.listPendingInfractionReportUseCase.execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
+    @Trace
     @ApiOperation(value = "find an infraction report")
     @GetMapping(value = "/find/{infractionReportId}")
     @ResponseStatus(OK)
@@ -74,6 +78,7 @@ public class InfractionReportController {
         return FindInfractionReportDTO.from(infractionReport);
     }
 
+    @Trace
     @ApiOperation(value = "Cancel Infraction Report")
     @PostMapping(value = "/{infractionReportId}/cancel", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -83,6 +88,7 @@ public class InfractionReportController {
         return CancelResponseInfractionDTO.from(infractionReport);
     }
 
+    @Trace
     @ApiOperation(value = "Analyze Infraction Report")
     @PostMapping(value = "/{infractionReportId}/analyze", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -93,6 +99,7 @@ public class InfractionReportController {
         return CancelResponseInfractionDTO.from(infractionReport);
     }
 
+    @Trace
     @ApiOperation(value = "List Infraction Report")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)

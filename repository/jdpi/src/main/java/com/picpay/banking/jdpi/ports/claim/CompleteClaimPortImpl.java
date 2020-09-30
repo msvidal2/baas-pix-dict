@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.claim;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.dto.request.CompleteClaimRequestDTO;
 import com.picpay.banking.pix.core.domain.Claim;
@@ -15,6 +16,7 @@ public class CompleteClaimPortImpl implements CompleteClaimPort {
         this.claimJDClient = claimJDClient;
     }
 
+    @Trace
     @Override
     public Claim complete(Claim claim, String requestIdentifier) {
         var response = claimJDClient.complete(

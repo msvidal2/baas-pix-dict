@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.claim;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.CreateClaimConverter;
 import com.picpay.banking.jdpi.dto.request.CreateClaimRequestDTO;
@@ -20,6 +21,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
         this.claimJDClient = claimJDClient;
     }
 
+    @Trace
     @Override
     public Claim createPixKey(final Claim claim, final String requestIdentifier) {
         CreateClaimRequestDTO requestDTO = converter.convert(claim);

@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.pixkey;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.request.UpdateAccountPixKeyRequestDTO;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -12,6 +13,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
     private PixKeyJDClient pixKeyJDClient;
 
+    @Trace
     @Override
     public PixKey updateAccount(String requestIdentifier, PixKey pixKey, UpdateReason reason) {
         final var requestDTO = UpdateAccountPixKeyRequestDTO.builder()

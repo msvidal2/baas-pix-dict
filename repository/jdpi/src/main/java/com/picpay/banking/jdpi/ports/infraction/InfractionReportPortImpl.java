@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.infraction;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.dto.request.AnalyzeInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
@@ -23,6 +24,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
 
     private final InfractionReportJDClient infractionJDClient;
 
+    @Trace
     @Override
     public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
 
@@ -30,6 +32,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
             .toInfractionReport();
     }
 
+    @Trace
     @Override
     public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit) {
         var infractionReportDTO = this.infractionJDClient.listPendings(ispb, limit);
@@ -37,11 +40,13 @@ public class InfractionReportPortImpl implements InfractionReportPort {
             .collect(Collectors.toList());
     }
 
+    @Trace
     @Override
     public InfractionReport find(final String infractionReportId) {
         return infractionJDClient.find(infractionReportId).toInfractionReport();
     }
 
+    @Trace
     @Override
     public InfractionReport cancel(final String infractionReportId, final Integer ispb, final String requestIdentifier) {
         var cancelInfractionDTO = new CancelInfractionDTO(infractionReportId, ispb);
@@ -49,6 +54,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
         return response.toInfraction();
     }
 
+    @Trace
     @Override
     public InfractionReport analyze(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
         final String requestIdentifier) {
@@ -65,6 +71,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
         return analyzeResponse.toInfraction();
     }
 
+    @Trace
     @Override
     public List<InfractionReport> filter(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
         LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {

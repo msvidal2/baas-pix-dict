@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.claim;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.request.ListClaimRequestDTO;
@@ -15,6 +16,7 @@ public class ListClaimPortImpl implements ListClaimPort {
 
     private ListClaimConverter converter;
 
+    @Trace
     @Override
     public ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier) {
 

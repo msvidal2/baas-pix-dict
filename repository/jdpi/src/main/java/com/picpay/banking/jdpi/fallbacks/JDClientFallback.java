@@ -45,11 +45,16 @@ public abstract class JDClientFallback {
 
         switch (HttpStatus.resolve(feignException.status())) {
             case NOT_FOUND:
-                return new JDClientException("Not found", cause, error, NOT_FOUND);
+                return new JDClientException(NOT_FOUND.getReasonPhrase(), cause, error, NOT_FOUND);
             case BAD_REQUEST:
-                return new JDClientException("Bad Request", cause, error, BAD_REQUEST);
+                return new JDClientException(BAD_REQUEST.getReasonPhrase(), cause, error, BAD_REQUEST);
             case CONFLICT:
                 return new JDClientException("Request identifier has already been used in another transaction", cause, null, CONFLICT);
+            case GATEWAY_TIMEOUT:
+            case REQUEST_TIMEOUT:
+                log.error("client-timeout: "+ feignException.getMessage());
+
+                return new JDClientException(GATEWAY_TIMEOUT.getReasonPhrase(), cause, null, GATEWAY_TIMEOUT);
         }
 
         return new JDClientException(cause.getMessage(), cause, null, BAD_GATEWAY);
