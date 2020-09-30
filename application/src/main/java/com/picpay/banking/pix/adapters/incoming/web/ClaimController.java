@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.converters.CreateClaimWebConverter;
@@ -35,6 +36,7 @@ public class ClaimController {
 
     private FindClaimUseCase findClaimUseCase;
 
+    @Trace
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(CREATED)
@@ -44,6 +46,7 @@ public class ClaimController {
         return ClaimResponseDTO.from(claim);
     }
 
+    @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
     public Claim confirm(@PathVariable String claimId, @RequestBody @Validated ClaimConfirmationDTO dto) {
@@ -56,6 +59,7 @@ public class ClaimController {
                 dto.getRequestIdentifier());
     }
 
+    @Trace
     @ApiOperation(value = "List Claim.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -73,6 +77,7 @@ public class ClaimController {
         return listClaimUseCase.execute(claim, requestDTO.isPending(), requestDTO.getLimit(), requestIdentifier);
     }
 
+    @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
     public Claim cancel(@PathVariable String claimId, @RequestBody @Validated ClaimCancelDTO dto) {
@@ -84,6 +89,7 @@ public class ClaimController {
         return claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), dto.getRequestIdentifier());
     }
 
+    @Trace
     @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
     public Claim complete(@PathVariable String claimId, @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
@@ -94,6 +100,7 @@ public class ClaimController {
                 dto.getRequestIdentifier());
     }
 
+    @Trace
     @ApiOperation(value = "Find Claim by Claim Id.")
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)

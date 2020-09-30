@@ -1,8 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
@@ -32,6 +32,7 @@ public class PixKeyController {
 
     private ListPixKeyUseCase listPixKeyUseCase;
 
+    @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_CREATE)
     @PostMapping
     @ResponseStatus(CREATED)
@@ -46,6 +47,7 @@ public class PixKeyController {
         return PixKeyResponseDTO.from(pixKey);
     }
 
+    @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_LIST)
     @GetMapping
     @ResponseStatus(OK)
@@ -55,6 +57,7 @@ public class PixKeyController {
         return ListKeyResponseWebDTO.from(listPixKeyUseCase.execute(requestIdentifier, requestDTO.toDomain()));
     }
 
+    @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_FIND)
     @GetMapping("/{key}")
     @ResponseStatus(OK)
@@ -65,6 +68,7 @@ public class PixKeyController {
         return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, key, userId));
     }
 
+    @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
     @DeleteMapping("{key}")
     @ResponseStatus(NO_CONTENT)
@@ -75,6 +79,7 @@ public class PixKeyController {
         removePixKeyUseCase.execute(requestIdentifier, dto.toDomain(key), dto.getReason());
     }
 
+    @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,

@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.claim;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.dto.request.ClaimCancelRequestDTO;
 import com.picpay.banking.pix.core.domain.Claim;
@@ -15,6 +16,7 @@ public class ClaimCancelPortImpl implements ClaimCancelPort {
 
     private ClaimJDClient claimJDClient;
 
+    @Trace
     @Override
     public Claim cancel(Claim claim, boolean canceledClaimant, ClaimCancelReason reason, String requestIdentifier) {
         var request = ClaimCancelRequestDTO.builder()

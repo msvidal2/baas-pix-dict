@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.pixkey;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.CreatePixKeyConverter;
 import com.picpay.banking.jdpi.dto.request.CreatePixKeyRequestDTO;
@@ -18,6 +19,7 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
     private CreatePixKeyConverter converter;
 
+    @Trace
     @Override
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
         CreatePixKeyRequestDTO requestDTO = converter.convert(pixKey, reason);

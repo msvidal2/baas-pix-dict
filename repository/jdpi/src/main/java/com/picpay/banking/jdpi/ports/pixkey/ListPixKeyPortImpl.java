@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.pixkey;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.dto.request.ListPixKeyRequestDTO;
@@ -16,6 +17,7 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
 
     private ListPixKeyConverter converter;
 
+    @Trace
     @Override
     public Collection<PixKey> listPixKey(final String requestIdentifier, final PixKey pixKey) {
 
