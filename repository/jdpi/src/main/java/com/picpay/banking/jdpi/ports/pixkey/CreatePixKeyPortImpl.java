@@ -26,6 +26,12 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
         CreatePixKeyResponseJDDTO jdpiReturnDTO = pixKeyJDClient.createPixKey(requestIdentifier, requestDTO);
 
+        log.info
+                ("{ \"pixKey_created\": \""+jdpiReturnDTO.getChave()
+                +"\", \"NameIspb\":\""+pixKey.getNameIspb()
+                +"\", \"AccountNumber\":\""+pixKey.getAccountNumber()
+                +"\", \"BranchNumber\":\""+pixKey.getBranchNumber()+"\"}");
+
         return converter.convert(jdpiReturnDTO, pixKey);
     }
 }
