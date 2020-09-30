@@ -8,6 +8,7 @@ import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +16,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
 @RequestMapping(value = "v1/keys", produces = "application/json")
 @AllArgsConstructor
+@Slf4j
 public class PixKeyController {
 
     private CreatePixKeyUseCase createPixKeyUseCase;
@@ -39,6 +42,11 @@ public class PixKeyController {
     public PixKeyResponseDTO create(@RequestHeader String requestIdentifier,
                                     @RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
 
+        log.info("PixKey_creating"
+                , kv("NameIspb", requestDTO.getIspb())
+                , kv("AccountNumber", requestDTO.getAccountNumber())
+                , kv("BranchNumber", requestDTO.getBranchNumber()));
+
         var pixKey = createPixKeyUseCase.execute(
                 requestIdentifier,
                 requestDTO.toPixKey(),
@@ -54,6 +62,12 @@ public class PixKeyController {
     public List<ListKeyResponseWebDTO> list(@RequestHeader String requestIdentifier,
                                             @Valid ListPixKeyRequestWebDTO requestDTO) {
 
+        log.info("PixKey_list"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("NameIspb", requestDTO.getIspb())
+                , kv("AccountNumber", requestDTO.getAccountNumber())
+                , kv("BranchNumber", requestDTO.getBranchNumber()));
+
         return ListKeyResponseWebDTO.from(listPixKeyUseCase.execute(requestIdentifier, requestDTO.toDomain()));
     }
 
@@ -64,6 +78,11 @@ public class PixKeyController {
     public PixKeyResponseDTO find(@RequestHeader String requestIdentifier,
                                   @PathVariable String key,
                                   @RequestHeader String userId) {
+
+        log.info("PixKey_find"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", key)
+                , kv("userId", userId));
 
         return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, key, userId));
     }
@@ -76,6 +95,11 @@ public class PixKeyController {
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
+        log.info("PixKey_remove"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", key)
+                , kv("dto", dto));
+
         removePixKeyUseCase.execute(requestIdentifier, dto.toDomain(key), dto.getReason());
     }
 
@@ -86,6 +110,11 @@ public class PixKeyController {
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
+
+        log.info("PixKey_updateAccount"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", key)
+                , kv("dto", dto));
 
         updateAccountUseCase.execute(requestIdentifier, pixKey, dto.getReason());
 

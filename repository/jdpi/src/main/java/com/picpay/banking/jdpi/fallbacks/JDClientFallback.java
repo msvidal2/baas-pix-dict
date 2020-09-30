@@ -41,6 +41,19 @@ public abstract class JDClientFallback {
     }
 
     private JDClientException feignExceptionResolver(FeignException feignException) {
+
+        if (feignException.responseBody().isEmpty()) {
+            if (cause.getCause().toString().contains("UnknownHostException")) {
+                log.error("client-unknownHost: " + feignException.getMessage());
+
+                return new JDClientException(BAD_GATEWAY.getReasonPhrase(), cause, null, BAD_GATEWAY);
+            } else {
+                log.error("unknown-error: " + feignException.getMessage());
+
+                return new JDClientException(INTERNAL_SERVER_ERROR.getReasonPhrase(), cause, null, INTERNAL_SERVER_ERROR);
+            }
+        }
+
         var error = parseError(feignException.responseBody().get().array());
 
         switch (HttpStatus.resolve(feignException.status())) {
