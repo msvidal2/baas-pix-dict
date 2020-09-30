@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "infractionJDClient",
-        url = "${pix.services.jdpi.dict.url}",
+        url = "${pix.services.jdpi.infraction.url}",
         path = "/jdpi/dict/api",
         fallbackFactory = InfractionReportJDClientFallbackFactory.class)
 @Headers({
