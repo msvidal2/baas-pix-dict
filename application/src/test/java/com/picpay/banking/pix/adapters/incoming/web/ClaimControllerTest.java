@@ -76,7 +76,7 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.accountNumber", equalTo("123456")))
                 .andExpect(jsonPath("$.accountType", equalTo("CHECKING")))
                 .andExpect(jsonPath("$.branchNumber", equalTo("0001")))
-                .andExpect(jsonPath("$.claimType", equalTo("POSSESION_CLAIM")))
+                .andExpect(jsonPath("$.claimType", equalTo("POSSESSION_CLAIM")))
                 .andExpect(jsonPath("$.key", equalTo("+5511998765499")))
                 .andExpect(jsonPath("$.keyType", equalTo("CELLPHONE")))
                 .andExpect(jsonPath("$.name", equalTo("Deutonio Celso da Silva")))

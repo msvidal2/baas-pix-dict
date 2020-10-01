@@ -239,22 +239,6 @@ public class PixKeyControllerTest {
     }
 
     @Test
-    public void when_createPixKeyWithNullKey_expect_statusBadRequest() throws Exception {
-        createPixKeyDTO.setKey(null);
-
-        mockMvc.perform(post(BASE_URL)
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code", equalTo(400)))
-                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
-                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
-                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("key")))
-                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("must not be null")));
-    }
-
-    @Test
     public void when_createPixKeyWithNullIspb_expect_statusBadRequest() throws Exception {
         createPixKeyDTO.setIspb(null);
 

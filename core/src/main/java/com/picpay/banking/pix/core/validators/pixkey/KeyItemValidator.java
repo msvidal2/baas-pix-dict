@@ -11,8 +11,11 @@ public class KeyItemValidator implements DictItemValidator<PixKey> {
 
     @Override
     public void validate(PixKey domain) {
-        if(KeyType.RANDOM.equals(domain.getType())){
-            return;
+        if(KeyType.RANDOM.equals(domain.getType())) {
+            if (domain.getKey() == null || domain.getKey().isEmpty()) {
+                return;
+            }
+            new IllegalArgumentException("The key must be null");
         }
 
         Optional.ofNullable(domain.getType())
