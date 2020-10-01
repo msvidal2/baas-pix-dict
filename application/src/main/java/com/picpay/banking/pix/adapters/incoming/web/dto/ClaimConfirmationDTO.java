@@ -24,8 +24,4 @@ public class ClaimConfirmationDTO {
     @NonNull
     private ClaimConfirmationReason reason;
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NonNull
-    private String requestIdentifier;
-
 }

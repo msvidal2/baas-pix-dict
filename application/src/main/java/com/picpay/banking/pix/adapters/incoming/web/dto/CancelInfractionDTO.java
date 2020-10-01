@@ -21,8 +21,4 @@ public class CancelInfractionDTO {
 
     @NotNull
     private Integer ispb;
-
-    @NotNull
-    private String requestIdentifier;
-
 }

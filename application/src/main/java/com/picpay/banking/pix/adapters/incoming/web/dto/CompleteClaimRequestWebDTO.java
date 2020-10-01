@@ -20,8 +20,4 @@ public class CompleteClaimRequestWebDTO {
     @NotNull
     private int ispb;
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NotNull
-    private String requestIdentifier;
-
 }

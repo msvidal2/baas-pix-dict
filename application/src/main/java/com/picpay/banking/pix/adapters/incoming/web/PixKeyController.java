@@ -43,6 +43,8 @@ public class PixKeyController {
                                     @RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
 
         log.info("PixKey_creating"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", requestDTO.getKey())
                 , kv("NameIspb", requestDTO.getIspb())
                 , kv("AccountNumber", requestDTO.getAccountNumber())
                 , kv("BranchNumber", requestDTO.getBranchNumber()));

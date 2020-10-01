@@ -59,7 +59,7 @@ paths:
             $ref: '#/definitions/CreatePixKeyRequestWebDTO'
         - name: requestIdentifier
           in: header
-          description: requestIdentifier
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
           required: true
           type: string
       responses:
@@ -170,7 +170,7 @@ paths:
       parameters:
         - name: requestIdentifier
           in: header
-          description: requestIdentifier
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
           required: true
           type: string
         - name: userId
@@ -235,7 +235,7 @@ paths:
           type: string
         - name: requestIdentifier
           in: header
-          description: requestIdentifier
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
           required: true
           type: string
       responses:
@@ -283,7 +283,7 @@ paths:
           type: string
         - name: requestIdentifier
           in: header
-          description: requestIdentifier
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
           required: true
           type: string
       responses:
@@ -318,6 +318,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - in: body
           name: requestDTO
           required: true
@@ -463,6 +468,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - name: claimId
           in: path
           description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Cancelada”. Utiliza tipagem GUID (v4).
@@ -499,6 +509,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - name: claimId
           in: path
           description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Concluída”. Utiliza tipagem GUID (v4).
@@ -536,6 +551,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - name: claimId
           in: path
           description: Identificador da Reivindicação no DICT, cuja situação será alterada para “Confirmada”. Utiliza tipagem GUID (v4).
@@ -642,6 +662,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - in: body
           name: createInfractionReportRequestWebDTO
           description: createInfractionReportRequestWebDTO
@@ -733,6 +758,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - in: body
           name: dto
           description: dto
@@ -769,6 +799,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: requestIdentifier
+          in: header
+          description: Chave de Idempotência. Utiliza tipagem GUID (v4).
+          required: true
+          type: string
         - in: body
           name: dto
           description: dto
@@ -830,8 +865,6 @@ definitions:
       ispb:
         type: integer
         format: int32
-      requestIdentifier:
-        type: string
       result:
         type: string
         enum:
@@ -844,8 +877,6 @@ definitions:
       ispb:
         type: integer
         format: int32
-      requestIdentifier:
-        type: string
     title: CancelInfractionDTO
   CancelResponseInfractionDTO:
     type: object
@@ -1002,7 +1033,6 @@ definitions:
     required:
       - ispb
       - reason
-      - requestIdentifier
     properties:
       canceledClaimant:
         type: boolean
@@ -1018,16 +1048,12 @@ definitions:
           - CLIENT_REQUEST
           - ACCOUNT_CLOSURE
           - FRAUD
-      requestIdentifier:
-        type: string
-        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
     title: ClaimCancelDTO
   ClaimConfirmationDTO:
     type: object
     required:
       - ispb
       - reason
-      - requestIdentifier
     properties:
       ispb:
         type: integer
@@ -1039,9 +1065,6 @@ definitions:
         enum:
           - CLIENT_REQUEST
           - ACCOUNT_CLOSURE
-      requestIdentifier:
-        type: string
-        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
     title: ClaimConfirmationDTO
   ClaimIterable:
     type: object
@@ -1135,15 +1158,11 @@ definitions:
     type: object
     required:
       - ispb
-      - requestIdentifier
     properties:
       ispb:
         type: integer
         format: int32
         description: Código ISPB do PSP
-      requestIdentifier:
-        type: string
-        description: Chave de Idempotência. Utiliza tipagem GUID (v4).
     title: CompleteClaimRequestWebDTO
   CreateClaimRequestWebDTO:
     type: object
@@ -1158,7 +1177,6 @@ definitions:
       - keyType
       - name
       - personType
-      - requestIdentifier
     properties:
       accountNumber:
         type: string
@@ -1214,9 +1232,6 @@ definitions:
         enum:
           - INDIVIDUAL_PERSON
           - LEGAL_ENTITY
-      requestIdentifier:
-        type: string
-        description: 'We suggest using UUID (v4) typing, 36 characters long.'
     title: CreateClaimRequestWebDTO
   CreateInfractionReportRequestWebDTO:
     type: object
@@ -1224,7 +1239,6 @@ definitions:
       - endToEndId
       - infractionType
       - ispbRequester
-      - requestIdentifier
     properties:
       details:
         type: string
@@ -1241,9 +1255,6 @@ definitions:
       ispbRequester:
         type: string
         description: ISPB of the Participant who identified the infraction.
-      requestIdentifier:
-        type: string
-        description: 'We suggest using UUID (v4) typing, 36 characters long.'
     title: CreateInfractionReportRequestWebDTO
   CreatePixKeyRequestWebDTO:
     type: object

@@ -8,8 +8,12 @@ import com.picpay.banking.pix.core.ports.claim.ClaimConfirmationPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
+@Slf4j
 public class ClaimConfirmationUseCase {
 
     private ClaimConfirmationPort claimConfirmationPort;
@@ -24,7 +28,14 @@ public class ClaimConfirmationUseCase {
 
         validator.validate(claim);
 
-        return claimConfirmationPort.confirm(claim, reason, requestIdentifier);
+        Claim claimConfirmed = claimConfirmationPort.confirm(claim, reason, requestIdentifier);
+
+        if (claimConfirmed != null)
+            log.info("Claim_confirmed",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("claimId", claimConfirmed.getClaimId()));
+
+        return claimConfirmed;
     }
 
     public void validateRequestFields(final ClaimConfirmationReason reason, final String requestIdentifier) {

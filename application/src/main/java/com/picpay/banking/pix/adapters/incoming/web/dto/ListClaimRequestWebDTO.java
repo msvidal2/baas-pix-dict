@@ -21,7 +21,7 @@ public class ListClaimRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
     @NonNull
-    private int ispb;
+    private Integer ispb;
 
     @ApiModelProperty(value = "Person type of receiver")
     private PersonType personType;
@@ -44,5 +44,5 @@ public class ListClaimRequestWebDTO {
 
     @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean", required = true)
     @NonNull
-    private boolean pending;
+    private Boolean pending;
 }

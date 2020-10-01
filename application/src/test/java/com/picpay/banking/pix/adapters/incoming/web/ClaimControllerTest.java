@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.UUID;
+
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -103,10 +105,10 @@ class ClaimControllerTest {
         when(completeClaimUseCase.execute(any(), anyString())).thenReturn(claim);
 
         mockMvc.perform(put("/v1/claims/1/complete")
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
                         .ispb(12345)
-                        .requestIdentifier(randomUUID().toString())
                         .build())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.claimSituation", equalTo("COMPLETED")));

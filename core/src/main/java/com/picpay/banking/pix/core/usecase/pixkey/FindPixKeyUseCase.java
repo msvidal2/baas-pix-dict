@@ -4,8 +4,12 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
+@Slf4j
 public class FindPixKeyUseCase {
 
     private FindPixKeyPort findPixKeyPort;
@@ -22,7 +26,14 @@ public class FindPixKeyUseCase {
             throw new IllegalArgumentException("The userId can not be null");
         }
 
-        return findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        PixKey pixKeyFound =  findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+
+        if (pixKeyFound != null)
+            log.info("PixKey_found"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("key", pixKeyFound.getKey()));
+
+        return pixKeyFound;
     }
 
 }

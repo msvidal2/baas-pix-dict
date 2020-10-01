@@ -6,8 +6,12 @@ import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
+@Slf4j
 public class ClaimCancelUseCase {
 
     private ClaimCancelPort claimCancelPort;
@@ -25,7 +29,13 @@ public class ClaimCancelUseCase {
             throw new IllegalArgumentException("The request identifier cannot be empty");
         }
 
-        return claimCancelPort.cancel(claim, canceledClaimant, reason, requestIdentifier);
-    }
+        Claim claimCanceled = claimCancelPort.cancel(claim, canceledClaimant, reason, requestIdentifier);
 
+        if (claimCanceled != null)
+            log.info("Claim_canceled"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("claimId", claimCanceled.getClaimId()));
+
+        return claimCanceled;
+    }
 }

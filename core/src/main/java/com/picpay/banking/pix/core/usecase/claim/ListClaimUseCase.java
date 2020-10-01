@@ -6,9 +6,13 @@ import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 
 @AllArgsConstructor
+@Slf4j
 public class ListClaimUseCase {
 
     ListPendingClaimPort listPendingClaimPort;
@@ -28,6 +32,11 @@ public class ListClaimUseCase {
         } else {
             claimIterable = listClaimPort.list(claim, limit, requestIdentifier);
         }
+
+        if (claimIterable != null)
+            log.info("Claim_listed",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("count", claimIterable.getCount()));
 
         return claimIterable;
     }

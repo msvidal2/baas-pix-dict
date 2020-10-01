@@ -20,10 +20,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CreateInfractionReportRequestWebDTO {
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NotNull
-    private String requestIdentifier;
-
     @ApiModelProperty(value = "ISPB of the Participant who identified the infraction.", required = true)
     @NotNull
     private String ispbRequester;
@@ -41,7 +37,6 @@ public class CreateInfractionReportRequestWebDTO {
 
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
-            .requestIdentifier(requestIdentifier)
             .ispbRequester(Integer.parseInt(ispbRequester))
             .endToEndId(endToEndId)
             .type(infractionType)

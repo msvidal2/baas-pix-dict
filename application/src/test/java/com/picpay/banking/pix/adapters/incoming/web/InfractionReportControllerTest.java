@@ -122,7 +122,6 @@ class InfractionReportControllerTest {
         when(createInfractionReportUseCase.execute(any(), anyString())).thenReturn(infractionReport);
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
             .infractionType(InfractionType.FRAUD)
@@ -132,16 +131,17 @@ class InfractionReportControllerTest {
         final InfractionReportCreatedDTO infractionReportCreatedDTO = InfractionReportCreatedDTO.from(infractionReport);
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
-            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
-            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
-            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
-            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+                .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+                .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+                .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+                .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+                .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+                .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
     }
 
     @Test
@@ -164,7 +164,6 @@ class InfractionReportControllerTest {
     void when_createRequestWithoutIspbRequester_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .infractionType(InfractionType.FRAUD)
             .details("análise de fraude por comportamento suspeito do usuário")
@@ -180,7 +179,6 @@ class InfractionReportControllerTest {
     void when_createRequestWithoutEndToEndId_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .infractionType(InfractionType.FRAUD)
             .ispbRequester("01234")
             .details("análise de fraude por comportamento suspeito do usuário")
@@ -196,7 +194,6 @@ class InfractionReportControllerTest {
     void when_createRequestWithoutInfractionType_expect_statusBadRequest() throws Exception {
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
             .details("análise de fraude por comportamento suspeito do usuário")
@@ -213,24 +210,24 @@ class InfractionReportControllerTest {
         when(createInfractionReportUseCase.execute(any(), anyString())).thenReturn(infractionReport);
 
         var request = CreateInfractionReportRequestWebDTO.builder()
-            .requestIdentifier("439fbf3a-b78e-4bb8-bf9a-a68ba1b3d0e8")
             .endToEndId("E9999901012341234123412345678900")
             .ispbRequester("01234")
             .infractionType(InfractionType.FRAUD)
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
-            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
-            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
-            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
-            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+                .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+                .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+                .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+                .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+                .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+                .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
 
         verify(createInfractionReportUseCase).execute(any(), anyString());
 
@@ -306,16 +303,17 @@ class InfractionReportControllerTest {
 
         when(cancelInfractionReportUseCase.execute(anyString(), anyInt(),anyString())).thenReturn(infractionCanceled);
 
-        var request = CancelInfractionDTO.builder().ispb(1).requestIdentifier("1").build();
+        var request = CancelInfractionDTO.builder().ispb(1).build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.endToEndId").exists())
-            .andExpect(jsonPath("$.infractionReportId").exists())
-            .andExpect(jsonPath("$.situation",equalTo(CANCELED.name())));
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.endToEndId").exists())
+                .andExpect(jsonPath("$.infractionReportId").exists())
+                .andExpect(jsonPath("$.situation",equalTo(CANCELED.name())));
 
         verify(cancelInfractionReportUseCase).execute(anyString(), anyInt(),anyString());
 
@@ -326,12 +324,13 @@ class InfractionReportControllerTest {
         var request = CancelInfractionDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code",equalTo(400)))
-            .andExpect(jsonPath("$.fieldErrors").exists());
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code",equalTo(400)))
+                .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
 
@@ -341,16 +340,17 @@ class InfractionReportControllerTest {
 
         when(analyzeInfractionReportUseCase.execute(anyString(), anyInt(),any(),anyString())).thenReturn(infractionAnalyzed);
 
-        var request = AnalyzeInfractionReportDTO.builder().ispb(1).result(InfractionAnalyzeResult.ACCEPTED).details("details").requestIdentifier("1").build();
+        var request = AnalyzeInfractionReportDTO.builder().ispb(1).result(InfractionAnalyzeResult.ACCEPTED).details("details").build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.endToEndId").exists())
-            .andExpect(jsonPath("$.infractionReportId").exists())
-            .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.endToEndId").exists())
+                .andExpect(jsonPath("$.infractionReportId").exists())
+                .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
 
         verify(analyzeInfractionReportUseCase).execute(anyString(), anyInt(),any(),anyString());
 
@@ -361,12 +361,13 @@ class InfractionReportControllerTest {
         var request = AnalyzeInfractionReportDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code",equalTo(400)))
-            .andExpect(jsonPath("$.fieldErrors").exists());
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code",equalTo(400)))
+                .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
 

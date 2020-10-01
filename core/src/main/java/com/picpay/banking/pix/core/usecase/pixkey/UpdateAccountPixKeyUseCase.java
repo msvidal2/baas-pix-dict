@@ -8,8 +8,12 @@ import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
+@Slf4j
 public class UpdateAccountPixKeyUseCase {
 
     private UpdateAccountPixKeyPort updateAccountPixKeyPort;
@@ -29,7 +33,14 @@ public class UpdateAccountPixKeyUseCase {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
-        return updateAccountPixKeyPort.updateAccount(requestIdentifier, pixKey, reason);
+        PixKey pixKeyUpdated = updateAccountPixKeyPort.updateAccount(requestIdentifier, pixKey, reason);
+
+        if (pixKeyUpdated != null)
+            log.info("PixKey_updated"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("key", pixKeyUpdated.getKey()));
+
+        return pixKeyUpdated;
     }
 
 }
