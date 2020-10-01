@@ -57,7 +57,7 @@ class ClaimControllerTest {
                 .accountNumber("123456")
                 .accountType(AccountType.CHECKING)
                 .branchNumber("0001")
-                .claimType(ClaimType.POSSESION_CLAIM)
+                .claimType(ClaimType.POSSESSION_CLAIM)
                 .key("+5511998765499")
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")

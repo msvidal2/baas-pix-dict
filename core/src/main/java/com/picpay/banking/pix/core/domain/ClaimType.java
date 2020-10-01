@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum ClaimType {
 
     PORTABILITY(0),
-    POSSESION_CLAIM(1);
+    POSSESSION_CLAIM(1);
 
     private int value;
 

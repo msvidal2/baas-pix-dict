@@ -2,10 +2,10 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
+import com.picpay.banking.pix.core.domain.ClaimType;
 import com.picpay.banking.pix.core.domain.DonorData;
 import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
-import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +19,13 @@ import java.util.List;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.ClaimSituation.OPEN;
-import static com.picpay.banking.pix.core.domain.ClaimType.POSSESION_CLAIM;
 import static com.picpay.banking.pix.core.domain.KeyType.CPF;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -51,7 +53,7 @@ class ListClaimUseCaseTest {
     @Test
     void when_listClaimWithSuccess_expect_listOfClaims() {
         var claimMock1 = Claim.builder()
-                .claimType(POSSESION_CLAIM)
+                .claimType(ClaimType.POSSESSION_CLAIM)
                 .participationFlow(0)
                 .key("28592755093")
                 .keyType(CPF)
