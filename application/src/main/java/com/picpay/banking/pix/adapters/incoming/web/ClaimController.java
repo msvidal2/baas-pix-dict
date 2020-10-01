@@ -83,7 +83,6 @@ public class ClaimController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ClaimIterable list(@RequestHeader String requestIdentifier, @Validated ListClaimRequestWebDTO requestDTO) {
-
         log.info("Claim_listing"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("dto", requestDTO));
@@ -142,8 +141,7 @@ public class ClaimController {
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)
     public Claim find(@PathVariable String claimId) {
-
-        log.info("Claim_completing", kv("claimId", claimId));
+        log.info("Claim_findinf", kv("claimId", claimId));
 
         return findClaimUseCase.execute(claimId);
     }
