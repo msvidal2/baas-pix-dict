@@ -5,10 +5,14 @@ import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @AllArgsConstructor
+@Slf4j
 public class ListPixKeyUseCase {
 
     private ListPixKeyPort listPixKeyPort;
@@ -23,7 +27,14 @@ public class ListPixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
         }
 
-        return listPixKeyPort.listPixKey(requestIdentifier, pixKey);
+        Collection<PixKey> pixKeys = listPixKeyPort.listPixKey(requestIdentifier, pixKey);
+
+        if (pixKeys != null)
+            log.info("PixKey_listed"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("size", (pixKeys != null? pixKeys.size(): 0)));
+
+        return pixKeys;
     }
 
 }

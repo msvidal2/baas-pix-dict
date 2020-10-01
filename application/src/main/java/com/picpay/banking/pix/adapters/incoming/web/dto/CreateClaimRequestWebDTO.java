@@ -65,10 +65,6 @@ public class CreateClaimRequestWebDTO {
     @ApiModelProperty(value = "Client's fantasy name", dataType="java.lang.String")
     private String fantasyName;
 
-    @ApiModelProperty(value = "We suggest using UUID (v4) typing, 36 characters long.", required = true)
-    @NotNull
-    private String requestIdentifier;
-
     public Claim toDomain() {
         return Claim.builder()
                 .accountNumber(accountNumber)

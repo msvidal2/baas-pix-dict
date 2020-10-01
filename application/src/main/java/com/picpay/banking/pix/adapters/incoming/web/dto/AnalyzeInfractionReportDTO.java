@@ -25,9 +25,6 @@ public class AnalyzeInfractionReportDTO {
     private Integer ispb;
 
     @NotNull
-    private String requestIdentifier;
-
-    @NotNull
     private String details;
 
     @NotNull
