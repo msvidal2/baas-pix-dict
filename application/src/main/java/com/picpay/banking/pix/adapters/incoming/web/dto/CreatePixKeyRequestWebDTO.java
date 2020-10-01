@@ -25,7 +25,6 @@ public class CreatePixKeyRequestWebDTO {
     protected KeyType type;
 
     @ApiModelProperty(value = "Value of key {CPF}/{CNPJ}/{E-mail}/{Telefone Celular}/{Aleatória}", required = true)
-    @NotNull
     protected String key;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)

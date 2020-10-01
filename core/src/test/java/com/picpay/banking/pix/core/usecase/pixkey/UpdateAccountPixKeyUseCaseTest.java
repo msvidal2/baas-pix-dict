@@ -166,11 +166,11 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(KeyValidatorException.class, () ->
+        Assertions.assertDoesNotThrow(() ->
                 useCase.execute(
                         randomUUID,
                         pixKey,
-                        UpdateReason.CLIENT_REQUEST));
+                        UpdateReason.BRANCH_TRANSFER));
     }
 
     @Test
@@ -185,10 +185,10 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(KeyValidatorException.class, () -> useCase.execute(
+        Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                UpdateReason.BRANCH_TRANSFER));
     }
 
     @Test

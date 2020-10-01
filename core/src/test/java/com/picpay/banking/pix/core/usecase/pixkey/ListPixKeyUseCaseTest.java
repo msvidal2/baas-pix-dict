@@ -49,7 +49,7 @@ class ListPixKeyUseCaseTest {
             .accountOpeningDate(LocalDateTime.now())
             .accountType(AccountType.CHECKING)
             .branchNumber("0001")
-            .claim(ClaimType.POSSESION_CLAIM)
+            .claim(ClaimType.POSSESSION_CLAIM)
             .taxId("59375566072")
             .createdAt(LocalDateTime.now())
             .ispb(5345343)
