@@ -15,7 +15,7 @@ public class KeyItemValidator implements DictItemValidator<PixKey> {
             if (domain.getKey() == null || domain.getKey().isEmpty()) {
                 return;
             }
-            new IllegalArgumentException("The key must be null");
+            new IllegalArgumentException("The key must be null or empty");
         }
 
         Optional.ofNullable(domain.getType())
