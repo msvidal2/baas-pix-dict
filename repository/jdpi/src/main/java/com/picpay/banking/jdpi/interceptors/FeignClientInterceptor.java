@@ -28,7 +28,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
         var token = tokenManagerClient.getToken(TokenScope.DICT);
 
         requestTemplate.header(HttpHeaders.AUTHORIZATION, token.getTokenType() + " "+ token.getAccessToken());
-        requestTemplate.header(HttpHeaders.HOST, host);
+//        requestTemplate.header(HttpHeaders.HOST, host);
     }
 
 }

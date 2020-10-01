@@ -41,7 +41,7 @@ public class JdpiTokenInterceptor implements ClientHttpRequestInterceptor {
         headers.add(HttpHeaders.AUTHORIZATION, token.getTokenType() + " "+ token.getAccessToken());
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
         headers.add(HttpHeaders.CONTENT_ENCODING, "gzip");
-        headers.add(HttpHeaders.HOST, host);
+//        headers.add(HttpHeaders.HOST, host);
 
         return execution.execute(request, body);
     }

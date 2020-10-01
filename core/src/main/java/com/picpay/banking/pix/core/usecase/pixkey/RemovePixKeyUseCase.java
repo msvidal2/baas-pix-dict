@@ -30,9 +30,7 @@ public class RemovePixKeyUseCase {
 
         removePixKeyPort.remove(requestIdentifier, pixKey, reason);
 
-        log.info("PixKey_removed"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("key", key));
+        log.info("PixKey_removed", kv("requestIdentifier", requestIdentifier), kv("key", key));
     }
 
 }

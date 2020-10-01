@@ -6,8 +6,12 @@ import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
+@Slf4j
 public class CompleteClaimUseCase {
 
     private CompleteClaimPort completeClaimPort;
@@ -23,7 +27,14 @@ public class CompleteClaimUseCase {
             throw new UseCaseException("You must inform a request identifier");
         }
 
-        return completeClaimPort.complete(claim, requestIdentifier);
+        Claim claimCompleted = completeClaimPort.complete(claim, requestIdentifier);
+
+        if (claimCompleted != null)
+            log.info("Claim_confirmed",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("claimId", claimCompleted.getClaimId()));
+
+        return claimCompleted;
     }
 
 }
