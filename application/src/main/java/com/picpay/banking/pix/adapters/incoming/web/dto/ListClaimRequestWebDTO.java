@@ -11,6 +11,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Getter
 @Setter
@@ -20,7 +22,7 @@ import org.springframework.lang.NonNull;
 public class ListClaimRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NonNull
+    @NotNull
     private Integer ispb;
 
     @ApiModelProperty(value = "Person type of receiver")
@@ -39,10 +41,10 @@ public class ListClaimRequestWebDTO {
     private AccountType accountType;
 
     @ApiModelProperty(value = "Limit return records", dataType="java.lang.integer", required = true)
-    @NonNull
+    @NotNull
     private Integer limit;
 
     @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean", required = true)
-    @NonNull
+    @NotNull
     private Boolean pending;
 }

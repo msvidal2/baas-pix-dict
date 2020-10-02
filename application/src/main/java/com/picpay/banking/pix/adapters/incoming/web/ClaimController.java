@@ -82,7 +82,7 @@ public class ClaimController {
     @ApiOperation(value = "List Claim.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ClaimIterable list(@RequestHeader String requestIdentifier, @Validated ListClaimRequestWebDTO requestDTO) {
+    public ClaimIterable list(@RequestHeader String requestIdentifier, @Valid ListClaimRequestWebDTO requestDTO) {
         log.info("Claim_listing"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("dto", requestDTO));
