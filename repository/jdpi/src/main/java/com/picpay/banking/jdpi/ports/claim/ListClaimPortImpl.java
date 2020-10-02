@@ -21,14 +21,14 @@ public class ListClaimPortImpl implements ListClaimPort {
     public ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier) {
 
         var listClaimRequestDTO = ListClaimRequestDTO.builder()
-            .ispb(              claim.getIspb())
-            .tpPessoaLogada(    claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
-            .cpfCnpjLogado(     (claim.getCpfCnpj() != null? Long.parseLong(claim.getCpfCnpj()): null))
-            .tpContaLogada(     claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
-            .nrLimite(          (limit != null? limit: null))
-            .nrAgenciaLogada(   claim.getBranchNumber())
-            .nrContaLogada(     claim.getAccountNumber())
-            .build();
+                .ispb(claim.getIspb())
+                .tpPessoaLogada(claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
+                .cpfCnpjLogado((claim.getCpfCnpj() != null ? Long.parseLong(claim.getCpfCnpj()) : null))
+                .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
+                .nrLimite((limit != null ? limit : null))
+                .nrAgenciaLogada(claim.getBranchNumber())
+                .nrContaLogada(claim.getAccountNumber())
+                .build();
 
         return converter.convert(claimJDClient.list(requestIdentifier, listClaimRequestDTO));
     }
