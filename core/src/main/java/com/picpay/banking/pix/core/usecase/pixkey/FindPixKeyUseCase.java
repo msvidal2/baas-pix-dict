@@ -29,7 +29,7 @@ public class FindPixKeyUseCase {
         PixKey pixKeyFound =  findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
 
         if (pixKeyFound != null)
-            log.info("PixKey_found"
+            log.info("PixKey_foundAccount"
                     , kv("requestIdentifier", requestIdentifier)
                     , kv("key", pixKeyFound.getKey()));
 
