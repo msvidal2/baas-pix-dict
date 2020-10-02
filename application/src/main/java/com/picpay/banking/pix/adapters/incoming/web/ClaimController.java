@@ -141,7 +141,7 @@ public class ClaimController {
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)
     public Claim find(@PathVariable String claimId) {
-        log.info("Claim_findinf", kv("claimId", claimId));
+        log.info("Claim_finding", kv("claimId", claimId));
 
         return findClaimUseCase.execute(claimId);
     }
