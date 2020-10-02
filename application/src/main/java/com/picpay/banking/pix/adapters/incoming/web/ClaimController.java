@@ -140,10 +140,10 @@ public class ClaimController {
     @ApiOperation(value = "Find Claim by Claim Id.")
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)
-    public Claim find(@PathVariable String claimId) {
+    public Claim find(@PathVariable String claimId, @RequestParam("ispb") String ispb, @RequestParam("reivindicador") boolean reivindicador) {
         log.info("Claim_finding", kv("claimId", claimId));
 
-        return findClaimUseCase.execute(claimId);
+        return findClaimUseCase.execute(claimId, ispb, reivindicador);
     }
 
 }

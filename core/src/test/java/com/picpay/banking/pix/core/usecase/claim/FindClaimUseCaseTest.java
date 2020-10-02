@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -37,10 +38,10 @@ public class FindClaimUseCaseTest {
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
 
-        when(findClaimPort.findClaim(anyString())).thenReturn(claim);
+        when(findClaimPort.findClaim(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
         assertDoesNotThrow(() -> {
-            var response = findClaimUseCase.execute("123456");
+            var response = findClaimUseCase.execute("123456", "123", false);
 
             assertNotNull(response);
             assertEquals(response.getAccountNumber(), claim.getAccountNumber());

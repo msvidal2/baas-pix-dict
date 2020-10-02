@@ -21,7 +21,7 @@ public class FindClaimPortImpl implements FindClaimPort {
     private ClaimClient claimClient;
 
     @Override
-    public Claim findClaim(String claimId) {
+    public Claim findClaim(String claimId, final String ispb, final boolean reivindicador) {
         var response = claimClient.find();
 
         var claims = Optional.ofNullable(response)

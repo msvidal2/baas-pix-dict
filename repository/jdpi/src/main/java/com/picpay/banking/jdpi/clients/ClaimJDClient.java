@@ -13,11 +13,7 @@ import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
 import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallbackFactory;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "Claim",
         url = "${pix.services.jdpi.claim.url}",
@@ -54,6 +50,8 @@ public interface ClaimJDClient {
     @PostMapping("/v1/reivindicacao/listar")
     ListClaimResponseDTO list(@RequestHeader("Chave-Idempotencia") String requestIdentifier, @RequestBody ListClaimRequestDTO dto);
 
-    @GetMapping("/v1/reivindicacao/{idReivindicacao}")
-    FindClaimResponseDTO find(@PathVariable String idReivindicacao);
+    @GetMapping("/v1/reivindicacao")
+    FindClaimResponseDTO find(@RequestParam("idReivindicacao") String idReivindicacao,
+                              @RequestParam("ispb") String ispb,
+                              @RequestParam("ehReivindicador") boolean ehReivindicador);
 }
