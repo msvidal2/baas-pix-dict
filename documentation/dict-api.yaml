@@ -17,7 +17,7 @@ tags:
     description: |
       A chave PIX é uma forma de simplificar a identificação e a comunicação de uma conta transacional. As contas transacionais são formadas por diversos números que, além da conta em si, também identificam a instituição  responsável e, se houver, a agência. <br /> 
       Além de não ser provido de significado para o usuário pagador, o número de conta, usualmente, é um dado extenso, cujo processo de comunicação e de utilização não é intuitivo para os usuários. <br /> 
-      O objetivo da chave PIX, portanto, é utilizar informações que sejam de fácil acesso e de simples inserção pelo usuário pagador. Essas chaves estarão armazenadas no diretório de endereçamento e estarão vinculadas à conta transacional do usuário recebedor. De maneira simplificada, pode-se compreender a chave PIX como um apelido que identifica uma determinada conta transacional. <br /> 
+      O objetivo da chave PIX, portanto, é utilizar informações que sejam de fácil acesso e de simples inserção pelo usuário pagador. Essas chaves estarão armazenadas no diretório de endereçamento e estarão vinculadas à conta transacional do usuário recebedor. De maneira simplificada, pode-se compreender a chave PIX como um apelido que identifica uma determinada conta transacional. <br />
 
   - name: claim
     description: |
@@ -26,7 +26,7 @@ tags:
       Durante o processo de portabilidade, a partir do momento em que o DICT coloca o status do pedido em “Aberto” até o momento em que o DICT altera o status para “Completo”, a chave Pix não está passível de pedidos de registro e de exclusão. Enquanto o status do pedido estiver como “Aguardando Resolução”, as consultas continuarão retornando normalmente a identificação da conta transacional originalmente vinculada à chave. Também durante esse período, tanto o PSP reivindicador quanto o PSP doador poderão cancelar o pedido, em caso de suspeita de fraude ou em caso de solicitação de cancelamento pelo usuário do PSP reivindicador.<br /><br />
       O período de resolução de um processo de portabilidade é de sete dias. Caso o usuário doador não cancele ou confirme a portabilidade até o final desse período, o PSP doador deve necessariamente cancelar o pedido. O cancelamento do processo deve ser feito imediatamente após o fim do período de resolução. O processo continuará com o status de “Aguardando Resolução” até o recebimento dessa informação pelo DICT.<br /><br />
       O DICT disponibiliza um serviço que permite consultar e filtrar os processos de portabilidade. PSPs com acesso direto ao DICT deverão consultar pelo menos uma vez por minuto esse serviço a fim de identificar mudanças de status das portabilidades de interesse do PSP (além daquelas de interesse dos PSPs com acesso indireto para os quais ele presta serviço), tanto como reivindicador quanto como doador.<br />
-      <img src="./images/fluxo_reividicacao_posse_chave.png" />
+      <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_reividicacao_posse_chave.png" />
 paths:
   /v1/keys:
     post:
@@ -44,7 +44,7 @@ paths:
         Se a chave existente estiver associada ao mesmo CPF/CNPJ, será uma Reivindicação do tipo Portabilidade. Caso contrário será do tipo Reivindicação de Posse.
         <br /> <br />
         Fluxo de registro de chave
-        <img src="./images/fluxo_cadastro_chave.png" />
+        <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_cadastro_chave.png" />
       operationId: createUsingPOST
       consumes:
         - application/json
@@ -89,7 +89,7 @@ paths:
         Após validar os dados da consulta, será identificada na base de dados local o conjunto de chaves associadas ao Cliente e a Conta e o repassará ao Sistema Cliente.<br />
         <br />
         Fluxo de listagem de Chave de PIX
-        <img src="./images/fluxo_consulta_chave_indireta.png" />
+        <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_consulta_chave_indireta.png" />
       operationId: listUsingGET
       produces:
         - application/json
@@ -162,7 +162,7 @@ paths:
         Número da Agência, Tipo de Conta e Número da Conta'
         <br /><br />
         Fluxo de consulta de chave <br />
-        <img src="./images/fluxo_consulta_chave.png" />
+        <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_consulta_chave.png" />
 
       operationId: findUsingGET
       produces:
@@ -215,7 +215,7 @@ paths:
         <br />
         Fluxo de atualização de chave
         <br />
-        <img src="./images/fluxo_atualizacao_chave.png" />
+        <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_atualizacao_chave.png" />
       operationId: updateAccountUsingPUT
       consumes:
         - application/json
@@ -265,7 +265,7 @@ paths:
         • É Titular da Conta Transacional ou tem poderes legais para operá-la. <br />
         <br />
         Fluxo de exclusão de chave <br />
-        <img src="./images/fluxo_exclusao_chave.png" />
+        <img src="http://pix.limbo.work/documentation/pix/dict/images/fluxo_exclusao_chave.png" />
 
       operationId: removeUsingDELETE
       produces:
@@ -446,6 +446,16 @@ paths:
           description: Identificador da Reivindicação.
           required: true
           type: string
+        - name: ispb
+          in: query
+          description: Código ISPB do participante.
+          required: true
+          type: string
+        - name: reivindicador
+          in: path
+          description: Indica se a consulta esta sendo realizada pelo reivindicador.
+          required: true
+          type: boolean
       responses:
         '200':
           description: OK

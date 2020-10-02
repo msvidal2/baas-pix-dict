@@ -30,7 +30,7 @@ public class CompleteClaimUseCase {
         Claim claimCompleted = completeClaimPort.complete(claim, requestIdentifier);
 
         if (claimCompleted != null)
-            log.info("Claim_confirmed",
+            log.info("Claim_completed",
                     kv("requestIdentifier", requestIdentifier),
                     kv("claimId", claimCompleted.getClaimId()));
 

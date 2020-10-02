@@ -64,7 +64,7 @@ public class PixKeyController {
     public List<ListKeyResponseWebDTO> list(@RequestHeader String requestIdentifier,
                                             @Valid ListPixKeyRequestWebDTO requestDTO) {
 
-        log.info("PixKey_list"
+        log.info("PixKey_listing"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("NameIspb", requestDTO.getIspb())
                 , kv("AccountNumber", requestDTO.getAccountNumber())
@@ -81,7 +81,7 @@ public class PixKeyController {
                                   @PathVariable String key,
                                   @RequestHeader String userId) {
 
-        log.info("PixKey_find"
+        log.info("PixKey_finding"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", key)
                 , kv("userId", userId));
@@ -97,7 +97,7 @@ public class PixKeyController {
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
-        log.info("PixKey_remove"
+        log.info("PixKey_removing"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", key)
                 , kv("dto", dto));
@@ -113,7 +113,7 @@ public class PixKeyController {
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
-        log.info("PixKey_updateAccount"
+        log.info("PixKey_updatingAccount"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", key)
                 , kv("dto", dto));
