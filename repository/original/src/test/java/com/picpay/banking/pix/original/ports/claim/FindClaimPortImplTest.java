@@ -64,7 +64,7 @@ public class FindClaimPortImplTest {
         when(claimClient.find()).thenReturn(claimResponseDTO);
 
         assertDoesNotThrow(() -> {
-            var response = port.findClaim("75");
+            var response = port.findClaim("75", "123", false);
 
             assertNotNull(response);
             assertEquals("+5511998765499", response.getKey());
@@ -81,7 +81,7 @@ public class FindClaimPortImplTest {
     void when_findClaimWithNonExistentId_expect_notFoundException() {
         when(claimClient.find()).thenReturn(claimResponseDTO);
 
-        assertThrows(NotFoundOriginalClientException.class,() -> port.findClaim("999999"));
+        assertThrows(NotFoundOriginalClientException.class,() -> port.findClaim("999999", "123", false));
     }
 
 }

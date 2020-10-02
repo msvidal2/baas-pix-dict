@@ -50,7 +50,7 @@ public class ClaimJDClientFallback extends JDClientFallback implements ClaimJDCl
     }
 
     @Override
-    public FindClaimResponseDTO find(String idReivindicacao) {
+    public FindClaimResponseDTO find(String idReivindicacao, String ispb, boolean ehReivindicador) {
         throw resolveException();
     }
 

@@ -13,8 +13,8 @@ public class FindClaimUseCase {
 
     private FindClaimPort findClaimPort;
 
-    public Claim execute(final String claimId)  {
-        Claim claimFound = findClaimPort.findClaim(claimId);
+    public Claim execute(final String claimId, final String ispb, final boolean reivindicador)  {
+        Claim claimFound = findClaimPort.findClaim(claimId, ispb, reivindicador);
 
         if (claimFound != null)
             log.info("Claim_found", kv("claimId", claimFound.getClaimId()));

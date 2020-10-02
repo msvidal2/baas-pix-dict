@@ -20,8 +20,7 @@ import java.util.UUID;
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -71,9 +70,9 @@ class ClaimControllerTest {
 
     @Test
     void when_findClaimWithSuccess_expect_statusOk() throws Exception {
-        when(findClaimUseCase.execute(anyString())).thenReturn(claim);
+        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
-        mockMvc.perform(get(BASE_URL.concat("/123")))
+        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountNumber", equalTo("123456")))
                 .andExpect(jsonPath("$.accountType", equalTo("CHECKING")))
@@ -89,9 +88,9 @@ class ClaimControllerTest {
 
     @Test
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
-        when(findClaimUseCase.execute(anyString())).thenThrow(NotFoundJdClientException.class);
+        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(NotFoundJdClientException.class);
 
-        mockMvc.perform(get(BASE_URL.concat("/999")))
+        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo(404)))
                 .andExpect(jsonPath("$.error", equalTo("Not Found")))

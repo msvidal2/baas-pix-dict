@@ -18,8 +18,8 @@ public class FindClaimPortImpl implements FindClaimPort {
 
     @Trace
     @Override
-    public Claim findClaim(final String claimId) {
-        return Optional.ofNullable(claimJDClient.find(claimId))
+    public Claim findClaim(final String claimId, final String ispb, final boolean reivindicador) {
+        return Optional.ofNullable(claimJDClient.find(claimId, ispb, reivindicador))
                 .map(FindClaimResponseDTO::toClaim)
                 .orElseThrow(() -> new NotFoundJdClientException("Claim not found", HttpStatus.NOT_FOUND));
     }
