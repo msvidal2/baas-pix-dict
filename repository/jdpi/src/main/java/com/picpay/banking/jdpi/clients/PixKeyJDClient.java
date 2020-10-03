@@ -9,7 +9,6 @@ import com.picpay.banking.jdpi.dto.response.FindPixKeyResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPixKeyResponseDTO;
 import com.picpay.banking.jdpi.dto.response.RemovePixKeyResponseDTO;
 import com.picpay.banking.jdpi.dto.response.UpdateAccountPixKeyResponseDTO;
-import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallbackFactory;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

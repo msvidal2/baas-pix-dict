@@ -57,13 +57,14 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationPort claimConfirmationPort(ClaimJDClient claimJDClient) {
-        return new ClaimConfirmationPortImpl(claimJDClient);
+    public ClaimConfirmationPort claimConfirmationPort(ClaimJDClient claimJDClient,
+                                                       TimeLimiterExecutor timeLimiterExecutor) {
+        return new ClaimConfirmationPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
-    public CompleteClaimPort completeClaimPort(ClaimJDClient claimJDClient) {
-        return new CompleteClaimPortImpl(claimJDClient);
+    public CompleteClaimPort completeClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
+        return new CompleteClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
@@ -74,8 +75,10 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public CreateClaimPort createClaimPort(ClaimJDClient claimJDClient, CreateClaimConverter createClaimConverter) {
-        return new CreateClaimPortImpl(claimJDClient,createClaimConverter);
+    public CreateClaimPort createClaimPort(ClaimJDClient claimJDClient,
+                                           CreateClaimConverter createClaimConverter,
+                                           TimeLimiterExecutor timeLimiterExecutor) {
+        return new CreateClaimPortImpl(claimJDClient, createClaimConverter, timeLimiterExecutor);
     }
 
     @Bean
@@ -86,8 +89,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public FindClaimPort findClaimPort(ClaimJDClient claimJDClient) {
-        return new FindClaimPortImpl(claimJDClient);
+    public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
+        return new FindClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
@@ -98,13 +101,17 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ListClaimPort listClaimPort(ClaimJDClient claimJDClient, ListClaimConverter listClaimConverter) {
-        return new ListClaimPortImpl(claimJDClient,listClaimConverter);
+    public ListClaimPort listClaimPort(ClaimJDClient claimJDClient,
+                                       ListClaimConverter listClaimConverter,
+                                       TimeLimiterExecutor timeLimiterExecutor) {
+        return new ListClaimPortImpl(claimJDClient, listClaimConverter, timeLimiterExecutor);
     }
 
     @Bean
-    public ListPendingClaimPort listPendingClaimPort(ClaimJDClient claimJDClient, ListClaimConverter listClaimConverter) {
-        return new ListPendingClaimPortImpl(claimJDClient,listClaimConverter);
+    public ListPendingClaimPort listPendingClaimPort(ClaimJDClient claimJDClient,
+                                                     ListClaimConverter listClaimConverter,
+                                                     TimeLimiterExecutor timeLimiterExecutor) {
+        return new ListPendingClaimPortImpl(claimJDClient, listClaimConverter, timeLimiterExecutor);
     }
 
     @Bean

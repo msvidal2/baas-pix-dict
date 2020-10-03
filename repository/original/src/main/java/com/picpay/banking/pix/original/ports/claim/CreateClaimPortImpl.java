@@ -12,7 +12,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
     private ClaimClient claimClient;
 
     @Override
-    public Claim createPixKey(Claim claim, String requestIdentifier) {
+    public Claim createClaim(Claim claim, String requestIdentifier) {
         var responseWrapper = claimClient.create(CreateClaimRequestDTO.fromClaim(claim));
         var claimResponse = responseWrapper.getData();
 

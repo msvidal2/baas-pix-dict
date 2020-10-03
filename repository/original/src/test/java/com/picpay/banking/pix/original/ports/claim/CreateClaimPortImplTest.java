@@ -13,15 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +79,7 @@ class CreateClaimPortImplTest {
         when(claimClient.create(any())).thenReturn(responseWrapper);
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(claim, randomUUID().toString());
+            var response = port.createClaim(claim, randomUUID().toString());
 
             assertNotNull(response);
             assertEquals("+5511998765499", response.getKey());
@@ -103,7 +99,7 @@ class CreateClaimPortImplTest {
         when(claimClient.create(any())).thenReturn(responseWrapper);
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(claim, randomUUID().toString());
+            var response = port.createClaim(claim, randomUUID().toString());
 
             assertNull(response);
         });

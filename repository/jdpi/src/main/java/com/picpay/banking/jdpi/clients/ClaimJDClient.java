@@ -10,15 +10,13 @@ import com.picpay.banking.jdpi.dto.response.ClaimCancelResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindClaimResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
-import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallbackFactory;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "Claim",
         url = "${pix.services.jdpi.claim.url}",
-        path = "/jdpi/dict/api",
-        fallbackFactory = ClaimJDClientFallbackFactory.class)
+        path = "/jdpi/dict/api")
 @Headers({
         "Content-Encoding: gzip",
         "Accept-Encoding: gzip"
