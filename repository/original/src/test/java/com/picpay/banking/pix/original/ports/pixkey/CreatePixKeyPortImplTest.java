@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.picpay.banking.pix.core.domain.CreateReason.CUSTOMER_REQUEST;
+import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,7 +71,7 @@ class CreatePixKeyPortImplTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(randomUUID().toString(), pixKey, CUSTOMER_REQUEST);
+            var response = port.createPixKey(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             assertNotNull(response);
             assertEquals(responseWrapper.getData().getKey(), response.getKey());
@@ -113,7 +113,7 @@ class CreatePixKeyPortImplTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var response = port.createPixKey(randomUUID().toString(), pixKey, CUSTOMER_REQUEST);
+            var response = port.createPixKey(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             assertNotNull(response);
             assertEquals(localResponseWrapper.getData().getKey(), response.getKey());
