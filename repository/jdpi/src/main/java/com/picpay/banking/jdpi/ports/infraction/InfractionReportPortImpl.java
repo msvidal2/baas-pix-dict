@@ -7,10 +7,13 @@ import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
 import com.picpay.banking.jdpi.dto.request.FilterInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.InfractionReportDTO;
+import com.picpay.banking.jdpi.fallbacks.InfractionReportJDClientFallback;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,40 +25,85 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InfractionReportPortImpl implements InfractionReportPort {
 
+    private final static String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
+    private final static String CIRCUIT_BREAKER_LIST_PENDING_NAME = "list-pending-infraction";
+    private final static String CIRCUIT_BREAKER_FIND_NAME = "find-infraction";
+    private final static String CIRCUIT_BREAKER_CANCEL_NAME = "cancel-infraction";
+    private final static String CIRCUIT_BREAKER_ANALYZE_NAME = "analyze-infraction";
+    private final static String CIRCUIT_BREAKER_FILTER_NAME = "filter-infraction";
+
     private final InfractionReportJDClient infractionJDClient;
 
+    private TimeLimiterExecutor timeLimiterExecutor;
+
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "createFallback")
     public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
 
-        return infractionJDClient.create(CreateInfractionReportRequestDTO.from(infractionReport), requestIdentifier)
-            .toInfractionReport();
+        final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
+                () -> infractionJDClient.create(CreateInfractionReportRequestDTO.from(infractionReport), requestIdentifier));
+
+        return response.toInfractionReport();
+    }
+
+    public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {
+        new InfractionReportJDClientFallback(e).create(null, null);
+        return null;
     }
 
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_LIST_PENDING_NAME, fallbackMethod = "listPendingFallback")
     public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit) {
-        var infractionReportDTO = this.infractionJDClient.listPendings(ispb, limit);
-        return infractionReportDTO.getInfractionReports().stream().map(InfractionReportDTO::toInfraction)
-            .collect(Collectors.toList());
+
+        final var infractionReportDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_LIST_PENDING_NAME,
+                () -> this.infractionJDClient.listPendings(ispb, limit));
+
+        return infractionReportDTO.getInfractionReports()
+                .stream()
+                .map(InfractionReportDTO::toInfraction)
+                .collect(Collectors.toList());
+    }
+
+    public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit, Exception e) {
+        new InfractionReportJDClientFallback(e).listPendings(null, null);
+        return null;
     }
 
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_FIND_NAME, fallbackMethod = "findFallback")
     public InfractionReport find(final String infractionReportId) {
-        return infractionJDClient.find(infractionReportId).toInfractionReport();
+        return timeLimiterExecutor.execute(CIRCUIT_BREAKER_FIND_NAME, () -> infractionJDClient.find(infractionReportId))
+                .toInfractionReport();
+    }
+
+    public InfractionReport find(final String infractionReportId, Exception e) {
+        new InfractionReportJDClientFallback(e).find(null);
+        return null;
     }
 
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_CANCEL_NAME, fallbackMethod = "cancelFallback")
     public InfractionReport cancel(final String infractionReportId, final Integer ispb, final String requestIdentifier) {
         var cancelInfractionDTO = new CancelInfractionDTO(infractionReportId, ispb);
-        var response = this.infractionJDClient.cancel(cancelInfractionDTO, requestIdentifier);
+
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CANCEL_NAME,
+                () -> this.infractionJDClient.cancel(cancelInfractionDTO, requestIdentifier));
+
         return response.toInfraction();
     }
 
+    public InfractionReport cancel(final String infractionReportId, final Integer ispb, final String requestIdentifier, Exception e) {
+        new InfractionReportJDClientFallback(e).cancel(null, null);
+        return null;
+    }
+
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_ANALYZE_NAME, fallbackMethod = "analyzeFallback")
     public InfractionReport analyze(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
         final String requestIdentifier) {
 
@@ -66,13 +114,21 @@ public class InfractionReportPortImpl implements InfractionReportPort {
             .infractionReportId(infractionReportId)
             .build();
 
-        var analyzeResponse = this.infractionJDClient.analyze(analyzeInfractionReport, requestIdentifier);
+        var analyzeResponse = timeLimiterExecutor.execute(CIRCUIT_BREAKER_ANALYZE_NAME,
+                () -> this.infractionJDClient.analyze(analyzeInfractionReport, requestIdentifier));
 
         return analyzeResponse.toInfraction();
     }
 
+    public InfractionReport analyze(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
+                                    final String requestIdentifier, Exception e) {
+        new InfractionReportJDClientFallback(e).analyze(null, null);
+        return null;
+    }
+
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_FILTER_NAME, fallbackMethod = "filterFallback")
     public List<InfractionReport> filter(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
         LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
 
@@ -87,9 +143,16 @@ public class InfractionReportPortImpl implements InfractionReportPort {
             .nrLimite(limit)
         .build();
 
-        var listInfractionReportDTO = this.infractionJDClient.filter(filter);
+        var listInfractionReportDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_FILTER_NAME,
+                () -> this.infractionJDClient.filter(filter));
 
         return listInfractionReportDTO.getInfractionReports().stream().map(InfractionReportDTO::toInfraction).collect(Collectors.toList());
+    }
+
+    public List<InfractionReport> filter(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
+                                         LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit, Exception e) {
+        new InfractionReportJDClientFallback(e).filter(null);
+        return null;
     }
 
 }

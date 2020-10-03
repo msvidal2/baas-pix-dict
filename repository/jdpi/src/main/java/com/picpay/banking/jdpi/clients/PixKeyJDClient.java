@@ -4,19 +4,10 @@ import com.picpay.banking.jdpi.dto.request.CreatePixKeyRequestDTO;
 import com.picpay.banking.jdpi.dto.request.ListPixKeyRequestDTO;
 import com.picpay.banking.jdpi.dto.request.RemovePixKeyRequestDTO;
 import com.picpay.banking.jdpi.dto.request.UpdateAccountPixKeyRequestDTO;
-import com.picpay.banking.jdpi.dto.response.CreatePixKeyResponseJDDTO;
-import com.picpay.banking.jdpi.dto.response.FindPixKeyResponseDTO;
-import com.picpay.banking.jdpi.dto.response.ListPixKeyResponseDTO;
-import com.picpay.banking.jdpi.dto.response.RemovePixKeyResponseDTO;
-import com.picpay.banking.jdpi.dto.response.UpdateAccountPixKeyResponseDTO;
+import com.picpay.banking.jdpi.dto.response.*;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "pixKeyJDClient",
         url = "${pix.services.jdpi.dict.url}",

@@ -127,8 +127,9 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient) {
-        return new InfractionReportPortImpl(infractionReportJDClient);
+    public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient,
+                                                     TimeLimiterExecutor timeLimiterExecutor) {
+        return new InfractionReportPortImpl(infractionReportJDClient, timeLimiterExecutor);
     }
 
 }
