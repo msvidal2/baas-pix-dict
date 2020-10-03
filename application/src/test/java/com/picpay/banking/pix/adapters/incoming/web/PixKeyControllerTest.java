@@ -94,7 +94,7 @@ public class PixKeyControllerTest {
                 .cpfCnpj("31254398713")
                 .name("Silva Silva")
                 .fantasyName("Fantasy Name")
-                .reason(CreateReason.CUSTOMER_REQUEST)
+                .reason(CreateReason.CLIENT_REQUEST)
                 .build();
     }
 

@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.picpay.banking.pix.core.domain.CreateReason.CUSTOMER_REQUEST;
+import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +68,7 @@ class CreatePixKeyUseCaseTest {
                 .thenReturn(pixKeyCreated);
 
         assertDoesNotThrow(() -> {
-            var response = useCase.execute(randomUUID().toString(), pixKey, CUSTOMER_REQUEST);
+            var response = useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             assertNotNull(response);
             assertEquals(pixKey.getKey(), response.getKey());
@@ -79,12 +79,12 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeWithEmptyRequestIdentifier_expect_exception() {
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute("", pixKey, CUSTOMER_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute("", pixKey, CLIENT_REQUEST));
     }
 
     @Test
     void when_executeWithNullRequestIdentifier_expect_exception() {
-        assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, CUSTOMER_REQUEST));
+        assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, CLIENT_REQUEST));
     }
 
     @Test
