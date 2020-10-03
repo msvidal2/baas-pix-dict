@@ -4,6 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.request.RemovePixKeyRequestDTO;
 import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
@@ -23,7 +24,7 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
 
     private PixKeyJDClient pixKeyJDClient;
 
-    private TimeLimiterRegistry timeLimiterRegistry;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Trace
     @Override
@@ -31,19 +32,11 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     public PixKey remove(final String requestIdentifier, final PixKey pixKey, final RemoveReason reason) {
         final var requestDTO = RemovePixKeyRequestDTO.from(pixKey, reason);
 
-        var timeLimiter = timeLimiterRegistry.timeLimiter(CIRCUIT_BREAKER_NAME);
+        final var response = timeLimiterExecutor
+                .execute(CIRCUIT_BREAKER_NAME,
+                        () -> pixKeyJDClient.removeKey(requestIdentifier, pixKey.getKey(), requestDTO));
 
-        var completableFuture = CompletableFuture.supplyAsync(() ->
-                pixKeyJDClient.removeKey(requestIdentifier, pixKey.getKey(), requestDTO));
-
-        try {
-            return timeLimiter.executeFutureSupplier(() -> completableFuture).toDomain();
-        } catch (FeignException e) {
-            throw e;
-        } catch (Exception ex) {
-            log.error("client-timeout: {}", ex.getMessage());
-            throw new RuntimeException("Timeout", ex);
-        }
+        return response.toDomain();
     }
 
     public PixKey removeFallback(final String requestIdentifier, final PixKey pixKey, final RemoveReason reason, Exception e) {

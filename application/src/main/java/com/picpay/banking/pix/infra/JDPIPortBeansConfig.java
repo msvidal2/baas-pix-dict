@@ -10,6 +10,7 @@ import com.picpay.banking.jdpi.converter.FindPixKeyConverter;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.ClaimCancelPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
 import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
@@ -51,8 +52,8 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ClaimCancelPort claimCancelPort(ClaimJDClient claimJDClient) {
-        return new ClaimCancelPortImpl(claimJDClient);
+    public ClaimCancelPort claimCancelPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
+        return new ClaimCancelPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
@@ -68,8 +69,8 @@ public class JDPIPortBeansConfig {
     @Bean
     public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
                                              CreatePixKeyConverter converter,
-                                             TimeLimiterRegistry timeLimiterRegistry) {
-        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterRegistry);
+                                             TimeLimiterExecutor timeLimiterExecutor) {
+        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
     }
 
     @Bean
@@ -80,8 +81,8 @@ public class JDPIPortBeansConfig {
     @Bean
     public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
                                          final FindPixKeyConverter findPixKeyConverter,
-                                         final TimeLimiterRegistry timeLimiterRegistry) {
-        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterRegistry);
+                                         final TimeLimiterExecutor timeLimiterExecutor) {
+        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
     }
 
     @Bean
@@ -92,8 +93,8 @@ public class JDPIPortBeansConfig {
     @Bean
     public ListPixKeyPort listPixKeyPort(PixKeyJDClient pixKeyJDClient,
                                          ListPixKeyConverter listPixKeyConverter,
-                                         TimeLimiterRegistry timeLimiterRegistry) {
-        return new ListPixKeyPortImpl(pixKeyJDClient, listPixKeyConverter, timeLimiterRegistry);
+                                         TimeLimiterExecutor timeLimiterExecutor) {
+        return new ListPixKeyPortImpl(pixKeyJDClient, listPixKeyConverter, timeLimiterExecutor);
     }
 
     @Bean
@@ -108,13 +109,14 @@ public class JDPIPortBeansConfig {
 
     @Bean
     public RemovePixKeyPort removePixKeyPort(PixKeyJDClient pixKeyJDClient,
-                                             TimeLimiterRegistry timeLimiterRegistry) {
-        return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterRegistry);
+                                             TimeLimiterExecutor timeLimiterExecutor) {
+        return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
     }
 
     @Bean
-    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient, TimeLimiterRegistry timeLimiterRegistry) {
-        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterRegistry);
+    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                                           TimeLimiterExecutor timeLimiterExecutor) {
+        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
     }
 
     @Bean

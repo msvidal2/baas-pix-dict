@@ -4,16 +4,13 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.request.UpdateAccountPixKeyRequestDTO;
 import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
-import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @AllArgsConstructor
@@ -23,7 +20,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
 
     private PixKeyJDClient pixKeyJDClient;
 
-    private TimeLimiterRegistry timeLimiterRegistry;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Trace
     @Override
@@ -39,25 +36,14 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
                 .reason(reason.getValue())
                 .build();
 
-        var timeLimiter = timeLimiterRegistry.timeLimiter(CIRCUIT_BREAKER_NAME);
+        var responseDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
+                () -> pixKeyJDClient.updateAccount(requestIdentifier, pixKey.getKey(), requestDTO));
 
-        var completableFuture = CompletableFuture.supplyAsync(() ->
-                pixKeyJDClient.updateAccount(requestIdentifier, pixKey.getKey(), requestDTO));
-
-        try {
-            var responseDTO = timeLimiter.executeFutureSupplier(() -> completableFuture);
-
-            return PixKey.builder()
-                    .key(responseDTO.getKey())
-                    .createdAt(responseDTO.getCreatedAt())
-                    .startPossessionAt(responseDTO.getStartPossessionAt())
-                    .build();
-        } catch (FeignException e) {
-            throw e;
-        } catch (Exception ex) {
-            log.error("client-timeout: {}", ex.getMessage());
-            throw new RuntimeException("Timeout", ex);
-        }
+        return PixKey.builder()
+                .key(responseDTO.getKey())
+                .createdAt(responseDTO.getCreatedAt())
+                .startPossessionAt(responseDTO.getStartPossessionAt())
+                .build();
     }
 
     public PixKey updateAccountFallback(String requestIdentifier, PixKey pixKey, UpdateReason reason, Exception e) {
