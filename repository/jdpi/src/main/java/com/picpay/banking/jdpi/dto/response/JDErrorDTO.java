@@ -24,4 +24,5 @@ public class JDErrorDTO {
 
     @JsonAlias({"Erros", "erros"})
     private List<JDFieldErroDTO> errors;
+
 }

@@ -45,11 +45,22 @@ public class ClientErrorResponseFactory {
             message = clientException.getMessage();
         }
 
+        var errorDto = ErrorDTO.from(clientException.getStatus(),
+                message,
+                fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null);
+
+        var errorCode = clientException.getCode();
+
+        if(errorCode != null) {
+            errorDto = ErrorDTO.from(clientException.getStatus(),
+                            errorCode.getMessage(),
+                            fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null,
+                            errorCode.getCode());
+        }
+
         return ResponseEntity
                 .status(clientException.getStatus())
-                .body(ErrorDTO.from(clientException.getStatus(),
-                        message,
-                        fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null));
+                .body(errorDto);
     }
 
 }

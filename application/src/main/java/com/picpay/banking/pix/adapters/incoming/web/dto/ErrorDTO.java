@@ -27,6 +27,9 @@ public class ErrorDTO {
     @ApiModelProperty(value = "Error")
     private String error;
 
+    @ApiModelProperty(value = "API Error Code")
+    private String apiErrorCode;
+
     @ApiModelProperty(value = "Message error")
     private String message;
 
@@ -36,18 +39,23 @@ public class ErrorDTO {
     @ApiModelProperty(value = "Datetime event message")
     private LocalDateTime timestamp;
 
-    public static ErrorDTO from(final HttpStatus status, final String message, final List<FieldErrorDTO> fieldErrors) {
+    public static ErrorDTO from(final HttpStatus status, final String message, final List<FieldErrorDTO> fieldErrors, final String apiErrorCode) {
         return ErrorDTO.builder()
                 .code(status.value())
                 .error(status.getReasonPhrase())
                 .message(message)
                 .fieldErrors(fieldErrors)
                 .timestamp(LocalDateTime.now())
+                .apiErrorCode(apiErrorCode)
                 .build();
     }
 
+    public static ErrorDTO from(final HttpStatus status, final String message, final List<FieldErrorDTO> fieldErrors) {
+        return from(status, message, fieldErrors, null);
+    }
+
     public static ErrorDTO from(final HttpStatus status, final String message) {
-        return from(status, message, null);
+        return from(status, message, null, null);
     }
 
 }
