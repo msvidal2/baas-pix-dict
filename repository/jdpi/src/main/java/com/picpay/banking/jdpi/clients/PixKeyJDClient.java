@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(value = "pixKeyJDClient",
         url = "${pix.services.jdpi.dict.url}",
-        path = "/jdpi/dict/api",
-        fallbackFactory = PixKeyJDClientFallbackFactory.class)
+        path = "/jdpi/dict/api")
 @Headers({
         "Content-Encoding: gzip",
         "Accept-Encoding: gzip"
