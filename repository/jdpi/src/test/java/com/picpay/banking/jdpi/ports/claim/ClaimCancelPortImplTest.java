@@ -2,6 +2,7 @@ package com.picpay.banking.jdpi.ports.claim;
 
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.dto.response.ClaimCancelResponseDTO;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.ClaimCancelPortImpl;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimCancelReason;
@@ -28,7 +29,7 @@ class ClaimCancelPortImplTest {
     private ClaimCancelPortImpl port;
 
     @Mock
-    private ClaimJDClient claimJDClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Test
     void testCancel() {
@@ -42,7 +43,7 @@ class ClaimCancelPortImplTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(claimJDClient.cancel(anyString(), anyString(), any())).thenReturn(responseDto);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDto);
 
         var claim = Claim.builder()
                 .claimId(claimId)

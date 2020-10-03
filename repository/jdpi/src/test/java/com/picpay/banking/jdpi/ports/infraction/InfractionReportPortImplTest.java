@@ -9,6 +9,7 @@ import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.InfractionReportDTO;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
@@ -44,7 +45,7 @@ class InfractionReportPortImplTest {
     private InfractionReportPortImpl port;
 
     @Mock
-    private InfractionReportJDClient client;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     private CreateInfractionReportResponseDTO responseDTO;
 
@@ -97,7 +98,7 @@ class InfractionReportPortImplTest {
 
     @Test
     void when_executeCreateWithSuccess_expect_noException() {
-        when(client.create(any(), anyString())).thenReturn(responseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDTO);
 
         var infractionReport = InfractionReport.builder()
             .ispbRequester(01234)
@@ -114,7 +115,7 @@ class InfractionReportPortImplTest {
 
     @Test
     void when_executeNullResponse_expect_exception() {
-        when(client.create(any(), anyString())).thenReturn(null);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(null);
 
         var infractionReport = InfractionReport.builder()
             .ispbRequester(01234)
@@ -129,19 +130,19 @@ class InfractionReportPortImplTest {
     @Test
     void when_listInfractions_expect_ok() {
 
-        when(client.listPendings(anyInt(), anyInt()))
+        when(timeLimiterExecutor.execute(anyString(), any()))
             .thenReturn(listInfractionReportDTO);
 
         var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
         assertThat(listPendingInfractionReport).isNotEmpty();
 
-        verify(client).listPendings(anyInt(), anyInt());
+        verify(timeLimiterExecutor).execute(anyString(), any());
     }
 
     @Test
     void when_cancelInfraction_expect_ok() {
 
-        when(client.cancel(any(CancelInfractionDTO.class), anyString())).thenReturn(
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(
             CancelResponseInfractionDTO.builder()
                 .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
                 .infractionReportId("1")
@@ -152,12 +153,12 @@ class InfractionReportPortImplTest {
         assertThat(response.getEndToEndId()).isNotEmpty();
         assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
 
-        verify(client).cancel(any(CancelInfractionDTO.class), anyString());
+        verify(timeLimiterExecutor).execute(anyString(), any());
     }
 
     @Test
     void when_executeFindWithSuccess_expect_noException() {
-        when(client.find(anyString())).thenReturn(findResponseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(findResponseDTO);
 
         assertDoesNotThrow(() -> {
             var infractionReport = port.find(randomUUID().toString());
@@ -173,7 +174,7 @@ class InfractionReportPortImplTest {
             .infractionReportId("1")
             .build();
 
-        when(client.analyze(any(AnalyzeInfractionReportDTO.class), anyString())).thenReturn(
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(
             analyzeResponseInfractionDTO
                                                                                            );
 
@@ -185,7 +186,7 @@ class InfractionReportPortImplTest {
         assertThat(response.getEndToEndId()).isNotEmpty();
         assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
 
-        verify(client).analyze(any(AnalyzeInfractionReportDTO.class), anyString());
+        verify(timeLimiterExecutor).execute(anyString(), any());
     }
 
 }

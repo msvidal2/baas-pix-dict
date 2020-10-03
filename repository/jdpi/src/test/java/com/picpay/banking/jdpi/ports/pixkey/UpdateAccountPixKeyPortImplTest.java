@@ -2,6 +2,7 @@ package com.picpay.banking.jdpi.ports.pixkey;
 
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.response.UpdateAccountPixKeyResponseDTO;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -28,7 +29,7 @@ class UpdateAccountPixKeyPortImplTest {
     private UpdateAccountPixKeyPortImpl port;
 
     @Mock
-    private PixKeyJDClient jdClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Test
     void when_updateAccountSuccessfully_expect_equalResults() {
@@ -49,7 +50,7 @@ class UpdateAccountPixKeyPortImplTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(jdClient.updateAccount(anyString(), anyString(), any())).thenReturn(responseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDTO);
 
         assertDoesNotThrow(() -> {
             var response = port.updateAccount(randomUUID().toString(), pixKey, UpdateReason.CLIENT_REQUEST);

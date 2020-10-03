@@ -41,7 +41,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler({JDClientException.class})
     public ResponseEntity<ErrorDTO> jdClientException(final JDClientException ex) {
-        log.error(ex.getMessage(), ex);
+        log.error("error jdClientException", ex);
 
         return ClientErrorResponseFactory.newErrorDTO(ex);
     }
@@ -52,7 +52,7 @@ public class CustomExceptionHandler {
     })
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleRuntimeException(final RuntimeException ex, final WebRequest request) {
-        log.error("error", ex);
+        log.error("error handleRuntimeException", ex);
 
         return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
     }
@@ -60,7 +60,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorDTO handleInternalException(final Exception ex, final WebRequest request) {
-        log.error("error", ex);
+        log.error("error handleInternalException", ex);
 
         return ErrorDTO.from(INTERNAL_SERVER_ERROR, ex.getMessage());
     }
@@ -89,7 +89,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler({MissingRequestHeaderException.class})
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleMissingRequestHeaderException(final MissingRequestHeaderException ex) {
-        log.error("error", ex);
+        log.error("error handleMissingRequestHeaderException", ex);
 
         return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
     }

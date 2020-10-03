@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>original</module>
+<!--        <module>original</module>-->
         <module>jdpi</module>
     </modules>
 

@@ -1,8 +1,7 @@
 package com.picpay.banking.jdpi.ports.pixkey;
 
-import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.response.RemovePixKeyResponseDTO;
-import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ class RemovePixKeyPortImplTest {
     private RemovePixKeyPortImpl port;
 
     @Mock
-    private PixKeyJDClient jdClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Test
     void testRemove() {
@@ -36,7 +35,7 @@ class RemovePixKeyPortImplTest {
         var responseDto = new RemovePixKeyResponseDTO();
         responseDto.setKey(randomUUID().toString());
 
-        when(jdClient.removeKey(anyString(), anyString(), any())).thenReturn(responseDto);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDto);
 
         assertDoesNotThrow(() -> port.remove(randomUUID().toString(), pixKey, RemoveReason.CLIENT_REQUEST));
     }
