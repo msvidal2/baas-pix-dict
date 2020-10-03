@@ -45,7 +45,7 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
         return converter.convert(findPixKeyResponseDTO);
     }
 
-    public Collection<PixKey> listPixKey(final String requestIdentifier, final PixKey pixKey, Exception e) {
+    public Collection<PixKey> listPixKeyFallback(final String requestIdentifier, final PixKey pixKey, Exception e) {
         new PixKeyJDClientFallback(e).listPixKey(null, null);
         return null;
     }

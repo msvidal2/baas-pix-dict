@@ -47,7 +47,9 @@ public class ClientErrorResponseFactory {
 
         return ResponseEntity
                 .status(clientException.getStatus())
-                .body(ErrorDTO.from(clientException.getStatus(), message, fieldsErrors));
+                .body(ErrorDTO.from(clientException.getStatus(),
+                        message,
+                        fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null));
     }
 
 }

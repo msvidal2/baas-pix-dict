@@ -35,7 +35,7 @@ public class JdpiTokenInterceptor implements ClientHttpRequestInterceptor {
     }
 
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "applyFallback")
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "interceptFallback")
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         System.out.println("Host: " + request.getURI().getHost());
 
@@ -55,7 +55,7 @@ public class JdpiTokenInterceptor implements ClientHttpRequestInterceptor {
         return execution.execute(request, body);
     }
 
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, Exception e) throws IOException {
+    public ClientHttpResponse interceptFallback(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, Exception e) throws IOException {
         new TokenManagerFallback(e).getToken(null);
         return null;
     }

@@ -44,7 +44,7 @@ public class ListPendingClaimPortImpl implements ListPendingClaimPort {
         return converter.convert(response);
     }
 
-    public ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
+    public ClaimIterable listPendingFallback(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
         new ClaimJDClientFallback(e).listPending(null, null);
         return null;
     }

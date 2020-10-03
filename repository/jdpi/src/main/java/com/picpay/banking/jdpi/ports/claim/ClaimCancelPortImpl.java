@@ -46,7 +46,7 @@ public class ClaimCancelPortImpl implements ClaimCancelPort {
                 .build();
     }
 
-    public Claim cancel(Claim claim, boolean canceledClaimant, ClaimCancelReason reason, String requestIdentifier, Exception e) {
+    public Claim cancelFallback(Claim claim, boolean canceledClaimant, ClaimCancelReason reason, String requestIdentifier, Exception e) {
         new ClaimJDClientFallback(e).cancel(null, null, null);
         return null;
     }

@@ -44,7 +44,7 @@ public class ListClaimPortImpl implements ListClaimPort {
         return converter.convert(response);
     }
 
-    public ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
+    public ClaimIterable listFallback(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
         new ClaimJDClientFallback(e).list(null, null);
         return null;
     }

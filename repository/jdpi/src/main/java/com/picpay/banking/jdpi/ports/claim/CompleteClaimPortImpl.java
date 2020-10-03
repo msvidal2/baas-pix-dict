@@ -36,7 +36,7 @@ public class CompleteClaimPortImpl implements CompleteClaimPort {
         return response.toClaim();
     }
 
-    public Claim complete(Claim claim, String requestIdentifier, Exception e) {
+    public Claim completeFallback(Claim claim, String requestIdentifier, Exception e) {
         new ClaimJDClientFallback(e).complete(null, null, null);
         return null;
     }

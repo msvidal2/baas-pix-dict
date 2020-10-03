@@ -40,7 +40,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
         requestTemplate.header(HttpHeaders.AUTHORIZATION, token.getTokenType() + " "+ token.getAccessToken());
     }
 
-    public void apply(RequestTemplate requestTemplate, Exception e) {
+    public void applyFallback(RequestTemplate requestTemplate, Exception e) {
         new TokenManagerFallback(e).getToken(null);
     }
 
