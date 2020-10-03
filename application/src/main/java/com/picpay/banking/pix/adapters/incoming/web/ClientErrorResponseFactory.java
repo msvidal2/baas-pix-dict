@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,20 +34,33 @@ public class ClientErrorResponseFactory {
                 .orElse(new JDErrorDTO("", "", Collections.emptyList()));
 
         final var fieldsErrors = Optional.ofNullable(error.getErrors())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(FieldErrorDTO::from)
-                .collect(Collectors.toList());
+                .map(errors -> errors.stream()
+                        .map(FieldErrorDTO::from)
+                        .collect(Collectors.toList()))
+                .orElse(null);
 
         var message = error.getMessage();
 
-        if(HttpStatus.CONFLICT.equals(clientException.getStatus())) {
-            message = clientException.getLocalizedMessage();
+        if(message.isBlank()) {
+            message = clientException.getMessage();
+        }
+
+        var errorDto = ErrorDTO.from(clientException.getStatus(),
+                message,
+                fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null);
+
+        var errorCode = clientException.getCode();
+
+        if(errorCode != null) {
+            errorDto = ErrorDTO.from(clientException.getStatus(),
+                            errorCode.getMessage(),
+                            fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null,
+                            errorCode.getCode());
         }
 
         return ResponseEntity
                 .status(clientException.getStatus())
-                .body(ErrorDTO.from(clientException.getStatus(), message, fieldsErrors));
+                .body(errorDto);
     }
 
 }

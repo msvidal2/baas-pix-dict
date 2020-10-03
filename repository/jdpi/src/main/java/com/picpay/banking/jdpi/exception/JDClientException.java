@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.exception;
 
+import com.picpay.banking.jdpi.dto.JDErrorCode;
 import com.picpay.banking.jdpi.dto.response.JDErrorDTO;
 import org.springframework.http.HttpStatus;
 
@@ -40,6 +41,10 @@ public class JDClientException extends RuntimeException {
 
     public HttpStatus getStatus() {
         return status;
+    }
+
+    public JDErrorCode getCode() {
+        return JDErrorCode.resolve(error.getCode());
     }
 
 }

@@ -4,6 +4,7 @@ import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.dto.response.ListKeyResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListPixKeyResponseDTO;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
 import com.picpay.banking.pix.core.domain.*;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class ListPixKeyPortImplTest {
     private ListPixKeyPortImpl port;
 
     @Mock
-    private PixKeyJDClient jdClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Mock
     private ListPixKeyConverter converter;
@@ -40,7 +41,7 @@ class ListPixKeyPortImplTest {
 
         ListPixKeyResponseDTO listPixKeyResponseDTO = getListPixKeyResponseDTO();
 
-        when(jdClient.listPixKey(anyString(),any())).thenReturn(listPixKeyResponseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(listPixKeyResponseDTO);
 
         when(converter.convert(any())).thenReturn(getListPixKey());
 

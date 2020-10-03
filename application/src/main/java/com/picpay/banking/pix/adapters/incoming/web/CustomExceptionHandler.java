@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
+import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
@@ -28,14 +29,21 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Order(value = Ordered.LOWEST_PRECEDENCE)
 public class CustomExceptionHandler {
 
-    @ExceptionHandler({HystrixRuntimeException.class})
-    public ResponseEntity<ErrorDTO> handleClientException(final HystrixRuntimeException hystrixRuntimeException) {
-        log.error(hystrixRuntimeException.getMessage(), hystrixRuntimeException);
+//    @ExceptionHandler({HystrixRuntimeException.class})
+//    public ResponseEntity<ErrorDTO> handleClientException(final HystrixRuntimeException hystrixRuntimeException) {
+//        log.error(hystrixRuntimeException.getMessage(), hystrixRuntimeException);
+//
+//        return ClientErrorResponseFactory.newErrorDTO(hystrixRuntimeException
+//                .getFallbackException()
+//                .getCause()
+//                .getCause());
+//    }
 
-        return ClientErrorResponseFactory.newErrorDTO(hystrixRuntimeException
-                .getFallbackException()
-                .getCause()
-                .getCause());
+    @ExceptionHandler({JDClientException.class})
+    public ResponseEntity<ErrorDTO> jdClientException(final JDClientException ex) {
+        log.error("error jdClientException", ex);
+
+        return ClientErrorResponseFactory.newErrorDTO(ex);
     }
 
     @ExceptionHandler({
@@ -44,7 +52,7 @@ public class CustomExceptionHandler {
     })
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleRuntimeException(final RuntimeException ex, final WebRequest request) {
-        log.error("error", ex);
+        log.error("error handleRuntimeException", ex);
 
         return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
     }
@@ -52,7 +60,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorDTO handleInternalException(final Exception ex, final WebRequest request) {
-        log.error("error", ex);
+        log.error("error handleInternalException", ex);
 
         return ErrorDTO.from(INTERNAL_SERVER_ERROR, ex.getMessage());
     }
@@ -81,7 +89,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler({MissingRequestHeaderException.class})
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleMissingRequestHeaderException(final MissingRequestHeaderException ex) {
-        log.error("error", ex);
+        log.error("error handleMissingRequestHeaderException", ex);
 
         return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
     }

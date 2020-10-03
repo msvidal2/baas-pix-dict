@@ -4,6 +4,7 @@ import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.response.ListClaimDTO;
 import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.ListPendingClaimPortImpl;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.Claim;
@@ -25,6 +26,7 @@ import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +36,7 @@ class ListClaimPortImplTest {
     private ListPendingClaimPortImpl port;
 
     @Mock
-    private ClaimJDClient jdClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Mock
     private ListClaimConverter converter;
@@ -42,7 +44,7 @@ class ListClaimPortImplTest {
     @Test
     void testList() {
 
-        when(jdClient.listPending(any(String.class), any())).thenReturn(getListClaimResponseDTO());
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(getListClaimResponseDTO());
 
         var claim = Claim.builder()
             .claimId("1")

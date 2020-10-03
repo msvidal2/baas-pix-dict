@@ -1,13 +1,11 @@
 package com.picpay.banking.jdpi.ports.pixkey;
 
-import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.FindPixKeyConverter;
 import com.picpay.banking.jdpi.dto.response.EstatisticasResponseDTO;
 import com.picpay.banking.jdpi.dto.response.EventoResponseDTO;
 import com.picpay.banking.jdpi.dto.response.FindPixKeyResponseDTO;
-import com.picpay.banking.jdpi.ports.pixkey.FindPixKeyPortImpl;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,8 +18,8 @@ import java.util.List;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +29,7 @@ class FindPixKeyPortImplTest {
     private FindPixKeyPortImpl port;
 
     @Mock
-    private PixKeyJDClient jdClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Spy
     private FindPixKeyConverter converter;
@@ -70,7 +68,7 @@ class FindPixKeyPortImplTest {
                 .estatisticas(estatisticasResponseMockDTO)
                 .build();
 
-        when(jdClient.findPixKey(anyString(), anyString(), nullable(String.class),nullable(String.class)))
+        when(timeLimiterExecutor.execute(anyString(), any()))
                 .thenReturn(responseMockDTO);
 
         assertDoesNotThrow(() -> {

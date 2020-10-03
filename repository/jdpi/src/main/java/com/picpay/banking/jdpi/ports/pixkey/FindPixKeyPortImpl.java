@@ -3,23 +3,41 @@ package com.picpay.banking.jdpi.ports.pixkey;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.FindPixKeyConverter;
+import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 public class FindPixKeyPortImpl implements FindPixKeyPort {
+
+    private final static String CIRCUIT_BREAKER_NAME = "find-pix-key";
 
     private PixKeyJDClient pixKeyJDClient;
 
     private FindPixKeyConverter converter;
 
+    private TimeLimiterExecutor timeLimiterExecutor;
+
     @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "findPixKeyFallback")
     public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
-        var findPixKeyResponseDTO =
-                pixKeyJDClient.findPixKey(pixKey, userId, null, null);
+
+        final var findPixKeyResponseDTO = timeLimiterExecutor
+            .execute(CIRCUIT_BREAKER_NAME,
+                    () -> pixKeyJDClient.findPixKey(pixKey, userId, null, null));
 
         return converter.convert(findPixKeyResponseDTO);
     }
+
+    public PixKey findPixKeyFallback(String requestIdentifier, String pixKey, String userId, Exception e) {
+        new PixKeyJDClientFallback(e).findPixKey(pixKey, userId, null, null);
+        return null;
+    }
+
 }

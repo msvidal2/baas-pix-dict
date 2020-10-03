@@ -1,9 +1,7 @@
 package com.picpay.banking.jdpi.ports.claim;
 
-import com.picpay.banking.jdpi.clients.ClaimJDClient;
-import com.picpay.banking.jdpi.dto.request.CompleteClaimRequestDTO;
 import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
-import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,7 @@ public class CompleteClaimPortImplTest {
     private CompleteClaimPortImpl port;
 
     @Mock
-    private ClaimJDClient claimJDClient;
+    private TimeLimiterExecutor timeLimiterExecutor;
 
     @Test
     void testComplete() {
@@ -42,8 +40,7 @@ public class CompleteClaimPortImplTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(claimJDClient.complete(anyString(), anyString(), any(CompleteClaimRequestDTO.class)))
-                .thenReturn(clientResponse);
+        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(clientResponse);
 
         assertDoesNotThrow(() -> {
             var claimResponse = port.complete(

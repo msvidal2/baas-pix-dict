@@ -4,26 +4,15 @@ import com.picpay.banking.jdpi.dto.request.AnalyzeInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
 import com.picpay.banking.jdpi.dto.request.FilterInfractionReportDTO;
-import com.picpay.banking.jdpi.dto.response.AnalyzeResponseInfractionDTO;
-import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
-import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
-import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
-import com.picpay.banking.jdpi.dto.response.ListInfractionReportDTO;
-import com.picpay.banking.jdpi.fallbacks.InfractionReportJDClientFallbackFactory;
+import com.picpay.banking.jdpi.dto.response.*;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "infractionJDClient",
         url = "${pix.services.jdpi.infraction.url}",
-        path = "/jdpi/dict/api",
-        fallbackFactory = InfractionReportJDClientFallbackFactory.class)
+        path = "/jdpi/dict/api")
 @Headers({
         "Content-Encoding: gzip",
         "Accept-Encoding: gzip"
