@@ -44,7 +44,7 @@ class ClaimConfirmationPortImplTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any()))
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString()))
                 .thenReturn(clientResponse);
 
         assertDoesNotThrow(() -> {

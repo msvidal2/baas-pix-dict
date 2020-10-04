@@ -44,7 +44,7 @@ class ListClaimPortImplTest {
     @Test
     void testList() {
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(getListClaimResponseDTO());
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(getListClaimResponseDTO());
 
         var claim = Claim.builder()
             .claimId("1")

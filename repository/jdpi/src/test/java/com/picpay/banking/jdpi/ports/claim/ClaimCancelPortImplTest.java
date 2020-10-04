@@ -43,7 +43,7 @@ class ClaimCancelPortImplTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDto);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(responseDto);
 
         var claim = Claim.builder()
                 .claimId(claimId)

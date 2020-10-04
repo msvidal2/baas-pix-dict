@@ -37,7 +37,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
                 .build();
 
         var responseDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> pixKeyJDClient.updateAccount(requestIdentifier, pixKey.getKey(), requestDTO));
+                () -> pixKeyJDClient.updateAccount(requestIdentifier, pixKey.getKey(), requestDTO), requestIdentifier);
 
         return PixKey.builder()
                 .key(responseDTO.getKey())

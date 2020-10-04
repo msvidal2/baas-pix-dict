@@ -50,7 +50,7 @@ class UpdateAccountPixKeyPortImplTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(responseDTO);
 
         assertDoesNotThrow(() -> {
             var response = port.updateAccount(randomUUID().toString(), pixKey, UpdateReason.CLIENT_REQUEST);

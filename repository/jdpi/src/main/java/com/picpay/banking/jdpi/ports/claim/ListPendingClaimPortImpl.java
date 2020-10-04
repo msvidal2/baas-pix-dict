@@ -39,7 +39,7 @@ public class ListPendingClaimPortImpl implements ListPendingClaimPort {
             .build();
 
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.listPending(requestIdentifier, listClaimRequestDTO));
+                () -> claimJDClient.listPending(requestIdentifier, listClaimRequestDTO), requestIdentifier);
 
         return converter.convert(response);
     }
