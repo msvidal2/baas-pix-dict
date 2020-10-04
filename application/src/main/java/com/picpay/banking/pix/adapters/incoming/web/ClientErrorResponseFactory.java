@@ -41,9 +41,9 @@ public class ClientErrorResponseFactory {
 
         var message = error.getMessage();
 
-        if(message.isBlank()) {
-            message = clientException.getMessage();
-        }
+//        if(message.isBlank()) {
+//            message = clientException.getMessage();
+//        }
 
         var errorDto = ErrorDTO.from(clientException.getStatus(),
                 message,
