@@ -6,10 +6,8 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
