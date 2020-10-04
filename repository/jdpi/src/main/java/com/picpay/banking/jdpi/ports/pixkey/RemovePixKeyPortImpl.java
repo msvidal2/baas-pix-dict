@@ -34,7 +34,8 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
 
         final var response = timeLimiterExecutor
                 .execute(CIRCUIT_BREAKER_NAME,
-                        () -> pixKeyJDClient.removeKey(requestIdentifier, pixKey.getKey(), requestDTO));
+                        () -> pixKeyJDClient.removeKey(requestIdentifier, pixKey.getKey(), requestDTO),
+                        requestIdentifier);
 
         return response.toDomain();
     }

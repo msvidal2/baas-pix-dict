@@ -39,7 +39,7 @@ public class ListClaimPortImpl implements ListClaimPort {
                 .build();
 
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.list(requestIdentifier, listClaimRequestDTO));
+                () -> claimJDClient.list(requestIdentifier, listClaimRequestDTO), requestIdentifier);
 
         return converter.convert(response);
     }

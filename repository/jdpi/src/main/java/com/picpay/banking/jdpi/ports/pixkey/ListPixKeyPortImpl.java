@@ -40,7 +40,8 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
             .cpfCnpj(Long.valueOf(pixKey.getTaxId())).build();
 
         var findPixKeyResponseDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> pixKeyJDClient.listPixKey(requestIdentifier, listPixKeyRequestDTO));
+                () -> pixKeyJDClient.listPixKey(requestIdentifier, listPixKeyRequestDTO),
+                requestIdentifier);
 
         return converter.convert(findPixKeyResponseDTO);
     }

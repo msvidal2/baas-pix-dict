@@ -35,7 +35,7 @@ public class ClaimCancelPortImpl implements ClaimCancelPort {
                 .build();
 
         var response = timeLimiterExecutor
-                .execute(CIRCUIT_BREAKER_NAME, () -> claimJDClient.cancel(requestIdentifier, claim.getClaimId(), request));
+                .execute(CIRCUIT_BREAKER_NAME, () -> claimJDClient.cancel(requestIdentifier, claim.getClaimId(), request), requestIdentifier);
 
         return Claim.builder()
                 .claimId(response.getClaimId())

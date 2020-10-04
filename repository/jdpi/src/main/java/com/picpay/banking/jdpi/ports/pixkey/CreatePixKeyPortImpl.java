@@ -32,7 +32,7 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
         CreatePixKeyRequestDTO requestDTO = converter.convert(pixKey, reason);
 
         var jdpiReturnDTO = timeLimiterExecutor
-                .execute(CIRCUIT_BREAKER_NAME, () -> pixKeyJDClient.createPixKey(requestIdentifier, requestDTO));
+                .execute(CIRCUIT_BREAKER_NAME, () -> pixKeyJDClient.createPixKey(requestIdentifier, requestDTO), requestIdentifier);
 
         log.info
                 ("{ \"pixKey_created\": \""+jdpiReturnDTO.getChave()

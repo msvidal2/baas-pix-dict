@@ -31,7 +31,8 @@ public class ClaimConfirmationPortImpl implements ClaimConfirmationPort {
                 .build();
 
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.confirmation(requestIdentifier, claim.getClaimId(), requestDto));
+                () -> claimJDClient.confirmation(requestIdentifier, claim.getClaimId(), requestDto),
+                requestIdentifier);
 
         return response.toClaim();
     }

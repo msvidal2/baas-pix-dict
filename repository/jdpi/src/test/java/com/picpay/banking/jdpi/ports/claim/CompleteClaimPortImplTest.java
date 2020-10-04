@@ -40,7 +40,7 @@ public class CompleteClaimPortImplTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(clientResponse);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(clientResponse);
 
         assertDoesNotThrow(() -> {
             var claimResponse = port.complete(

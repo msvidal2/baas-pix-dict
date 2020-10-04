@@ -68,7 +68,7 @@ class FindPixKeyPortImplTest {
                 .estatisticas(estatisticasResponseMockDTO)
                 .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any()))
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString()))
                 .thenReturn(responseMockDTO);
 
         assertDoesNotThrow(() -> {
