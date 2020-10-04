@@ -31,7 +31,8 @@ public class CompleteClaimPortImpl implements CompleteClaimPort {
                 .build();
 
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.complete(requestIdentifier, claim.getClaimId(), request));
+                () -> claimJDClient.complete(requestIdentifier, claim.getClaimId(), request),
+                requestIdentifier);
 
         return response.toClaim();
     }

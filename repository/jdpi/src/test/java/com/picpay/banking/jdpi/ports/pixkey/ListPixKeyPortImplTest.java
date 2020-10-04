@@ -41,7 +41,7 @@ class ListPixKeyPortImplTest {
 
         ListPixKeyResponseDTO listPixKeyResponseDTO = getListPixKeyResponseDTO();
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(listPixKeyResponseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(listPixKeyResponseDTO);
 
         when(converter.convert(any())).thenReturn(getListPixKey());
 

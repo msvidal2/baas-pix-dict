@@ -46,7 +46,7 @@ public class JdpiTokenInterceptor implements ClientHttpRequestInterceptor {
         var headers = request.getHeaders();
 
         var token = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> tokenManagerClient.getToken(TokenScope.DICT));
+                () -> tokenManagerClient.getToken(TokenScope.DICT), "get-token-rest-template");
 
         headers.add(HttpHeaders.AUTHORIZATION, token.getTokenType() + " "+ token.getAccessToken());
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");

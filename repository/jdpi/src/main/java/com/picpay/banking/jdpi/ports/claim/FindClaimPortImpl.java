@@ -29,7 +29,7 @@ public class FindClaimPortImpl implements FindClaimPort {
     public Claim findClaim(final String claimId, final String ispb, final boolean reivindicador) {
 
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.find(claimId, ispb, reivindicador));
+                () -> claimJDClient.find(claimId, ispb, reivindicador), claimId);
 
         return Optional.ofNullable(response)
                 .map(FindClaimResponseDTO::toClaim)

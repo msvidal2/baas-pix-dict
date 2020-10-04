@@ -30,7 +30,8 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
         final var findPixKeyResponseDTO = timeLimiterExecutor
             .execute(CIRCUIT_BREAKER_NAME,
-                    () -> pixKeyJDClient.findPixKey(pixKey, userId, null, null));
+                    () -> pixKeyJDClient.findPixKey(pixKey, userId, null, null),
+                    requestIdentifier);
 
         return converter.convert(findPixKeyResponseDTO);
     }

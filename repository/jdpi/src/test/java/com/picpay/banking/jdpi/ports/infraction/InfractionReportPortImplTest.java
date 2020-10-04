@@ -98,7 +98,7 @@ class InfractionReportPortImplTest {
 
     @Test
     void when_executeCreateWithSuccess_expect_noException() {
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(responseDTO);
 
         var infractionReport = InfractionReport.builder()
             .ispbRequester(01234)
@@ -115,7 +115,7 @@ class InfractionReportPortImplTest {
 
     @Test
     void when_executeNullResponse_expect_exception() {
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(null);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(null);
 
         var infractionReport = InfractionReport.builder()
             .ispbRequester(01234)
@@ -130,19 +130,19 @@ class InfractionReportPortImplTest {
     @Test
     void when_listInfractions_expect_ok() {
 
-        when(timeLimiterExecutor.execute(anyString(), any()))
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString()))
             .thenReturn(listInfractionReportDTO);
 
         var listPendingInfractionReport = this.port.listPendingInfractionReport(1, 1);
         assertThat(listPendingInfractionReport).isNotEmpty();
 
-        verify(timeLimiterExecutor).execute(anyString(), any());
+        verify(timeLimiterExecutor).execute(anyString(), any(), anyString());
     }
 
     @Test
     void when_cancelInfraction_expect_ok() {
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(
             CancelResponseInfractionDTO.builder()
                 .situation(InfractionReportSituation.CANCELED.getValue()).endToEndId("123123")
                 .infractionReportId("1")
@@ -153,12 +153,12 @@ class InfractionReportPortImplTest {
         assertThat(response.getEndToEndId()).isNotEmpty();
         assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
 
-        verify(timeLimiterExecutor).execute(anyString(), any());
+        verify(timeLimiterExecutor).execute(anyString(), any(), anyString());
     }
 
     @Test
     void when_executeFindWithSuccess_expect_noException() {
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(findResponseDTO);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(findResponseDTO);
 
         assertDoesNotThrow(() -> {
             var infractionReport = port.find(randomUUID().toString());
@@ -174,7 +174,7 @@ class InfractionReportPortImplTest {
             .infractionReportId("1")
             .build();
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(
             analyzeResponseInfractionDTO
                                                                                            );
 
@@ -186,7 +186,7 @@ class InfractionReportPortImplTest {
         assertThat(response.getEndToEndId()).isNotEmpty();
         assertThat(response.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
 
-        verify(timeLimiterExecutor).execute(anyString(), any());
+        verify(timeLimiterExecutor).execute(anyString(), any(), anyString());
     }
 
 }

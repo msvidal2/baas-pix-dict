@@ -35,7 +35,7 @@ class RemovePixKeyPortImplTest {
         var responseDto = new RemovePixKeyResponseDTO();
         responseDto.setKey(randomUUID().toString());
 
-        when(timeLimiterExecutor.execute(anyString(), any())).thenReturn(responseDto);
+        when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(responseDto);
 
         assertDoesNotThrow(() -> port.remove(randomUUID().toString(), pixKey, RemoveReason.CLIENT_REQUEST));
     }

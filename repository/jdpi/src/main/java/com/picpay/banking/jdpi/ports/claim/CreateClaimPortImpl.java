@@ -32,7 +32,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
         CreateClaimRequestDTO requestDTO = converter.convert(claim);
 
         ClaimResponseDTO responseDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
-                () -> claimJDClient.createClaim(requestIdentifier, requestDTO));
+                () -> claimJDClient.createClaim(requestIdentifier, requestDTO), requestIdentifier);
 
         return converter.convert(claim, responseDTO);
     }

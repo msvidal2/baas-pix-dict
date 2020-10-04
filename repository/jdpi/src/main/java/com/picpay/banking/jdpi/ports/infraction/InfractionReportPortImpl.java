@@ -42,7 +42,8 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
 
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-                () -> infractionJDClient.create(CreateInfractionReportRequestDTO.from(infractionReport), requestIdentifier));
+                () -> infractionJDClient.create(CreateInfractionReportRequestDTO.from(infractionReport), requestIdentifier),
+                requestIdentifier);
 
         return response.toInfractionReport();
     }
@@ -58,7 +59,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit) {
 
         final var infractionReportDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_LIST_PENDING_NAME,
-                () -> this.infractionJDClient.listPendings(ispb, limit));
+                () -> this.infractionJDClient.listPendings(ispb, limit), "listPendingInfractionReport");
 
         return infractionReportDTO.getInfractionReports()
                 .stream()
@@ -75,7 +76,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_FIND_NAME, fallbackMethod = "findFallback")
     public InfractionReport find(final String infractionReportId) {
-        return timeLimiterExecutor.execute(CIRCUIT_BREAKER_FIND_NAME, () -> infractionJDClient.find(infractionReportId))
+        return timeLimiterExecutor.execute(CIRCUIT_BREAKER_FIND_NAME, () -> infractionJDClient.find(infractionReportId), infractionReportId)
                 .toInfractionReport();
     }
 
@@ -91,7 +92,8 @@ public class InfractionReportPortImpl implements InfractionReportPort {
         var cancelInfractionDTO = new CancelInfractionDTO(infractionReportId, ispb);
 
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CANCEL_NAME,
-                () -> this.infractionJDClient.cancel(cancelInfractionDTO, requestIdentifier));
+                () -> this.infractionJDClient.cancel(cancelInfractionDTO, requestIdentifier),
+                requestIdentifier);
 
         return response.toInfraction();
     }
@@ -115,7 +117,8 @@ public class InfractionReportPortImpl implements InfractionReportPort {
             .build();
 
         var analyzeResponse = timeLimiterExecutor.execute(CIRCUIT_BREAKER_ANALYZE_NAME,
-                () -> this.infractionJDClient.analyze(analyzeInfractionReport, requestIdentifier));
+                () -> this.infractionJDClient.analyze(analyzeInfractionReport, requestIdentifier),
+                requestIdentifier);
 
         return analyzeResponse.toInfraction();
     }
@@ -144,7 +147,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
         .build();
 
         var listInfractionReportDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_FILTER_NAME,
-                () -> this.infractionJDClient.filter(filter));
+                () -> this.infractionJDClient.filter(filter), "infraction-filter");
 
         return listInfractionReportDTO.getInfractionReports().stream().map(InfractionReportDTO::toInfraction).collect(Collectors.toList());
     }
