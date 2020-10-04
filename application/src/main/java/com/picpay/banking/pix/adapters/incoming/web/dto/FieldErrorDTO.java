@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.jdpi.dto.response.JDErrorDTO;
 import com.picpay.banking.jdpi.dto.response.JDFieldErroDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
