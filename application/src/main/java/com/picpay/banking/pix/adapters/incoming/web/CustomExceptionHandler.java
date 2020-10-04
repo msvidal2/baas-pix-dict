@@ -1,12 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.jdpi.exception.JDClientException;
+import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,14 +16,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
-@Order(value = Ordered.LOWEST_PRECEDENCE)
 public class CustomExceptionHandler {
 
     @ExceptionHandler({JDClientException.class})
@@ -32,6 +30,14 @@ public class CustomExceptionHandler {
         log.error("error jdClientException", ex);
 
         return ClientErrorResponseFactory.newErrorDTO(ex);
+    }
+
+    @ExceptionHandler(NotFoundJdClientException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
+        log.error("error", ex);
+
+        return ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
     }
 
     @ExceptionHandler({

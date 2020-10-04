@@ -43,7 +43,7 @@ public class JDClientException extends RuntimeException {
         return status;
     }
 
-    public JDErrorCode getCode() {
+    public JDErrorCode getJDErrorCode() {
         if(error == null) {
             return null;
         }

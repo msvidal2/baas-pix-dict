@@ -1,7 +1,7 @@
 package com.picpay.banking.jdpi.interceptors;
 
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.fallbacks.TokenManagerFallback;
+import com.picpay.banking.jdpi.fallbacks.TokenExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,8 +56,7 @@ public class JdpiTokenInterceptor implements ClientHttpRequestInterceptor {
     }
 
     public ClientHttpResponse interceptFallback(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, Exception e) throws IOException {
-        new TokenManagerFallback(e).getToken(null);
-        return null;
+        throw TokenExceptionFactory.from(e);
     }
 
 }

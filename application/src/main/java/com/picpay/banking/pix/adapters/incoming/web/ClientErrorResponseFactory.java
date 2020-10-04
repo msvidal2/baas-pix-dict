@@ -12,24 +12,12 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientErrorResponseFactory {
 
-    public static ResponseEntity<ErrorDTO> newErrorDTO(final Throwable clientException) {
-        if (clientException.getClass().isAssignableFrom(JDClientException.class)) {
-            return getJDErrorResponse((JDClientException) clientException);
-        }
-
-        return ResponseEntity
-                .status(INTERNAL_SERVER_ERROR)
-                .body(ErrorDTO.from(INTERNAL_SERVER_ERROR, clientException.getMessage()));
-    }
-
-    private static ResponseEntity<ErrorDTO> getJDErrorResponse(JDClientException clientException) {
+    public static ResponseEntity<ErrorDTO> newErrorDTO(JDClientException clientException) {
         final var error = clientException.getError()
-                .orElse(new JDErrorDTO("", "", Collections.emptyList()));
+                .orElse(new JDErrorDTO(null, null, Collections.emptyList()));
 
         final var fieldsErrors = Optional.ofNullable(error.getErrors())
                 .map(errors -> errors.stream()
@@ -37,23 +25,19 @@ public class ClientErrorResponseFactory {
                         .collect(Collectors.toList()))
                 .orElse(null);
 
-        var message = error.getMessage();
+        var jdErrorCode = clientException.getJDErrorCode();
 
-//        if(message.isBlank()) {
-//            message = clientException.getMessage();
-//        }
+        ErrorDTO errorDto = null;
 
-        var errorDto = ErrorDTO.from(clientException.getStatus(),
-                message,
-                fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null);
-
-        var errorCode = clientException.getCode();
-
-        if(errorCode != null) {
+        if(jdErrorCode != null) {
             errorDto = ErrorDTO.from(clientException.getStatus(),
-                            errorCode.getMessage(),
-                            fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null,
-                            errorCode.getCode());
+                    jdErrorCode.getMessage(),
+                    fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null,
+                    jdErrorCode.getCode());
+        } else {
+            errorDto = ErrorDTO.from(clientException.getStatus(),
+                    error.getMessage(),
+                    fieldsErrors != null && fieldsErrors.size() > 0 ? fieldsErrors : null);
         }
 
         return ResponseEntity

@@ -3,7 +3,7 @@ package com.picpay.banking.jdpi.ports.claim;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.dto.request.ClaimCancelRequestDTO;
-import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimCancelReason;
@@ -47,8 +47,7 @@ public class ClaimCancelPortImpl implements ClaimCancelPort {
     }
 
     public Claim cancelFallback(Claim claim, boolean canceledClaimant, ClaimCancelReason reason, String requestIdentifier, Exception e) {
-        new ClaimJDClientFallback(e).cancel(null, null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

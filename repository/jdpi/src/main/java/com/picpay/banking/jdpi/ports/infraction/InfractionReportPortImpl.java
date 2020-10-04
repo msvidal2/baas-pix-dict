@@ -7,7 +7,7 @@ import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.request.CreateInfractionReportRequestDTO;
 import com.picpay.banking.jdpi.dto.request.FilterInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.InfractionReportDTO;
-import com.picpay.banking.jdpi.fallbacks.InfractionReportJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
@@ -49,8 +49,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {
-        new InfractionReportJDClientFallback(e).create(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
     @Trace
@@ -68,8 +67,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     public List<InfractionReport> listPendingInfractionReportFallback(final Integer ispb, final Integer limit, Exception e) {
-        new InfractionReportJDClientFallback(e).listPendings(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
     @Trace
@@ -81,8 +79,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     public InfractionReport findFallback(final String infractionReportId, Exception e) {
-        new InfractionReportJDClientFallback(e).find(null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
     @Trace
@@ -99,8 +96,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     public InfractionReport cancelFallback(final String infractionReportId, final Integer ispb, final String requestIdentifier, Exception e) {
-        new InfractionReportJDClientFallback(e).cancel(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
     @Trace
@@ -125,8 +121,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
 
     public InfractionReport analyzeFallback(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
                                     final String requestIdentifier, Exception e) {
-        new InfractionReportJDClientFallback(e).analyze(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
     @Trace
@@ -154,8 +149,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
 
     public List<InfractionReport> filterFallback(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
                                          LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit, Exception e) {
-        new InfractionReportJDClientFallback(e).filter(null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

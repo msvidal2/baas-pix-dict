@@ -1,7 +1,8 @@
 package com.picpay.banking.jdpi.interceptors;
 
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.fallbacks.TokenManagerFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
+import com.picpay.banking.jdpi.fallbacks.TokenExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -41,7 +42,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
     }
 
     public void applyFallback(RequestTemplate requestTemplate, Exception e) {
-        new TokenManagerFallback(e).getToken(null);
+        throw TokenExceptionFactory.from(e);
     }
 
 }

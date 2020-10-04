@@ -5,7 +5,7 @@ import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.CreateClaimConverter;
 import com.picpay.banking.jdpi.dto.request.CreateClaimRequestDTO;
 import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
-import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.CreateClaimPort;
@@ -38,8 +38,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
     }
 
     public Claim createClaimFallback(final Claim claim, final String requestIdentifier, Exception e) {
-        new ClaimJDClientFallback(e).createClaim(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }
