@@ -4,7 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.dto.response.FindClaimResponseDTO;
 import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
-import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
@@ -37,8 +37,7 @@ public class FindClaimPortImpl implements FindClaimPort {
     }
 
     public Claim findClaimFallback(final String claimId, final String ispb, final boolean reivindicador, Exception e) {
-        new ClaimJDClientFallback(e).find(null, null, false);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

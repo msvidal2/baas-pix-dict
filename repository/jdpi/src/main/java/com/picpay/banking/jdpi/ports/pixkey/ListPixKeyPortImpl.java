@@ -4,7 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.dto.request.ListPixKeyRequestDTO;
-import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
@@ -47,8 +47,7 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
     }
 
     public Collection<PixKey> listPixKeyFallback(final String requestIdentifier, final PixKey pixKey, Exception e) {
-        new PixKeyJDClientFallback(e).listPixKey(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

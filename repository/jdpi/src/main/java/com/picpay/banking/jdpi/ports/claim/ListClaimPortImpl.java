@@ -4,7 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.request.ListClaimRequestDTO;
-import com.picpay.banking.jdpi.fallbacks.ClaimJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
@@ -45,8 +45,7 @@ public class ListClaimPortImpl implements ListClaimPort {
     }
 
     public ClaimIterable listFallback(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
-        new ClaimJDClientFallback(e).list(null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

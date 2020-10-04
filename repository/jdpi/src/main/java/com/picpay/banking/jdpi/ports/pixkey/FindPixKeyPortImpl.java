@@ -3,7 +3,7 @@ package com.picpay.banking.jdpi.ports.pixkey;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.converter.FindPixKeyConverter;
-import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
@@ -37,8 +37,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     }
 
     public PixKey findPixKeyFallback(String requestIdentifier, String pixKey, String userId, Exception e) {
-        new PixKeyJDClientFallback(e).findPixKey(pixKey, userId, null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }

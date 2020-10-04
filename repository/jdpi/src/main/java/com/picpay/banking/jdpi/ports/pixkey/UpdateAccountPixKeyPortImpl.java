@@ -3,7 +3,7 @@ package com.picpay.banking.jdpi.ports.pixkey;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.dto.request.UpdateAccountPixKeyRequestDTO;
-import com.picpay.banking.jdpi.fallbacks.PixKeyJDClientFallback;
+import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
@@ -47,8 +47,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
     }
 
     public PixKey updateAccountFallback(String requestIdentifier, PixKey pixKey, UpdateReason reason, Exception e) {
-        new PixKeyJDClientFallback(e).updateAccount(null, null, null);
-        return null;
+        throw JDClientExceptionFactory.from(e);
     }
 
 }
