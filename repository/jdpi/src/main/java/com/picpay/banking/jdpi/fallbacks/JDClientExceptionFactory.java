@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.*;
 public class JDClientExceptionFactory {
 
     public static JDClientException from(Exception cause) {
-        if (cause.getClass().isAssignableFrom(FeignException.class)) {
+        if (cause instanceof FeignException) {
             return handleFeignException((FeignException) cause);
         }
         return new JDClientException(cause.getMessage(), cause, null, BAD_GATEWAY);
@@ -32,12 +32,12 @@ public class JDClientExceptionFactory {
     }
 
     private static JDClientException handleConnectionErrors(FeignException feignException) {
-        if (feignException.getCause().getClass().isAssignableFrom(UnknownHostException.class)) {
+        if (feignException.getCause() instanceof UnknownHostException) {
             log.error("client-unknownHost", kv("exception", feignException.getCause()));
             return new JDClientException(BAD_GATEWAY.getReasonPhrase(), feignException, null, BAD_GATEWAY);
         }
 
-        if (feignException.getCause().getClass().isAssignableFrom(SocketTimeoutException.class)) {
+        if (feignException.getCause() instanceof SocketTimeoutException) {
             log.error("client-timeout", kv("exception", feignException.getCause()));
             return new JDClientException("Timeout", feignException, null, BAD_GATEWAY);
         }
