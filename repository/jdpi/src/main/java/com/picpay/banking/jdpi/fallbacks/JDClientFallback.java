@@ -7,10 +7,13 @@ import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.jdpi.exception.TokenException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.argument.StructuredArguments;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
@@ -47,7 +50,13 @@ public abstract class JDClientFallback {
                 log.error("client-unknownHost: " + feignException.getMessage());
 
                 return new JDClientException(BAD_GATEWAY.getReasonPhrase(), cause, null, BAD_GATEWAY);
+            } else if (feignException.getCause() instanceof SocketTimeoutException) {
+                log.error("client-timeout",
+                        kv("exception", feignException.getCause()));
+
+                return new JDClientException("Timeout", cause, null, BAD_GATEWAY);
             } else {
+
                 log.error("unknown-error: " + feignException.getMessage());
 
                 return new JDClientException(INTERNAL_SERVER_ERROR.getReasonPhrase(), cause, null, INTERNAL_SERVER_ERROR);

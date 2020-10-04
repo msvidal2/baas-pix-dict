@@ -44,6 +44,10 @@ public class JDClientException extends RuntimeException {
     }
 
     public JDErrorCode getCode() {
+        if(error == null) {
+            return null;
+        }
+
         return JDErrorCode.resolve(error.getCode());
     }
 
