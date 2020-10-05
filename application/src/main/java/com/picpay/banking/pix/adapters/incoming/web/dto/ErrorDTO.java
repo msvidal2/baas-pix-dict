@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.argument.StructuredArgument;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static lombok.AccessLevel.PRIVATE;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @JsonInclude(NON_NULL)
 @Getter
@@ -56,6 +58,18 @@ public class ErrorDTO {
 
     public static ErrorDTO from(final HttpStatus status, final String message) {
         return from(status, message, null, null);
+    }
+
+    public StructuredArgument[] toLogJson(Exception exception) {
+        return new StructuredArgument[] {
+                kv("code", code),
+                kv("error", error),
+                kv("apiErrorCode", apiErrorCode),
+                kv("message", message),
+                kv("fieldErrors", fieldErrors),
+                kv("timestamp", timestamp),
+                kv("exception", exception)
+        };
     }
 
 }
