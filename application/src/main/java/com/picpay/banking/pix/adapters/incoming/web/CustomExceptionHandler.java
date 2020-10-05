@@ -26,18 +26,24 @@ import static org.springframework.http.HttpStatus.*;
 public class CustomExceptionHandler {
 
     @ExceptionHandler({JDClientException.class})
-    public ResponseEntity<ErrorDTO> jdClientException(final JDClientException ex) {
-        log.error("error jdClientException", ex);
+    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {
+        ResponseEntity<ErrorDTO> responseEntity = ClientErrorResponseFactory.newErrorDTO(ex);
 
-        return ClientErrorResponseFactory.newErrorDTO(ex);
+        ErrorDTO errorDTO = responseEntity.getBody();
+
+        log.error("error_handleJDClientException", errorDTO.toLogJson(ex));
+
+        return responseEntity;
     }
 
     @ExceptionHandler(NotFoundJdClientException.class)
     @ResponseStatus(NOT_FOUND)
     public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
-        log.error("error", ex);
+        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
 
-        return ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
+        log.error("error_handleNotFoundJdClientException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
     @ExceptionHandler({
@@ -45,47 +51,61 @@ public class CustomExceptionHandler {
             KeyValidatorException.class
     })
     @ResponseStatus(BAD_REQUEST)
-    public ErrorDTO handleRuntimeException(final RuntimeException ex, final WebRequest request) {
-        log.error("error handleRuntimeException", ex);
+    public ErrorDTO handleIllegalArgumentException(final RuntimeException ex, final WebRequest request) {
+        ErrorDTO errorDTO = ErrorDTO.from(BAD_REQUEST, ex.getMessage());
 
-        return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
+        log.error("error_handleIllegalArgumentException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
     @ExceptionHandler({Exception.class})
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorDTO handleInternalException(final Exception ex, final WebRequest request) {
-        log.error("error handleInternalException", ex);
+        ErrorDTO errorDTO = ErrorDTO.from(INTERNAL_SERVER_ERROR, ex.getMessage());
 
-        return ErrorDTO.from(INTERNAL_SERVER_ERROR, ex.getMessage());
+        log.error("error_handleInternalException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(BAD_REQUEST)
-    public ErrorDTO handleMethodArgumentNotValid(final MethodArgumentNotValidException ex) {
+    public ErrorDTO handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
         List<FieldErrorDTO> fieldErrors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldErrorDTO::from)
                 .collect(toList());
 
-        return ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+        ErrorDTO errorDTO = ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+
+        log.error("error_handleMethodArgumentNotValidException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
     @ExceptionHandler({BindException.class})
     @ResponseStatus(BAD_REQUEST)
-    public ErrorDTO handleMethodArgumentNotValid(final BindException ex) {
+    public ErrorDTO handleBindException(final BindException ex) {
         List<FieldErrorDTO> fieldErrors = ex.getFieldErrors()
             .stream()
             .map(FieldErrorDTO::from).collect(toList());
 
-        return ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+        ErrorDTO errorDTO = ErrorDTO.from(BAD_REQUEST, "Invalid Arguments", fieldErrors);
+
+        log.error("error_handleBindException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
     @ExceptionHandler({MissingRequestHeaderException.class})
     @ResponseStatus(BAD_REQUEST)
     public ErrorDTO handleMissingRequestHeaderException(final MissingRequestHeaderException ex) {
-        log.error("error handleMissingRequestHeaderException", ex);
+        ErrorDTO errorDTO = ErrorDTO.from(BAD_REQUEST, ex.getMessage());
 
-        return ErrorDTO.from(BAD_REQUEST, ex.getMessage());
+        log.error("error_handleMissingRequestHeaderException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
     }
 
 }
