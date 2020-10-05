@@ -17,7 +17,7 @@ public class ClientErrorResponseFactory {
 
     public static ResponseEntity<ErrorDTO> newErrorDTO(JDClientException clientException) {
         final var error = clientException.getError()
-                .orElse(new JDErrorDTO(null, null, Collections.emptyList()));
+                .orElse(new JDErrorDTO(null, null, Collections.emptyList(), null));
 
         final var fieldsErrors = Optional.ofNullable(error.getErrors())
                 .map(errors -> errors.stream()

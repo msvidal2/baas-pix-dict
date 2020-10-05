@@ -25,4 +25,7 @@ public class JDErrorDTO {
     @JsonAlias({"Erros", "erros"})
     private List<JDFieldErroDTO> errors;
 
+    @JsonAlias({"idCorrelacao"})
+    private String correlationId;
+
 }
