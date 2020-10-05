@@ -1,1 +1,1 @@
-# baas-pix-dict
+DICT API
