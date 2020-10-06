@@ -23,7 +23,7 @@ public class CircuitBreakerConfiguration {
         var config = CircuitBreakerConfig.custom()
                 .failureRateThreshold(30)
                 .slowCallRateThreshold(50)
-                .slowCallDurationThreshold(Duration.ofSeconds(3))
+                .slowCallDurationThreshold(Duration.ofSeconds(80))
                 .slidingWindowType(TIME_BASED)
                 .slidingWindowSize(10)
                 .minimumNumberOfCalls(100)
