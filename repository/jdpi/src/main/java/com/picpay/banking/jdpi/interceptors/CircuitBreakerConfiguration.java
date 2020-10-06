@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.Duration;
 
+import static io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType.COUNT_BASED;
 import static io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType.TIME_BASED;
 
 @Slf4j
@@ -24,8 +25,8 @@ public class CircuitBreakerConfiguration {
                 .failureRateThreshold(30)
                 .slowCallRateThreshold(50)
                 .slowCallDurationThreshold(Duration.ofSeconds(80))
-                .slidingWindowType(TIME_BASED)
-                .slidingWindowSize(10)
+                .slidingWindowType(COUNT_BASED)
+                .slidingWindowSize(200)
                 .minimumNumberOfCalls(100)
                 .permittedNumberOfCallsInHalfOpenState(10)
                 .waitDurationInOpenState(Duration.ofSeconds(10))
