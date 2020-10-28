@@ -42,6 +42,10 @@ public class PixKeyController {
     public PixKeyResponseDTO create(@RequestHeader String requestIdentifier,
                                     @RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
 
+        //TODO temporario.
+        if (requestDTO != null && requestDTO.getPersonType() != null && requestDTO.getPersonType().getValue() == 0)
+            requestDTO.setFantasyName(null);
+
         log.info("PixKey_creating"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", requestDTO.getKey())
