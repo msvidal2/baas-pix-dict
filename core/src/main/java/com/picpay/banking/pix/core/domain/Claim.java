@@ -33,5 +33,7 @@ public class Claim {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
+    private ClaimCancelReason cancelReason;
+    private ClaimConfirmationReason confirmationReason;
 
 }
