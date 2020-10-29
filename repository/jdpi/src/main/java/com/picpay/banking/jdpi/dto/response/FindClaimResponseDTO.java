@@ -1,11 +1,6 @@
 package com.picpay.banking.jdpi.dto.response;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.domain.ClaimType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,8 +36,18 @@ public class FindClaimResponseDTO {
     private LocalDateTime dtHrLimiteResolucao;
     private LocalDateTime dtHrLimiteConclusao;
     private LocalDateTime dtHrUltModificacao;
+    private Integer motivoConfirmacao;
+    private Integer motivoCancelamento;
 
     public Claim toClaim() {
+        ClaimConfirmationReason claimConfirmationReason = null;
+        ClaimCancelReason ClaimCancelReason = null;
+
+        if (motivoConfirmacao != null)
+            claimConfirmationReason = ClaimConfirmationReason.resolve(motivoConfirmacao);
+        if (motivoCancelamento != null)
+            ClaimCancelReason = ClaimCancelReason.resolve(motivoCancelamento);
+
         return Claim.builder()
                 .claimType(ClaimType.resolve(tpReivindicacao))
                 .participationFlow(fluxoParticipacao)
@@ -62,6 +67,8 @@ public class FindClaimResponseDTO {
                 .resolutionThresholdDate(dtHrLimiteResolucao)
                 .completionThresholdDate(dtHrLimiteConclusao)
                 .lastModifiedDate(dtHrUltModificacao)
+                .cancelReason(ClaimCancelReason)
+                .confirmationReason(claimConfirmationReason)
                 .build();
     }
 }
