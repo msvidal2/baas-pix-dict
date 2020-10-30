@@ -47,7 +47,6 @@ public class ListClaimPortImpl implements ListClaimPort {
     }
 
     public ClaimIterable listFallback(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor, final String requestIdentifier, Exception e) {
-        e.printStackTrace();
         throw JDClientExceptionFactory.from(e);
     }
 
