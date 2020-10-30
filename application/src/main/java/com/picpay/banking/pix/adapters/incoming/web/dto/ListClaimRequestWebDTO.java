@@ -57,6 +57,12 @@ public class ListClaimRequestWebDTO {
     @NotNull
     private Boolean pending;
 
+    @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
+    private Boolean donor;
+
+    @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
+    private Boolean claim;
+
     public LocalDateTime getStartDateAsLocalDateTime() {
         if(startDate == null) {
             return null;

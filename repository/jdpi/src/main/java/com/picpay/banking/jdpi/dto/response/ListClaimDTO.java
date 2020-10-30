@@ -29,11 +29,13 @@ public class ListClaimDTO {
     private String nrAgencia;
     private Integer tpConta;
     private String nrConta;
+    private String nome;
+    private String nomeFantasia;
     private LocalDateTime dtHrAberturaConta;
     private Integer tpPessoa;
     private Long cpfCnpj;
     private Integer ispbDoador;
-    private Doador doador;
+    private Doador dadosDoador;
     private String idReivindicacao;
     private Integer stReivindicacao;
     private LocalDateTime dtHrLimiteResolucao;
@@ -54,7 +56,7 @@ public class ListClaimDTO {
                 .personType(PersonType.resolve(tpPessoa))
                 .cpfCnpj(String.valueOf(cpfCnpj))
                 .donorIspb(ispbDoador)
-                .donorData(doador.toDonorData())
+                .donorData(dadosDoador.toDonorData())
                 .claimId(idReivindicacao)
                 .claimSituation(ClaimSituation.resolve(stReivindicacao))
                 .resolutionThresholdDate(dtHrLimiteResolucao)

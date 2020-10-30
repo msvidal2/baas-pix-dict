@@ -21,7 +21,7 @@ public class ListClaimUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final String requestIdentifier){
+    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean testClaim, final Boolean isDonor, final String requestIdentifier){
 
         validator.validate(claim);
 
@@ -30,7 +30,8 @@ public class ListClaimUseCase {
         if(isPending) {
             claimIterable = listPendingClaimPort.list(claim, limit, requestIdentifier);
         } else {
-            claimIterable = listClaimPort.list(claim, limit, requestIdentifier);
+            validateClient(testClaim, isDonor);
+            claimIterable = listClaimPort.list(claim, limit, testClaim, isDonor, requestIdentifier);
         }
 
         if (claimIterable != null)
@@ -40,4 +41,16 @@ public class ListClaimUseCase {
 
         return claimIterable;
     }
+
+    private void validateClient(final Boolean isClaim, final Boolean isDonor) {
+        if(isClaim == null && isDonor == null){
+            throw new IllegalArgumentException("Donor or Claim is required.");
+        }
+
+        if(isClaim != null && isDonor != null){
+            throw new IllegalArgumentException("Donor or Claim is required.");
+        }
+
+    }
+
 }

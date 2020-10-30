@@ -90,7 +90,7 @@ class ListClaimUseCaseTest {
                 ))
                 .build();
 
-        when(listClaimPort.list(any(), anyInt(), any(String.class)))
+        when(listClaimPort.list(any(), anyInt(), any(), any(), any(String.class)))
                 .thenReturn(claimIterableMock);
 
         var claimRequest = Claim.builder()
@@ -101,7 +101,7 @@ class ListClaimUseCaseTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var claimIterable = useCase.execute(claimRequest,false, 10, randomUUID().toString());
+            var claimIterable = useCase.execute(claimRequest,false, 10, true, null, randomUUID().toString());
 
             assertNotNull(claimIterable.getClaims());
             assertEquals(1,claimIterable.getClaims().size());
@@ -116,7 +116,31 @@ class ListClaimUseCaseTest {
                 .accountType(CHECKING)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, null, randomUUID().toString()));
+    }
+
+    @Test
+    void when_listClaimWithoutClient_expect_exception() {
+        var claimRequest = Claim.builder()
+            .branchNumber("0001")
+            .accountNumber("123456")
+            .ispb(12345)
+            .accountType(CHECKING)
+            .build();
+
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, null, null, randomUUID().toString()));
+    }
+
+    @Test
+    void when_listClaimWithBothClient_expect_exception() {
+        var claimRequest = Claim.builder()
+            .branchNumber("0001")
+            .accountNumber("123456")
+            .ispb(12345)
+            .accountType(CHECKING)
+            .build();
+
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, true, randomUUID().toString()));
     }
 
 }
