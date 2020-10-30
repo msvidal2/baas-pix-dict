@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
@@ -30,5 +32,9 @@ public class ListPendingClaimRequestDTO {
     private String nrContaLogada;
 
     private Integer nrLimite;
+
+    private LocalDateTime dtHrModificacaoInicio;
+
+    private LocalDateTime dtHrModificacaoFim;
 
 }

@@ -94,6 +94,8 @@ public class ClaimController {
             .branchNumber(requestDTO.getBranchNumber())
             .accountNumber(requestDTO.getAccountNumber())
             .accountType(requestDTO.getAccountType())
+            .starDate(requestDTO.getStartDateAsLocalDateTime())
+            .endDate(requestDTO.getEndDateAsLocalDateTime())
             .build();
 
         return listClaimUseCase.execute(claim, requestDTO.getPending(), requestDTO.getLimit(), requestIdentifier);

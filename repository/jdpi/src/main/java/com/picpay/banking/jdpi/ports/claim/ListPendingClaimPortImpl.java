@@ -35,6 +35,8 @@ public class ListPendingClaimPortImpl implements ListPendingClaimPort {
             .nrAgenciaLogada(claim.getBranchNumber())
             .nrContaLogada(claim.getAccountNumber())
             .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
+            .dtHrModificacaoInicio(claim.getStarDate() != null ? claim.getStarDate() : null)
+            .dtHrModificacaoFim(claim.getEndDate() != null ? claim.getEndDate() : null)
             .nrLimite(limit)
             .build();
 

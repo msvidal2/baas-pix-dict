@@ -35,5 +35,7 @@ public class Claim {
     private LocalDateTime lastModifiedDate;
     private ClaimCancelReason cancelReason;
     private ClaimConfirmationReason confirmationReason;
+    private LocalDateTime starDate;
+    private LocalDateTime endDate;
 
 }
