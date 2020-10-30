@@ -26,7 +26,7 @@ public class ListClaimPortImpl implements ListClaimPort {
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "listFallback")
-    public ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier) {
+    public ClaimIterable list(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor, final String requestIdentifier) {
 
         var listClaimRequestDTO = ListClaimRequestDTO.builder()
                 .ispb(claim.getIspb())
@@ -34,6 +34,8 @@ public class ListClaimPortImpl implements ListClaimPort {
                 .cpfCnpjLogado((claim.getCpfCnpj() != null ? Long.parseLong(claim.getCpfCnpj()) : null))
                 .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)
                 .nrLimite((limit != null ? limit : null))
+                .ehReivindicador(isClaim != null ? isClaim : null)
+                .ehDoador(isDonor != null ? isDonor : null)
                 .nrAgenciaLogada(claim.getBranchNumber())
                 .nrContaLogada(claim.getAccountNumber())
                 .build();
@@ -44,7 +46,7 @@ public class ListClaimPortImpl implements ListClaimPort {
         return converter.convert(response);
     }
 
-    public ClaimIterable listFallback(final Claim claim, final Integer limit, final String requestIdentifier, Exception e) {
+    public ClaimIterable listFallback(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor, final String requestIdentifier, Exception e) {
         throw JDClientExceptionFactory.from(e);
     }
 

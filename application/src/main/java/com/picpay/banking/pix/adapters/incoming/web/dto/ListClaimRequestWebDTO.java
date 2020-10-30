@@ -12,6 +12,8 @@ import lombok.ToString;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Builder
 @Getter
@@ -40,6 +42,13 @@ public class ListClaimRequestWebDTO {
     @ApiModelProperty(value = "Account type of client")
     private AccountType accountType;
 
+    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
+    @NotNull
+    private String startDate;
+
+    @ApiModelProperty(value = "End date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
+    private String endDate;
+
     @ApiModelProperty(value = "Limit return records", dataType="java.lang.integer", required = true)
     @NotNull
     private Integer limit;
@@ -47,4 +56,31 @@ public class ListClaimRequestWebDTO {
     @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean", required = true)
     @NotNull
     private Boolean pending;
+
+    @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
+    private Boolean donor;
+
+    @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
+    private Boolean claim;
+
+    public LocalDateTime getStartDateAsLocalDateTime() {
+        if(startDate == null) {
+            return null;
+        }
+
+        var dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        return LocalDateTime.from(dateTimeFormatter.parse(startDate));
+    }
+
+    public LocalDateTime getEndDateAsLocalDateTime() {
+        if(endDate == null) {
+            return null;
+        }
+
+        var dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        return LocalDateTime.from(dateTimeFormatter.parse(endDate));
+    }
+
 }

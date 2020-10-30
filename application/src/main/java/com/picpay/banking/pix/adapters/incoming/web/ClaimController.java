@@ -3,7 +3,6 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
-import com.picpay.banking.pix.converters.CreateClaimWebConverter;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.usecase.claim.*;
@@ -96,7 +95,7 @@ public class ClaimController {
             .accountType(requestDTO.getAccountType())
             .build();
 
-        return listClaimUseCase.execute(claim, requestDTO.getPending(), requestDTO.getLimit(), requestIdentifier);
+        return listClaimUseCase.execute(claim, requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaim(), requestDTO.getDonor(), requestIdentifier);
     }
 
     @Trace

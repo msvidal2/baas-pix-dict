@@ -19,4 +19,6 @@ public class ListClaimResponseDTO {
     private LocalDateTime dtHrJdPi;
     private Boolean temMaisElementos;
     private Collection<ListClaimDTO> reivindicacoesAssociadas;
+    private Collection<ListClaimDTO> reivindicacoes;
+
 }

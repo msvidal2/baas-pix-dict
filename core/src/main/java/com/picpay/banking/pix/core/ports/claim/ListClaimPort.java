@@ -6,5 +6,5 @@ import com.picpay.banking.pix.core.domain.ClaimIterable;
 
 public interface ListClaimPort {
 
-    ClaimIterable list(final Claim claim, final Integer limit, final String requestIdentifier);
+    ClaimIterable list(final Claim claim, final Integer limit, final Boolean testeClaim, final Boolean isDonor, final String requestIdentifier);
 }
