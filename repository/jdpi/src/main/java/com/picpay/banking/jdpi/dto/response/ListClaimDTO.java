@@ -2,6 +2,8 @@ package com.picpay.banking.jdpi.dto.response;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimCancelReason;
+import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.domain.ClaimType;
 import com.picpay.banking.pix.core.domain.KeyType;
@@ -38,6 +40,8 @@ public class ListClaimDTO {
     private Doador dadosDoador;
     private String idReivindicacao;
     private Integer stReivindicacao;
+    private Integer motivoConfirmacao;
+    private Integer motivoCancelamento;
     private LocalDateTime dtHrLimiteResolucao;
     private LocalDateTime dtHrLimiteConclusao;
     private LocalDateTime dtHrUltModificacao;
@@ -59,6 +63,8 @@ public class ListClaimDTO {
                 .donorData(dadosDoador.toDonorData())
                 .claimId(idReivindicacao)
                 .claimSituation(ClaimSituation.resolve(stReivindicacao))
+                .confirmationReason(motivoConfirmacao != null ? ClaimConfirmationReason.resolve(motivoConfirmacao) : null)
+                .cancelReason(motivoCancelamento != null ? ClaimCancelReason.resolve(motivoCancelamento) : null)
                 .resolutionThresholdDate(dtHrLimiteResolucao)
                 .completionThresholdDate(dtHrLimiteConclusao)
                 .lastModifiedDate(dtHrUltModificacao)

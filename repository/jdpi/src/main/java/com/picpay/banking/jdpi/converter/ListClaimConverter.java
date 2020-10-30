@@ -4,6 +4,8 @@ import com.picpay.banking.jdpi.dto.response.ListClaimDTO;
 import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimCancelReason;
+import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.domain.ClaimType;
@@ -53,6 +55,8 @@ public class ListClaimConverter implements DataConverter<ListClaimResponseDTO, C
             .personType(PersonType.resolve(listClaimDTO.getTpPessoa()))
             .cpfCnpj(String.valueOf(listClaimDTO.getCpfCnpj()))
             .donorIspb(listClaimDTO.getIspbDoador())
+            .confirmationReason(listClaimDTO.getMotivoConfirmacao() != null ? ClaimConfirmationReason.resolve(listClaimDTO.getMotivoConfirmacao()) : null)
+            .cancelReason(listClaimDTO.getMotivoCancelamento() != null ? ClaimCancelReason.resolve(listClaimDTO.getMotivoCancelamento()) : null)
             .donorData(getDonorData(listClaimDTO))
             .accountOpeningDate(listClaimDTO.getDtHrAberturaConta())
             .resolutionThresholdDate(listClaimDTO.getDtHrLimiteResolucao())
