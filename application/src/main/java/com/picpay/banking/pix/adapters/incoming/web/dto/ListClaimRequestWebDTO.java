@@ -42,7 +42,7 @@ public class ListClaimRequestWebDTO {
     @ApiModelProperty(value = "Account type of client")
     private AccountType accountType;
 
-    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)", required = true)
+    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
     @NotNull
     private String startDate;
 
