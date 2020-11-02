@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class FindPixKeyConverter {
@@ -17,22 +18,22 @@ public class FindPixKeyConverter {
         }
 
         return PixKey.builder()
-            .type((from.getTpChave() == null? null: KeyType.resolve(from.getTpChave())))
+            .type(Optional.ofNullable(KeyType.resolve(from.getTpChave())).orElse(null))
             .key(from.getChave())
             .ispb(from.getIspb())
             .nameIspb(from.getNomeIspb())
             .branchNumber(from.getNrAgencia())
             .accountNumber(from.getNrConta())
-            .accountType((from.getTpConta() == null? null: AccountType.resolve(from.getTpConta())))
+            .accountType(Optional.ofNullable(AccountType.resolve(from.getTpConta())).orElse(null))
             .accountOpeningDate(from.getDtHrAberturaConta())
-            .personType((from.getTpPessoa() == null? null: PersonType.resolve(from.getTpPessoa())))
+            .personType(Optional.ofNullable(PersonType.resolve(from.getTpPessoa())).orElse(null))
             .taxId(from.getCpfCnpj())
             .name(from.getNome())
             .fantasyName(from.getNomeFantasia())
             .createdAt(from.getDtHrCriacaoChave())
             .startPossessionAt(from.getDtHrInicioPosseChave())
             .endToEndId(from.getEndToEndId())
-            .statistic((from.getEstatisticas() == null? null: convertEstatisticas(from.getEstatisticas())))
+            .statistic(Optional.ofNullable(convertEstatisticas(from.getEstatisticas())).orElse(null))
             .build();
     }
 
