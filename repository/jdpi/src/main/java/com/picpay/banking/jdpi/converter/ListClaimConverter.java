@@ -15,6 +15,7 @@ import com.picpay.banking.pix.core.domain.PersonType;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -55,8 +56,8 @@ public class ListClaimConverter implements DataConverter<ListClaimResponseDTO, C
             .personType(PersonType.resolve(listClaimDTO.getTpPessoa()))
             .cpfCnpj(String.valueOf(listClaimDTO.getCpfCnpj()))
             .donorIspb(listClaimDTO.getIspbDoador())
-            .confirmationReason(listClaimDTO.getMotivoConfirmacao() != null ? ClaimConfirmationReason.resolve(listClaimDTO.getMotivoConfirmacao()) : null)
-            .cancelReason(listClaimDTO.getMotivoCancelamento() != null ? ClaimCancelReason.resolve(listClaimDTO.getMotivoCancelamento()) : null)
+            .confirmationReason(Optional.ofNullable(ClaimConfirmationReason.resolve(listClaimDTO.getMotivoConfirmacao())).orElse(null))
+            .cancelReason(Optional.ofNullable(ClaimCancelReason.resolve(listClaimDTO.getMotivoCancelamento())).orElse(null))
             .donorData(getDonorData(listClaimDTO))
             .accountOpeningDate(listClaimDTO.getDtHrAberturaConta())
             .resolutionThresholdDate(listClaimDTO.getDtHrLimiteResolucao())

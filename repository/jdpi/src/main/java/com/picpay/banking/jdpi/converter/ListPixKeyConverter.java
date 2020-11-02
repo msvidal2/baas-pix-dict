@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,7 @@ public class ListPixKeyConverter implements DataConverter<ListPixKeyResponseDTO,
             .fantasyName(listKeyResponseDTO.getNomeFantasia())
             .createdAt(listKeyResponseDTO.getDtHrCriacaoChave())
             .startPossessionAt(listKeyResponseDTO.getDtHrInicioPosseChave())
-            .claim(listKeyResponseDTO.getReivindicacao() != null ? ClaimType.resolve(listKeyResponseDTO.getReivindicacao()) : null).build();
+            .claim(Optional.ofNullable(ClaimType.resolve(listKeyResponseDTO.getReivindicacao())).orElse(null))
+            .build();
     }
 }
