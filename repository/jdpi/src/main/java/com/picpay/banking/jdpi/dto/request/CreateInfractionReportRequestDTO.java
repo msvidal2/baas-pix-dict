@@ -1,6 +1,5 @@
 package com.picpay.banking.jdpi.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,24 +14,17 @@ import lombok.Setter;
 @Builder
 public class CreateInfractionReportRequestDTO {
 
-    @JsonProperty("ispb")
-    private String ispbRequester;
-
-    @JsonProperty("endToEndId")
+    private Integer ispb;
     private String endToEndId;
-
-    @JsonProperty("tpInfracao")
-    private int infractionType;
-
-    @JsonProperty("detalhes")
-    private String details;
+    private int tpInfracao;
+    private String detalhes;
 
     public static CreateInfractionReportRequestDTO from(InfractionReport infractionReport) {
         return CreateInfractionReportRequestDTO.builder()
-            .ispbRequester(String.valueOf(infractionReport.getIspbRequester()))
+            .ispb(infractionReport.getIspbRequester())
             .endToEndId(infractionReport.getEndToEndId())
-            .infractionType(infractionReport.getType().getValue())
-            .details(infractionReport.getDetails())
+            .tpInfracao(infractionReport.getType().getValue())
+            .detalhes(infractionReport.getDetails())
             .build();
     }
 

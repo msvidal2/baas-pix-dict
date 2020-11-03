@@ -237,7 +237,7 @@ class InfractionReportControllerTest {
     void when_RequestListInfractions_expect_statusOk() throws Exception {
         when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
 
-        mockMvc.perform(get("/v1/infraction-report/pendings/{ispb}", 1)
+        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
             .queryParam("limit", "1")
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -257,7 +257,7 @@ class InfractionReportControllerTest {
     void when_RequestListInfractionsWithoutLimit_expect_statusOk() throws Exception {
         when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
 
-        mockMvc.perform(get("/v1/infraction-report/pendings/{ispb}", 1)
+        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -274,9 +274,9 @@ class InfractionReportControllerTest {
 
     @Test
     void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
-        when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
+        when(findInfractionReportUseCase.execute(anyString(), any())).thenReturn(findInfractionReport);
 
-        mockMvc.perform(get("/v1/infraction-report/find/{infractionReportId}", UUID.randomUUID().toString())
+        mockMvc.perform(get("/v1/infraction-report/{infractionReportId}", UUID.randomUUID().toString())
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
@@ -293,7 +293,7 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        verify(findInfractionReportUseCase).execute(anyString());
+        verify(findInfractionReportUseCase).execute(anyString(), any());
 
     }
 

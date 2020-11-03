@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class InfractionReportController {
 
     @Trace
     @ApiOperation(value = "List pendings infractions")
-    @GetMapping(value = "/pendings/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/pending/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb,
         @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
@@ -80,12 +81,12 @@ public class InfractionReportController {
 
     @Trace
     @ApiOperation(value = "find an infraction report")
-    @GetMapping(value = "/find/{infractionReportId}")
+    @GetMapping(value = "/{infractionReportId}")
     @ResponseStatus(OK)
-    public FindInfractionReportDTO find(@PathVariable String infractionReportId) {
+    public FindInfractionReportDTO find(@PathVariable String infractionReportId, @Valid @PathParam("ispb") Integer ispb) {
         log.info("Infraction_finding", kv("infractionReportId", infractionReportId));
 
-        final InfractionReport infractionReport = findInfractionReportUseCase.execute(infractionReportId);
+        final InfractionReport infractionReport = findInfractionReportUseCase.execute(infractionReportId, ispb);
 
         return FindInfractionReportDTO.from(infractionReport);
     }
