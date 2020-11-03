@@ -52,10 +52,10 @@ public class InfractionReportDTO {
     private LocalDateTime dateLastUpdate;
 
     @JsonProperty("resultadoAnalise")
-    private Integer analyzeResult;
+    private Integer resultadoAnalise;
 
     @JsonProperty("detalhesAnalise")
-    private String analyzeDetails;
+    private String detalhesAnalise;
 
     public InfractionReport toInfraction() {
         return InfractionReport.builder()
@@ -69,7 +69,8 @@ public class InfractionReportDTO {
             .ispbCredited(ispbCredited)
             .dateCreate(dateCreate)
             .dateLastUpdate(dateLastUpdate)
-            .analyze(new InfractionAnalyze(InfractionAnalyzeResult.resolve(analyzeResult), analyzeDetails))
+            .analyze(new InfractionAnalyze(
+                    (resultadoAnalise == null? null: InfractionAnalyzeResult.resolve(resultadoAnalise)), detalhesAnalise))
             .build();
     }
 

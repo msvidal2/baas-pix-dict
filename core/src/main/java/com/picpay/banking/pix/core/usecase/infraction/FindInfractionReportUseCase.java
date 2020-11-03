@@ -15,13 +15,13 @@ public class FindInfractionReportUseCase {
 
     private final InfractionReportPort infractionReportPort;
 
-    public InfractionReport execute(@NonNull final String infractionReportId) {
+    public InfractionReport execute(@NonNull final String infractionReportId, @NonNull final Integer ispb) {
 
         if(infractionReportId.isBlank()) {
             throw new IllegalArgumentException("The Infraction report id cannot be empty");
         }
 
-        InfractionReport infractionReportFound = infractionReportPort.find(infractionReportId);
+        InfractionReport infractionReportFound = infractionReportPort.find(infractionReportId, ispb);
 
         if (infractionReportFound != null)
             log.info("Infraction_found"

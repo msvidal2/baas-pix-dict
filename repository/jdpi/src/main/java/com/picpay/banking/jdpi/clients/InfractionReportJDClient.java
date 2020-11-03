@@ -23,11 +23,11 @@ public interface InfractionReportJDClient {
     CreateInfractionReportResponseDTO create(@RequestBody CreateInfractionReportRequestDTO request,
                                             @RequestHeader("Chave-Idempotencia") String requestIdentifier);
 
-    @GetMapping("/v1/relato-infracao/listar")
-    ListInfractionReportDTO listPendings(@RequestParam("ispb") Integer ispb, @RequestParam("nrLimite") Integer nrLimite);
+    @GetMapping("/v1/relato-infracao/listar/pendentes")
+    ListInfractionReportDTO listPending(@RequestParam("ispb") Integer ispb, @RequestParam("nrLimite") Integer nrLimite);
 
-    @GetMapping("/v1/relato-infracao/consultar/{infractionReportId}")
-    FindInfractionReportResponseDTO find(@PathVariable String infractionReportId);
+    @GetMapping("/v1/relato-infracao/consultar")
+    FindInfractionReportResponseDTO find(@RequestParam("ispb") Integer ispb, @RequestParam String idRelatoInfracao);
 
     @PostMapping("/v1/relato-infracao/cancelar")
     CancelResponseInfractionDTO cancel(@RequestBody CancelInfractionDTO cancelInfractionDTO, @RequestHeader("Chave-Idempotencia") String requestIdentifier);
@@ -35,7 +35,7 @@ public interface InfractionReportJDClient {
     @PostMapping("/v1/relato-infracao/analisar")
     AnalyzeResponseInfractionDTO analyze(@RequestBody AnalyzeInfractionReportDTO analyzeInfractionReportDTO, @RequestHeader("Chave-Idempotencia") String requestIdentifier);
 
-    @PostMapping("/v1/relato-infracao/listar")
+    @GetMapping("/v1/relato-infracao/listar")
     ListInfractionReportDTO filter(@SpringQueryMap FilterInfractionReportDTO filter);
 
 }

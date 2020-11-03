@@ -58,7 +58,7 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     public List<InfractionReport> listPendingInfractionReport(final Integer ispb, final Integer limit) {
 
         final var infractionReportDTO = timeLimiterExecutor.execute(CIRCUIT_BREAKER_LIST_PENDING_NAME,
-                () -> this.infractionJDClient.listPendings(ispb, limit), "listPendingInfractionReport");
+                () -> this.infractionJDClient.listPending(ispb, limit), "listPendingInfractionReport");
 
         return infractionReportDTO.getInfractionReports()
                 .stream()
@@ -73,12 +73,13 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_FIND_NAME, fallbackMethod = "findFallback")
-    public InfractionReport find(final String infractionReportId) {
-        return timeLimiterExecutor.execute(CIRCUIT_BREAKER_FIND_NAME, () -> infractionJDClient.find(infractionReportId), infractionReportId)
-                .toInfractionReport();
+    public InfractionReport find(final String infractionReportId, final Integer ispb) {
+        return timeLimiterExecutor.execute(CIRCUIT_BREAKER_FIND_NAME, () ->
+                infractionJDClient.find(ispb, infractionReportId),
+                infractionReportId).toInfractionReport();
     }
 
-    public InfractionReport findFallback(final String infractionReportId, Exception e) {
+    public InfractionReport findFallback(final String infractionReportId, final Integer ispb, Exception e) {
         throw JDClientExceptionFactory.from(e);
     }
 

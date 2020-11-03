@@ -1,8 +1,5 @@
 package com.picpay.banking.jdpi.ports.infraction;
 
-import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
-import com.picpay.banking.jdpi.dto.request.AnalyzeInfractionReportDTO;
-import com.picpay.banking.jdpi.dto.request.CancelInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.AnalyzeResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CancelResponseInfractionDTO;
 import com.picpay.banking.jdpi.dto.response.CreateInfractionReportResponseDTO;
@@ -10,7 +7,6 @@ import com.picpay.banking.jdpi.dto.response.FindInfractionReportResponseDTO;
 import com.picpay.banking.jdpi.dto.response.ListInfractionReportDTO;
 import com.picpay.banking.jdpi.dto.response.InfractionReportDTO;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.InfractionReport;
@@ -33,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,8 +66,8 @@ class InfractionReportPortImplTest {
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).reportedBy(ReportedBy.CREDITED_PARTICIPANT.getValue())
             .situation(InfractionReportSituation.OPEN.getValue())
             .type(InfractionType.FRAUD.getValue())
-            .analyzeDetails("details")
-            .analyzeResult(InfractionAnalyzeResult.ACCEPTED.getValue())
+            .detalhesAnalise("details")
+            .resultadoAnalise(InfractionAnalyzeResult.ACCEPTED.getValue())
             .build();
 
         this.listInfractionReportDTO = ListInfractionReportDTO.builder().date("10/04/2020 22:22:22")
@@ -161,7 +156,7 @@ class InfractionReportPortImplTest {
         when(timeLimiterExecutor.execute(anyString(), any(), anyString())).thenReturn(findResponseDTO);
 
         assertDoesNotThrow(() -> {
-            var infractionReport = port.find(randomUUID().toString());
+            var infractionReport = port.find(randomUUID().toString(), 22896431);
             assertNotNull(infractionReport);
         });
     }
