@@ -43,7 +43,7 @@ public class JDClientExceptionFactory {
         }
 
         log.error("unknown-error", kv("exception", feignException.getCause()));
-        return new JDClientException(INTERNAL_SERVER_ERROR.getReasonPhrase(), feignException, null, INTERNAL_SERVER_ERROR);
+        return new JDClientException(BAD_GATEWAY.getReasonPhrase(), feignException, null, BAD_GATEWAY);
     }
 
     private static JDClientException handleJDErrors(FeignException feignException) {
