@@ -8,6 +8,8 @@ import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 
@@ -21,7 +23,8 @@ public class ListClaimUseCase {
 
     private DictItemValidator<Claim> validator;
 
-    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean testClaim, final Boolean isDonor, final String requestIdentifier){
+    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean testClaim, final Boolean isDonor,
+                                 final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier){
 
         validator.validate(claim);
 
@@ -31,7 +34,7 @@ public class ListClaimUseCase {
             claimIterable = listPendingClaimPort.list(claim, limit, requestIdentifier);
         } else {
             validateClient(testClaim, isDonor);
-            claimIterable = listClaimPort.list(claim, limit, testClaim, isDonor, requestIdentifier);
+            claimIterable = listClaimPort.list(claim, limit, testClaim, isDonor, startDate, endDate, requestIdentifier);
         }
 
         if (claimIterable != null)
