@@ -12,6 +12,8 @@ import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 public class ListClaimPortImpl implements ListClaimPort {
 
@@ -26,7 +28,8 @@ public class ListClaimPortImpl implements ListClaimPort {
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "listFallback")
-    public ClaimIterable list(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor, final String requestIdentifier) {
+    public ClaimIterable list(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor,
+                              final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier) {
 
         var listClaimRequestDTO = ListClaimRequestDTO.builder()
                 .ispb(claim.getIspb())
@@ -38,6 +41,8 @@ public class ListClaimPortImpl implements ListClaimPort {
                 .ehDoador(isDonor != null ? isDonor : null)
                 .nrAgenciaLogada(claim.getBranchNumber())
                 .nrContaLogada(claim.getAccountNumber())
+                .dtHrModificacaoInicio(startDate)
+                .dtHrModificacaoFim(endDate)
                 .build();
 
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
@@ -46,7 +51,9 @@ public class ListClaimPortImpl implements ListClaimPort {
         return converter.convert(response);
     }
 
-    public ClaimIterable listFallback(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor, final String requestIdentifier, Exception e) {
+    public ClaimIterable listFallback(final Claim claim, final Integer limit, final Boolean isClaim, final Boolean isDonor,
+                                      final LocalDateTime startDate, final LocalDateTime endDate,
+                                      final String requestIdentifier, Exception e) {
         throw JDClientExceptionFactory.from(e);
     }
 

@@ -90,7 +90,7 @@ class ListClaimUseCaseTest {
                 ))
                 .build();
 
-        when(listClaimPort.list(any(), anyInt(), any(), any(), any(String.class)))
+        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(),any(String.class)))
                 .thenReturn(claimIterableMock);
 
         var claimRequest = Claim.builder()
@@ -101,7 +101,7 @@ class ListClaimUseCaseTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            var claimIterable = useCase.execute(claimRequest,false, 10, true, null, randomUUID().toString());
+            var claimIterable = useCase.execute(claimRequest,false, 10, true, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString());
 
             assertNotNull(claimIterable.getClaims());
             assertEquals(1,claimIterable.getClaims().size());
@@ -116,7 +116,7 @@ class ListClaimUseCaseTest {
                 .accountType(CHECKING)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, null, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString()));
     }
 
     @Test
@@ -128,7 +128,7 @@ class ListClaimUseCaseTest {
             .accountType(CHECKING)
             .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, null, null, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, null, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString()));
     }
 
     @Test
@@ -140,7 +140,7 @@ class ListClaimUseCaseTest {
             .accountType(CHECKING)
             .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, true, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, true, LocalDateTime.now(), LocalDateTime.now(),randomUUID().toString()));
     }
 
 }

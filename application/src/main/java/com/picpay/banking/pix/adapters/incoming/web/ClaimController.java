@@ -95,7 +95,10 @@ public class ClaimController {
             .accountType(requestDTO.getAccountType())
             .build();
 
-        return listClaimUseCase.execute(claim, requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaim(), requestDTO.getDonor(), requestIdentifier);
+        return listClaimUseCase.execute(claim,
+                requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaim(), requestDTO.getDonor(),
+                requestDTO.getStartDateAsLocalDateTime(), requestDTO.getEndDateAsLocalDateTime(),
+                requestIdentifier);
     }
 
     @Trace
