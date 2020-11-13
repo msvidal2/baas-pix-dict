@@ -18,6 +18,9 @@
         <module>application</module>
         <module>core</module>
         <module>repository</module>
+        <module>worker</module>
+        <module>sync</module>
+        <module>notifier</module>
     </modules>
 
     <packaging>pom</packaging>
