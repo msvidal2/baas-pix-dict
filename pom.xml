@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -10,20 +9,12 @@
         <version>2.3.3.RELEASE</version>
     </parent>
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.picpay.banking.pix.dict</groupId>
     <artifactId>baas-pix-dict</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <modules>
-        <module>infra</module>
-        <module>core</module>
-        <module>dict</module>
-        <module>worker</module>
-        <module>sync</module>
-        <module>notifier</module>
-    </modules>
-
     <packaging>pom</packaging>
+    <name>baas-pix-dict</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +22,39 @@
         <maven.compiler.target>11</maven.compiler.target>
         <newrelic.version>5.8.0</newrelic.version>
     </properties>
+
+    <modules>
+        <module>core</module>
+        <module>infra</module>
+        <module>dict</module>
+        <module>worker</module>
+        <module>sync</module>
+        <module>notifier</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>picpay-releases</id>
+            <url>${repo.release}</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>picpay-snapshots</id>
+            <url>${repo.snapshot}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR7</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -50,32 +74,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Hoxton.SR7</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>picpay-releases</id>
-            <url>${repo.release}</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>picpay-snapshots</id>
-            <url>${repo.snapshot}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <build>
         <plugins>
