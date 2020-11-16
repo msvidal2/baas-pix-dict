@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,6 +16,8 @@ public class Entry {
     private KeyType keyType;
     private Account brazilianAccount;
     private Owner owner;
+    private LocalDateTime creationDate;
+    private LocalDateTime keyOwnershipDate;
 
     public static Entry from(PixKey pixKey) {
         return Entry.builder()

@@ -11,9 +11,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateEntryRequest {
 
-    private Entry entry;
-    private Reason reason;
-    private String requestId;
+    private final Entry entry;
+    private final Reason reason;
+    private final String requestId;
 
     public static CreateEntryRequest from(PixKey pixKey, CreateReason reason, String requestId) {
         return CreateEntryRequest.builder()

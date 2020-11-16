@@ -13,13 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Account {
 
-    private String participant;
-
-    private String branch;
-
-    private String accountNumber;
-
-    private AccountType accountType;
+    private final String participant;
+    private final String branch;
+    private final String accountNumber;
+    private final AccountType accountType;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime openingDate;

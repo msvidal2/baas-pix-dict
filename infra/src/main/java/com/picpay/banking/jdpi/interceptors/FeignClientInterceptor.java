@@ -1,7 +1,6 @@
 package com.picpay.banking.jdpi.interceptors;
 
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.fallbacks.TokenExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import feign.RequestInterceptor;
