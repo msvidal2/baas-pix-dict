@@ -18,7 +18,7 @@ public class Owner {
         return Owner.builder()
                 .type(OwnerType.resolve(pixKey.getPersonType()))
                 .taxIdNumber(pixKey.getTaxId())
-                .name(pixKey.get)
+                .name(pixKey.getOwnerName())
                 .build();
     }
 
