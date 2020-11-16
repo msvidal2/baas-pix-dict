@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.domain;
 
 import lombok.*;
+import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;
 
@@ -29,5 +30,12 @@ public class PixKey {
     private String endToEndId;
     private ClaimType claim;
     private Statistic statistic;
+
+    public String getOwnerName() {
+        if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
+            return name;
+        }
+        return ObjectUtils.firstNonNull(fantasyName, name);
+    }
 
 }
