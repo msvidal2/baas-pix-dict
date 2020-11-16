@@ -412,6 +412,18 @@ paths:
           enum:
             - INDIVIDUAL_PERSON
             - LEGAL_ENTITY
+        - name: startDate
+          in: query
+          description: Formato = aaaa-mm-ddTHH:mm:ss
+          required: false
+          type: string
+          format: string
+        - name: endDate
+          in: query
+          description: Formato = aaaa-mm-ddTHH:mm:ss
+          required: false
+          type: string
+          format: string
       responses:
         '200':
           description: OK
@@ -424,7 +436,7 @@ paths:
         '404':
           description: Not Found
       deprecated: false
-  '/v1/claims/{claimId}':
+  /v1/claims/{claimId}:
     get:
       tags:
         - claim
@@ -452,7 +464,7 @@ paths:
           required: true
           type: string
         - name: reivindicador
-          in: path
+          in: query
           description: Indica se a consulta esta sendo realizada pelo reivindicador.
           required: true
           type: boolean
@@ -1058,6 +1070,7 @@ definitions:
           - CLIENT_REQUEST
           - ACCOUNT_CLOSURE
           - FRAUD
+          - DEFAULT_RESPONSE
     title: ClaimCancelDTO
   ClaimConfirmationDTO:
     type: object
@@ -1075,6 +1088,7 @@ definitions:
         enum:
           - CLIENT_REQUEST
           - ACCOUNT_CLOSURE
+          - DEFAULT_RESPONSE
     title: ClaimConfirmationDTO
   ClaimIterable:
     type: object

@@ -11,7 +11,8 @@ public enum Reason {
     ACCOUNT_CLOSURE(1),
     BRANCH_TRANSFER(2),
     INACTIVITY(3),
-    FRAUD(4);
+    FRAUD(4),
+    DEFAULT_RESPONSE(5);
 
     private int value;
 
