@@ -15,9 +15,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>application</module>
+        <module>infra</module>
         <module>core</module>
-        <module>repository</module>
+        <module>dict</module>
+        <module>worker</module>
+        <module>sync</module>
+        <module>notifier</module>
     </modules>
 
     <packaging>pom</packaging>
