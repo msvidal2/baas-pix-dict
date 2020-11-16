@@ -7,9 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum  ClaimCancelReason {
 
-    CLIENT_REQUEST(0),
-    ACCOUNT_CLOSURE(1),
-    FRAUD(4);
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
+    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE.getValue()),
+    FRAUD(Reason.FRAUD.getValue()),
+    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE.getValue());
 
     private int value;
 
