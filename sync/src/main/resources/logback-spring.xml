@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <!--
+    https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#_environment_properties-->
+    <springProperty scope="context" name="service" source="picpay.service.name"/>
+    <springProperty scope="local" name="level" source="picpay.logging.level"
+                    defaultValue="INFO"/>
+    <springProperty scope="local" name="appender" source="picpay.logging.appender"
+                    defaultValue="CONSOLE"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+                <timestamp>[ignore]</timestamp>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="${level}">
+        <appender-ref ref="${appender}"/>
+    </root>
+
+    <springProfile name="test">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.picpay.api.common.client.ApiErrorDecoder" level="OFF"/>
+    </springProfile>
+</configuration>
