@@ -30,6 +30,7 @@
         <module>worker</module>
         <module>sync</module>
         <module>notifier</module>
+        <module>mockserver</module>
     </modules>
 
     <distributionManagement>
