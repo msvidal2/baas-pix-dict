@@ -11,13 +11,13 @@ import lombok.Getter;
 public class Owner {
 
     private OwnerType type;
-    private String taxIdNumber;
+    private String taxId;
     private String name;
 
     public static Owner from(PixKey pixKey) {
         return Owner.builder()
                 .type(OwnerType.resolve(pixKey.getPersonType()))
-                .taxIdNumber(pixKey.getTaxId())
+                .taxId(pixKey.getTaxId())
                 .name(pixKey.getOwnerName())
                 .build();
     }

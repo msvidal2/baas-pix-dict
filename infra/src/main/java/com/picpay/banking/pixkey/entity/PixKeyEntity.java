@@ -7,11 +7,7 @@
 package com.picpay.banking.pixkey.entity;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pixkey.dto.request.Account;
-import com.picpay.banking.pixkey.dto.request.AccountType;
-import com.picpay.banking.pixkey.dto.request.KeyType;
-import com.picpay.banking.pixkey.dto.request.Owner;
-import com.picpay.banking.pixkey.dto.request.Reason;
+import com.picpay.banking.pixkey.dto.request.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -34,14 +30,19 @@ public class PixKeyEntity {
     private LocalDateTime creationDate;
     @LastModifiedDate
     private LocalDateTime updateDate;
-    private KeyType keyType;
-    //Account?
+    private KeyType type;
+
+    //Account
     private final String participant;
     private final String branch;
     private final String accountNumber;
     private final AccountType accountType;
-    private Account brazilianAccount;
-    private Owner owner;
+
+    // Owner
+    private OwnerType ownerType;
+    private String taxId;
+    private String name;
+
     //reason
     private Reason reason;
 
