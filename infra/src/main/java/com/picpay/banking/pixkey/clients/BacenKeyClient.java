@@ -13,16 +13,16 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "Claim",
-    url = "${pix.bacen.dict.entries.url}",
-    path = "/v1")
+@FeignClient(value = "PixKey",
+        url = "${pix.bacen.dict.entries.url}",
+        path = "/v1")
 @Headers({
-    "Content-Encoding: gzip",
-    "Accept-Encoding: gzip"
+        "Content-Encoding: gzip",
+        "Accept-Encoding: gzip"
 })
 public interface BacenKeyClient {
 
-    @PostMapping("/v1/entries")
-    CreateEntryResponse createClaim(@RequestBody CreateEntryRequest createEntryRequest);
+    @PostMapping("/entries")
+    CreateEntryResponse createPixKey(@RequestBody CreateEntryRequest createEntryRequest);
 
 }

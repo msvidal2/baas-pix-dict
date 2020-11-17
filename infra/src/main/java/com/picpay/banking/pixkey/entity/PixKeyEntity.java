@@ -7,20 +7,25 @@
 package com.picpay.banking.pixkey.entity;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pixkey.dto.request.*;
+import com.picpay.banking.pixkey.dto.request.AccountType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.OwnerType;
+import com.picpay.banking.pixkey.dto.request.Reason;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
  * @author rafael.braga
  * @version 1.0 16/11/2020
  */
-@Table(name = "pix_key")
+@Entity(name = "pix_key")
+@NoArgsConstructor
 @Data
 public class PixKeyEntity {
 
@@ -33,10 +38,10 @@ public class PixKeyEntity {
     private KeyType type;
 
     //Account
-    private final String participant;
-    private final String branch;
-    private final String accountNumber;
-    private final AccountType accountType;
+    private String participant;
+    private String branch;
+    private String accountNumber;
+    private AccountType accountType;
 
     // Owner
     private OwnerType ownerType;

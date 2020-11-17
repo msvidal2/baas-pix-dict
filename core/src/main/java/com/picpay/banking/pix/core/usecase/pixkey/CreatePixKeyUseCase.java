@@ -1,21 +1,21 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class CreatePixKeyUseCase {
 
-    private CreatePixKeyPort createPixKeyPort;
-    private DictItemValidator dictItemValidator;
+    private final CreatePixKeyPort createPixKeyPort;
+    private final DictItemValidator dictItemValidator;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final PixKey pixKey,

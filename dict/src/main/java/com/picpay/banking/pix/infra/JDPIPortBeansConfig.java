@@ -43,12 +43,12 @@ public class JDPIPortBeansConfig {
         return new CompleteClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
-    @Bean
-    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
-                                             CreatePixKeyConverter converter,
-                                             TimeLimiterExecutor timeLimiterExecutor) {
-        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
-    }
+//    @Bean
+//    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
+//                                             CreatePixKeyConverter converter,
+//                                             TimeLimiterExecutor timeLimiterExecutor) {
+//        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
+//    }
 
     @Bean
     public CreateClaimPort createClaimPort(ClaimJDClient claimJDClient,
