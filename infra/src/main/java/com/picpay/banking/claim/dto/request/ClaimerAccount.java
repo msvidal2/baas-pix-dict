@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pixkey.dto.request.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,15 @@ public class ClaimerAccount {
     private final AccountType accountType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime openingDate;
+
+    public static ClaimerAccount from(Claim claim) {
+        return ClaimerAccount.builder()
+                .participant(String.valueOf(claim.getIspb()))
+                .branch(claim.getBranchNumber())
+                .accountNumber(claim.getAccountNumber())
+                .accountType(AccountType.resolve(claim.getAccountType()))
+                .openingDate(claim.getAccountOpeningDate())
+                .build();
+    }
 
 }

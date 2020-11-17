@@ -23,6 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface BacenKeyClient {
 
     @PostMapping("/v1/entries")
-    CreateEntryResponse createClaim(@RequestBody CreateEntryRequest createEntryRequest);
+    CreateEntryResponse createKey(@RequestBody CreateEntryRequest createEntryRequest);
 
 }

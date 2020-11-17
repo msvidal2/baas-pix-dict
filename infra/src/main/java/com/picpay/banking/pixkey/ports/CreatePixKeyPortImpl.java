@@ -25,7 +25,7 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
         CreateEntryRequest createEntryRequest = CreateEntryRequest.from(pixKey, reason, requestIdentifier);
-        CreateEntryResponse response = bacenKeyClient.createClaim(createEntryRequest);
+        CreateEntryResponse response = bacenKeyClient.createKey(createEntryRequest);
         PixKeyEntity entity = savePixKeyPort.save(response.toEntity());
         return entity.toPixKey();
     }
