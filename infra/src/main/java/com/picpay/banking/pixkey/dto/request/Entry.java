@@ -14,7 +14,7 @@ public class Entry {
 
     private String key;
     private KeyType keyType;
-    private Account brazilianAccount;
+    private Account account;
     private Owner owner;
     private LocalDateTime creationDate;
     private LocalDateTime keyOwnershipDate;
@@ -23,7 +23,7 @@ public class Entry {
         return Entry.builder()
                 .key(pixKey.getKey())
                 .keyType(KeyType.resolve(pixKey.getType()))
-                .brazilianAccount(Account.from(pixKey))
+                .account(Account.from(pixKey))
                 .owner(Owner.from(pixKey))
                 .build();
     }
