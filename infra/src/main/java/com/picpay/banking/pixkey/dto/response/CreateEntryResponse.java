@@ -12,6 +12,11 @@ import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author rafael.braga
@@ -20,9 +25,12 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@XmlRootElement(name = "CreateEntryResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CreateEntryResponse {
 
-    private final Entry entry;
+    private Entry entry;
 
     public PixKeyEntity toEntity() {
         return null;

@@ -73,7 +73,7 @@ public class PixKeyCrudBacenServer {
                 "    </Entry>\n" +
                 "</CreateEntryResponse>";
         return HttpResponse.response()
-                .withContentType(MediaType.APPLICATION_XML)
+                .withContentType(MediaType.APPLICATION_XML_UTF_8)
                 .withStatusCode(HttpStatusCode.CREATED_201.code())
                 .withBody(s);
     }

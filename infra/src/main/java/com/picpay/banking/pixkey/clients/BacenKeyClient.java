@@ -10,6 +10,7 @@ import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
 import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 //})
 public interface BacenKeyClient {
 
-    @PostMapping("/entries")
+    @PostMapping(value = "/entries",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
     CreateEntryResponse createPixKey(@RequestBody CreateEntryRequest createEntryRequest);
 
 }

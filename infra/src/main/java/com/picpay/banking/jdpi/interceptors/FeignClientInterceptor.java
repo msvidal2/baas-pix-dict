@@ -9,7 +9,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 
-public class FeignClientInterceptor implements RequestInterceptor {
+public class FeignClientInterceptor /*implements RequestInterceptor*/ {
 
     private final static String CIRCUIT_BREAKER_NAME = "token-manager-feign-interceptor";
 
@@ -27,7 +27,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
         this.timeLimiterExecutor = timeLimiterExecutor;
     }
 
-    @Override
+//    @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "applyFallback")
     public void apply(RequestTemplate requestTemplate) {
         if (TOKEN_MANAGER_CLIENT.equalsIgnoreCase(requestTemplate.feignTarget().name())) {

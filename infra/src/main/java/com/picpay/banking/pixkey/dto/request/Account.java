@@ -1,24 +1,39 @@
 package com.picpay.banking.pixkey.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Account {
 
-    private final String participant;
-    private final String branch;
-    private final String accountNumber;
-    private final AccountType accountType;
+    @XmlElement(name = "Participant")
+    private String participant;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @XmlElement(name = "Branch")
+    private String branch;
+
+    @XmlElement(name = "AccountNumber")
+    private String accountNumber;
+
+    @XmlElement(name = "AccountNumber")
+    private AccountType accountType;
+
+    @XmlElement(name = "OpeningDate")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime openingDate;
 
     public static Account from(PixKey pixKey) {
