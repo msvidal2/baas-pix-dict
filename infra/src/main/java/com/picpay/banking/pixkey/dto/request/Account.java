@@ -29,7 +29,7 @@ public class Account {
     @XmlElement(name = "AccountNumber")
     private String accountNumber;
 
-    @XmlElement(name = "AccountNumber")
+    @XmlElement(name = "AccountType")
     private AccountType accountType;
 
     @XmlElement(name = "OpeningDate")

@@ -15,9 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
@@ -41,30 +39,36 @@ public class PixKeyEntity {
     private String accountNumber;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
     @Column(nullable = false)
     private LocalDateTime openingDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PersonType personType;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Reason reason;
 
     @Column(nullable = false)
     private String correlationId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime creationDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime ownershipDate;
 
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updateDate;
+
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime openClaimCreationDate;
 
     public PixKey toPixKey() {

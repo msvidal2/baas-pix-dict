@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.io.Serializable;
 
 @Data
@@ -17,7 +19,10 @@ import java.io.Serializable;
 public class PixKeyIdEntity implements Serializable {
 
     private String key;
+
+    @Enumerated(EnumType.STRING)
     private KeyType type;
+
     private String taxId;
 
 }
