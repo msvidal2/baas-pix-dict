@@ -2,6 +2,8 @@ package com.picpay.banking.pixkey.dto.request;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +48,17 @@ public class Entry {
                 .keyType(KeyType.resolve(pixKey.getType()))
                 .account(Account.from(pixKey))
                 .owner(Owner.from(pixKey))
+                .build();
+    }
+
+    public PixKeyEntity toEntity() {
+        return PixKeyEntity.builder()
+                .id(PixKeyIdEntity.builder()
+                        .key(key)
+                        .type(keyType)
+                        .taxId(owner.getTaxIdNumber())
+                        .build())
+
                 .build();
     }
 

@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 public class Owner {
 
     @XmlElement(name = "Type")
-    private OwnerType type;
+    private PersonType type;
 
     @XmlElement(name = "TaxIdNumber")
     private String taxIdNumber;
@@ -28,7 +28,7 @@ public class Owner {
 
     public static Owner from(PixKey pixKey) {
         return Owner.builder()
-                .type(OwnerType.resolve(pixKey.getPersonType()))
+                .type(PersonType.resolve(pixKey.getPersonType()))
                 .taxIdNumber(pixKey.getTaxId())
                 .name(pixKey.getOwnerName())
                 .build();

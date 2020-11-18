@@ -9,6 +9,7 @@ package com.picpay.banking.pixkey.dto.response;
 
 import com.picpay.banking.pixkey.dto.request.Entry;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,9 +32,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CreateEntryResponse {
 
     private Entry entry;
-
-    public PixKeyEntity toEntity() {
-        return null;
-    }
 
 }
