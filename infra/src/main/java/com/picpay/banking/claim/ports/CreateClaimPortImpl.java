@@ -14,13 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CreateClaimPortImpl implements CreateClaimPort {
 
     private final BacenClaimClient bacenClaimClient;
-    private final SaveClaimPort saveClaimPort;
+    private final SaveClaimPort claimPort;
 
     @Override
     public Claim createClaim(Claim claim, String requestIdentifier) {
         CreateClaimRequest request = CreateClaimRequest.from(claim);
         CreateClaimResponse response = bacenClaimClient.createClaim(request);
-        ClaimEntity entity = saveClaimPort.save(response.toEntity());
+        ClaimEntity entity = claimPort.save(response.toEntity());
 
         return entity.toClaim();
     }
