@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "PixKey",
         url = "${pix.bacen.dict.entries.url}",
         path = "/v1")
-@Headers({
-        "Content-Encoding: gzip",
-        "Accept-Encoding: gzip"
-})
+//@Headers({
+//        "Content-Encoding: gzip",
+//        "Accept-Encoding: gzip"
+//})
 public interface BacenKeyClient {
 
     @PostMapping("/entries")
