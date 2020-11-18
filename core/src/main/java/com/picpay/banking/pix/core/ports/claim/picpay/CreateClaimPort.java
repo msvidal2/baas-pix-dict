@@ -1,8 +1,8 @@
-package com.picpay.banking.pix.core.ports.claim;
+package com.picpay.banking.pix.core.ports.claim.picpay;
 
 import com.picpay.banking.pix.core.domain.Claim;
 
-public interface SaveClaimPort {
+public interface CreateClaimPort {
 
     Claim saveClaim(Claim claim, String requestIdentifier);
 

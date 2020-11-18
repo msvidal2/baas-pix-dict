@@ -1,12 +1,12 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
-import com.picpay.banking.pix.core.ports.claim.ClaimConfirmationPort;
-import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
@@ -28,7 +28,7 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationUseCase claimConfirmationUseCase(ClaimConfirmationPort claimConfirmationPort,
+    public ClaimConfirmationUseCase claimConfirmationUseCase(ConfirmationClaimPort claimConfirmationPort,
                                                              @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
         return new ClaimConfirmationUseCase(claimConfirmationPort,dictItemValidator);
     }
@@ -41,7 +41,7 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimCancelUseCase claimCancelUseCase(ClaimCancelPort claimCancelPort,
+    public ClaimCancelUseCase claimCancelUseCase(CancelClaimPort claimCancelPort,
                                                  @Qualifier("claimCancelItemValidator") DictItemValidator dictItemValidator) {
         return new ClaimCancelUseCase(claimCancelPort, dictItemValidator);
     }

@@ -1,10 +1,10 @@
-package com.picpay.banking.claim.ports;
+package com.picpay.banking.claim.ports.bacen;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.dto.request.CreateClaimRequest;
 import com.picpay.banking.claim.dto.response.CreateClaimResponse;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

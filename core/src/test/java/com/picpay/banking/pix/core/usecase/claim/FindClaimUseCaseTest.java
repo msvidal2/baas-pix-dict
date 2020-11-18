@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

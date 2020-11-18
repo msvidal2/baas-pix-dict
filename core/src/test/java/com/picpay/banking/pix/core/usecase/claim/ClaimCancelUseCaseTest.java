@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
-import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
@@ -30,7 +29,7 @@ class ClaimCancelUseCaseTest {
     private ClaimCancelUseCase useCase;
 
     @Mock
-    private ClaimCancelPort claimCancelPort;
+    private CancelClaimPort claimCancelPort;
 
     @BeforeEach
     public void setup() {
