@@ -8,11 +8,12 @@
 package com.picpay.banking.pixkey.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Entry;
 import com.picpay.banking.pixkey.dto.request.Reason;
-import com.picpay.banking.pixkey.entity.PixKeyEntity;
-import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,24 +48,22 @@ public class CreateEntryResponse {
     @XmlElement(name = "Entry")
     private Entry entry;
 
-    public PixKeyEntity toEntity(final CreateReason createReason) {
-        return PixKeyEntity.builder()
-                .id(PixKeyIdEntity.builder()
-                        .key(entry.getKey())
-                        .type(entry.getKeyType())
-                        .taxId(entry.getOwner().getTaxIdNumber())
-                        .build())
-                .participant(entry.getAccount().getParticipant())
-                .branch(entry.getAccount().getBranch())
+    public PixKey toDomain(String requestIdentifier, Reason resolve) {
+        return PixKey.builder()
+                .key(entry.getKey())
+                .type(entry.getKeyType().getType())
+                .ispb(Integer.parseInt(entry.getAccount().getParticipant()))
+                .branchNumber(entry.getAccount().getBranch())
+                .accountType(entry.getAccount().getAccountType().getType())
                 .accountNumber(entry.getAccount().getAccountNumber())
-                .accountType(entry.getAccount().getAccountType())
-                .openingDate(entry.getAccount().getOpeningDate())
-                .personType(entry.getOwner().getType())
+                .accountOpeningDate(entry.getAccount().getOpeningDate())
+                .personType(entry.getOwner().getType().getPersonType())
+                .taxId(entry.getOwner().getTaxIdNumber())
                 .name(entry.getOwner().getName())
-                .reason(Reason.resolve(createReason))
+                .createdAt(entry.getCreationDate())
+                .startPossessionAt(entry.getKeyOwnershipDate())
+                .endToEndId(requestIdentifier)
                 .correlationId(correlationId)
-                .creationDate(entry.getCreationDate())
-                .ownershipDate(entry.getKeyOwnershipDate())
                 .build();
     }
 

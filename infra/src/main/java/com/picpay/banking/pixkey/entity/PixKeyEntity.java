@@ -6,8 +6,10 @@
 
 package com.picpay.banking.pixkey.entity;
 
+import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.AccountType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
 import com.picpay.banking.pixkey.dto.request.PersonType;
 import com.picpay.banking.pixkey.dto.request.Reason;
 import lombok.AllArgsConstructor;
@@ -71,21 +73,24 @@ public class PixKeyEntity {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime openClaimCreationDate;
 
-    public PixKey toPixKey() {
-        return PixKey.builder()
-                .key(id.getKey())
-                .type(id.getType().getType())
-                .ispb(Integer.parseInt(participant))
-                .branchNumber(branch)
-                .accountType(accountType.getType())
-                .accountNumber(accountNumber)
-                .accountOpeningDate(openingDate)
-                .personType(personType.getPersonType())
-                .taxId(id.getTaxId())
-                .name(name)
-                .createdAt(creationDate)
-                .startPossessionAt(ownershipDate)
-                .endToEndId(correlationId)
+    public static PixKeyEntity from(final PixKey pixKey, final CreateReason reason) {
+        return PixKeyEntity.builder()
+                .id(PixKeyIdEntity.builder()
+                        .key(pixKey.getKey())
+                        .type(KeyType.resolve(pixKey.getType()))
+                        .taxId(pixKey.getTaxId())
+                        .build())
+                .participant(String.valueOf(pixKey.getIspb()))
+                .branch(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
+                .accountType(AccountType.resolve(pixKey.getAccountType()))
+                .openingDate(pixKey.getAccountOpeningDate())
+                .personType(PersonType.resolve(pixKey.getPersonType()))
+                .name(pixKey.getName())
+                .reason(Reason.resolve(reason))
+                .correlationId(pixKey.getCorrelationId())
+                .creationDate(pixKey.getCreatedAt())
+                .ownershipDate(pixKey.getStartPossessionAt())
                 .build();
     }
 

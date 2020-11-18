@@ -23,9 +23,8 @@ public class PixKeyConfig {
     }
 
     @Bean
-    public CreatePixKeyPort createPixKeyPort(BacenKeyClient bacenKeyClient,
-                                             SavePixKeyPort savePixKeyPort) {
-        return new CreatePixKeyPortImpl(bacenKeyClient, savePixKeyPort);
+    public CreatePixKeyPort createPixKeyPort(SavePixKeyPort savePixKeyPort) {
+        return new CreatePixKeyPortImpl(savePixKeyPort);
     }
 
 }

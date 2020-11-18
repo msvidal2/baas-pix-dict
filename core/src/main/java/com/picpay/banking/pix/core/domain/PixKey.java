@@ -28,6 +28,7 @@ public class PixKey {
     private LocalDateTime createdAt;
     private LocalDateTime startPossessionAt;
     private String endToEndId;
+    private String correlationId;
     private ClaimType claim;
     private Statistic statistic;
 
@@ -35,6 +36,7 @@ public class PixKey {
         if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
             return name;
         }
+
         return ObjectUtils.firstNonNull(fantasyName, name);
     }
 
