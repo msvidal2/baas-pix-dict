@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.dto.response;
 
-import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
