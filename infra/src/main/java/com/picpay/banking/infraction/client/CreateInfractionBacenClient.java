@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Component
 @FeignClient(name = "bacenInfractionClient",
-    url = "${bacen.dict.infraction.url}",
-    path = "/infraction-reports")
+    url = "${pix.bacen.dict.infraction.url}",
+    path = "/api/v1/infraction-reports")
 public interface CreateInfractionBacenClient {
 
     @PostMapping
