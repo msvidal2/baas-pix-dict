@@ -10,7 +10,6 @@ public enum InfractionAnalyzeResult {
     ACCEPTED (0),
     REJECTED (1);
 
-
     private int value;
 
     public static InfractionAnalyzeResult resolve(int value) {

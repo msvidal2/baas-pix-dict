@@ -18,7 +18,7 @@ public class ListPendingInfractionReportUseCase {
     private InfractionReportPort infractionReportPort;
 
     public List<InfractionReport> execute(@NonNull final Integer ispb, final Integer limite) {
-        List<InfractionReport> infractionsPending = infractionReportPort.listPendingInfractionReport(ispb,limite);
+        List<InfractionReport> infractionsPending = infractionReportPort.listPending(ispb, limite);
 
         if (infractionsPending != null)
             log.info("Infraction_listedPending", kv("endToEndId", infractionsPending.size()));

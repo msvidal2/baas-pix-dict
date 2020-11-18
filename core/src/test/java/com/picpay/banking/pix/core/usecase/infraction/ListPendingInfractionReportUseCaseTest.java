@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,12 +52,12 @@ class ListPendingInfractionReportUseCaseTest {
 
     @Test
     void when_listPendingInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.listPendingInfractionReport(anyInt(), anyInt())).thenReturn(this.listInfractionReport);
+        when(infractionReportPort.listPending(anyInt(), anyInt())).thenReturn(this.listInfractionReport);
 
         var list = this.listPendingInfractionReportUseCase.execute(1, 1);
         assertThat(list).isNotEmpty();
 
-        verify(infractionReportPort).listPendingInfractionReport(anyInt(), anyInt());
+        verify(infractionReportPort).listPending(anyInt(), anyInt());
     }
 
    @Test

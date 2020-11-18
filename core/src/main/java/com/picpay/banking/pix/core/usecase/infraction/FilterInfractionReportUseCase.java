@@ -23,7 +23,7 @@ public class FilterInfractionReportUseCase {
             , InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
 
         List<InfractionReport> infractions = infractionReportPort
-                .filter(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
+                .list(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
 
         if (infractions != null)
             log.info("Infraction_filtered", kv("size", infractions.size()));

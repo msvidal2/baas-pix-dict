@@ -27,7 +27,6 @@ public class InfractionReport {
     private InfractionType type;
     private String details;
     private String requestIdentifier;
-
     private InfractionAnalyze analyze;
 
 }

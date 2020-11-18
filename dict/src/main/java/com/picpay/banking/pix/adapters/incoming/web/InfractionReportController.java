@@ -51,17 +51,15 @@ public class InfractionReportController {
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
     @ResponseStatus(CREATED)
-    public InfractionReportCreatedDTO report(@RequestHeader String requestIdentifier
-            , @RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-
+    public InfractionReportCreatedDTO report(@RequestHeader String requestIdentifier,
+                                             @RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
         log.info("Infraction_reporting"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("endToEndId", createInfractionReportRequestWebDTO.getEndToEndId())
-                , kv("infractionType", createInfractionReportRequestWebDTO.getInfractionType())
-                , kv("iIspbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
+            , kv("requestIdentifier", requestIdentifier)
+            , kv("endToEndId", createInfractionReportRequestWebDTO.getEndToEndId())
+            , kv("infractionType", createInfractionReportRequestWebDTO.getInfractionType())
+            , kv("iIspbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
 
-        final InfractionReport infractionReport = createInfractionReportUseCase
-                .execute(createInfractionReportRequestWebDTO.toInfractionReport(), requestIdentifier);
+        final var infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), requestIdentifier);
 
         return InfractionReportCreatedDTO.from(infractionReport);
     }
@@ -71,12 +69,12 @@ public class InfractionReportController {
     @GetMapping(value = "/pending/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb,
-        @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+                                                 @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
 
         log.info("Infraction_listingPending", kv("limit", limit), kv("ispb", ispb));
 
         return this.listPendingInfractionReportUseCase
-                .execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+            .execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
     @Trace
@@ -96,15 +94,15 @@ public class InfractionReportController {
     @PostMapping(value = "/{infractionReportId}/cancel", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public CancelResponseInfractionDTO cancel(@RequestHeader String requestIdentifier
-            , @PathVariable("infractionReportId") String infractionReportId, @Valid @RequestBody CancelInfractionDTO dto) {
+        , @PathVariable("infractionReportId") String infractionReportId, @Valid @RequestBody CancelInfractionDTO dto) {
 
         log.info("Infraction_canceling"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("infractionReportId", infractionReportId)
-                , kv("infractionType", dto.getIspb()));
+            , kv("requestIdentifier", requestIdentifier)
+            , kv("infractionReportId", infractionReportId)
+            , kv("infractionType", dto.getIspb()));
 
         var infractionReport = this.cancelInfractionReportUseCase
-                .execute(infractionReportId, dto.getIspb(), requestIdentifier);
+            .execute(infractionReportId, dto.getIspb(), requestIdentifier);
 
         return CancelResponseInfractionDTO.from(infractionReport);
     }
@@ -114,16 +112,16 @@ public class InfractionReportController {
     @PostMapping(value = "/{infractionReportId}/analyze", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public CancelResponseInfractionDTO analyze(@RequestHeader String requestIdentifier
-            , @PathVariable("infractionReportId") String infractionReportId
-            , @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
+        , @PathVariable("infractionReportId") String infractionReportId
+        , @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
 
         log.info("Infraction_analyzing"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("infractionReportId", infractionReportId)
-                , kv("infractionType", dto.getIspb()));
+            , kv("requestIdentifier", requestIdentifier)
+            , kv("infractionReportId", infractionReportId)
+            , kv("infractionType", dto.getIspb()));
 
         var infractionReport = this.analyzeInfractionReportUseCase
-                .execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(), requestIdentifier);
+            .execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(), requestIdentifier);
 
         return CancelResponseInfractionDTO.from(infractionReport);
     }
@@ -136,9 +134,9 @@ public class InfractionReportController {
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
 
         var listInfractionReport = this.filterInfractionReportUseCase.execute(
-                filter.getIspb(), filter.getEhDebitado(), filter.getEhCreditado(),
-                InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
-                filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim(), filter.getNrLimite());
+            filter.getIspb(), filter.getEhDebitado(), filter.getEhCreditado(),
+            InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
+            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim(), filter.getNrLimite());
 
         return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }

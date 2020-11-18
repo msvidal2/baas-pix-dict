@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -14,21 +15,23 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CreateInfractionReportUseCase {
 
     private final InfractionReportPort infractionReportPort;
+    private final InfractionReportSavePort infractionReportSavePort;
 
-    public InfractionReport execute(
-            @NonNull final InfractionReport infractionReport, @NonNull final String requestIdentifier) {
+    public InfractionReport execute(@NonNull final InfractionReport infractionReport,
+                                    @NonNull final String requestIdentifier) {
 
         if(requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("The request identifier cannot be empty");
         }
 
-        InfractionReport infractionReportCreated = infractionReportPort.create(infractionReport, requestIdentifier);
+        var infractionReportCreated = infractionReportPort.create(infractionReport, requestIdentifier);
+        infractionReportSavePort.save(infractionReport);
 
         if (infractionReportCreated != null)
             log.info("Infraction_created"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("endToEndId", infractionReportCreated.getEndToEndId())
-                    , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("endToEndId", infractionReportCreated.getEndToEndId())
+                , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
 
         return infractionReportCreated;
     }

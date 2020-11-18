@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,12 +55,12 @@ class FilterInfractionReportUseCaseTest {
 
     @Test
     void when_filterInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.filter(anyInt(), anyBoolean(),anyBoolean(),any(),any(),any(),anyInt())).thenReturn(List.of(infractionReport));
+        when(infractionReportPort.list(anyInt(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt())).thenReturn(List.of(infractionReport));
 
         var infractionReports = this.filterInfractionReportUseCase.execute(1, true, true, InfractionReportSituation.ANALYZED, null, null, 1);
         assertThat(infractionReports).isNotEmpty();
 
-        verify(infractionReportPort).filter(anyInt(), anyBoolean(),anyBoolean(),any(),any(),any(),anyInt());
+        verify(infractionReportPort).list(anyInt(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt());
     }
 
     @Test
