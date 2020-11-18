@@ -2,7 +2,7 @@ CREATE TABLE public.claim
 (
     id character varying(100) NOT NULL,
     type character varying(20) NOT NULL,
-    key character varying(100) NOT NULL,
+    "key" character varying(100) NOT NULL,
     key_type character varying(10) NOT NULL,
     claimer_participant character varying(8) NOT NULL,
     claimer_branch character varying(4) NOT NULL,
