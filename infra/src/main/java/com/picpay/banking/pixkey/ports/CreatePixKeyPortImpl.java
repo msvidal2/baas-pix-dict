@@ -27,7 +27,6 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
         CreateEntryRequest createEntryRequest = CreateEntryRequest.from(pixKey, reason, requestIdentifier);
         CreateEntryResponse response = bacenKeyClient.createPixKey(createEntryRequest);
 
-//        log.info("RESPONSE: {}", bacenKeyClient.createPixKey(createEntryRequest));
 //        PixKeyEntity entity = savePixKeyPort.save(response.toEntity());
 //        return entity.toPixKey();
         return PixKey.builder().build();

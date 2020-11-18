@@ -20,8 +20,6 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
     @Override
     public LocalDateTime unmarshal(String value) throws Exception {
-        log.info("unmarshal: {}", value);
-
         if(Strings.isNullOrEmpty(value) || value.isBlank()) {
             return null;
         }
@@ -31,8 +29,6 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
     @Override
     public String marshal(LocalDateTime value) throws Exception {
-        log.info("marshal: {}", value);
-
         if(value == null) {
             return null;
         }
