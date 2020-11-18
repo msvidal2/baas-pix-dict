@@ -8,21 +8,23 @@ import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
     private static final String CIRCUIT_BREAKER_NAME = "create-pix-key-db";
 
-    private final PixKeyRepository pixKeyRepository;
+    private final PixKeyRepository repository;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
-        pixKeyRepository.save(PixKeyEntity.from(pixKey, reason));
+        repository.save(PixKeyEntity.from(pixKey, reason));
 
         return pixKey;
     }
