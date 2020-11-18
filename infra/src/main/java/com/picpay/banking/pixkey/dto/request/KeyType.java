@@ -2,9 +2,11 @@ package com.picpay.banking.pixkey.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Arrays;
 
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum KeyType {
 
