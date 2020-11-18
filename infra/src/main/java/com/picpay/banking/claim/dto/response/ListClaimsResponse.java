@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,7 +21,13 @@ public class ListClaimsResponse {
         return ClaimIterable.builder()
                 .hasNext(hasMoreElements)
                 .count(claims.size())
-                //.claims() TODO
+                .claims(getClaims())
                 .build();
+    }
+
+    private List<com.picpay.banking.pix.core.domain.Claim> getClaims(){
+        List<com.picpay.banking.pix.core.domain.Claim> claims = new ArrayList<>();
+        this.claims.forEach(c -> claims.add(c.toClaim()));
+        return claims;
     }
 }

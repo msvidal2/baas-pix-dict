@@ -38,4 +38,15 @@ public class ListClaimsRequest {
                 .type(ClaimType.resolve(claim.getClaimType()))
                 .build();
     }
+
+    public static ListClaimsRequest from(Claim claim, Integer limit) {
+        return ListClaimsRequest.builder()
+                .limit(limit)
+                .participant(String.valueOf(claim.getIspb()))
+                .status(List.of(ClaimStatus.WAITING_RESOLUTION))
+                .type(ClaimType.resolve(claim.getClaimType()))
+                .modifiedBefore(claim.getStarDate())
+                .modifiedAfter(claim.getEndDate())
+                .build();
+    }
 }
