@@ -19,11 +19,11 @@ public class FindPixKeyUseCase {
                           @NonNull final String userId)  {
 
         if (requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier can not be empty");
+            throw new IllegalArgumentException("The [requestIdentifier] can not be empty");
         }
 
         if(userId.isBlank()) {
-            throw new IllegalArgumentException("The userId can not be null");
+            throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
         PixKey pixKeyFound =  findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);

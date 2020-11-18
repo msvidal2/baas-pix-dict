@@ -3,10 +3,8 @@ package com.picpay.banking.pixkey.ports;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
-import com.picpay.banking.pixkey.clients.BacenKeyClient;
-import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
-import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +17,12 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
     private static final String CIRCUIT_BREAKER_NAME = "create-pix-key-db";
 
-    private final SavePixKeyPort savePixKeyPort;
+    private final PixKeyRepository pixKeyRepository;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
-        savePixKeyPort.save(PixKeyEntity.from(pixKey, reason));
+        pixKeyRepository.save(PixKeyEntity.from(pixKey, reason));
 
         return pixKey;
     }

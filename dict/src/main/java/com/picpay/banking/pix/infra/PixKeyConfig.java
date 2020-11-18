@@ -1,9 +1,8 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
-import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.ports.CreatePixKeyPortImpl;
-import com.picpay.banking.pixkey.ports.SavePixKeyPort;
+import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -23,8 +22,8 @@ public class PixKeyConfig {
     }
 
     @Bean
-    public CreatePixKeyPort createPixKeyPort(SavePixKeyPort savePixKeyPort) {
-        return new CreatePixKeyPortImpl(savePixKeyPort);
+    public CreatePixKeyPort createPixKeyPort(PixKeyRepository pixKeyRepository) {
+        return new CreatePixKeyPortImpl(pixKeyRepository);
     }
 
 }

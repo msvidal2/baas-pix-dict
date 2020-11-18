@@ -12,10 +12,8 @@ import org.mockserver.model.MediaType;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Random;
 
 import static org.mockserver.model.HttpRequest.request;
@@ -29,6 +27,8 @@ import static org.mockserver.model.HttpRequest.request;
 @Slf4j
 @Component
 public class PixKeyCrudBacenServer {
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @PostConstruct
     public void start() {
@@ -58,11 +58,8 @@ public class PixKeyCrudBacenServer {
     }
 
     private HttpResponse createPixKey(final HttpRequest httpRequest) throws JsonProcessingException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        log.info(httpRequest.getBodyAsJsonOrXmlString());
         XmlMapper mapper  = new XmlMapper();
         JsonNode jsonNode = mapper.readTree(httpRequest.getBodyAsJsonOrXmlString());
-        log.error(jsonNode.toString());
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
                 .append("<CreateEntryResponse>\n")
@@ -102,8 +99,21 @@ public class PixKeyCrudBacenServer {
         return null;
     }
 
-    private HttpResponse removePixKey(final HttpRequest httpRequest) {
-        return null;
+    private HttpResponse removePixKey(final HttpRequest httpRequest) throws JsonProcessingException {
+        XmlMapper mapper  = new XmlMapper();
+        JsonNode jsonNode = mapper.readTree(httpRequest.getBodyAsJsonOrXmlString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<DeleteEntryResponse>\n")
+                .append("    <Signature></Signature>\n")
+                .append("    <ResponseTime>").append(formatter.format(LocalDateTime.now())).append("</ResponseTime>\n")
+                .append("    <CorrelationId>").append(generateRandomCorrelationId()).append("</CorrelationId>\n")
+                .append("    <Key>+5561988887777</Key>\n")
+                .append("</DeleteEntryResponse>");
+        return HttpResponse.response()
+                .withContentType(MediaType.APPLICATION_XML)
+                .withStatusCode(HttpStatusCode.OK_200.code())
+                .withBody(sb.toString());
     }
 
     private String generateRandomCorrelationId() {
