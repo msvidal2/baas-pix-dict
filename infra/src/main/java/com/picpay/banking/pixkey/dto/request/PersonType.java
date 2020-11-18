@@ -10,10 +10,12 @@ import java.util.Arrays;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PersonType {
 
-    NATURAL_PERSON(com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON),
-    LEGAL_PERSON(com.picpay.banking.pix.core.domain.PersonType.LEGAL_ENTITY);
+    NATURAL_PERSON(com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON, 0),
+    LEGAL_PERSON(com.picpay.banking.pix.core.domain.PersonType.LEGAL_ENTITY, 1);
 
     private com.picpay.banking.pix.core.domain.PersonType personType;
+
+    private int value;
 
     public static PersonType resolve(com.picpay.banking.pix.core.domain.PersonType personType) {
         return Arrays.stream(PersonType.values())

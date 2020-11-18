@@ -35,6 +35,9 @@ public class PixKeyEntity {
     private String participant;
 
     @Column(nullable = false)
+    private String nameParticipant;
+
+    @Column(nullable = false)
     private String branch;
 
     @Column(nullable = false)
@@ -53,6 +56,9 @@ public class PixKeyEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String fantasyName;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -81,16 +87,42 @@ public class PixKeyEntity {
                         .taxId(pixKey.getTaxId())
                         .build())
                 .participant(String.valueOf(pixKey.getIspb()))
+                .nameParticipant(pixKey.getNameIspb())
                 .branch(pixKey.getBranchNumber())
                 .accountNumber(pixKey.getAccountNumber())
                 .accountType(AccountType.resolve(pixKey.getAccountType()))
                 .openingDate(pixKey.getAccountOpeningDate())
                 .personType(PersonType.resolve(pixKey.getPersonType()))
                 .name(pixKey.getName())
+                .fantasyName(pixKey.getFantasyName())
                 .reason(Reason.resolve(reason))
                 .correlationId(pixKey.getCorrelationId())
                 .creationDate(pixKey.getCreatedAt())
                 .ownershipDate(pixKey.getStartPossessionAt())
+                .build();
+    }
+
+    public PixKey toPixKey() {
+        return PixKey.builder()
+                .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
+                .key(id.getKey())
+                .ispb(Integer.parseInt(participant))
+                .nameIspb(nameParticipant)
+                .branchNumber(branch)
+                .accountType(com.picpay.banking.pix.core.domain.AccountType.resolve(accountType.getValue()))
+                .accountNumber(accountNumber)
+                .accountOpeningDate(openingDate)
+                .personType(com.picpay.banking.pix.core.domain.PersonType.resolve(personType.getValue()))
+                .taxId(id.getTaxId())
+                .name(name)
+                .fantasyName(fantasyName)
+                .createdAt(creationDate)
+                .startPossessionAt(ownershipDate)
+                //TODO Implementar atributo endToEndId
+                .endToEndId("NOT IMPLEMENTED")
+                .correlationId(correlationId)
+                //TODO Implementar atributo claim
+//                .claim()
                 .build();
     }
 

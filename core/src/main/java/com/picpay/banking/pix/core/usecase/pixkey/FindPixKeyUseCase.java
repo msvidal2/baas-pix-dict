@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -13,6 +14,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class FindPixKeyUseCase {
 
     private FindPixKeyPort findPixKeyPort;
+
+    private FindPixKeyBacenPort findPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final String pixKey,
