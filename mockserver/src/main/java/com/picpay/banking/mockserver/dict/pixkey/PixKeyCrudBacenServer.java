@@ -106,7 +106,7 @@ public class PixKeyCrudBacenServer {
         return null;
     }
 
-    public String generateRandomCorrelationId() {
+    private String generateRandomCorrelationId() {
 
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
