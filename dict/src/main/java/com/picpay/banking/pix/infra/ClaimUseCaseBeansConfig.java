@@ -24,7 +24,7 @@ public class ClaimUseCaseBeansConfig {
     @Bean
     public CreateClaimUseCase createClaimUseCase(CreateClaimPort createClaimPort,
                                                  @Qualifier("createClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CreateClaimUseCase(createClaimPort, dictItemValidator);
+        return new CreateClaimUseCase(createClaimPort, null, dictItemValidator);
     }
 
     @Bean

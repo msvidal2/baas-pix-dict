@@ -11,6 +11,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "claim")
 @Data
 @Builder
+@Entity
 public class ClaimEntity {
 
     @Id
@@ -43,17 +45,40 @@ public class ClaimEntity {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    public static ClaimEntity from(Claim claim) {
+        return ClaimEntity.builder()
+                .id(claim.getClaimId())
+                .type(ClaimType.resolve(claim.getClaimType()))
+                .key(claim.getKey())
+                .keyType(KeyType.resolve(claim.getKeyType()))
+                .claimerAccountNumber(claim.getAccountNumber())
+                .claimerAccountOpeningDate(claim.getAccountOpeningDate())
+                .claimerAccountType(AccountType.resolve(claim.getAccountType()))
+                .claimerBranch(claim.getBranchNumber())
+                .claimerName(claim.getOwnerName())
+                .claimerParticipant(String.valueOf(claim.getDonorIspb()))
+                .claimerTaxId(claim.getCpfCnpj())
+                .claimerType(OwnerType.resolve(claim.getPersonType()))
+                .donorParticipant(String.valueOf(claim.getDonorIspb()))
+                .status(ClaimStatus.resolve(claim.getClaimSituation()))
+                .completionPeriodEnd(claim.getCompletionThresholdDate())
+                .resolutionPeriodEnd(claim.getResolutionThresholdDate())
+                .lastModified(claim.getLastModifiedDate())
+                .build();
+    }
+
     public Claim toClaim() {
         return Claim.builder()
                 .claimId(id)
                 .claimType(type.getClaimType())
                 .key(key)
                 .keyType(keyType.getType())
-                .ispb(Integer.parseInt(claimerParticipant))
+                .donorIspb(Integer.parseInt(claimerParticipant))
                 .branchNumber(claimerBranch)
                 .accountNumber(claimerAccountNumber)
                 .accountType(claimerAccountType.getType())
                 .accountOpeningDate(claimerAccountOpeningDate)
+                .personType(claimerType.getPersonType())
                 .cpfCnpj(claimerTaxId)
                 .name(claimerName)
                 .donorIspb(Integer.parseInt(donorParticipant))
@@ -61,7 +86,7 @@ public class ClaimEntity {
                 .completionThresholdDate(completionPeriodEnd)
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
-                .personType(claimerType.getPersonType())
                 .build();
     }
+
 }

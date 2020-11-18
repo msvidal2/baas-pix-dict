@@ -25,7 +25,6 @@ public class Claim {
     private final LocalDateTime resolutionPeriodEnd;
     private final LocalDateTime lastModified;
 
-
     public static Claim from(com.picpay.banking.pix.core.domain.Claim claim) {
         return Claim.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
@@ -33,6 +32,28 @@ public class Claim {
                 .keyType(KeyType.resolve(claim.getKeyType()))
                 .claimerAccount(ClaimerAccount.from(claim))
                 .claimer(Claimer.from(claim))
+                .build();
+    }
+
+    public com.picpay.banking.pix.core.domain.Claim toClaim() {
+        return com.picpay.banking.pix.core.domain.Claim.builder()
+                .claimId(id)
+                .claimType(type.getClaimType())
+                .key(key)
+                .keyType(keyType.getType())
+                .ispb(Integer.parseInt(claimerAccount.getParticipant()))
+                .branchNumber(claimerAccount.getBranch())
+                .accountNumber(claimerAccount.getAccountNumber())
+                .accountType(claimerAccount.getAccountType().getType())
+                .accountOpeningDate(claimerAccount.getOpeningDate())
+                .cpfCnpj(claimer.getTaxIdNumber())
+                .name(claimer.getName())
+                .donorIspb(Integer.parseInt(donorParticipant))
+                .claimSituation(status.getClaimSituation())
+                .completionThresholdDate(completionPeriodEnd)
+                .resolutionThresholdDate(resolutionPeriodEnd)
+                .lastModifiedDate(lastModified)
+                .personType(claimer.getType().getPersonType())
                 .build();
     }
 
