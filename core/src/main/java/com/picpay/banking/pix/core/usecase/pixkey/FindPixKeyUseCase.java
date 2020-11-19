@@ -1,21 +1,20 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import lombok.AllArgsConstructor;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyPort;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class FindPixKeyUseCase {
 
-    private FindPixKeyPort findPixKeyPort;
+    private final com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort findPixKeyPort;
 
-    private FindPixKeyBacenPort findPixKeyBacenPort;
+    private final FindPixKeyPort findPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final String pixKey,
@@ -30,7 +29,7 @@ public class FindPixKeyUseCase {
         }
 
         //TODO -> melhorar isso aqui
-        PixKey pixKeyFound = findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        PixKey pixKeyFound = findPixKeyPort.findPixKey(pixKey);
         if (pixKeyFound == null)
             pixKeyFound = findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId);
 

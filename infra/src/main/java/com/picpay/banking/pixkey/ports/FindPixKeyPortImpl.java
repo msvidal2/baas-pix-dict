@@ -1,7 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -30,7 +30,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
+    public PixKey findPixKey(String pixKey) {
         Optional<PixKeyEntity> pixKeyEntity = pixKeyRepository.findById(pixKey);
         return pixKeyEntity.orElse(null).toPixKey();
     }

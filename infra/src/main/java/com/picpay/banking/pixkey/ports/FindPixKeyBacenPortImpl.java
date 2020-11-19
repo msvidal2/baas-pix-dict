@@ -1,7 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class FindPixKeyBacenPortImpl implements FindPixKeyBacenPort {
+public class FindPixKeyBacenPortImpl implements FindPixKeyPort {
 
     private final BacenKeyClient bacenKeyClient;
 
