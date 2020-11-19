@@ -8,7 +8,7 @@ package com.picpay.banking.pixkey.clients;
 
 import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
 import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
-import feign.Headers;
+import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +33,6 @@ public interface BacenKeyClient {
     @GetMapping(value = "/entries/{key}",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
-    CreateEntryResponse findPixKey(@RequestParam("key") String picKey);
+    GetEntryResponse findPixKey(@RequestParam("key") String picKey);
 
 }

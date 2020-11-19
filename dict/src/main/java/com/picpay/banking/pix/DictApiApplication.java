@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableFeignClients(basePackages = {"com.picpay.banking.jdpi.clients", "com.picpay.banking.pixkey.clients"})
 @SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
-@EnableJpaRepositories("com.picpay.banking.pixkey.ports")
+@EnableJpaRepositories("com.picpay.banking.pixkey.repository")
 @EntityScan("com.picpay.banking.pixkey.entity")
 public class DictApiApplication {
 

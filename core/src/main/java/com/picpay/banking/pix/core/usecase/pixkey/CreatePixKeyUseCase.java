@@ -34,7 +34,7 @@ public class CreatePixKeyUseCase {
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", createdPixKey.getKey()));
 
-        createPixKeyPort.createPixKey(requestIdentifier, pixKey, reason);
+        createPixKeyPort.createPixKey(requestIdentifier, createdPixKey, reason);
 
         log.info("PixKey_created"
                 , kv("requestIdentifier", requestIdentifier)

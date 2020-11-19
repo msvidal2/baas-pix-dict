@@ -32,7 +32,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
         Optional<PixKeyEntity> pixKeyEntity = pixKeyRepository.findById(pixKey);
-        return pixKeyEntity.orElseThrow().toPixKey();
+        return pixKeyEntity.orElse(null).toPixKey();
     }
 
     public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, String userId, Exception e) {

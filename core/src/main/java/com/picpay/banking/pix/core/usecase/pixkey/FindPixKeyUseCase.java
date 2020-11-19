@@ -19,17 +19,21 @@ public class FindPixKeyUseCase {
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final String pixKey,
-                          @NonNull final String userId)  {
+                          @NonNull final String userId) {
 
         if (requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("The [requestIdentifier] can not be empty");
         }
 
-        if(userId.isBlank()) {
+        if (userId.isBlank()) {
             throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
-        PixKey pixKeyFound =  findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        //TODO -> melhorar isso aqui
+        PixKey pixKeyFound = findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        if (pixKeyFound == null)
+            pixKeyFound = findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId);
+
 
         if (pixKeyFound != null)
             log.info("PixKey_foundAccount"

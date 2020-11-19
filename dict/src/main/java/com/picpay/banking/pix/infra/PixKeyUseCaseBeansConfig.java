@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class PixKeyUseCaseBeansConfig {
 
     @Bean
-    public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyPort createPixKeyPort,
-                                                   @Qualifier("createPixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new CreatePixKeyUseCase(createPixKeyPort, dictItemValidator);
+    public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
+                                                   CreatePixKeyPort createPixKeyPort) {
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort);
     }
 
     @Bean
@@ -23,8 +23,9 @@ public class PixKeyUseCaseBeansConfig {
     }
 
     @Bean
-    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort) {
-        return new FindPixKeyUseCase(findPixKeyPort);
+    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort,
+                                               FindPixKeyBacenPort findPixKeyBacenPort) {
+        return new FindPixKeyUseCase(findPixKeyPort, findPixKeyBacenPort);
     }
 
     @Bean

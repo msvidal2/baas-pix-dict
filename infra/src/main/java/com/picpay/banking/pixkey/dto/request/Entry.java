@@ -40,6 +40,10 @@ public class Entry {
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime keyOwnershipDate;
 
+    @XmlElement(name = "OpenClaimCreationDate")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime openClaimCreationDate;
+
     public static Entry from(PixKey pixKey) {
         return Entry.builder()
                 .key(pixKey.getKey())

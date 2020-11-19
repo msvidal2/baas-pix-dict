@@ -1,9 +1,9 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
-import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
+import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,16 +17,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class FindPixKeyBacenPortImpl implements FindPixKeyPort {
+public class FindPixKeyBacenPortImpl implements FindPixKeyBacenPort {
 
     private final BacenKeyClient bacenKeyClient;
 
     @Override
     public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
-        CreateEntryResponse createEntryResponse = bacenKeyClient.findPixKey(pixKey);
-        //TODO cleber -> cotinuar
-//        cre
-        return null;
+        GetEntryResponse getEntryResponse = bacenKeyClient.findPixKey(pixKey);
+        //TODO Ao buscar no Bacen a informação, ela deverá ser incluída no DB?
+        return getEntryResponse.toPixKey();
     }
 
 }

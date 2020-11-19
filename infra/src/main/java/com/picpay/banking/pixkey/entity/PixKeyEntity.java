@@ -87,7 +87,7 @@ public class PixKeyEntity {
                         .taxId(pixKey.getTaxId())
                         .build())
                 .participant(String.valueOf(pixKey.getIspb()))
-                .nameParticipant(pixKey.getNameIspb())
+                .nameParticipant((pixKey.getNameIspb() != null) ? pixKey.getNameIspb() : "PICPAY")
                 .branch(pixKey.getBranchNumber())
                 .accountNumber(pixKey.getAccountNumber())
                 .accountType(AccountType.resolve(pixKey.getAccountType()))

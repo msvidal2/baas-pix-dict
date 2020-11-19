@@ -57,12 +57,12 @@ public class JDPIPortBeansConfig {
         return new CreateClaimPortImpl(claimJDClient, createClaimConverter, timeLimiterExecutor);
     }
 
-    @Bean
-    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
-                                         final FindPixKeyConverter findPixKeyConverter,
-                                         final TimeLimiterExecutor timeLimiterExecutor) {
-        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
-    }
+//    @Bean
+//    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
+//                                         final FindPixKeyConverter findPixKeyConverter,
+//                                         final TimeLimiterExecutor timeLimiterExecutor) {
+//        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
+//    }
 
     @Bean
     public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
