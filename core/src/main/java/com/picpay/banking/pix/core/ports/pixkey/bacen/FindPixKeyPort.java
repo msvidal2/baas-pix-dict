@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.ports.pixkey;
+package com.picpay.banking.pix.core.ports.pixkey.bacen;
 
 import com.picpay.banking.pix.core.domain.PixKey;
 
@@ -8,7 +8,7 @@ import com.picpay.banking.pix.core.domain.PixKey;
  * @author Cleber Luiz da Silva dos Santos
  * @version 1.0 19/11/20
  */
-public interface FindPixKeyBacenPort {
+public interface FindPixKeyPort {
 
     PixKey findPixKey(String requestIdentifier, String pixKey, String userId);
 
