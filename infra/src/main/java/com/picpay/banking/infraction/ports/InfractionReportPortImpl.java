@@ -37,14 +37,15 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     @Override
+    public InfractionReport find(final String infractionReportId, final String ispb) {
+        return bacenClient.find(infractionReportId,ispb).toDomain();
+    }
+
+    @Override
     public List<InfractionReport> listPending(final Integer ispb, final Integer limit) {
         return null;
     }
 
-    @Override
-    public InfractionReport find(final String infractionReportId, final Integer ispb) {
-        return null;
-    }
 
     @Override
     public InfractionReport cancel(final String infractionReportId, final Integer ispb, final String requestIdentifier) {

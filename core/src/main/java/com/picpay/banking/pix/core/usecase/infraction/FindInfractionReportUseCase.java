@@ -21,7 +21,7 @@ public class FindInfractionReportUseCase {
             throw new IllegalArgumentException("The Infraction report id cannot be empty");
         }
 
-        InfractionReport infractionReportFound = infractionReportPort.find(infractionReportId, ispb);
+        InfractionReport infractionReportFound = infractionReportPort.find(infractionReportId, null);
 
         if (infractionReportFound != null)
             log.info("Infraction_found"

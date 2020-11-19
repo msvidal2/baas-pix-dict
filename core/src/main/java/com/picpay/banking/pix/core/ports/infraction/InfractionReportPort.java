@@ -14,7 +14,7 @@ public interface InfractionReportPort {
 
     List<InfractionReport> listPending(Integer ispb, Integer limit);
 
-    InfractionReport find(final String infractionReportId, final Integer ispb);
+    InfractionReport find(final String infractionReportId, final String ispb);
 
     InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
 
