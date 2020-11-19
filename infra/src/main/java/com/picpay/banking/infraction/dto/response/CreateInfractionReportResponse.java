@@ -19,7 +19,7 @@ public class CreateInfractionReportResponse {
 
     private final InfractionReport infractionReport;
 
-    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
+    public com.picpay.banking.pix.core.domain.InfractionReport toInfractionReport() {
         return com.picpay.banking.pix.core.domain.InfractionReport.builder()
             .build();
 

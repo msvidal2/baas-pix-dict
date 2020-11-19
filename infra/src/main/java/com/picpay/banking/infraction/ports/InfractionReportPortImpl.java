@@ -6,14 +6,15 @@
 
 package com.picpay.banking.infraction.ports;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
-import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -26,14 +27,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InfractionReportPortImpl implements InfractionReportPort {
 
+    private static final String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
+
     private final CreateInfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
+    @Trace
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "createFallback")
     public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
         CreateInfractionReportRequest requestDto = CreateInfractionReportRequest.from(infractionReport);
-        CreateInfractionReportResponse responseDto = bacenClient.create(requestDto);
-        return responseDto.toDomain();
+        final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
+                                                         () -> bacenClient.create(requestDto),
+                                                         requestIdentifier);
+        return response.toInfractionReport();
     }
 
     @Override
@@ -61,6 +68,12 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     public List<InfractionReport> list(final Integer isbp, final Boolean isDebited, final Boolean isCredited,
                                        final InfractionReportSituation situation,
                                        final LocalDateTime dateStart, final LocalDateTime dateEnd, final Integer limit) {
+        return null;
+    }
+
+    public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {
+//        throw new BacenClientExceptionFactory.from(e);
+//        throw JDClientExceptionFactory.from(e);
         return null;
     }
 
