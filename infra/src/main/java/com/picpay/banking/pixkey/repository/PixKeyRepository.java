@@ -5,10 +5,26 @@ package com.picpay.banking.pixkey.repository;
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
+import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
-public interface PixKeyRepository extends JpaRepository<PixKeyEntity, String> {
+public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity> {
+
+    Optional<PixKeyEntity> findByKey(String key);
+
+    @Query("SELECT t FROM PixKeyEntity t " +
+            "WHERE t.id.taxId = :taxId " +
+            "   AND t.branch = :branch " +
+            "   AND t.accountNumber = :accountNumber " +
+            "   AND t.accountType = :accountType")
+    List<PixKeyEntity> findByAccount(String taxId, String branch, String accountNumber, AccountType accountType);
+
 }

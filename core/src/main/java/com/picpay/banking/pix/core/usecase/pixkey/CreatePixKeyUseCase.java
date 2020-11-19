@@ -4,9 +4,14 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.validators.key.KeyValidator;
+import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -16,6 +21,7 @@ public class CreatePixKeyUseCase {
 
     private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
     private final CreatePixKeyPort createPixKeyPort;
+    private final FindPixKeyPort findPixKeyPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final PixKey pixKey,
@@ -25,8 +31,7 @@ public class CreatePixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }
 
-        verifyExistKey(pixKey);
-        verifyExistClaim(pixKey);
+        new CreatePixKeyValidator(findPixKeyPort).validate(pixKey);
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
 
@@ -39,14 +44,6 @@ public class CreatePixKeyUseCase {
         return createdPixKey;
     }
 
-    private void verifyExistKey(final PixKey pixKey) {
-        // TODO: verificar se chave existe na base local
-        // se existir local, verificar se é do mesmo dono e informar a portabilidade
-        // se não for, informar para reivindicação
-    }
 
-    private void verifyExistClaim(final PixKey pixKey) {
-        // TODO: verificar se existe algum processo de reivindicação local para a chave que esta tentando ser criada
-    }
 
 }

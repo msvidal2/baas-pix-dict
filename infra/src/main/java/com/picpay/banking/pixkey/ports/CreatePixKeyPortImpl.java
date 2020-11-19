@@ -36,9 +36,7 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        // TODO: tratar errors
-
-        throw new RuntimeException(e);
+        return pixKey;
     }
 
 }

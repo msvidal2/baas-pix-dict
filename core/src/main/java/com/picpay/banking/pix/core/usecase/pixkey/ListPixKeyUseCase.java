@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
