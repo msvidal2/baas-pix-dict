@@ -7,22 +7,22 @@ import org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 // TODO: revisar e melhorar
-public class BacenErrorResponseBuilder {
+public class BacenExceptionBuilder {
 
     private Exception exception;
 
     private FieldResolver fieldResolver;
 
-    public BacenErrorResponseBuilder(Exception exception) {
+    public BacenExceptionBuilder(Exception exception) {
         this.exception = exception;
         this.fieldResolver = new DefaultFieldResolver();
     }
 
-    public static BacenErrorResponseBuilder from(final Exception e) {
-        return new BacenErrorResponseBuilder(e);
+    public static BacenExceptionBuilder from(final Exception e) {
+        return new BacenExceptionBuilder(e);
     }
 
-    public BacenErrorResponseBuilder withFieldResolver(final FieldResolver fieldResolver) {
+    public BacenExceptionBuilder withFieldResolver(final FieldResolver fieldResolver) {
         this.fieldResolver = fieldResolver;
         return this;
     }

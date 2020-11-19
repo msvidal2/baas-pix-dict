@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class CreatePixKeyUseCase {
 
-    private final CreatePixKeyBacenPort createPixKeyBacenPort;
+    private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
     private final CreatePixKeyPort createPixKeyPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
@@ -28,7 +28,7 @@ public class CreatePixKeyUseCase {
         verifyExistKey(pixKey);
         verifyExistClaim(pixKey);
 
-        var createdPixKey = createPixKeyBacenPort.create(requestIdentifier, pixKey, reason);
+        var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
 
         log.info("PixKey_created"
                 , kv("requestIdentifier", requestIdentifier)

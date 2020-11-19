@@ -2,6 +2,8 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.pixkey.*;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +27,7 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort,
-                                               FindPixKeyBacenPort findPixKeyBacenPort) {
+                                               com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyPort findPixKeyBacenPort) {
         return new FindPixKeyUseCase(findPixKeyPort, findPixKeyBacenPort);
     }
 

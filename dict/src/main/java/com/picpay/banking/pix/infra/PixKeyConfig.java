@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pixkey.ports.CreatePixKeyPortImpl;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import org.springframework.context.annotation.Bean;
