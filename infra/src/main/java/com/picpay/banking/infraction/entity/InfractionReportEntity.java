@@ -6,7 +6,9 @@
 
 package com.picpay.banking.infraction.entity;
 
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
@@ -69,6 +71,4 @@ public class InfractionReportEntity {
             .analyzeDetails(infractionReport.getAnalyze().getDetails())
             .build();
     }
-
-
 }

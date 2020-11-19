@@ -58,7 +58,7 @@ class FindInfractionReportUseCaseTest {
     void when_findInfractionsWithSuccess_expect_OkWithValidResult() {
         when(infractionReportPort.find(anyString(), any())).thenReturn(infractionReport);
 
-        final InfractionReport infractionReport = findInfractionReportUseCase.execute("ID_REPORT", 22896431);
+        final InfractionReport infractionReport = findInfractionReportUseCase.execute("ID_REPORT");
 
         Assertions.assertThat(infractionReport).isNotNull();
         assertEquals(infractionReport.getEndToEndId(), "ID_END_TO_END");

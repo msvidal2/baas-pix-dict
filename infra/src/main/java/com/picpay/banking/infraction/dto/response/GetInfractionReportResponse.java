@@ -8,10 +8,8 @@
 package com.picpay.banking.infraction.dto.response;
 
 import com.picpay.banking.infraction.dto.request.InfractionReport;
-import com.picpay.banking.infraction.dto.request.InfractionType;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 /**
  * @author rafael.braga
@@ -26,7 +24,7 @@ public class GetInfractionReportResponse {
         return com.picpay.banking.pix.core.domain.InfractionReport.builder()
             .infractionReportId(infractionReport.getId())
             .type(com.picpay.banking.pix.core.domain.InfractionType.resolve(infractionReport.getInfractionType().getValue()))
-            //.reportedBy(infractionReport.getReportedBy())
+            .reportedBy(infractionReport.getReportedBy())
             .transactionId(infractionReport.getTransactionId())
             .details(infractionReport.getReportDetails())
             .ispbDebited(Integer.valueOf(infractionReport.getDebitedParticipant()))
