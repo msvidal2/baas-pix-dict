@@ -4,7 +4,7 @@ import com.picpay.banking.fallbacks.BacenErrorResponseBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
 import com.picpay.banking.pixkey.dto.request.Reason;

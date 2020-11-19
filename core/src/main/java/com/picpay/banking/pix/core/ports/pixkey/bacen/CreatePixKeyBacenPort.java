@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.ports.pixkey;
+package com.picpay.banking.pix.core.ports.pixkey.bacen;
 
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
