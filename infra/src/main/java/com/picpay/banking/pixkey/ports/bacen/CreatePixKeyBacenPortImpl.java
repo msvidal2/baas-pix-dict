@@ -1,5 +1,7 @@
-package com.picpay.banking.pixkey.ports;
+package com.picpay.banking.pixkey.ports.bacen;
 
+import com.picpay.banking.fallbacks.BacenErrorResponseBuilder;
+import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.CreatePixKeyBacenPort;
@@ -39,9 +41,9 @@ public class CreatePixKeyBacenPortImpl implements CreatePixKeyBacenPort {
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        // TODO: tratar errors
-
-        throw new RuntimeException(e);
+        throw BacenErrorResponseBuilder.from(e)
+                .withFieldResolver(new PixKeyFieldResolver())
+                .build();
     }
 
 }

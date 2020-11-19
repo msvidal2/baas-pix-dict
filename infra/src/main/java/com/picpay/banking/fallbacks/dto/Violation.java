@@ -1,4 +1,4 @@
-package com.picpay.banking.pixkey.dto.response;
+package com.picpay.banking.fallbacks.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

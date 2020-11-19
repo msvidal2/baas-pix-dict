@@ -1,4 +1,4 @@
-package com.picpay.banking.pixkey.dto.response;
+package com.picpay.banking.fallbacks.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @XmlRootElement(name = "problem")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ErrorResponse {
+public class Problem {
 
     private String type;
     private String title;

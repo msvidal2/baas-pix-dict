@@ -25,22 +25,28 @@ public class CreatePixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }
 
-        // TODO: verificar se chave existe na base local
-        // TODO: verificar se existe algum processo de reivindicação local para a chave que esta tentando ser criada
+        verifyExistKey(pixKey);
+        verifyExistClaim(pixKey);
 
         var createdPixKey = createPixKeyBacenPort.create(requestIdentifier, pixKey, reason);
-
-        log.info("PixKey_createdBacen"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("key", createdPixKey.getKey()));
-
-        createPixKeyPort.createPixKey(requestIdentifier, createdPixKey, reason);
 
         log.info("PixKey_created"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("key", createdPixKey.getKey()));
 
+        createPixKeyPort.createPixKey(requestIdentifier, createdPixKey, reason);
+
         return createdPixKey;
+    }
+
+    private void verifyExistKey(final PixKey pixKey) {
+        // TODO: verificar se chave existe na base local
+        // se existir local, verificar se é do mesmo dono e informar a portabilidade
+        // se não for, informar para reivindicação
+    }
+
+    private void verifyExistClaim(final PixKey pixKey) {
+        // TODO: verificar se existe algum processo de reivindicação local para a chave que esta tentando ser criada
     }
 
 }
