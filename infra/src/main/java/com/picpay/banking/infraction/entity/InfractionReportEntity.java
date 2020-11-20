@@ -71,4 +71,23 @@ public class InfractionReportEntity {
             .analyzeDetails(infractionReport.getAnalyze().getDetails())
             .build();
     }
+
+    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
+        return InfractionReport.builder()
+            .infractionReportId(this.getInfractionReportId())
+            .endToEndId(this.getEndToEndId())
+            .reportedBy(this.getReportedBy())
+            .situation(this.getSituation())
+            .ispbDebited(this.getIspbDebited())
+            .ispbCredited(this.getIspbCredited())
+            .dateCreate(this.getDateCreate())
+            .dateLastUpdate(this.getDateLastUpdate())
+            .ispbRequester(this.getIspbRequester())
+            .type(this.getType())
+            .details(this.getDetails())
+            .requestIdentifier(this.getRequestIdentifier())
+            .analyze(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
+                .details(this.getAnalyzeDetails()).build()).build();
+    }
+
 }

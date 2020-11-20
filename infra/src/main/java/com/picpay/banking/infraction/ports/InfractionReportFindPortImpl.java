@@ -6,7 +6,6 @@
 
 package com.picpay.banking.infraction.ports;
 
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.RequiredArgsConstructor;
@@ -26,22 +25,7 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
     public InfractionReport find(final String infractionReportId) {
 
         var infractionReportEntity = infractionReportRepository.findById(infractionReportId).orElseThrow(RuntimeException::new);
-
-        return InfractionReport.builder()
-         .infractionReportId(infractionReportEntity.getInfractionReportId())
-         .endToEndId(infractionReportEntity.getEndToEndId())
-         .reportedBy(infractionReportEntity.getReportedBy())
-         .situation(infractionReportEntity.getSituation())
-         .ispbDebited(infractionReportEntity.getIspbDebited())
-         .ispbCredited(infractionReportEntity.getIspbCredited())
-         .dateCreate(infractionReportEntity.getDateCreate())
-         .dateLastUpdate(infractionReportEntity.getDateLastUpdate())
-         .ispbRequester(infractionReportEntity.getIspbRequester())
-         .type(infractionReportEntity.getType())
-         .details(infractionReportEntity.getDetails())
-         .requestIdentifier(infractionReportEntity.getRequestIdentifier())
-         .analyze(InfractionAnalyze.builder().analyzeResult(infractionReportEntity.getAnalyzeResult())
-                 .details(infractionReportEntity.getAnalyzeDetails()).build()).build();
-
+        return infractionReportEntity.toDomain();
     }
+
 }
