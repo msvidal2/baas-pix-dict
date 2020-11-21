@@ -26,7 +26,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Component("FindPixKeyPort")
 public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     private static final String CIRCUIT_BREAKER_NAME_FIND_BY_KEY = "FindPixKeyPortImpl_find-by-key";
@@ -35,7 +35,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME_FIND_BY_KEY, fallbackMethod = "findPixKeyFallback")
-    public PixKey findPixKey(String pixKey) {
+    public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
         Optional<PixKeyEntity> pixKeyEntity = pixKeyRepository.findByKey(pixKey);
 
         return pixKeyEntity.orElse(null).toPixKey();

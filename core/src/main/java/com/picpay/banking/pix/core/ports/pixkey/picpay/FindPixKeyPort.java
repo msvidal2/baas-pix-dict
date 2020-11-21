@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FindPixKeyPort {
 
-    PixKey findPixKey(String pixKey);
+    PixKey findPixKey(String requestIdentifier, String pixKey, String userId);
 
     List<PixKey> findByAccount(String taxId, String branch, String accountNumber, AccountType accountType);
 
