@@ -41,10 +41,10 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
         return pixKeyEntity.orElse(null).toPixKey();
     }
 
-    public PixKey findPixKeyFallback(String requestIdentifier, PixKey pixKey, String userId, Exception e) {
+    public PixKey findPixKeyFallback(String requestIdentifier, String pixKey, String userId, Exception e) {
         log.error("PixKey_fallback_creatingBacen",
                 kv("requestIdentifier", requestIdentifier),
-                kv("key", pixKey.getKey()),
+                kv("key", pixKey),
                 kv("userId", userId),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
