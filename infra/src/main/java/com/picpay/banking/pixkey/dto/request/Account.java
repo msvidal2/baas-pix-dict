@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.dto.request;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +44,16 @@ public class Account {
                 .accountNumber(pixKey.getBranchNumber())
                 .accountType(AccountType.resolve(pixKey.getAccountType()))
                 .openingDate(pixKey.getAccountOpeningDate())
+                .build();
+    }
+
+    public static Account from(Claim claim) {
+        return Account.builder()
+                .participant(String.valueOf(claim.getIspb()))
+                .branch(claim.getBranchNumber())
+                .accountNumber(claim.getAccountNumber())
+                .accountType(AccountType.resolve(claim.getAccountType()))
+                .openingDate(claim.getAccountOpeningDate())
                 .build();
     }
 

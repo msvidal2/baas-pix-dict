@@ -19,15 +19,20 @@ public class CreateClaimUseCase {
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
 
+        if (requestIdentifier.isBlank()) {
+            throw new IllegalArgumentException("requestIdentifier cannot be empty");
+        }
+
         validator.validate(claim);
 
         Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
-        Claim claimSaved = saveClaimPort.saveClaim(claim, requestIdentifier);
 
-        if (claimSaved != null)
+        if (claimCreated != null)
             log.info("Claim_created",
                     kv("requestIdentifier", requestIdentifier),
                     kv("claimId", claimCreated.getClaimId()));
+
+        Claim claimSaved = saveClaimPort.saveClaim(claim, requestIdentifier);
 
         return claimSaved;
     }

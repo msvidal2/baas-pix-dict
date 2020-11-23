@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.dto.response;
 
-import com.picpay.banking.claim.dto.request.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import java.util.List;
 public class ListClaimsResponse {
 
     private final Boolean hasMoreElements;
-    private final List<Claim> claims;
+    private final List<ClaimResponse> claims;
 
     public ClaimIterable toClaimIterable() {
         return ClaimIterable.builder()
