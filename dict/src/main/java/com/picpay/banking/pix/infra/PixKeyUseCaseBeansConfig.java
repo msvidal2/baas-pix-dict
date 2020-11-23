@@ -3,6 +3,7 @@ package com.picpay.banking.pix.infra;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
@@ -29,8 +30,8 @@ public class PixKeyUseCaseBeansConfig {
     }
 
     @Bean
-    public FindPixKeyUseCase findPixKeyUseCase(@Qualifier("FindPixKeyPort") FindPixKeyPort findPixKeyPort,
-                                               @Qualifier("FindPixKeyBacenPort") FindPixKeyPort findPixKeyBacenPort) {
+    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort,
+                                               FindPixKeyBacenPort findPixKeyBacenPort) {
         return new FindPixKeyUseCase(findPixKeyPort, findPixKeyBacenPort);
     }
 

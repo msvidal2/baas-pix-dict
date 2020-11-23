@@ -46,7 +46,7 @@ class FindPixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        when(findPixKeyPort.findPixKey(anyString(), any(), anyString()))
+        when(findPixKeyPort.findPixKey(any()))
                 .thenReturn(pixKeyMockResponse);
 
         assertDoesNotThrow(() -> {

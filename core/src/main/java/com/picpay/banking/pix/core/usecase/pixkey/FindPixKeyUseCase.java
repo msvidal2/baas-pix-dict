@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class FindPixKeyUseCase {
 
     private final FindPixKeyPort findPixKeyPort;
 
-    private final FindPixKeyPort findPixKeyBacenPort;
+    private final FindPixKeyBacenPort findPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final String pixKey,
@@ -30,7 +31,7 @@ public class FindPixKeyUseCase {
             throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
-        PixKey pixKeyFound = findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        PixKey pixKeyFound = findPixKeyPort.findPixKey(pixKey);
         if (Objects.isNull(pixKeyFound))
             pixKeyFound = findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId);
 

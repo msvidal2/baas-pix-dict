@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class comments go here...
@@ -18,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement(name = "Counter")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Counter {
 

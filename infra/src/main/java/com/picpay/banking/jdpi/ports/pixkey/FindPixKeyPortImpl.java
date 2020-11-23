@@ -26,18 +26,23 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     private TimeLimiterExecutor timeLimiterExecutor;
 
-    @Trace
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "findPixKeyFallback")
-    public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
-
-        final var findPixKeyResponseDTO = timeLimiterExecutor
-            .execute(CIRCUIT_BREAKER_NAME,
-                    () -> pixKeyJDClient.findPixKey(pixKey, userId, null, null),
-                    requestIdentifier);
-
-        return converter.convert(findPixKeyResponseDTO);
+    public PixKey findPixKey(String pixKey) {
+        return null;
     }
+
+    @Trace
+//    @Override
+//    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "findPixKeyFallback")
+//    public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
+//
+//        final var findPixKeyResponseDTO = timeLimiterExecutor
+//            .execute(CIRCUIT_BREAKER_NAME,
+//                    () -> pixKeyJDClient.findPixKey(pixKey, userId, null, null),
+//                    requestIdentifier);
+//
+//        return converter.convert(findPixKeyResponseDTO);
+//    }
 
     @Override
     public List<PixKey> findByAccount(String taxId, String branch, String accountNumber, AccountType accountType) {

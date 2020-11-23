@@ -72,7 +72,7 @@ class FindPixKeyBacenPortImplTest {
                 .thenReturn(responseMockDTO);
 
         assertDoesNotThrow(() -> {
-            var response = port.findPixKey(randomUUID().toString(), "joao@ppicpay.com", "1111111111111");
+            var response = port.findPixKey("joao@ppicpay.com");
 
             assertNotNull(response);
             assertEquals("joao@ppicpay.com", response.getKey());
