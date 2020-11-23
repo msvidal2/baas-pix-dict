@@ -2,6 +2,8 @@ package com.picpay.banking.pix.core.validators.pixkey;
 
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeyError;
+import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ public class CreatePixKeyValidator {
         keyValidator.validate(pixKey.getKey());
 
         validateNumberKeys(pixKey);
-        validateKeyExists(pixKey.getKey());
+        validateKeyExists(pixKey);
         validateClaimExists(pixKey);
     }
 
@@ -43,16 +45,18 @@ public class CreatePixKeyValidator {
         }
     }
 
-    private void validateKeyExists(final String key) {
-        var pixKey = findPixKeyPort.findPixKey(null, key, null);
+    private void validateKeyExists(final PixKey pixKey) {
+        var pixKeyLocal = findPixKeyPort.findPixKey(null, pixKey.getKey(), null);
 
-        if(Objects.isNull(pixKey)) {
+        if(Objects.isNull(pixKeyLocal)) {
             return;
         }
 
-        // TODO: verificar se chave existe na base local
-        // se existir local, verificar se é do mesmo dono e informar a portabilidade
-        // se não for, informar para reivindicação
+        if(pixKey.getTaxIdWithLeftZeros().equals(pixKeyLocal.getTaxIdWithLeftZeros())) {
+            throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
+        }
+
+        throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
     }
 
     private void validateClaimExists(final PixKey pixKey) {

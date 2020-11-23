@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.google.common.base.Strings;
 import lombok.*;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
@@ -38,6 +39,16 @@ public class PixKey {
         }
 
         return ObjectUtils.firstNonNull(fantasyName, name);
+    }
+
+    public String getTaxIdWithLeftZeros() {
+        int size = 11;
+
+        if(PersonType.LEGAL_ENTITY.equals(personType)) {
+            size = 14;
+        }
+
+        return Strings.padStart(taxId, size, '0');
     }
 
 }
