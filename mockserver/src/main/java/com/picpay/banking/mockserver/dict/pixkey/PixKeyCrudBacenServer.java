@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.picpay.banking.mockserver.config.ClientAndServerInstance;
 import lombok.extern.slf4j.Slf4j;
-import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
-import org.mockserver.model.HttpStatusCode;
-import org.mockserver.model.MediaType;
+import org.mockserver.model.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +44,10 @@ public class PixKeyCrudBacenServer {
         ClientAndServerInstance.get().when(
                 request()
                         .withMethod("GET")
-                        .withPath("/v1/entries/{key}"))
+                        .withPath("/v1/entries/{key}")
+                        .withPathParameters(
+                                Parameter.param("key", "[\\S]*")
+                        ))
                 .respond(this::findPixKey);
 
         ClientAndServerInstance.get().when(
@@ -58,7 +58,7 @@ public class PixKeyCrudBacenServer {
     }
 
     private HttpResponse createPixKey(final HttpRequest httpRequest) throws JsonProcessingException {
-        XmlMapper mapper  = new XmlMapper();
+        XmlMapper mapper = new XmlMapper();
         JsonNode jsonNode = mapper.readTree(httpRequest.getBodyAsJsonOrXmlString());
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
@@ -86,7 +86,7 @@ public class PixKeyCrudBacenServer {
                 .append("    </Entry>\n")
                 .append("</CreateEntryResponse>");
         return HttpResponse.response()
-                .withContentType(MediaType.APPLICATION_XML)
+                .withContentType(MediaType.APPLICATION_XML_UTF_8)
                 .withStatusCode(HttpStatusCode.CREATED_201.code())
                 .withBody(sb.toString());
     }
@@ -96,11 +96,60 @@ public class PixKeyCrudBacenServer {
     }
 
     private HttpResponse findPixKey(final HttpRequest httpRequest) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
+                .append("<GetEntryResponse>")
+                .append("   <Signature></Signature>")
+                .append("   <ResponseTime>2020-01-10T10:00:00Z</ResponseTime>")
+                .append("   <CorrelationId>a9f13566e19f5ca51329479a5bae60c5</CorrelationId>")
+                .append("   <Entry>")
+                .append("       <Key>11122233300</Key>")
+                .append("       <KeyType>CPF</KeyType>")
+                .append("       <Account>")
+                .append("           <Participant>12345678</Participant>")
+                .append("           <Branch>0001</Branch>")
+                .append("           <AccountNumber>0007654321</AccountNumber>")
+                .append("           <AccountType>CACC</AccountType>")
+                .append("           <OpeningDate>2010-01-10T03:00:00Z</OpeningDate>")
+                .append("       </Account>")
+                .append("       <Owner>")
+                .append("           <Type>NATURAL_PERSON</Type>")
+                .append("           <TaxIdNumber>11122233300</TaxIdNumber>")
+                .append("           <Name>João Silva</Name>")
+                .append("       </Owner>")
+                .append("       <CreationDate>2019-11-18T03:00:00Z</CreationDate>")
+                .append("       <KeyOwnershipDate>2019-11-18T03:00:00Z</KeyOwnershipDate>")
+                .append("       <OpenClaimCreationDate>2019-11-19T03:00:00Z</OpenClaimCreationDate>")
+                .append("   </Entry>")
+                .append("   <Statistics>")
+                .append("       <LastUpdated>2020-01-17T10:00:00Z</LastUpdated>")
+                .append("       <Counters>")
+                .append("           <Counter type=\"SETTLEMENTS\" by=\"KEY\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"SETTLEMENTS\" by=\"OWNER\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"SETTLEMENTS\" by=\"ACCOUNT\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_FRAUDS\" by=\"KEY\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_FRAUDS\" by=\"OWNER\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_FRAUDS\" by=\"ACCOUNT\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_AML_CFT\" by=\"KEY\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_AML_CFT\" by=\"OWNER\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"REPORTED_AML_CFT\" by=\"ACCOUNT\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_FRAUDS\" by=\"KEY\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_FRAUDS\" by=\"OWNER\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_FRAUDS\" by=\"ACCOUNT\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_AML_CFT\" by=\"KEY\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_AML_CFT\" by=\"OWNER\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("           <Counter type=\"CONFIRMED_AML_CFT\" by=\"ACCOUNT\" d3=\"0\" d30=\"5\" m6=\"30\"/>")
+                .append("       </Counters>")
+                .append("   </Statistics>")
+                .append("</GetEntryResponse>");
+        return HttpResponse.response()
+                .withContentType(MediaType.APPLICATION_XML_UTF_8)
+                .withStatusCode(HttpStatusCode.OK_200.code())
+                .withBody(sb.toString());
     }
 
     private HttpResponse removePixKey(final HttpRequest httpRequest) throws JsonProcessingException {
-        XmlMapper mapper  = new XmlMapper();
+        XmlMapper mapper = new XmlMapper();
         JsonNode jsonNode = mapper.readTree(httpRequest.getBodyAsJsonOrXmlString());
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
@@ -111,7 +160,7 @@ public class PixKeyCrudBacenServer {
                 .append("    <Key>+5561988887777</Key>\n")
                 .append("</DeleteEntryResponse>");
         return HttpResponse.response()
-                .withContentType(MediaType.APPLICATION_XML)
+                .withContentType(MediaType.APPLICATION_XML_UTF_8)
                 .withStatusCode(HttpStatusCode.OK_200.code())
                 .withBody(sb.toString());
     }
