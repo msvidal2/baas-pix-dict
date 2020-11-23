@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.core.exception;
 
-import com.picpay.banking.pix.core.domain.PixKeyError;
 import lombok.Getter;
 
 @Getter

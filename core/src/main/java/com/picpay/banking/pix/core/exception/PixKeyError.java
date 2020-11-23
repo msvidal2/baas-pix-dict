@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

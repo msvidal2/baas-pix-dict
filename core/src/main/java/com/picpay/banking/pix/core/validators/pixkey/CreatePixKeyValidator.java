@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.validators.pixkey;
 
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.PixKeyError;
+import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
