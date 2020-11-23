@@ -34,5 +34,6 @@ public class CreateInfractionReportUseCase {
                 , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
 
         return infractionReportCreated;
+
     }
 }

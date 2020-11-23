@@ -7,10 +7,12 @@
 package com.picpay.banking.infraction.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.stream.Stream;
 
 @AllArgsConstructor
+@Getter
 public enum InfractionType {
 
     FRAUD(0),

@@ -6,7 +6,9 @@
 
 package com.picpay.banking.infraction.entity;
 
+import com.picpay.banking.pix.core.domain.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
@@ -41,10 +43,10 @@ public class InfractionReportEntity {
     private InfractionReportSituation situation;
     private int ispbDebited;
     private int ispbCredited;
-    private LocalDateTime dateCreate;
-    private LocalDateTime dateLastUpdate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastUpdateDate;
     private int ispbRequester;
-    private InfractionType type;
+    private InfractionType infractionType;
     private String details;
     private String requestIdentifier;
     private InfractionAnalyzeResult analyzeResult;
@@ -59,10 +61,10 @@ public class InfractionReportEntity {
             .situation(infractionReport.getSituation())
             .ispbDebited(infractionReport.getIspbDebited())
             .ispbCredited(infractionReport.getIspbCredited())
-            .dateCreate(infractionReport.getDateCreate())
-            .dateLastUpdate(infractionReport.getDateLastUpdate())
+            .createdDate(infractionReport.getDateCreate())
+            .lastUpdateDate(infractionReport.getDateLastUpdate())
             .ispbRequester(infractionReport.getIspbRequester())
-            .type(infractionReport.getType())
+            .infractionType(infractionReport.getType())
             .details(infractionReport.getDetails())
             .requestIdentifier(infractionReport.getRequestIdentifier())
             .analyzeResult(infractionReport.getAnalyze().getAnalyzeResult())
@@ -70,5 +72,22 @@ public class InfractionReportEntity {
             .build();
     }
 
+    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
+        return InfractionReport.builder()
+            .infractionReportId(this.getInfractionReportId())
+            .endToEndId(this.getEndToEndId())
+            .reportedBy(this.getReportedBy())
+            .situation(this.getSituation())
+            .ispbDebited(this.getIspbDebited())
+            .ispbCredited(this.getIspbCredited())
+            .dateCreate(this.getCreatedDate())
+            .dateLastUpdate(this.getLastUpdateDate())
+            .ispbRequester(this.getIspbRequester())
+            .type(this.getInfractionType())
+            .details(this.getDetails())
+            .requestIdentifier(this.getRequestIdentifier())
+            .analyze(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
+                .details(this.getAnalyzeDetails()).build()).build();
+    }
 
 }

@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 public class InfractionReport {
 
     private String infractionReportId;
+    private String transactionId;
+    private InfractionType type;
     private String endToEndId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
@@ -24,7 +26,6 @@ public class InfractionReport {
     private LocalDateTime dateCreate;
     private LocalDateTime dateLastUpdate;
     private int ispbRequester;
-    private InfractionType type;
     private String details;
     private String requestIdentifier;
     private InfractionAnalyze analyze;

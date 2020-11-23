@@ -6,11 +6,11 @@
 
 package com.picpay.banking.infraction.dto.request;
 
+import com.picpay.banking.infraction.dto.response.Status;
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import com.picpay.banking.infraction.dto.response.ReportedBy;
-import com.picpay.banking.infraction.dto.response.Status;
 
 import java.time.LocalDateTime;
 

@@ -84,7 +84,7 @@ public class InfractionReportController {
     public FindInfractionReportDTO find(@PathVariable String infractionReportId, @Valid @PathParam("ispb") Integer ispb) {
         log.info("Infraction_finding", kv("infractionReportId", infractionReportId));
 
-        final InfractionReport infractionReport = findInfractionReportUseCase.execute(infractionReportId, ispb);
+        final InfractionReport infractionReport = findInfractionReportUseCase.execute(infractionReportId);
 
         return FindInfractionReportDTO.from(infractionReport);
     }
