@@ -31,8 +31,8 @@ public class StatisticsResponse {
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastUpdated;
 
-    @XmlElement(name = "Counters")
-    @XmlElementWrapper
+    @XmlElementWrapper(name = "Counters")
+    @XmlElement(name = "Counter")
     private List<Counter> counters;
 
 }
