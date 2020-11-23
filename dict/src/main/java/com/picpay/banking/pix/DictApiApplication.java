@@ -7,10 +7,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EnableFeignClients(basePackages = {"com.picpay.banking.jdpi.clients", "com.picpay.banking.pixkey.clients"})
+@EnableFeignClients(basePackages = {"com.picpay.banking.jdpi.clients", "com.picpay.banking.pixkey.clients", "com.picpay.banking.claim.clients"})
 @SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
-@EnableJpaRepositories("com.picpay.banking.pixkey.repository")
-@EntityScan("com.picpay.banking.pixkey.entity")
+@EnableJpaRepositories({"com.picpay.banking.pixkey.repository", "com.picpay.banking.claim.repository"})
+@EntityScan({"com.picpay.banking.pixkey.entity", "com.picpay.banking.claim.entity"})
 public class DictApiApplication {
 
     public static void main(String[] args) {

@@ -3,7 +3,7 @@ package com.picpay.banking.pix.infra;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
@@ -22,9 +22,10 @@ import org.springframework.context.annotation.Configuration;
 public class ClaimUseCaseBeansConfig {
 
     @Bean
-    public CreateClaimUseCase createClaimUseCase(CreateClaimPort createClaimPort,
+    public CreateClaimUseCase createClaimUseCase(CreateClaimBacenPort createClaimPort,
+                                                 com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort saveClaimPort,
                                                  @Qualifier("createClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CreateClaimUseCase(createClaimPort, null, dictItemValidator);
+        return new CreateClaimUseCase(createClaimPort, saveClaimPort, dictItemValidator);
     }
 
     @Bean
