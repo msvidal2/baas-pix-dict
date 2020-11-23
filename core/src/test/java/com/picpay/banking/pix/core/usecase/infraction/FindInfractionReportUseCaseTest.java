@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class FindInfractionReportUseCaseTest {
     private FindInfractionReportUseCase findInfractionReportUseCase;
 
     @Mock
-    private InfractionReportPort infractionReportPort;
+    private InfractionReportFindPort infractionReportPort;
 
     private InfractionReport infractionReport;
 
@@ -56,7 +56,7 @@ class FindInfractionReportUseCaseTest {
 
     @Test
     void when_findInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.find(anyString(), any())).thenReturn(infractionReport);
+        when(infractionReportPort.find(anyString())).thenReturn(infractionReport);
 
         final InfractionReport infractionReport = findInfractionReportUseCase.execute("ID_REPORT");
 
@@ -74,7 +74,7 @@ class FindInfractionReportUseCaseTest {
         assertEquals(infractionReport.getAnalyze().getAnalyzeResult(), InfractionAnalyzeResult.ACCEPTED);
         assertEquals(infractionReport.getAnalyze().getDetails(), "details");
 
-        verify(infractionReportPort).find(anyString(), any());
+        verify(infractionReportPort).find(anyString());
     }
 
 

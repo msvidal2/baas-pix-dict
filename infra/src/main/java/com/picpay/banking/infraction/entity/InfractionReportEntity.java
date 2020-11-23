@@ -22,6 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -36,7 +37,7 @@ import java.time.LocalDateTime;
 public class InfractionReportEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "infraction_report_id")
     private String infractionReportId;
     private String endToEndId;
     private ReportedBy reportedBy;
@@ -67,8 +68,8 @@ public class InfractionReportEntity {
             .infractionType(infractionReport.getType())
             .details(infractionReport.getDetails())
             .requestIdentifier(infractionReport.getRequestIdentifier())
-            .analyzeResult(infractionReport.getAnalyze().getAnalyzeResult())
-            .analyzeDetails(infractionReport.getAnalyze().getDetails())
+            .analyzeResult(Optional.ofNullable(infractionReport.getAnalyze().getAnalyzeResult()).orElse(null))
+            .analyzeDetails(Optional.ofNullable(infractionReport.getAnalyze().getDetails()).orElse(null))
             .build();
     }
 
@@ -86,8 +87,8 @@ public class InfractionReportEntity {
             .type(this.getInfractionType())
             .details(this.getDetails())
             .requestIdentifier(this.getRequestIdentifier())
-            .analyze(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
-                .details(this.getAnalyzeDetails()).build()).build();
+            .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
+                .details(this.getAnalyzeDetails()).build()).orElse(null)).build();
     }
 
 }
