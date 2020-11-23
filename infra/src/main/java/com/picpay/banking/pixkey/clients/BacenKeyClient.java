@@ -11,10 +11,7 @@ import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "PixKey",
         url = "${pix.bacen.dict.entries.url}",
@@ -33,6 +30,11 @@ public interface BacenKeyClient {
     @GetMapping(value = "/entries/{key}",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
-    GetEntryResponse findPixKey(@RequestParam("key") String picKey);
+    GetEntryResponse findPixKey(
+            @RequestHeader("PI-RequestingParticipant") String requestingParticipant,
+            @RequestHeader("PI-PayerId") String payerId,
+            @RequestHeader("PI-EndToEndId") String endToEndId,
+            @PathVariable("key") String picKey
+    );
 
 }

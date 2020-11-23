@@ -26,9 +26,19 @@ public class FindPixKeyBacenPortImpl implements FindPixKeyPort {
 
     @Override
     public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
-        GetEntryResponse getEntryResponse = bacenKeyClient.findPixKey(pixKey);
-        //TODO Ao buscar no Bacen a informação, ela deverá ser incluída no DB?
-        return getEntryResponse.toPixKey();
+        try {
+            //FIXME Remover código fixo
+            GetEntryResponse getEntryResponse = bacenKeyClient.findPixKey(
+                    "22896431",
+                    "9117e65bc9a6a1ed724f2302287f7aa6a8fcff72cb44fb6a51e667e2d523e517",
+                    "E2289643120201014221500000000001",
+                    pixKey);
+            //TODO Ao buscar no Bacen a informação, ela deverá ser incluída no DB?
+            return getEntryResponse.toPixKey();
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

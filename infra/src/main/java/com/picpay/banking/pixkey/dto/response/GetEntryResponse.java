@@ -1,5 +1,6 @@
 package com.picpay.banking.pixkey.dto.response;
 
+import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pixkey.dto.request.Entry;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -23,10 +26,12 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement(name = "GetEntryResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetEntryResponse {
 
     @XmlElement(name = "ResponseTime")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime responseTime;
 
     @XmlElement(name = "CorrelationId")
@@ -62,15 +67,15 @@ public class GetEntryResponse {
                         Statistic.builder()
                                 .lastUpdateDateAntiFraud(statistics.getLastUpdated())
                                 .accountants(statistics.getCounters()
-                                        .stream().map(counter -> Accountant
-                                                .builder()
+                                                .stream().map(counter -> Accountant
+                                                        .builder()
 //                                                .type()
-                                                .aggregate(Aggregate.resolve(counter.getBy().getValue()))
-                                                .lastThreeDays(counter.getD3())
-                                                .lastThirtyDays(counter.getD30())
-                                                .lastSixMonths(counter.getM6())
-                                                .build()
-                                        ).collect(Collectors.toList())
+                                                        .aggregate(Aggregate.resolve(counter.getBy().getValue()))
+                                                        .lastThreeDays(counter.getD3())
+                                                        .lastThirtyDays(counter.getD30())
+                                                        .lastSixMonths(counter.getM6())
+                                                        .build()
+                                                ).collect(Collectors.toList())
                                 )
                                 .build()
                 )
