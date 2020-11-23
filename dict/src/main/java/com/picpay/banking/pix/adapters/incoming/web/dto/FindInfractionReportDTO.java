@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -39,7 +40,7 @@ public class FindInfractionReportDTO {
             .ispbDebited(infractionReport.getIspbDebited())
             .ispbCredited(infractionReport.getIspbCredited())
             .dateCreate(infractionReport.getDateCreate().toString())
-            .dateLastUpdate(infractionReport.getDateLastUpdate().toString())
+            .dateLastUpdate(infractionReport.getDateLastUpdate() != null ? infractionReport.getDateLastUpdate().toString() : null)
             .infractionAnalyze(infractionReport.getAnalyze())
             .build();
     }
