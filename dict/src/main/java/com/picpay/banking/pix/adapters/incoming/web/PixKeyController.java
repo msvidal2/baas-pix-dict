@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,25 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
+import static org.springframework.http.HttpStatus.*;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
 @RequestMapping(value = "v1/keys", produces = "application/json")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class PixKeyController {
 
-    private CreatePixKeyUseCase createPixKeyUseCase;
-
-    private RemovePixKeyUseCase removePixKeyUseCase;
-
-    private FindPixKeyUseCase findPixKeyUseCase;
-
-    private UpdateAccountPixKeyUseCase updateAccountUseCase;
-
-    private ListPixKeyUseCase listPixKeyUseCase;
+    private final CreatePixKeyUseCase createPixKeyUseCase;
+    private final RemovePixKeyUseCase removePixKeyUseCase;
+    private final FindPixKeyUseCase findPixKeyUseCase;
+    private final UpdateAccountPixKeyUseCase updateAccountUseCase;
+    private final ListPixKeyUseCase listPixKeyUseCase;
 
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_CREATE)

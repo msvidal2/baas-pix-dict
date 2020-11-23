@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

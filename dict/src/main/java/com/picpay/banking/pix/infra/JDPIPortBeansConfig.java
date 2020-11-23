@@ -13,6 +13,7 @@ import com.picpay.banking.jdpi.ports.pixkey.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.*;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,12 +44,12 @@ public class JDPIPortBeansConfig {
         return new CompleteClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
-    @Bean
-    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
-                                             CreatePixKeyConverter converter,
-                                             TimeLimiterExecutor timeLimiterExecutor) {
-        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
-    }
+//    @Bean
+//    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
+//                                             CreatePixKeyConverter converter,
+//                                             TimeLimiterExecutor timeLimiterExecutor) {
+//        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
+//    }
 
     @Bean
     public CreateClaimPort createClaimPort(ClaimJDClient claimJDClient,
@@ -57,12 +58,12 @@ public class JDPIPortBeansConfig {
         return new CreateClaimPortImpl(claimJDClient, createClaimConverter, timeLimiterExecutor);
     }
 
-    @Bean
-    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
-                                         final FindPixKeyConverter findPixKeyConverter,
-                                         final TimeLimiterExecutor timeLimiterExecutor) {
-        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
-    }
+//    @Bean
+//    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
+//                                         final FindPixKeyConverter findPixKeyConverter,
+//                                         final TimeLimiterExecutor timeLimiterExecutor) {
+//        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
+//    }
 
     @Bean
     public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
