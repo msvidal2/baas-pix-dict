@@ -64,7 +64,7 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeWithSuccess_expect_pixKeyWithCreatedAt() {
-        when(createPixKeyPort.createPixKey(anyString(), any(), any()))
+        when(createPixKeyPort.createPixKey(any(), any()))
                 .thenReturn(pixKeyCreated);
 
         assertDoesNotThrow(() -> {

@@ -28,22 +28,23 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "createPixKeyFallback")
-    public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
-        CreatePixKeyRequestDTO requestDTO = converter.convert(pixKey, reason);
-
-        var jdpiReturnDTO = timeLimiterExecutor
-                .execute(CIRCUIT_BREAKER_NAME, () -> pixKeyJDClient.createPixKey(requestIdentifier, requestDTO), requestIdentifier);
-
-        log.info
-                ("{ \"pixKey_created\": \""+jdpiReturnDTO.getChave()
-                +"\", \"NameIspb\":\""+pixKey.getNameIspb()
-                +"\", \"AccountNumber\":\""+pixKey.getAccountNumber()
-                +"\", \"BranchNumber\":\""+pixKey.getBranchNumber()+"\"}");
-
-        return converter.convert(jdpiReturnDTO, pixKey);
+    public PixKey createPixKey(PixKey pixKey, CreateReason reason) {
+//        CreatePixKeyRequestDTO requestDTO = converter.convert(pixKey, reason);
+//
+//        var jdpiReturnDTO = timeLimiterExecutor
+//                .execute(CIRCUIT_BREAKER_NAME, () -> pixKeyJDClient.createPixKey(requestIdentifier, requestDTO), requestIdentifier);
+//
+//        log.info
+//                ("{ \"pixKey_created\": \""+jdpiReturnDTO.getChave()
+//                +"\", \"NameIspb\":\""+pixKey.getNameIspb()
+//                +"\", \"AccountNumber\":\""+pixKey.getAccountNumber()
+//                +"\", \"BranchNumber\":\""+pixKey.getBranchNumber()+"\"}");
+//
+//        return converter.convert(jdpiReturnDTO, pixKey);
+        return null;
     }
 
-    public PixKey createPixKeyFallback(String requestIdentifier, PixKey pixKey, CreateReason reason, Exception e) {
+    public PixKey createPixKeyFallback(PixKey pixKey, CreateReason reason, Exception e) {
         throw JDClientExceptionFactory.from(e);
     }
 

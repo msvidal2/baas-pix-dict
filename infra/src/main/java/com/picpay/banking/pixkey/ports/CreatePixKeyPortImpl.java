@@ -23,7 +23,7 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey createPixKey(String requestIdentifier, PixKey pixKey, CreateReason reason) {
+    public PixKey createPixKey(PixKey pixKey, CreateReason reason) {
         repository.save(PixKeyEntity.from(pixKey, reason));
 
         return pixKey;
