@@ -8,8 +8,10 @@ import org.apache.commons.codec.binary.Hex;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -42,6 +44,23 @@ public class ReconciliationUtil {
         }
 
         return null;
+    }
+
+    public static String calculateVsync(final String lastSyncVerifier, final Set<String> cids) {
+        BigInteger sync = null;
+        if (lastSyncVerifier != null) sync = new BigInteger(lastSyncVerifier, 16);
+
+        for (String cid : cids) {
+            BigInteger cidAsBigInteger = new BigInteger(cid, 16);
+            if (sync == null) {
+                sync = cidAsBigInteger;
+                continue;
+            }
+
+            sync = sync.xor(cidAsBigInteger);
+        }
+
+        return sync.toString(16);
     }
 
 }

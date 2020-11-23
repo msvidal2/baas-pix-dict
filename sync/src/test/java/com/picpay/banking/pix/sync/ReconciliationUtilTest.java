@@ -3,6 +3,8 @@ package com.picpay.banking.pix.sync;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReconciliationUtilTest {
@@ -20,11 +22,35 @@ public class ReconciliationUtilTest {
         String accountNumber = "0007654321";
         String accountType = "CACC";
 
-        String expectedCid = "28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88";
         String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
             ownerTradeName, participant, branch, accountNumber, accountType);
 
+        String expectedCid = "28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88";
         assertThat(cid).isEqualTo(expectedCid);
+    }
+
+    @Test
+    @DisplayName("Calcula o Vsync")
+    public void calculateVsync_success() {
+        final Set<String> cids = Set.of("28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88",
+            "4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f",
+            "fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058");
+
+        String vsync = ReconciliationUtil.calculateVsync(null, cids);
+
+        String expectedVsync = "996fc1dd3b6b14bcf0c9fe8320eb66d7e2a3fd874ccf767b2e939641b1ea8eaf";
+        assertThat(vsync).isEqualTo(expectedVsync);
+    }
+
+    @Test
+    @DisplayName("Calcula o Vsync de forma cumulativa")
+    public void calculateVsyncCumulative_success() {
+        String vsync = ReconciliationUtil.calculateVsync(null, Set.of("28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88"));
+        vsync = ReconciliationUtil.calculateVsync(vsync, Set.of("fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058"));
+        vsync = ReconciliationUtil.calculateVsync(vsync, Set.of("4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f"));
+
+        String expectedVsync = "996fc1dd3b6b14bcf0c9fe8320eb66d7e2a3fd874ccf767b2e939641b1ea8eaf";
+        assertThat(vsync).isEqualTo(expectedVsync);
     }
 
 }
