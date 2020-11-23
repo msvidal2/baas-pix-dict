@@ -70,7 +70,7 @@ public class CreatePixKeyValidator {
     }
 
     private void validateKeyExists(final PixKey pixKey) {
-        var pixKeyExisting = findPixKeyPort.findPixKey(null, pixKey.getKey(), null);
+        var pixKeyExisting = findPixKeyPort.findPixKey(pixKey.getKey());
 
         if(Objects.isNull(pixKeyExisting)) {
             return;

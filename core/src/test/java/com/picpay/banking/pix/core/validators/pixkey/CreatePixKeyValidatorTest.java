@@ -41,7 +41,7 @@ class CreatePixKeyValidatorTest {
         when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
-        when(findPixKeyPort.findPixKey(nullable(String.class), anyString(), nullable(String.class)))
+        when(findPixKeyPort.findPixKey(anyString()))
                 .thenReturn(null);
 
         var pixKey = PixKey.builder()
@@ -61,7 +61,7 @@ class CreatePixKeyValidatorTest {
             validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
+            verify(findPixKeyPort).findPixKey(anyString());
         });
     }
 
@@ -402,7 +402,7 @@ class CreatePixKeyValidatorTest {
         when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
-        when(findPixKeyPort.findPixKey(nullable(String.class), anyString(), nullable(String.class)))
+        when(findPixKeyPort.findPixKey(anyString()))
                 .thenReturn(pixKeyMock);
 
         var pixKey = PixKey.builder()
@@ -422,7 +422,7 @@ class CreatePixKeyValidatorTest {
             validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
+            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS);
@@ -446,7 +446,7 @@ class CreatePixKeyValidatorTest {
         when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
-        when(findPixKeyPort.findPixKey(nullable(String.class), anyString(), nullable(String.class)))
+        when(findPixKeyPort.findPixKey(anyString()))
                 .thenReturn(pixKeyMock);
 
         var pixKey = PixKey.builder()
@@ -466,7 +466,7 @@ class CreatePixKeyValidatorTest {
             validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
+            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
@@ -490,7 +490,7 @@ class CreatePixKeyValidatorTest {
         when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
-        when(findPixKeyPort.findPixKey(nullable(String.class), anyString(), nullable(String.class)))
+        when(findPixKeyPort.findPixKey(anyString()))
                 .thenReturn(pixKeyMock);
 
         var pixKey = PixKey.builder()
@@ -510,7 +510,7 @@ class CreatePixKeyValidatorTest {
             validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
+            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
