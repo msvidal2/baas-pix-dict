@@ -18,9 +18,9 @@ import java.util.Optional;
 @Repository
 public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity> {
 
-    Optional<PixKeyEntity> findByKey(String key);
+    Optional<PixKeyEntity> findByIdKey(String key);
 
-    @Query("SELECT t FROM PixKeyEntity t " +
+    @Query("SELECT t FROM pix_key t " +
             "WHERE t.id.taxId = :taxId " +
             "   AND t.branch = :branch " +
             "   AND t.accountNumber = :accountNumber " +
