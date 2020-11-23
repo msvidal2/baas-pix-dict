@@ -4,6 +4,7 @@ import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
+import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -25,26 +28,47 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler({JDClientException.class})
-    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {
-        ResponseEntity<ErrorDTO> responseEntity = ClientErrorResponseFactory.newErrorDTO(ex);
+//    @ExceptionHandler({JDClientException.class})
+//    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {
+//        ResponseEntity<ErrorDTO> responseEntity = ClientErrorResponseFactory.newErrorDTO(ex);
+//
+//        ErrorDTO errorDTO = responseEntity.getBody();
+//
+//        log.error("error_handleJDClientException", errorDTO.toLogJson(ex));
+//
+//        return responseEntity;
+//    }
 
-        ErrorDTO errorDTO = responseEntity.getBody();
+    @ExceptionHandler(PixKeyException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorDTO handlePixKeyException(PixKeyException e) {
+        var errorBuilder = ErrorDTO.builder()
+                .code(BAD_REQUEST.value())
+                .error(BAD_REQUEST.getReasonPhrase())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now());
 
-        log.error("error_handleJDClientException", errorDTO.toLogJson(ex));
+        if(!Objects.isNull(e.getPixKeyError())) {
+            errorBuilder.apiErrorCode(e.getPixKeyError().getCode())
+                    .message(e.getPixKeyError().getMessage());
+        }
 
-        return responseEntity;
+        var error = errorBuilder.build();
+
+        log.error("error_handlePixKeyException", error.toLogJson(e));
+
+        return error;
     }
 
-    @ExceptionHandler(NotFoundJdClientException.class)
-    @ResponseStatus(NOT_FOUND)
-    public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
-        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
-
-        log.error("error_handleNotFoundJdClientException", errorDTO.toLogJson(ex));
-
-        return errorDTO;
-    }
+//    @ExceptionHandler(NotFoundJdClientException.class)
+//    @ResponseStatus(NOT_FOUND)
+//    public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
+//        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
+//
+//        log.error("error_handleNotFoundJdClientException", errorDTO.toLogJson(ex));
+//
+//        return errorDTO;
+//    }
 
     @ExceptionHandler({
             IllegalArgumentException.class,
