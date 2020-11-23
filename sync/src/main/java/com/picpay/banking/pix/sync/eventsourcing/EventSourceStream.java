@@ -5,9 +5,9 @@ import org.springframework.messaging.SubscribableChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface TesteInputStream {
+public interface EventSourceStream {
 
     @Input("sync-input")
-    SubscribableChannel syncInput();
+    SubscribableChannel cidProviderConsumer();
 
 }

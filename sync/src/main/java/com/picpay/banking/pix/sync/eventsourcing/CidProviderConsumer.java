@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class CidProviderConsumer {
 
-    //private CidProviderUseCase cidProviderUseCase;
+    private CidProviderUseCase cidProviderUseCase;
 
     @StreamListener("sync-input")
     @Trace(dispatcher = true, metricName = "SendToFinancialInstitutionUseCase")
