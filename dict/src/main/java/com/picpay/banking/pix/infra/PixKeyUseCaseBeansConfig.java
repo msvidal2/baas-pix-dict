@@ -18,7 +18,7 @@ public class PixKeyUseCaseBeansConfig {
     @Bean
     public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
                                                    CreatePixKeyPort createPixKeyPort,
-                                                   @Qualifier("FindPixKeyPort") FindPixKeyPort findPixKeyPort) {
+                                                   FindPixKeyPort findPixKeyPort) {
         return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort);
     }
 

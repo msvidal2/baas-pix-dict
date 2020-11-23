@@ -31,7 +31,7 @@ public class CreatePixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }
 
-        new CreatePixKeyValidator(findPixKeyPort).validate(pixKey);
+        new CreatePixKeyValidator(findPixKeyPort).validate(pixKey, reason);
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
 

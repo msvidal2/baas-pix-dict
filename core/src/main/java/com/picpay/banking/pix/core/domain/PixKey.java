@@ -5,6 +5,7 @@ import lombok.*;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Builder
 @Setter
@@ -49,6 +50,26 @@ public class PixKey {
         }
 
         return Strings.padStart(taxId, size, '0');
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PixKey pixKey = (PixKey) o;
+        return type == pixKey.type &&
+                key.equals(pixKey.key) &&
+                ispb.equals(pixKey.ispb) &&
+                branchNumber.equals(pixKey.branchNumber) &&
+                accountType == pixKey.accountType &&
+                accountNumber.equals(pixKey.accountNumber) &&
+                personType == pixKey.personType &&
+                taxId.equals(pixKey.taxId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
     }
 
 }
