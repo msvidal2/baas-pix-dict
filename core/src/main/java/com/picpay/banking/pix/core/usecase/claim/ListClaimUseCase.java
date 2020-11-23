@@ -2,8 +2,8 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

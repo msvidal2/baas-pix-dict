@@ -1,5 +1,6 @@
 package com.picpay.banking.pixkey.dto.request;
 
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,14 @@ public class Owner {
                 .type(PersonType.resolve(pixKey.getPersonType()))
                 .taxIdNumber(pixKey.getTaxId())
                 .name(pixKey.getOwnerName())
+                .build();
+    }
+
+    public static Owner from(Claim claim) {
+        return Owner.builder()
+                .type(PersonType.resolve(claim.getPersonType()))
+                .taxIdNumber(claim.getCpfCnpj())
+                .name(claim.getOwnerName())
                 .build();
     }
 

@@ -8,14 +8,14 @@ import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
 import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class CreateClaimPortImpl implements CreateClaimPort {
+public class CreateClaimPortImpl implements CreateClaimBacenPort {
 
     private final static String CIRCUIT_BREAKER_NAME = "create-claim";
 

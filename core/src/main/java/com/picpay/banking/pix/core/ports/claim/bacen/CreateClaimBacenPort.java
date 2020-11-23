@@ -1,9 +1,10 @@
-package com.picpay.banking.pix.core.ports.claim;
+package com.picpay.banking.pix.core.ports.claim.bacen;
 
 
 import com.picpay.banking.pix.core.domain.Claim;
 
-public interface CreateClaimPort {
+public interface CreateClaimBacenPort {
 
     Claim createClaim(final Claim claim, final String requestIdentifier);
+
 }

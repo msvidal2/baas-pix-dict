@@ -1,26 +1,32 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.claim.clients.BacenClaimClient;
+import com.picpay.banking.claim.ports.bacen.CreateClaimPortBacenImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.converter.*;
+import com.picpay.banking.jdpi.converter.ListClaimConverter;
+import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.*;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
-import com.picpay.banking.jdpi.ports.pixkey.*;
+import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
+import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
+import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.ports.pixkey.*;
+import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(value = "pix.partner", havingValue = "jdpi")
-public class JDPIPortBeansConfig {
+@ConditionalOnProperty(value = "pix.partner", havingValue = "bacen")
+public class BacenPortBeansConfig {
 
     @Bean
     public FeignClientInterceptor feignClientInterceptor(TokenManagerClient tokenManagerClient,
@@ -52,10 +58,8 @@ public class JDPIPortBeansConfig {
 //    }
 
     @Bean
-    public CreateClaimBacenPort createClaimPort(ClaimJDClient claimJDClient,
-                                                CreateClaimConverter createClaimConverter,
-                                                TimeLimiterExecutor timeLimiterExecutor) {
-        return new CreateClaimPortImpl(claimJDClient, createClaimConverter, timeLimiterExecutor);
+    public CreateClaimBacenPort createClaimPort(BacenClaimClient bacenClaimClient) {
+        return new CreateClaimPortBacenImpl(bacenClaimClient);
     }
 
 //    @Bean

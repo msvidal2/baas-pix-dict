@@ -37,4 +37,7 @@ public interface BacenKeyClient {
             @PathVariable("key") String picKey
     );
 
+    @PostMapping("/v1/entries")
+    CreateEntryResponse createClaim(@RequestBody CreateEntryRequest createEntryRequest);
+
 }
