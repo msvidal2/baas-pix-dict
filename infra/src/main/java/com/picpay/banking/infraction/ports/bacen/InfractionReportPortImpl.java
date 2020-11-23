@@ -4,7 +4,7 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.infraction.ports;
+package com.picpay.banking.infraction.ports.bacen;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;

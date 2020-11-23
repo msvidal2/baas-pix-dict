@@ -5,7 +5,7 @@
  */
 
 
-package com.picpay.banking.infraction.ports;
+package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.ports.bacen.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
@@ -125,7 +126,7 @@ public class JDPIPortBeansConfig {
     @Bean
     public InfractionReportPort infractionReportPort(final CreateInfractionBacenClient bacenClient,
                                                      final TimeLimiterExecutor timeLimiterExecutor) {
-        return new com.picpay.banking.infraction.ports.InfractionReportPortImpl(bacenClient, timeLimiterExecutor);
+        return new InfractionReportPortImpl(bacenClient, timeLimiterExecutor);
     }
 
 }
