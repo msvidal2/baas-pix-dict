@@ -41,7 +41,7 @@ public class Account {
         return Account.builder()
                 .participant(String.valueOf(pixKey.getIspb()))
                 .branch(pixKey.getBranchNumber())
-                .accountNumber(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
                 .accountType(AccountType.resolve(pixKey.getAccountType()))
                 .openingDate(pixKey.getAccountOpeningDate())
                 .build();

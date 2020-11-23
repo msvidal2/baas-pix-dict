@@ -25,7 +25,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Component()
+@Component
 public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     private static final String CIRCUIT_BREAKER_NAME_FIND_BY_KEY = "FindPixKeyPortImpl_find-by-key";
@@ -54,7 +54,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public List<PixKey> findByAccount(String taxId, String branch, String accountNUmber, AccountType accountType) {
-        return pixKeyRepository.findByAccount(taxId, branch, accountNUmber, accountType)
+        return pixKeyRepository.findByAccount(taxId, branch, accountNUmber, com.picpay.banking.pixkey.dto.request.AccountType.resolve(accountType))
                 .stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());

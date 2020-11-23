@@ -90,6 +90,8 @@ public class CustomExceptionHandler {
 
         log.error("error_handleInternalException", errorDTO.toLogJson(ex));
 
+        log.error(ex.getMessage(), ex);
+
         return errorDTO;
     }
 

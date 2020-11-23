@@ -5,7 +5,7 @@ package com.picpay.banking.pixkey.repository;
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pixkey.dto.request.AccountType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

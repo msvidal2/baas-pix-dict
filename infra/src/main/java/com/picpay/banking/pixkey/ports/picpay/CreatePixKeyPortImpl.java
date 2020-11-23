@@ -22,16 +22,15 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
     private final PixKeyRepository repository;
 
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "createPixKeyFallback")
     public PixKey createPixKey(PixKey pixKey, CreateReason reason) {
         repository.save(PixKeyEntity.from(pixKey, reason));
 
         return pixKey;
     }
 
-    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, CreateReason reason, Exception e) {
+    public PixKey createPixKeyFallback(PixKey pixKey, CreateReason reason, Exception e) {
         log.error("PixKey_fallback_creatingDB",
-                kv("requestIdentifier", requestIdentifier),
                 kv("key", pixKey.getKey()),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));

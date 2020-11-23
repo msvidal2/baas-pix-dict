@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Slf4j
 @EnableCaching
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 public class TokenCacheConfiguration {
 
     public final static String TOKEN_CACHE_NAME = "dict-token";
@@ -23,8 +23,8 @@ public class TokenCacheConfiguration {
         return new ConcurrentMapCacheManager(TOKEN_CACHE_NAME);
     }
 
-    @CacheEvict(allEntries = true, value = TOKEN_CACHE_NAME)
-    @Scheduled(fixedDelay = 30_000)
+//    @CacheEvict(allEntries = true, value = TOKEN_CACHE_NAME)
+//    @Scheduled(fixedDelay = 30_000)
     public void removeTokenFromCache() {
         log.info("TokenCacheConfiguration_removeTokenFromCache");
     }
