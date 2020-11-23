@@ -44,8 +44,7 @@ public class CreatePixKeyValidator {
     }
 
     private void validateKeyExists(final String key) {
-        //TODO -> precisa receber: requestIdentifier, pixKey, userId
-        var pixKey = findPixKeyPort.findPixKey(key);
+        var pixKey = findPixKeyPort.findPixKey(null, key, null);
 
         if(Objects.isNull(pixKey)) {
             return;
