@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.validators.pixkey;
 
+import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -17,7 +18,15 @@ public class CreatePixKeyValidator {
 
     private final FindPixKeyPort findPixKeyPort;
 
-    public void validate(final PixKey pixKey, CreateReason reason) {
+    public void validate(final String requestIdentifier, final PixKey pixKey, final CreateReason reason) {
+        if (Strings.isNullOrEmpty(requestIdentifier) || requestIdentifier.isBlank()) {
+            throw new IllegalArgumentException("requestIdentifier cannot be empty");
+        }
+
+        if(Objects.isNull(pixKey)) {
+            throw new IllegalArgumentException("Pix key cannot be null");
+        }
+
         if(Objects.isNull(pixKey.getType())) {
             throw new IllegalArgumentException("Key type cannot be null");
         }

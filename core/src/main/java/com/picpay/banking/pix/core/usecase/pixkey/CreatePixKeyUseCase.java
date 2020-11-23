@@ -1,17 +1,15 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
+import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.key.KeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Objects;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -23,15 +21,11 @@ public class CreatePixKeyUseCase {
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
 
-    public PixKey execute(@NonNull final String requestIdentifier,
-                          @NonNull final PixKey pixKey,
-                          @NonNull final CreateReason reason) {
+    public PixKey execute(final String requestIdentifier,
+                          final PixKey pixKey,
+                          final CreateReason reason) {
 
-        if (requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier cannot be empty");
-        }
-
-        new CreatePixKeyValidator(findPixKeyPort).validate(pixKey, reason);
+        new CreatePixKeyValidator(findPixKeyPort).validate(requestIdentifier, pixKey, reason);
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
 

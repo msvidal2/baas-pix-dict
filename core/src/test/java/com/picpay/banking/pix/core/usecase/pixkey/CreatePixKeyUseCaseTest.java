@@ -4,8 +4,9 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +34,10 @@ class CreatePixKeyUseCaseTest {
     private CreatePixKeyPort createPixKeyPort;
 
     @Mock
-    private DictItemValidator dictItemValidator;
+    private FindPixKeyPort findPixKeyPort;
+
+    @Mock
+    private CreatePixKeyBacenPort createPixKeyBacenPortBacen;
 
     private PixKey pixKey;
 
@@ -64,7 +69,7 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeWithSuccess_expect_pixKeyWithCreatedAt() {
-        when(createPixKeyPort.createPixKey(any(), any()))
+        when(createPixKeyBacenPortBacen.create(anyString(), any(), any()))
                 .thenReturn(pixKeyCreated);
 
         assertDoesNotThrow(() -> {
@@ -74,22 +79,16 @@ class CreatePixKeyUseCaseTest {
             assertEquals(pixKey.getKey(), response.getKey());
             assertEquals(pixKeyCreated.getCreatedAt(), response.getCreatedAt());
             assertEquals(pixKeyCreated.getStartPossessionAt(), response.getStartPossessionAt());
+
+            verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
+            verify(createPixKeyPort).createPixKey(any(), any());
         });
     }
 
     @Test
-    void when_executeWithEmptyRequestIdentifier_expect_exception() {
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute("", pixKey, CLIENT_REQUEST));
-    }
-
-    @Test
-    void when_executeWithNullRequestIdentifier_expect_exception() {
-        assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, CLIENT_REQUEST));
-    }
-
-    @Test
-    void when_executeWithNullReason_expect_exception() {
-        assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID().toString(), pixKey, null));
+    void when_executeWithValidationError_expect_exception() {
+        assertThrows(IllegalArgumentException.class, () ->
+                useCase.execute(null, pixKey, CLIENT_REQUEST));
     }
 
 }

@@ -21,6 +21,7 @@ import static com.picpay.banking.pix.core.domain.KeyType.CPF;
 import static com.picpay.banking.pix.core.domain.KeyType.EMAIL;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static com.picpay.banking.pix.core.domain.PersonType.LEGAL_ENTITY;
+import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -57,11 +58,74 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         assertDoesNotThrow(() -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
             verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
         });
+    }
+
+    @Test
+    void when_validateWithNullPixKey_expect_illegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                validator.validate(randomUUID().toString(), null, CLIENT_REQUEST));
+    }
+
+    @Test
+    void when_validateWithNullRequestIdentifier_expect_illegalArgumentException() {
+        var pixKey = PixKey.builder()
+                .type(EMAIL)
+                .key("joao@picpay.com")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("24897099099")
+                .name("Joao da Silva")
+                .build();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                validator.validate(null, pixKey, CLIENT_REQUEST));
+    }
+
+    @Test
+    void when_validateWithEmptyRequestIdentifier_expect_illegalArgumentException() {
+        var pixKey = PixKey.builder()
+                .type(EMAIL)
+                .key("joao@picpay.com")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("24897099099")
+                .name("Joao da Silva")
+                .build();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                validator.validate("", pixKey, CLIENT_REQUEST));
+    }
+
+    @Test
+    void when_validateWithBlankRequestIdentifier_expect_illegalArgumentException() {
+        var pixKey = PixKey.builder()
+                .type(EMAIL)
+                .key("joao@picpay.com")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("24897099099")
+                .name("Joao da Silva")
+                .build();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                validator.validate("   ", pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -78,7 +142,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -96,7 +160,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(KeyValidatorException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(KeyValidatorException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -114,7 +178,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -131,7 +195,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -148,7 +212,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -166,7 +230,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -184,7 +248,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -202,7 +266,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -219,7 +283,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -237,7 +301,7 @@ class CreatePixKeyValidatorTest {
                 .name("")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -255,7 +319,7 @@ class CreatePixKeyValidatorTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(pixKey, null));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(randomUUID().toString(), pixKey, null));
     }
 
     @Test
@@ -283,7 +347,7 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         assertThrows(PixKeyException.class, () -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
         });
@@ -314,7 +378,7 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         assertThrows(PixKeyException.class, () -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
         });
@@ -355,7 +419,7 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         var error = assertThrows(PixKeyException.class, () -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
             verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
@@ -399,7 +463,7 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         var error = assertThrows(PixKeyException.class, () -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
             verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
@@ -443,7 +507,7 @@ class CreatePixKeyValidatorTest {
                 .build();
 
         var error = assertThrows(PixKeyException.class, () -> {
-            validator.validate(pixKey, CLIENT_REQUEST);
+            validator.validate(randomUUID().toString(), pixKey, CLIENT_REQUEST);
 
             verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
             verify(findPixKeyPort).findPixKey(nullable(String.class), anyString(), nullable(String.class));
