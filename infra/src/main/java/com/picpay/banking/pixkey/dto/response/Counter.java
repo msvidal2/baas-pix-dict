@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 /**
  * Class comments go here...
@@ -23,14 +21,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Counter {
 
+    @XmlAttribute(name = "type")
     private CounterType type;
 
+    @XmlAttribute(name = "by")
     private CounterByType by;
 
+    @XmlAttribute(name = "d3")
     private Integer d3;
 
+    @XmlAttribute(name = "d30")
     private Integer d30;
 
+    @XmlAttribute(name = "m6")
     private Integer m6;
 
 }
