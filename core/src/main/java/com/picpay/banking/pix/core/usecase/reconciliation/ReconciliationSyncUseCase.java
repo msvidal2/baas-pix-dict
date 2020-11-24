@@ -9,7 +9,8 @@ public class ReconciliationSyncUseCase {
 
     public void execute() {
         // roda via job em horário agendado
-        // percorrer toda tabela de cids e agrupar por tipo de chave
+        // primeira vez: fazer carga com a base atual para gerar o primeiro vsync
+        //
         // para cada grupo é feito o calculo do vsync
         // transmitir o vsync para o Bacen. Ele vai retornar OK ou NOK
         // Se caso NOK chamar usecase FailureReconciliationSyncUseCase
