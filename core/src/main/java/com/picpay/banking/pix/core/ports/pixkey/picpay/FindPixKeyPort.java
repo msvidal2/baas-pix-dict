@@ -10,6 +10,6 @@ public interface FindPixKeyPort {
 
     PixKey findPixKey(String pixKey);
 
-    List<PixKey> findByAccount(String taxId, String branch, String accountNumber, AccountType accountType);
+    List<PixKey> findByAccount(Integer ispb, String branch, String accountNumber, AccountType accountType);
 
 }

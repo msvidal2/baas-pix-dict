@@ -8,19 +8,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CreateReason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue());
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST);
 
-    private Integer value;
+    private Reason value;
 
     private KeyValidator validator;
 
-    CreateReason(int i) {
-        this.value = i;
+    CreateReason(Reason reason) {
+        this.value = reason;
     }
 
     public static CreateReason resolve(int value) {
         for(CreateReason reason : values()) {
-            if (reason.value == value) {
+            if (reason.value.getValue() == value) {
                 return reason;
             }
         }

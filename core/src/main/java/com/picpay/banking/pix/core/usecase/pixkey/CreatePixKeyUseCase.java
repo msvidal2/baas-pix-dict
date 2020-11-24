@@ -12,6 +12,7 @@ import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Objects;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -30,7 +31,8 @@ public class CreatePixKeyUseCase {
 
         CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
-        validateNumberKeys(pixKey);
+        var pixKeysExisting = validateNumberKeys(pixKey);
+        validateRegisteredAccountForDifferentPerson(pixKey, pixKeysExisting);
         validateKeyExists(pixKey);
         validateClaimExists(pixKey);
 
@@ -45,21 +47,33 @@ public class CreatePixKeyUseCase {
         return createdPixKey;
     }
 
-    private void validateNumberKeys(final PixKey pixKey) {
+    private List<PixKey> validateNumberKeys(final PixKey pixKey) {
         int maxKeysPerAccount = 5;
 
         if (PersonType.LEGAL_ENTITY.equals(pixKey.getPersonType())) {
             maxKeysPerAccount = 20;
         }
 
-        var keysExisting =  findPixKeyPort.findByAccount(pixKey.getTaxId(),
+        var pixKeysExisting =  findPixKeyPort.findByAccount(
+                pixKey.getIspb(),
                 pixKey.getBranchNumber(),
                 pixKey.getAccountNumber(),
                 pixKey.getAccountType());
 
-        if(keysExisting.size() >= maxKeysPerAccount) {
+        if(pixKeysExisting.size() >= maxKeysPerAccount) {
             throw new PixKeyException("The maximum number of keys cannot be greater than "+ maxKeysPerAccount);
         }
+
+        return pixKeysExisting;
+    }
+
+    private void validateRegisteredAccountForDifferentPerson(PixKey pixKey, List<PixKey> pixKeysExisting) {
+        pixKeysExisting.stream().findAny()
+                .ifPresent(pk -> {
+                    if(!pixKey.getTaxIdWithLeftZeros().equals(pk.getTaxIdWithLeftZeros())) {
+                        throw new PixKeyException(PixKeyError.EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON);
+                    }
+                });
     }
 
     private void validateKeyExists(final PixKey pixKey) {
