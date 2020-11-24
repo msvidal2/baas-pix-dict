@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
-import static java.util.UUID.randomUUID;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -63,7 +62,7 @@ class ClaimControllerTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .cpfCnpj("12345678902")
+                .taxId("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
     }

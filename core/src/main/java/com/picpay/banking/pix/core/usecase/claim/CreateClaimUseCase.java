@@ -51,15 +51,13 @@ public class CreateClaimUseCase {
 
     private void validateClaimTypeInconsistent(Claim claim) {
         findPixKeyPort.findPixKey(claim.getKey()).ifPresent(pixKey -> {
-            if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())) {
-                if (pixKey.getTaxId().equalsIgnoreCase(claim.getCpfCnpj())) {
+            if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+                    && pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
                     // lançar ClaimTypeInconsistent pq é uma posse e já tá com ele
-                }
             }
-            if (ClaimType.PORTABILITY.equals(claim.getClaimType())) {
-                if (pixKey.getTaxId().equalsIgnoreCase(claim.getCpfCnpj())) {
+            if (ClaimType.PORTABILITY.equals(claim.getClaimType())
+                    && !pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
                     // lançar ClaimTypeInconsistent pq é uma portabilidade sendo que a chave tá com outra pessoa
-                }
             }
         });
     }

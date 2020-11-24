@@ -22,8 +22,11 @@ public class FindOpenClaimByKeyPortImpl implements FindOpenClaimByKeyPort {
 
     @Override
     public Optional<Claim> find(String key) {
+
         ClaimEntity claimEntity = claimRepository.findOpenClaimByKey(key, List.of(OPEN, WAITING_RESOLUTION, CONFIRMED));
-        return Optional.ofNullable(claimEntity.toClaim());
+
+        return Optional.ofNullable(claimEntity)
+                .map(ClaimEntity::toClaim);
     }
 
 }
