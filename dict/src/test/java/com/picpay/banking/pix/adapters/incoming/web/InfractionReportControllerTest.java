@@ -274,7 +274,7 @@ class InfractionReportControllerTest {
 
     @Test
     void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
-        //when(findInfractionReportUseCase.execute(anyString(), any())).thenReturn(findInfractionReport);
+        when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
 
         mockMvc.perform(get("/v1/infraction-report/{infractionReportId}", UUID.randomUUID().toString())
             .contentType(MediaType.APPLICATION_JSON))
