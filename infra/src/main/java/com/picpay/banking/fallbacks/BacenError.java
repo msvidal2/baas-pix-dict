@@ -15,4 +15,5 @@ public class BacenError {
     private String detail;
     private List<FieldError> fields;
     private String correlationId;
+
 }
