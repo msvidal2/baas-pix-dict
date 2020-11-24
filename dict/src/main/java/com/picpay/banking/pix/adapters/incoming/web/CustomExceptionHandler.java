@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
@@ -27,6 +28,21 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(BacenException.class)
+    public ResponseEntity<ErrorDTO> handleBacenException(BacenException e) {
+
+        var error = ErrorDTO.builder()
+                .code(e.getHttpStatus().value())
+                .error(e.getHttpStatus().getReasonPhrase())
+                .apiErrorCode(e.getBacenError().getMessage())
+                .message(e.getBacenError().getDetail())
+                .build();
+
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(error);
+    }
 
 //    @ExceptionHandler({JDClientException.class})
 //    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {

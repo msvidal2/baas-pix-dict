@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,13 +40,19 @@ public class BacenErrorBuilder {
             return null;
         }
 
-        var fields = problem.getViolations().stream()
+        var fields = Optional.ofNullable(problem.getViolations())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(v -> fieldResolver.resolve(v))
                 .collect(Collectors.toList());
 
+        var typeParts = problem.getType().split("[/]");
+
+        var errorCode = BacenErrorCode.resolve(typeParts[typeParts.length - 1]);
+
         return BacenError.builder()
-                .message(problem.getTitle())
-                .detail(problem.getDetail())
+                .message(errorCode.getCode())
+                .detail(errorCode.getMessage())
                 .correlationId(problem.getCorrelationId())
                 .fields(fields)
                 .build();
@@ -63,7 +71,7 @@ public class BacenErrorBuilder {
 
             problem = (Problem) unmarshaller.unmarshal(inputStream);
         } catch (JAXBException e) {
-            log.error("Erro when parse response body", e);
+            log.error("Erro when parse response body: "+ new String(responseBody), e);
         }
     }
 }

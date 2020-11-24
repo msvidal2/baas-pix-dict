@@ -1,4 +1,4 @@
-package com.picpay.banking.jdpi.interceptors;
+package com.picpay.banking.interceptors;
 
 import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;

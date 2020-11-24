@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
-    private final static String PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private final static String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     private final DateTimeFormatter formatter;
 
