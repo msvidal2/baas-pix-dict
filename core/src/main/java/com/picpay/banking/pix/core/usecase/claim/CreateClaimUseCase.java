@@ -30,7 +30,7 @@ public class CreateClaimUseCase {
 
         validator.validate(claim);
 
-        Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
+        // Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
 
         /*if (claimCreated != null)
             log.info("Claim_created",
