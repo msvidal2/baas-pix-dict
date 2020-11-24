@@ -1,6 +1,5 @@
 package com.picpay.banking.fallbacks;
 
-import com.picpay.banking.jdpi.dto.JDErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +9,6 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum BacenErrorCode {
 
-    // Módulo: DICT
     Forbidden("Forbidden", "Requisição de participante autenticado que viola alguma regra de autorização."),
     BadRequest("BadRequest", "Requisição com formato inválido."),
     NotFound("NotFound", "Entidade não encontrada."),

@@ -2,21 +2,16 @@ package com.picpay.banking.pixkey.ports.bacen;
 
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import com.picpay.banking.util.Encrypt;
+import com.picpay.banking.util.EndToEndGenerator;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -47,13 +42,11 @@ public class FindPixKeyBacenPortImpl implements FindPixKeyBacenPort {
     public PixKey findPixKey(String requestIdentifier, String pixKey, String userId) {
 
         var payerId = Encrypt.sha256(participant + userId);
+        var endToEndId = EndToEndGenerator.generate(participant);
 
-        //FIXME Remover código fixo
-        GetEntryResponse getEntryResponse = bacenKeyClient.findPixKey(participant, payerId,
-                "E2289643120201014221500000000001",
-                pixKey);
-        //TODO Ao buscar no Bacen a informação, ela deverá ser incluída no DB?
-        return getEntryResponse.toPixKey();
+        GetEntryResponse getEntryResponse = bacenKeyClient.findPixKey(participant, payerId, endToEndId, pixKey);
+
+        return getEntryResponse.toDomain(endToEndId);
     }
 
     public PixKey fallbackMethod(String requestIdentifier, String pixKey, String userId, Exception e) {

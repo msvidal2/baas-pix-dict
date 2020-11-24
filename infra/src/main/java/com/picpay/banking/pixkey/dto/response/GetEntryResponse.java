@@ -43,13 +43,12 @@ public class GetEntryResponse {
     @XmlElement(name = "Statistics")
     private StatisticsResponse statistics;
 
-    public PixKey toPixKey() {
+    public PixKey toDomain(final String endToEndId) {
         // TODO como incluir os atributos que estão comentados???
         return PixKey.builder()
                 .type(KeyType.resolve(entry.getKeyType().getValue()))
                 .key(entry.getKey())
                 .ispb(Integer.parseInt(entry.getAccount().getParticipant()))
-//                .nameIspb()
                 .branchNumber(entry.getAccount().getBranch())
                 .accountType(AccountType.resolve(entry.getAccount().getAccountType().getValue()))
                 .accountNumber(entry.getAccount().getAccountNumber())
@@ -57,10 +56,9 @@ public class GetEntryResponse {
                 .personType(PersonType.resolve(entry.getOwner().getType().getValue()))
                 .taxId(entry.getOwner().getTaxIdNumber())
                 .name(entry.getOwner().getName())
-//                .fantasyName()
                 .createdAt(entry.getCreationDate())
                 .startPossessionAt(entry.getKeyOwnershipDate())
-//                .endToEndId()
+                .endToEndId(endToEndId)
                 .correlationId(correlationId)
 //                .claim()
                 .statistic(
