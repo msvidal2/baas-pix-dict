@@ -1,7 +1,10 @@
 package com.picpay.banking.pixkey.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Entry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +17,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 /**
  * Class comments go here...
@@ -61,22 +63,7 @@ public class GetEntryResponse {
                 .endToEndId(endToEndId)
                 .correlationId(correlationId)
 //                .claim()
-                .statistic(
-                        Statistic.builder()
-                                .lastUpdateDateAntiFraud(statistics.getLastUpdated())
-                                .accountants(statistics.getCounters()
-                                                .stream().map(counter -> Accountant
-                                                        .builder()
-//                                                .type()
-                                                        .aggregate(Aggregate.resolve(counter.getBy().getValue()))
-                                                        .lastThreeDays(counter.getD3())
-                                                        .lastThirtyDays(counter.getD30())
-                                                        .lastSixMonths(counter.getM6())
-                                                        .build()
-                                                ).collect(Collectors.toList())
-                                )
-                                .build()
-                )
+                .statistic(statistics.toDomain())
                 .build();
     }
 }
