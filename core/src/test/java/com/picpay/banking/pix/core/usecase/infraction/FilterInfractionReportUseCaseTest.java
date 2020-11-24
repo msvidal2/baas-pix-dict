@@ -55,17 +55,17 @@ class FilterInfractionReportUseCaseTest {
 
     @Test
     void when_filterInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.list(anyInt(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt())).thenReturn(List.of(infractionReport));
+        when(infractionReportPort.list(anyInt(), any(), any(), any())).thenReturn(List.of(infractionReport));
 
-        var infractionReports = this.filterInfractionReportUseCase.execute(1, true, true, InfractionReportSituation.ANALYZED, null, null, 1);
+        var infractionReports = this.filterInfractionReportUseCase.execute(1, InfractionReportSituation.ANALYZED, null, null);
         assertThat(infractionReports).isNotEmpty();
 
-        verify(infractionReportPort).list(anyInt(), anyBoolean(), anyBoolean(), any(), any(), any(), anyInt());
+        verify(infractionReportPort).list(anyInt(), any(), any(), any());
     }
 
     @Test
     void when_filterInfractionsWithNullIsbpWithSuccess_expect_throwException() {
-        Assertions.assertThrows(NullPointerException.class,() -> this.filterInfractionReportUseCase.execute(null, true, true, InfractionReportSituation.ANALYZED, null, null, 1));
+        Assertions.assertThrows(NullPointerException.class,() -> this.filterInfractionReportUseCase.execute(null, InfractionReportSituation.ANALYZED, null, null));
     }
 
 

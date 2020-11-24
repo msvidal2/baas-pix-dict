@@ -8,8 +8,14 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
+import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author rafael.braga
@@ -18,5 +24,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InfractionReportRepository extends JpaRepository<InfractionReportEntity, String> {
 
+    @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND ir.situation = :situation")
+    List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation);
 
 }

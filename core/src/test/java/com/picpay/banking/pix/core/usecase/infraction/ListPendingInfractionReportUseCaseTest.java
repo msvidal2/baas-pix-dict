@@ -27,9 +27,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ListPendingInfractionReportUseCaseTest {
 
-    @InjectMocks
-    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
-
     @Mock
     private InfractionReportPort infractionReportPort;
 
@@ -49,21 +46,5 @@ class ListPendingInfractionReportUseCaseTest {
 
         this.listInfractionReport = List.of(infractionReport);
     }
-
-    @Test
-    void when_listPendingInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.listPending(anyInt(), anyInt())).thenReturn(this.listInfractionReport);
-
-        var list = this.listPendingInfractionReportUseCase.execute(1, 1);
-        assertThat(list).isNotEmpty();
-
-        verify(infractionReportPort).listPending(anyInt(), anyInt());
-    }
-
-   @Test
-    void when_trylistPendingInfractionsWithNullIspb_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.listPendingInfractionReportUseCase.execute(null, 1));
-    }
-
 
 }

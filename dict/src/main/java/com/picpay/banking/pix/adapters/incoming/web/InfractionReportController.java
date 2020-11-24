@@ -16,7 +16,6 @@ import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -40,7 +39,6 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class InfractionReportController {
 
-    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
     private final CreateInfractionReportUseCase createInfractionReportUseCase;
     private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
     private final FindInfractionReportUseCase findInfractionReportUseCase;
@@ -62,19 +60,6 @@ public class InfractionReportController {
         final var infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), requestIdentifier);
 
         return InfractionReportCreatedDTO.from(infractionReport);
-    }
-
-    @Trace
-    @ApiOperation(value = "List pendings infractions")
-    @GetMapping(value = "/pending/{ispb}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    public List<InfractionReportDTO> listPending(@PathVariable("ispb") Integer ispb,
-                                                 @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-
-        log.info("Infraction_listingPending", kv("limit", limit), kv("ispb", ispb));
-
-        return this.listPendingInfractionReportUseCase
-            .execute(ispb, limit).stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }
 
     @Trace
@@ -134,9 +119,8 @@ public class InfractionReportController {
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
 
         var listInfractionReport = this.filterInfractionReportUseCase.execute(
-            filter.getIspb(), filter.getEhDebitado(), filter.getEhCreditado(),
-            InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
-            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim(), filter.getNrLimite());
+            filter.getIspb(), InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
+            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim());
 
         return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }

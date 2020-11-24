@@ -12,15 +12,12 @@ public interface InfractionReportPort {
 
     InfractionReport create(InfractionReport infractionReport, String requestIdentifier);
 
-    List<InfractionReport> listPending(Integer ispb, Integer limit);
-
     InfractionReport find(final String infractionReportId, final String ispb);
 
     InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier);
 
     InfractionReport analyze(String infractionReportId, Integer ispb, InfractionAnalyze analyze, String requestIdentifier);
 
-    List<InfractionReport> list(Integer isbp, Boolean isDebited, Boolean isCredited, InfractionReportSituation situation,
-                                LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit);
+    List<InfractionReport> list(Integer isbp, InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd);
 
 }

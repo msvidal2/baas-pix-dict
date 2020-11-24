@@ -15,7 +15,6 @@ import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,9 +57,6 @@ class InfractionReportControllerTest {
 
     @Mock
     private CreateInfractionReportUseCase createInfractionReportUseCase;
-
-    @Mock
-    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
 
     @Mock
     private CancelInfractionReportUseCase cancelInfractionReportUseCase;
@@ -234,45 +230,6 @@ class InfractionReportControllerTest {
     }
 
     @Test
-    void when_RequestListInfractions_expect_statusOk() throws Exception {
-        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
-
-        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
-            .queryParam("limit", "1")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].infractionReportId").exists())
-            .andExpect(jsonPath("$.[0].reportedBy").exists())
-            .andExpect(jsonPath("$.[0].situation").exists())
-            .andExpect(jsonPath("$.[0].ispbDebited").exists())
-            .andExpect(jsonPath("$.[0].ispbCredited").exists())
-            .andExpect(jsonPath("$.[0].dateCreate").exists())
-            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
-
-        verify(listPendingInfractionReportUseCase).execute(anyInt(), anyInt());
-    }
-
-    @Test
-    void when_RequestListInfractionsWithoutLimit_expect_statusOk() throws Exception {
-        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
-
-        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].infractionReportId").exists())
-            .andExpect(jsonPath("$.[0].reportedBy").exists())
-            .andExpect(jsonPath("$.[0].situation").exists())
-            .andExpect(jsonPath("$.[0].ispbDebited").exists())
-            .andExpect(jsonPath("$.[0].ispbCredited").exists())
-            .andExpect(jsonPath("$.[0].dateCreate").exists())
-            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
-
-        verify(listPendingInfractionReportUseCase).execute(anyInt(), argThat(limitDefault -> limitDefault == 10));
-    }
-
-    @Test
     void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
         when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
 
@@ -293,7 +250,7 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        //verify(findInfractionReportUseCase).execute(anyString(), any());
+        verify(findInfractionReportUseCase).execute(anyString());
 
     }
 
@@ -374,8 +331,8 @@ class InfractionReportControllerTest {
     @Test
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
-        when(filterInfractionReportUseCase.execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class))).thenReturn(List.of(findInfractionReport));
+        when(filterInfractionReportUseCase.execute(anyInt(),nullable(InfractionReportSituation.class),nullable(LocalDateTime.class),
+            nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
 
         mockMvc.perform(get("/v1/infraction-report")
             .contentType(MediaType.APPLICATION_JSON)
@@ -384,8 +341,8 @@ class InfractionReportControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());
 
-        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class));
+        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(
+            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class));
 
     }
 

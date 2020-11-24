@@ -23,18 +23,10 @@ public class FilterInfractionReportDTO {
     @NotNull
     private Integer ispb;
 
-    private Boolean ehDebitado;
-
-    private Boolean ehCreditado;
-
     private Integer stRelatoInfracao;
-
-    private Boolean incluiDetalhes;
 
     private LocalDateTime dtHrModificacaoInicio;
 
     private LocalDateTime dtHrModificacaoFim;
-
-    private Integer nrLimite;
 
 }

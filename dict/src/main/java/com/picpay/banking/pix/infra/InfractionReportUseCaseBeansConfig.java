@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
@@ -8,7 +9,6 @@ import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,11 +19,6 @@ public class InfractionReportUseCaseBeansConfig {
     public CreateInfractionReportUseCase createInfractionReportUseCase(
         InfractionReportPort infractionReportPort, InfractionReportSavePort infractionReportSavePort) {
         return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort);
-    }
-
-    @Bean
-    public ListPendingInfractionReportUseCase listPendingInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new ListPendingInfractionReportUseCase(infractionReportPort);
     }
 
     @Bean
@@ -42,8 +37,8 @@ public class InfractionReportUseCaseBeansConfig {
     }
 
     @Bean
-    public FilterInfractionReportUseCase filterInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new FilterInfractionReportUseCase(infractionReportPort);
+    public FilterInfractionReportUseCase filterInfractionReportUseCase(InfractionReportListPort infractionReportListPort) {
+        return new FilterInfractionReportUseCase(infractionReportListPort);
     }
 
 }

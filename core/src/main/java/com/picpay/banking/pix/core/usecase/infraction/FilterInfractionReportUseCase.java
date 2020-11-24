@@ -3,6 +3,8 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -17,13 +19,12 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class FilterInfractionReportUseCase {
 
-    private InfractionReportPort infractionReportPort;
+    private InfractionReportListPort infractionReportListPort;
 
-    public List<InfractionReport> execute(@NonNull Integer ispb, Boolean isDebited, Boolean isCredited
-            , InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
+    public List<InfractionReport> execute(@NonNull Integer ispb, InfractionReportSituation situation,
+        LocalDateTime dateStart, LocalDateTime dateEnd) {
 
-        List<InfractionReport> infractions = infractionReportPort
-                .list(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
+        List<InfractionReport> infractions = infractionReportListPort.list(ispb, situation, dateStart, dateEnd);
 
         if (infractions != null)
             log.info("Infraction_filtered", kv("size", infractions.size()));
