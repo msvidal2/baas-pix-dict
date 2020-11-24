@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
+import com.picpay.banking.pix.core.domain.Statistic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class comments go here...
@@ -34,5 +36,15 @@ public class StatisticsResponse {
     @XmlElementWrapper(name = "Counters")
     @XmlElement(name = "Counter")
     private List<Counter> counters;
+
+    public Statistic toDomain() {
+        return Statistic.builder()
+                .lastUpdateDateAntiFraud(lastUpdated)
+                .accountants(counters
+                        .stream().map(counter -> counter.toDomain())
+                        .collect(Collectors.toList())
+                )
+                .build();
+    }
 
 }

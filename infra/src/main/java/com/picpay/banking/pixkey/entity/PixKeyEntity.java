@@ -105,8 +105,6 @@ public class PixKeyEntity {
                 .name(name)
                 .createdAt(creationDate)
                 .startPossessionAt(ownershipDate)
-                //TODO Implementar atributo endToEndId
-                .endToEndId("NOT IMPLEMENTED")
                 .correlationId(correlationId)
                 //TODO Implementar atributo claim
 //                .claim()
