@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
@@ -28,8 +29,7 @@ import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static com.picpay.banking.pix.core.domain.PersonType.LEGAL_ENTITY;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -88,10 +88,10 @@ class CreatePixKeyUseCaseTest {
             assertEquals(pixKey.getKey(), response.getKey());
             assertEquals(pixKeyCreated.getCreatedAt(), response.getCreatedAt());
             assertEquals(pixKeyCreated.getStartPossessionAt(), response.getStartPossessionAt());
-
-            verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
-            verify(createPixKeyPort).createPixKey(any(), any());
         });
+
+        verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
+        verify(createPixKeyPort).createPixKey(any(), any());
     }
 
     @Test
@@ -108,7 +108,7 @@ class CreatePixKeyUseCaseTest {
             mockKeys.add(PixKey.builder().build());
         }
 
-        when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(mockKeys);
 
         var pixKey = PixKey.builder()
@@ -124,11 +124,9 @@ class CreatePixKeyUseCaseTest {
                 .name("Joao da Silva")
                 .build();
 
-        assertThrows(PixKeyException.class, () -> {
-            useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
+        assertThrows(PixKeyException.class, () -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
 
-            verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-        });
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
     }
 
     @Test
@@ -139,7 +137,7 @@ class CreatePixKeyUseCaseTest {
             mockKeys.add(PixKey.builder().build());
         }
 
-        when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(mockKeys);
 
         var pixKey = PixKey.builder()
@@ -157,9 +155,9 @@ class CreatePixKeyUseCaseTest {
 
         assertThrows(PixKeyException.class, () -> {
             useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
-
-            verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
         });
+
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
     }
 
     @Test
@@ -177,7 +175,7 @@ class CreatePixKeyUseCaseTest {
                 .name("Joao da Silva")
                 .build();
 
-        when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
         when(findPixKeyPort.findPixKey(anyString()))
@@ -198,12 +196,12 @@ class CreatePixKeyUseCaseTest {
 
         var error = assertThrows(PixKeyException.class, () -> {
             useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
-
-            verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS);
+
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
+        verify(findPixKeyPort).findPixKey(anyString());
     }
 
     @Test
@@ -221,7 +219,7 @@ class CreatePixKeyUseCaseTest {
                 .name("Joao da Silva")
                 .build();
 
-        when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
         when(findPixKeyPort.findPixKey(anyString()))
@@ -242,12 +240,12 @@ class CreatePixKeyUseCaseTest {
 
         var error = assertThrows(PixKeyException.class, () -> {
             useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
-
-            verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
+
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
+        verify(findPixKeyPort).findPixKey(anyString());
     }
 
     @Test
@@ -256,16 +254,16 @@ class CreatePixKeyUseCaseTest {
                 .type(EMAIL)
                 .key("joao@picpay.com")
                 .ispb(24534534)
-                .branchNumber("2")
+                .branchNumber("1")
                 .accountType(CHECKING)
-                .accountNumber("934943543")
+                .accountNumber("010023456")
                 .accountOpeningDate(LocalDateTime.now())
                 .personType(INDIVIDUAL_PERSON)
                 .taxId("22222222222")
                 .name("Joao da Silva")
                 .build();
 
-        when(findPixKeyPort.findByAccount(anyString(), anyString(), anyString(), any()))
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
         when(findPixKeyPort.findPixKey(anyString()))
@@ -286,12 +284,52 @@ class CreatePixKeyUseCaseTest {
 
         var error = assertThrows(PixKeyException.class, () -> {
             useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
-
-            verify(findPixKeyPort).findByAccount(anyString(), anyString(), anyString(), any());
-            verify(findPixKeyPort).findPixKey(anyString());
         }).getPixKeyError();
 
         assertEquals(error, PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
+
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
+        verify(findPixKeyPort).findPixKey(anyString());
+    }
+
+    @Test
+    void when_executeWhenExistsAccountRegistryForDifferentPerson_expect_pixKeyException() {
+        var pixKeyMock = PixKey.builder()
+                .type(EMAIL)
+                .key("joao@picpay.com")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("22222222222")
+                .name("Joao da Silva")
+                .build();
+
+        when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
+                .thenReturn(List.of(pixKeyMock));
+
+        var pixKey = PixKey.builder()
+                .type(CPF)
+                .key("24897099099")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("24897099099")
+                .name("Joao da Silva")
+                .build();
+
+        var error = assertThrows(PixKeyException.class, () -> {
+            useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
+        }).getPixKeyError();
+
+        assertEquals(error, PixKeyError.EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON);
+
+        verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
     }
 
 //    @Test

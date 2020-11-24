@@ -53,8 +53,8 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     }
 
     @Override
-    public List<PixKey> findByAccount(String taxId, String branch, String accountNUmber, AccountType accountType) {
-        return pixKeyRepository.findByAccount(taxId, branch, accountNUmber, com.picpay.banking.pixkey.dto.request.AccountType.resolve(accountType))
+    public List<PixKey> findByAccount(Integer ispb, String branch, String accountNUmber, AccountType accountType) {
+        return pixKeyRepository.findByAccount(ispb, branch, accountNUmber, accountType)
                 .stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());

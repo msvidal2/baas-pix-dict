@@ -6,16 +6,12 @@
 
 package com.picpay.banking.pixkey.entity;
 
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pixkey.dto.request.AccountType;
-import com.picpay.banking.pixkey.dto.request.KeyType;
-import com.picpay.banking.pixkey.dto.request.PersonType;
-import com.picpay.banking.pixkey.dto.request.Reason;
+import com.picpay.banking.pix.core.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +28,7 @@ public class PixKeyEntity {
     private PixKeyIdEntity id;
 
     @Column(nullable = false)
-    private String participant;
+    private Integer participant;
 
     @Column(nullable = false)
     private String branch;
@@ -67,6 +63,7 @@ public class PixKeyEntity {
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime ownershipDate;
 
+    @LastModifiedDate
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updateDate;
 
@@ -77,17 +74,17 @@ public class PixKeyEntity {
         return PixKeyEntity.builder()
                 .id(PixKeyIdEntity.builder()
                         .key(pixKey.getKey())
-                        .type(KeyType.resolve(pixKey.getType()))
+                        .type(pixKey.getType())
                         .taxId(pixKey.getTaxId())
                         .build())
-                .participant(String.valueOf(pixKey.getIspb()))
+                .participant(pixKey.getIspb())
                 .branch(pixKey.getBranchNumber())
                 .accountNumber(pixKey.getAccountNumber())
-                .accountType(AccountType.resolve(pixKey.getAccountType()))
+                .accountType(pixKey.getAccountType())
                 .openingDate(pixKey.getAccountOpeningDate())
-                .personType(PersonType.resolve(pixKey.getPersonType()))
+                .personType(pixKey.getPersonType())
                 .name(pixKey.getName())
-                .reason(Reason.resolve(reason))
+                .reason(reason.getValue())
                 .correlationId(pixKey.getCorrelationId())
                 .creationDate(pixKey.getCreatedAt())
                 .ownershipDate(pixKey.getStartPossessionAt())
@@ -98,7 +95,7 @@ public class PixKeyEntity {
         return PixKey.builder()
                 .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
                 .key(id.getKey())
-                .ispb(Integer.parseInt(participant))
+                .ispb(participant)
                 .branchNumber(branch)
                 .accountType(com.picpay.banking.pix.core.domain.AccountType.resolve(accountType.getValue()))
                 .accountNumber(accountNumber)
