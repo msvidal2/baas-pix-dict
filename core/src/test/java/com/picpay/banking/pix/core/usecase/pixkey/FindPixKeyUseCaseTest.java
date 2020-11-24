@@ -1,8 +1,8 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +28,9 @@ class FindPixKeyUseCaseTest {
     @Mock
     private FindPixKeyPort findPixKeyPort;
 
+    @Mock
+    private FindPixKeyBacenPort findPixKeyBacenPort;
+
     @Test
     void when_findPixKeyWithSuccess_expect_pixKey() {
         var pixKeyMockResponse = PixKey.builder()
@@ -47,7 +50,42 @@ class FindPixKeyUseCaseTest {
                 .type(KeyType.CPF)
                 .build();
 
-        when(findPixKeyPort.findPixKey(anyString(), any(), anyString()))
+        when(findPixKeyPort.findPixKey(any()))
+                .thenReturn(pixKeyMockResponse);
+
+        assertDoesNotThrow(() -> {
+            var pixKey = useCase.execute(randomUUID, "59375566072", "59375566072");
+
+            assertNotNull(pixKey);
+            assertEquals(PersonType.INDIVIDUAL_PERSON, pixKey.getPersonType());
+            assertEquals(KeyType.CPF, pixKey.getType());
+            assertEquals("59375566072", pixKey.getKey());
+        });
+    }
+
+    @Test
+    void when_findPixKeyBacenWithSuccess_expect_pixKey() {
+        var pixKeyMockResponse = PixKey.builder()
+                .accountNumber("123456")
+                .accountOpeningDate(LocalDateTime.now())
+                .accountType(AccountType.CHECKING)
+                .branchNumber("0001")
+                .claim(ClaimType.POSSESSION_CLAIM)
+                .taxId("59375566072")
+                .createdAt(LocalDateTime.now())
+                .ispb(5345343)
+                .key("59375566072")
+                .name("Dona Maria")
+                .nameIspb("PicPay Bank")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .startPossessionAt(LocalDateTime.now())
+                .type(KeyType.CPF)
+                .build();
+
+        when(findPixKeyPort.findPixKey(any()))
+                .thenReturn(null);
+
+        when(findPixKeyBacenPort.findPixKey(any(), any(), any()))
                 .thenReturn(pixKeyMockResponse);
 
         assertDoesNotThrow(() -> {

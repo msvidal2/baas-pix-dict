@@ -45,7 +45,7 @@ public class CreatePixKeyWebConverter implements DataConverter<CreatePixKeyReque
             .cpfCnpj(Long.valueOf(from.getTaxId()))
             .nome(from.getName())
             .nomeFantasia(from.getFantasyName())
-            .motivo(reason.getValue())
+            .motivo(reason.getValue().getValue())
             .build();
     }
 

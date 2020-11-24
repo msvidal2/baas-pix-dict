@@ -7,7 +7,7 @@ import com.picpay.banking.jdpi.dto.request.ListPixKeyRequestDTO;
 import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
