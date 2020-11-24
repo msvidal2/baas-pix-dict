@@ -19,10 +19,15 @@ import java.util.List;
 public class Problem {
 
     private String type;
+
     private String title;
+
     private Integer status;
+
     private String detail;
+
     private String correlationId;
+
     private List<Violation> violations;
 
 }

@@ -12,7 +12,9 @@ import lombok.Setter;
 public class Violation {
 
     private String reason;
+
     private String value;
+
     private String property;
 
 }

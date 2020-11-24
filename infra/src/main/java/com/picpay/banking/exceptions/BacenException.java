@@ -1,8 +1,10 @@
 package com.picpay.banking.exceptions;
 
 import com.picpay.banking.fallbacks.BacenError;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class BacenException extends RuntimeException {
 
     private BacenError bacenError;
