@@ -7,6 +7,8 @@
 package com.picpay.banking.infraction.ports.bacen;
 
 import com.newrelic.api.agent.Trace;
+import com.picpay.banking.fallbacks.BacenExceptionBuilder;
+import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
@@ -73,9 +75,9 @@ public class InfractionReportPortImpl implements InfractionReportPort {
     }
 
     public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {
-//        throw new BacenClientExceptionFactory.from(e);
-//        throw JDClientExceptionFactory.from(e);
-        return null;
+        throw BacenExceptionBuilder.from(e)
+            .withFieldResolver(new PixKeyFieldResolver())
+            .build();
     }
 
 }

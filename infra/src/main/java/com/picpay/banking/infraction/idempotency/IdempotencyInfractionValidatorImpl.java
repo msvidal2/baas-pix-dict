@@ -7,7 +7,8 @@
 package com.picpay.banking.infraction.idempotency;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picpay.banking.infraction.exception.DuplicatedInfractionReportException;
+import com.picpay.banking.pix.core.exception.InfractionReportError;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +38,7 @@ public class IdempotencyInfractionValidatorImpl implements IdempotencyValidator<
         if (foundReport.equals(compareTo))
             return Optional.of(foundReport);
 
-        throw new DuplicatedInfractionReportException(idempotencyKey);
+        throw new InfractionReportException(InfractionReportError.INFRACTION_REPORT_CONFLICT);
     }
 
     public com.picpay.banking.pix.core.domain.InfractionReport get(final String idempotencyKey) {

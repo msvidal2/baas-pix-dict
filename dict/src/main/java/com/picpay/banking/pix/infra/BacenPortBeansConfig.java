@@ -2,8 +2,9 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.ports.bacen.CreateClaimPortBacenImpl;
+import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.ports.bacen.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
-import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
@@ -11,7 +12,6 @@ import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.*;
-import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
@@ -108,9 +108,9 @@ public class BacenPortBeansConfig {
     }
 
     @Bean
-    public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient,
-                                                     TimeLimiterExecutor timeLimiterExecutor) {
-        return new InfractionReportPortImpl(infractionReportJDClient, timeLimiterExecutor);
+    public InfractionReportPort infractionReportPort(final TimeLimiterExecutor timeLimitExecutor,
+                                                     final CreateInfractionBacenClient bacenClient) {
+        return new InfractionReportPortImpl(bacenClient, timeLimitExecutor);
     }
 
 }

@@ -25,8 +25,8 @@ public class CreateInfractionReportUseCase {
         if(requestIdentifier.isBlank())
             throw new IllegalArgumentException("The request identifier cannot be empty");
 
-        Optional<InfractionReport> exitingInfraction = idempotency.validate(requestIdentifier, infractionReport);
-        return exitingInfraction.orElseGet(() -> create(infractionReport, requestIdentifier));
+        Optional<InfractionReport> existingInfraction = idempotency.validate(requestIdentifier, infractionReport);
+        return existingInfraction.orElseGet(() -> create(infractionReport, requestIdentifier));
     }
 
     private InfractionReport create(@NonNull final InfractionReport infractionReport,
