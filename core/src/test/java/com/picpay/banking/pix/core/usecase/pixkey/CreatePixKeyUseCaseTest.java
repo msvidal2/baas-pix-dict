@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
@@ -162,7 +163,7 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeIfKeyExists_expect_pixKeyException() {
-        var pixKeyMock = PixKey.builder()
+        var pixKeyMock = Optional.of(PixKey.builder()
                 .type(EMAIL)
                 .key("joao@picpay.com")
                 .ispb(24534534)
@@ -173,7 +174,7 @@ class CreatePixKeyUseCaseTest {
                 .personType(INDIVIDUAL_PERSON)
                 .taxId("24897099099")
                 .name("Joao da Silva")
-                .build();
+                .build());
 
         when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
@@ -206,7 +207,7 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeIfKeyExistsIntoPspToSamePerson_expect_pixKeyException() {
-        var pixKeyMock = PixKey.builder()
+        var pixKeyMock = Optional.of(PixKey.builder()
                 .type(EMAIL)
                 .key("joao@picpay.com")
                 .ispb(24534534)
@@ -217,7 +218,7 @@ class CreatePixKeyUseCaseTest {
                 .personType(INDIVIDUAL_PERSON)
                 .taxId("24897099099")
                 .name("Joao da Silva")
-                .build();
+                .build());
 
         when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());
@@ -250,7 +251,7 @@ class CreatePixKeyUseCaseTest {
 
     @Test
     void when_executeIfKeyExistsIntoPspToAnotherPerson_expect_pixKeyException() {
-        var pixKeyMock = PixKey.builder()
+        var pixKeyMock = Optional.of(PixKey.builder()
                 .type(EMAIL)
                 .key("joao@picpay.com")
                 .ispb(24534534)
@@ -261,7 +262,7 @@ class CreatePixKeyUseCaseTest {
                 .personType(INDIVIDUAL_PERSON)
                 .taxId("22222222222")
                 .name("Joao da Silva")
-                .build();
+                .build());
 
         when(findPixKeyPort.findByAccount(anyInt(), anyString(), anyString(), any()))
                 .thenReturn(Collections.emptyList());

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,14 +33,12 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME_FIND_BY_KEY, fallbackMethod = "findPixKeyFallback")
-    public PixKey findPixKey(String pixKey) {
-        Optional<PixKeyEntity> pixKeyEntity = pixKeyRepository.findByIdKey(pixKey);
-        if (pixKeyEntity.isEmpty() || Objects.isNull(pixKeyEntity.get()))
-            return null;
-        return pixKeyEntity.get().toPixKey();
+    public Optional<PixKey> findPixKey(String pixKey) {
+        return pixKeyRepository.findByIdKey(pixKey)
+                .map(PixKeyEntity::toPixKey);
     }
 
-    public PixKey findPixKeyFallback(String pixKey, Exception e) {
+    public Optional<PixKey> findPixKeyFallback(String pixKey, Exception e) {
         log.error("PixKey_fallback_creatingBacen",
                 kv("key", pixKey),
                 kv("exceptionMessage", e.getMessage()),

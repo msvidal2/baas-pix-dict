@@ -77,21 +77,16 @@ public class CreatePixKeyUseCase {
     }
 
     private void validateKeyExists(final PixKey pixKey) {
-        var pixKeyExisting = findPixKeyPort.findPixKey(pixKey.getKey());
-
-        if(Objects.isNull(pixKeyExisting)) {
-            return;
-        }
-
-        if(pixKey.getTaxIdWithLeftZeros().equals(pixKeyExisting.getTaxIdWithLeftZeros())) {
-            if(pixKey.equals(pixKeyExisting)) {
-                throw new PixKeyException(PixKeyError.KEY_EXISTS);
+        var optionalPixKey = findPixKeyPort.findPixKey(pixKey.getKey());
+        optionalPixKey.ifPresent(pixKeyExisting -> {
+            if(pixKey.getTaxIdWithLeftZeros().equals(pixKeyExisting.getTaxIdWithLeftZeros())) {
+                if(pixKey.equals(pixKeyExisting)) {
+                    throw new PixKeyException(PixKeyError.KEY_EXISTS);
+                }
+                throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
             }
-
-            throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
-        }
-
-        throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
+            throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
+        });
     }
 
     private void validateClaimExists(final PixKey pixKey) {
