@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
@@ -31,29 +33,27 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BacenException.class)
     public ResponseEntity<ErrorDTO> handleBacenException(BacenException e) {
+        var bacenError = e.getBacenError();
 
-        var error = ErrorDTO.builder()
+        var errorBuilder = ErrorDTO.builder()
                 .code(e.getHttpStatus().value())
                 .error(e.getHttpStatus().getReasonPhrase())
-                .apiErrorCode(e.getBacenError().getMessage())
-                .message(e.getBacenError().getDetail())
-                .build();
+                .apiErrorCode(bacenError.getMessage())
+                .message(bacenError.getDetail());
+
+        if(bacenError.getFields() != null && bacenError.getFields().isEmpty()) {
+            var fields = bacenError.getFields()
+                    .stream()
+                    .map(FieldErrorDTO::from)
+                    .collect(Collectors.toList());
+
+            errorBuilder.fieldErrors(fields);
+        }
 
         return ResponseEntity
                 .status(e.getHttpStatus())
-                .body(error);
+                .body(errorBuilder.build());
     }
-
-//    @ExceptionHandler({JDClientException.class})
-//    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {
-//        ResponseEntity<ErrorDTO> responseEntity = ClientErrorResponseFactory.newErrorDTO(ex);
-//
-//        ErrorDTO errorDTO = responseEntity.getBody();
-//
-//        log.error("error_handleJDClientException", errorDTO.toLogJson(ex));
-//
-//        return responseEntity;
-//    }
 
     @ExceptionHandler(PixKeyException.class)
     @ResponseStatus(BAD_REQUEST)
@@ -75,16 +75,6 @@ public class CustomExceptionHandler {
 
         return error;
     }
-
-//    @ExceptionHandler(NotFoundJdClientException.class)
-//    @ResponseStatus(NOT_FOUND)
-//    public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
-//        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
-//
-//        log.error("error_handleNotFoundJdClientException", errorDTO.toLogJson(ex));
-//
-//        return errorDTO;
-//    }
 
     @ExceptionHandler({
             IllegalArgumentException.class,
