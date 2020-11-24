@@ -9,15 +9,25 @@ package com.picpay.banking.infraction.dto.response;
 
 import com.picpay.banking.infraction.dto.request.InfractionReport;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author rafael.braga
  * @version 1.0 18/11/2020
  */
 @Data
+@NoArgsConstructor
+@XmlRootElement(name = "CreateInfractionReportResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CreateInfractionReportResponse {
 
-    private final InfractionReport infractionReport;
+    @XmlElement(name = "InfractionReport")
+    private InfractionReport infractionReport;
 
     public com.picpay.banking.pix.core.domain.InfractionReport toInfractionReport() {
         return com.picpay.banking.pix.core.domain.InfractionReport.builder()

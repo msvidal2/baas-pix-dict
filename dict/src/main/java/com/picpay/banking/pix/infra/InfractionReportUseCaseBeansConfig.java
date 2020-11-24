@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.domain.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
@@ -9,6 +10,7 @@ import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
+import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,9 +18,10 @@ import org.springframework.context.annotation.Configuration;
 public class InfractionReportUseCaseBeansConfig {
 
     @Bean
-    public CreateInfractionReportUseCase createInfractionReportUseCase(
-        InfractionReportPort infractionReportPort, InfractionReportSavePort infractionReportSavePort) {
-        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort);
+    public CreateInfractionReportUseCase createInfractionReportUseCase(InfractionReportPort infractionReportPort,
+                                                                       InfractionReportSavePort infractionReportSavePort,
+                                                                       IdempotencyValidator<InfractionReport> validator) {
+        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, validator);
     }
 
     @Bean

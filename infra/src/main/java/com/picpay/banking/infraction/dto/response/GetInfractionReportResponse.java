@@ -23,7 +23,7 @@ public class GetInfractionReportResponse {
     public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
         return com.picpay.banking.pix.core.domain.InfractionReport.builder()
             .infractionReportId(infractionReport.getId())
-            .type(com.picpay.banking.pix.core.domain.InfractionType.resolve(infractionReport.getInfractionType().getValue()))
+            .infractionType(com.picpay.banking.pix.core.domain.InfractionType.resolve(infractionReport.getInfractionType().getValue()))
             .reportedBy(infractionReport.getReportedBy())
             .transactionId(infractionReport.getTransactionId())
             .details(infractionReport.getReportDetails())

@@ -89,7 +89,7 @@ class InfractionReportControllerTest {
 
         findInfractionReport = InfractionReport.builder()
             .endToEndId("E9999901012341234123412345678900")
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .details("situacao irregular da cartao")
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
@@ -110,7 +110,7 @@ class InfractionReportControllerTest {
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 

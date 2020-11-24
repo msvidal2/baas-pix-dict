@@ -43,7 +43,7 @@ class ListPendingInfractionReportUseCaseTest {
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .requestIdentifier("IDENTIFIER")
             .situation(InfractionReportSituation.OPEN)
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 

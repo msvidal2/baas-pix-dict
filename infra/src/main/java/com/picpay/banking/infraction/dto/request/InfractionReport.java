@@ -11,7 +11,12 @@ import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,17 +26,29 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @AllArgsConstructor
-public class InfractionReport {
+@XmlAccessorType(XmlAccessType.FIELD)
+@NoArgsConstructor
+public class InfractionReport implements Serializable {
 
-    private final String transactionId;
-    private final InfractionType infractionType;
-    private final ReportedBy reportedBy;
-    private final String reportDetails;
-    private final String id;
-    private final Status status;
-    private final String debitedParticipant;
-    private final String creditedParticipant;
-    private final LocalDateTime creationTime;
-    private final LocalDateTime lastModified;
+    @XmlElement(name = "TransactionId")
+    private String transactionId;
+    @XmlElement(name = "InfractionType")
+    private InfractionType infractionType;
+    @XmlElement(name = "ReportedBy")
+    private ReportedBy reportedBy;
+    @XmlElement(name = "ReportDetails")
+    private String reportDetails;
+    @XmlElement(name = "Id")
+    private String id;
+    @XmlElement(name = "Status")
+    private Status status;
+    @XmlElement(name = "DebitedParticipant")
+    private String debitedParticipant;
+    @XmlElement(name = "CreditedParticipant")
+    private String creditedParticipant;
+    @XmlElement(name = "CreationTime")
+    private LocalDateTime creationTime;
+    @XmlElement(name = "LastModified")
+    private LocalDateTime lastModified;
 
 }

@@ -40,7 +40,7 @@ class FilterInfractionReportUseCaseTest {
     void setup() {
         infractionReport = InfractionReport.builder()
             .endToEndId("ID_END_TO_END")
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .details("details")
             .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)

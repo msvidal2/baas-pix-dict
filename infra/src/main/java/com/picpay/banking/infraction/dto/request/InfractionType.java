@@ -9,6 +9,8 @@ package com.picpay.banking.infraction.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.stream.Stream;
 
 @AllArgsConstructor

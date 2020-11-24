@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ class FindInfractionReportUseCaseTest {
 
         infractionReport = InfractionReport.builder()
             .endToEndId("ID_END_TO_END")
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .details("details")
             .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
@@ -62,7 +61,7 @@ class FindInfractionReportUseCaseTest {
 
         Assertions.assertThat(infractionReport).isNotNull();
         assertEquals(infractionReport.getEndToEndId(), "ID_END_TO_END");
-        assertEquals(infractionReport.getType(), InfractionType.FRAUD);
+        assertEquals(infractionReport.getInfractionType(), InfractionType.FRAUD);
         assertEquals(infractionReport.getDetails(), "details");
         assertEquals(infractionReport.getInfractionReportId(), "7ab28f7f-f9de-4da8-be26-a66a0f7501c5");
         assertEquals(infractionReport.getReportedBy(), ReportedBy.CREDITED_PARTICIPANT);

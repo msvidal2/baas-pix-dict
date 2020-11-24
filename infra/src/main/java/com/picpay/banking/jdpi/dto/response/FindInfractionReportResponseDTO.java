@@ -59,7 +59,7 @@ public class FindInfractionReportResponseDTO {
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
             .endToEndId(endToEndId)
-            .type(InfractionType.resolve(type))
+            .infractionType(InfractionType.resolve(type))
             .details(details)
             .infractionReportId(infractionReportId)
             .reportedBy(ReportedBy.resolve(reportedBy))

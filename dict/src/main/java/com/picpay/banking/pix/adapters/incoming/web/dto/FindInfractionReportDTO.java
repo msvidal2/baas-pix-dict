@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @ToString
@@ -31,7 +29,7 @@ public class FindInfractionReportDTO {
     public static FindInfractionReportDTO from(InfractionReport infractionReport) {
         return FindInfractionReportDTO.builder()
             .endToEndId(infractionReport.getEndToEndId())
-            .type(infractionReport.getType())
+            .type(infractionReport.getInfractionType())
             .details(infractionReport.getDetails())
             .infractionReportId(infractionReport.getInfractionReportId())
             .reportedBy(infractionReport.getReportedBy())
