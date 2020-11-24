@@ -2,6 +2,8 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.exception.ClaimError;
+import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
@@ -45,7 +47,7 @@ public class CreateClaimUseCase {
 
     private void validateClaimAlreadyExistsForKey(String key) {
         findClaimByKeyPort.find(key).ifPresent(claim -> {
-            // lançar ClaimAlreadyExistsForKey pq existe uma reivindicação aberta para essa chave já
+            throw new ClaimException(ClaimError.OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY);
         });
     }
 
@@ -53,11 +55,11 @@ public class CreateClaimUseCase {
         findPixKeyPort.findPixKey(claim.getKey()).ifPresent(pixKey -> {
             if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
                     && pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
-                    // lançar ClaimTypeInconsistent pq é uma posse e já tá com ele
+                throw new ClaimException(ClaimError.KEY_ALREADY_BELONGS_TO_CUSTOMER);
             }
             if (ClaimType.PORTABILITY.equals(claim.getClaimType())
                     && !pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
-                    // lançar ClaimTypeInconsistent pq é uma portabilidade sendo que a chave tá com outra pessoa
+                throw new ClaimException(ClaimError.INCONSISTENT_PORTABILITY);
             }
         });
     }
