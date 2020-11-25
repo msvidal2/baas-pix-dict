@@ -6,7 +6,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
 
     private static final String CIRCUIT_BREAKER_NAME = "create-claim-bacen";
