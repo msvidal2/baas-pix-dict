@@ -9,4 +9,6 @@ public interface DatabaseVsyncPort {
 
     Vsync getLastSuccessfulVsync(KeyType keyType);
 
+    void updateVerificationResult(Vsync vsync);
+
 }
