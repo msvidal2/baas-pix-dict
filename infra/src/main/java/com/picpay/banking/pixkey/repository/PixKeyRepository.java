@@ -31,10 +31,18 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     @Query("SELECT t FROM pix_key t " +
             "WHERE t.id.taxId = :taxId " +
             "   AND t.personType = :personType " +
-            "   AND t.branch = COALESCE(:branch, t.branch) " +
+            "   AND t.branch = :branch " +
             "   AND t.accountNumber = :accountNumber " +
             "   AND t.accountType = :accountType " +
             "   AND t.participant = :participant")
     List<PixKeyEntity> findKeys(String taxId, PersonType personType, String branch, String accountNumber, AccountType accountType, Integer participant);
+
+    @Query("SELECT t FROM pix_key t " +
+            "WHERE t.id.taxId = :taxId " +
+            "   AND t.personType = :personType " +
+            "   AND t.accountNumber = :accountNumber " +
+            "   AND t.accountType = :accountType " +
+            "   AND t.participant = :participant")
+    List<PixKeyEntity> findKeys(String taxId, PersonType personType, String accountNumber, AccountType accountType, Integer participant);
 
 }

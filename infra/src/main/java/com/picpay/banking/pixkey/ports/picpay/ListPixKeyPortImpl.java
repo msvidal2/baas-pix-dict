@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,19 +29,30 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "listPixKeyFallback")
     public List<PixKey> listPixKey(String requestIdentifier, PixKey pixKey) {
-        var keys = repository.findKeys(pixKey.getTaxId(),
-                pixKey.getPersonType(),
-                pixKey.getBranchNumber(),
-                pixKey.getAccountNumber(),
-                pixKey.getAccountType(),
-                pixKey.getIspb());
+        List<PixKeyEntity> keys;
+
+        // TODO: melhorar
+        if(Objects.isNull(pixKey.getBranchNumber())) {
+            keys = repository.findKeys(pixKey.getTaxId(),
+                    pixKey.getPersonType(),
+                    pixKey.getAccountNumber(),
+                    pixKey.getAccountType(),
+                    pixKey.getIspb());
+        } else {
+            keys = repository.findKeys(pixKey.getTaxId(),
+                    pixKey.getPersonType(),
+                    pixKey.getBranchNumber(),
+                    pixKey.getAccountNumber(),
+                    pixKey.getAccountType(),
+                    pixKey.getIspb());
+        }
 
         return keys.stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());
     }
 
-    public Collection<PixKey> listPixKeyFallback(final String requestIdentifier, final PixKey pixKey, Exception e) {
+    public List<PixKey> listPixKeyFallback(final String requestIdentifier, final PixKey pixKey, Exception e) {
         return Collections.emptyList();
     }
 
