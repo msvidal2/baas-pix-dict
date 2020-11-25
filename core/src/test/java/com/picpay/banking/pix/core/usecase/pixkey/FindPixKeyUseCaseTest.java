@@ -84,7 +84,7 @@ class FindPixKeyUseCaseTest {
                 .build();
 
         when(findPixKeyPort.findPixKey(any()))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         when(findPixKeyBacenPort.findPixKey(any(), any(), any()))
                 .thenReturn(pixKeyMockResponse);
