@@ -14,11 +14,9 @@ import com.picpay.banking.jdpi.ports.claim.*;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
-import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -101,11 +99,11 @@ public class BacenPortBeansConfig {
         return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
     }
 
-    @Bean
-    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient,
-                                                           TimeLimiterExecutor timeLimiterExecutor) {
-        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
-    }
+//    @Bean
+//    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient,
+//                                                           TimeLimiterExecutor timeLimiterExecutor) {
+//        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
+//    }
 
     @Bean
     public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient,
