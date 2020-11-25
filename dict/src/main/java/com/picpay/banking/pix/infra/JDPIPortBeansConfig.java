@@ -1,12 +1,11 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
-import com.picpay.banking.infraction.ports.bacen.InfractionReportPortImpl;
+import com.picpay.banking.infraction.ports.bacen.CreateInfractionReportPortImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.converter.CreateClaimConverter;
-import com.picpay.banking.jdpi.converter.FindPixKeyConverter;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.converter.ListPixKeyConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
@@ -18,22 +17,23 @@ import com.picpay.banking.jdpi.ports.claim.CreateClaimPortImpl;
 import com.picpay.banking.jdpi.ports.claim.FindClaimPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ListClaimPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ListPendingClaimPortImpl;
-import com.picpay.banking.jdpi.ports.pixkey.FindPixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
-import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
-import com.picpay.banking.pix.core.ports.claim.ClaimConfirmationPort;
-import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
+import com.picpay.banking.pixkey.ports.picpay.FindPixKeyPortImpl;
+import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,12 +49,12 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ClaimCancelPort claimCancelPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
+    public CancelClaimPort claimCancelPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
         return new ClaimCancelPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
-    public ClaimConfirmationPort claimConfirmationPort(ClaimJDClient claimJDClient,
+    public ConfirmationClaimPort claimConfirmationPort(ClaimJDClient claimJDClient,
                                                        TimeLimiterExecutor timeLimiterExecutor) {
         return new ClaimConfirmationPortImpl(claimJDClient, timeLimiterExecutor);
     }
@@ -72,17 +72,15 @@ public class JDPIPortBeansConfig {
 //    }
 
     @Bean
-    public CreateClaimPort createClaimPort(ClaimJDClient claimJDClient,
-                                           CreateClaimConverter createClaimConverter,
-                                           TimeLimiterExecutor timeLimiterExecutor) {
+    public CreateClaimBacenPort createClaimPort(ClaimJDClient claimJDClient,
+                                                CreateClaimConverter createClaimConverter,
+                                                TimeLimiterExecutor timeLimiterExecutor) {
         return new CreateClaimPortImpl(claimJDClient, createClaimConverter, timeLimiterExecutor);
     }
 
     @Bean
-    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
-                                         final FindPixKeyConverter findPixKeyConverter,
-                                         final TimeLimiterExecutor timeLimiterExecutor) {
-        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
+    public FindPixKeyPort findPixKeyPort(final PixKeyRepository pixKeyRepository) {
+        return new FindPixKeyPortImpl(pixKeyRepository);
     }
 
     @Bean
@@ -124,9 +122,9 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public InfractionReportPort infractionReportPort(final CreateInfractionBacenClient bacenClient,
-                                                     final TimeLimiterExecutor timeLimiterExecutor) {
-        return new InfractionReportPortImpl(bacenClient, timeLimiterExecutor);
+    public CreateInfractionReportPort infractionReportPort(final CreateInfractionBacenClient bacenClient,
+                                                           final TimeLimiterExecutor timeLimiterExecutor) {
+        return new CreateInfractionReportPortImpl(bacenClient, timeLimiterExecutor);
     }
 
 }

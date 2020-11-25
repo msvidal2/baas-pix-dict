@@ -6,7 +6,8 @@
 
 package com.picpay.banking.pix.core.ports.infraction;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import lombok.NonNull;
 
 /**
  * @author rafael.braga
@@ -14,6 +15,7 @@ import com.picpay.banking.pix.core.domain.InfractionReport;
  */
 public interface InfractionReportSavePort {
 
-   void save(InfractionReport infractionReport);
+   void save(final @NonNull InfractionReport infractionReport,
+             final @NonNull String requestIdentifier);
 
 }

@@ -7,9 +7,11 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,11 +22,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InfractionReportSavePortImpl implements InfractionReportSavePort {
 
+    private static final String HASH_NAME = "INFRACTION";
     private final InfractionReportRepository infractionReportRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void save(final InfractionReport infractionReport) {
+    public void save(@NonNull final InfractionReport infractionReport, final @NonNull String requestIdentifier) {
         infractionReportRepository.save(InfractionReportEntity.fromDomain(infractionReport));
+        redisTemplate.opsForHash().put(HASH_NAME, requestIdentifier, infractionReport);
     }
 
 }

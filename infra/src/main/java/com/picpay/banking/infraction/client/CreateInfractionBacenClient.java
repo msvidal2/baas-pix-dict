@@ -4,13 +4,14 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-
 package com.picpay.banking.infraction.client;
 
+import com.picpay.banking.config.FeignXmlConfig;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.GetInfractionReportResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +26,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Component
 @FeignClient(name = "bacenInfractionClient",
     url = "${pix.bacen.dict.infraction.url}",
-    path = "/api/v1/infraction-reports")
+    path = "/v1/infraction-reports",
+    configuration = FeignXmlConfig.class)
 public interface CreateInfractionBacenClient {
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     CreateInfractionReportResponse create(@RequestBody CreateInfractionReportRequest request);
 
-    @GetMapping
-    GetInfractionReportResponse find(@RequestParam String infractionReportId, @RequestHeader(name = "PI-RequestingParticipant") String pIRequestingParticipant);
+    @GetMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    GetInfractionReportResponse find(@RequestParam String infractionReportId,
+                                     @RequestHeader(name = "PI-RequestingParticipant") String pIRequestingParticipant);
 
 }

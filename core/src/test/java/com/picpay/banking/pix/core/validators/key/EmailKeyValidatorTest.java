@@ -31,8 +31,8 @@ public class EmailKeyValidatorTest {
     }
 
     @Test
-    public void testValidatorBiggerThen72() {
-        assertThrows(KeyValidatorException.class, () -> validator.validate("snigcmwnituyvb384bty83bv7y4tn4387v485ht84n5f83n235erglnsviut843ht8@test.com"));
+    public void testValidatorBiggerThen77() {
+        assertThrows(KeyValidatorException.class, () -> validator.validate("snigcmwnituyvb384bty83bv7y4tn4387v485ht84n5f83n235erglnsviut843ht8dtgs76r6@test.com"));
     }
 
     @Test

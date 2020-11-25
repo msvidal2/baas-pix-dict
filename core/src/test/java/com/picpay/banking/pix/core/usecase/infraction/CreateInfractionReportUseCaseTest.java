@@ -1,12 +1,10 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.ReportedBy;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
-import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.picpay.banking.pix.core.domain.InfractionReportSituation.OPEN;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +27,7 @@ class CreateInfractionReportUseCaseTest {
     private CreateInfractionReportUseCase createInfractionReportUseCase;
 
     @Mock
-    private InfractionReportPort infractionReportPort;
+    private CreateInfractionReportPort infractionReportPort;
 
     private InfractionReport infractionReport;
 

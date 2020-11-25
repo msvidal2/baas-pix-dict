@@ -1,8 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +35,7 @@ public class InfractionReportDTO {
     public static InfractionReportDTO from(InfractionReport infraction) {
         return InfractionReportDTO.builder()
             .endToEndId(infraction.getEndToEndId())
-            .infractionType(infraction.getType())
+            .infractionType(infraction.getInfractionType())
             .details(builder().details)
             .infractionReportId(infraction.getInfractionReportId())
             .reportedBy(infraction.getReportedBy())

@@ -20,7 +20,7 @@ public enum InfractionType {
 
     private final int value;
 
-    public static InfractionType from(com.picpay.banking.pix.core.domain.InfractionType origin) {
+    public static InfractionType from(com.picpay.banking.pix.core.domain.infraction.InfractionType origin) {
         return Stream.of(values())
             .filter(infractionType ->  origin.getValue() == infractionType.value)
             .findFirst()

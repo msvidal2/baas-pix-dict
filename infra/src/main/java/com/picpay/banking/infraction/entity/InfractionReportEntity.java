@@ -6,11 +6,11 @@
 
 package com.picpay.banking.infraction.entity;
 
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,7 +54,7 @@ public class InfractionReportEntity {
     private String analyzeDetails;
 
 
-    public static InfractionReportEntity fromDomain(com.picpay.banking.pix.core.domain.InfractionReport infractionReport) {
+    public static InfractionReportEntity fromDomain(InfractionReport infractionReport) {
         return InfractionReportEntity.builder()
             .infractionReportId(infractionReport.getInfractionReportId())
             .endToEndId(infractionReport.getEndToEndId())
@@ -65,7 +65,7 @@ public class InfractionReportEntity {
             .createdDate(infractionReport.getDateCreate())
             .lastUpdateDate(infractionReport.getDateLastUpdate())
             .ispbRequester(infractionReport.getIspbRequester())
-            .infractionType(infractionReport.getType())
+            .infractionType(infractionReport.getInfractionType())
             .details(infractionReport.getDetails())
             .requestIdentifier(infractionReport.getRequestIdentifier())
             .analyzeResult(Optional.ofNullable(infractionReport.getAnalyze().getAnalyzeResult()).orElse(null))
@@ -73,7 +73,7 @@ public class InfractionReportEntity {
             .build();
     }
 
-    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
+    public InfractionReport toDomain() {
         return InfractionReport.builder()
             .infractionReportId(this.getInfractionReportId())
             .endToEndId(this.getEndToEndId())
@@ -84,7 +84,7 @@ public class InfractionReportEntity {
             .dateCreate(this.getCreatedDate())
             .dateLastUpdate(this.getLastUpdateDate())
             .ispbRequester(this.getIspbRequester())
-            .type(this.getInfractionType())
+            .infractionType(this.getInfractionType())
             .details(this.getDetails())
             .requestIdentifier(this.getRequestIdentifier())
             .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())

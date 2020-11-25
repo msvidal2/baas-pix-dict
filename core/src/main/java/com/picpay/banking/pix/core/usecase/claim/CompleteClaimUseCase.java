@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

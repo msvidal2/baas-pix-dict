@@ -3,8 +3,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.claim.ClaimConfirmationPort;
-import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import com.picpay.banking.pix.core.validators.claim.IspbClaimItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.ClaimIdtemValidator;
@@ -31,7 +30,7 @@ class ClaimConfirmationUseCaseTest {
     private ClaimConfirmationUseCase useCase;
 
     @Mock
-    private ClaimConfirmationPort claimConfirmationPort;
+    private ConfirmationClaimPort claimConfirmationPort;
 
     @BeforeEach
     public void setup() {

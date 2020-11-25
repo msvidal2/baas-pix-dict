@@ -4,8 +4,8 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.domain.ClaimType;
 import com.picpay.banking.pix.core.domain.DonorData;
-import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ class ListClaimUseCaseTest {
                 .accountNumber("123456")
                 .accountOpeningDate(LocalDateTime.now())
                 .personType(INDIVIDUAL_PERSON)
-                .cpfCnpj("28592755093")
+                .taxId("28592755093")
                 .donorIspb(3456345)
                 .donorData(DonorData.builder()
                         .cpfCnpj(70950328073L)

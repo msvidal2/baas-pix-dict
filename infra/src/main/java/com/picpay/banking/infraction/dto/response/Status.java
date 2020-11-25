@@ -5,11 +5,18 @@
  */
 package com.picpay.banking.infraction.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Status {
     
-    OPEN,
-    ACKNOWLEDGED,
-    CLOSED,
-    CANCELLED;
+    OPEN(0),
+    ACKNOWLEDGED(1),
+    CANCELLED(2),
+    CLOSED(3);
+
+    private Integer value;
 
 }
