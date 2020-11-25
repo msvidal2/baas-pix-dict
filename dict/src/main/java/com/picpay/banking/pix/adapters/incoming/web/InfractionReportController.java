@@ -119,8 +119,8 @@ public class InfractionReportController {
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
 
         var listInfractionReport = this.filterInfractionReportUseCase.execute(
-            filter.getIspb(), InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
-            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim());
+            filter.getIspb(), filter.getSituation(),
+            filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime());
 
         return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
     }

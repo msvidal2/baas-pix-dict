@@ -35,7 +35,7 @@ public class InfractionReportListPortImpl implements InfractionReportListPort {
     public List<InfractionReport> list(final Integer ispb, final InfractionReportSituation situation, final LocalDateTime dateStart,
         final LocalDateTime dateEnd) {
 
-        var result = infractionReportRepository.list(ispb,situation);
+        var result = infractionReportRepository.list(ispb,situation, dateStart, dateEnd);
 
         if(result.isEmpty()){
             return Collections.EMPTY_LIST;

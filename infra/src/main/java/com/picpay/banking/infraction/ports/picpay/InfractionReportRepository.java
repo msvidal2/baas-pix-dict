@@ -24,7 +24,9 @@ import java.util.List;
 @Repository
 public interface InfractionReportRepository extends JpaRepository<InfractionReportEntity, String> {
 
-    @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND ir.situation = :situation")
-    List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation);
+    @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND (:situation is null or ir.situation = :situation)" +
+        " AND (ir.lastUpdateDate is null or ir.lastUpdateDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdateDate >= :dateEnd)")
+    List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
+        @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
 
 }
