@@ -109,6 +109,7 @@ public class PixKeyEntity {
                 .correlationId(pixKey.getCorrelationId())
                 .creationDate(pixKey.getCreatedAt())
                 .ownershipDate(pixKey.getStartPossessionAt())
+                .updateDate(LocalDateTime.now())
                 .build();
     }
 
