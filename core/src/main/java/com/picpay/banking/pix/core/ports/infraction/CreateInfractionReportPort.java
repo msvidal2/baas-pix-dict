@@ -7,10 +7,14 @@
 
 package com.picpay.banking.pix.core.ports.infraction;
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+
 /**
  * @author rafael.braga
  * @version 1.0 25/11/2020
  */
-public class CreateInfractionReportPort {
+public interface CreateInfractionReportPort {
+
+    InfractionReport create(InfractionReport infractionReport, String requestIdentifier);
 
 }

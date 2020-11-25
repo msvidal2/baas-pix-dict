@@ -9,8 +9,8 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.FilterInfractionReportDT
 import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
@@ -59,7 +59,8 @@ public class InfractionReportController {
             , kv("infractionType", createInfractionReportRequestWebDTO.getInfractionType())
             , kv("iIspbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
 
-        final var infractionReport = createInfractionReportUseCase.execute(createInfractionReportRequestWebDTO.toInfractionReport(), requestIdentifier);
+        final var infractionReport = createInfractionReportUseCase.execute(CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO),
+                                                                           requestIdentifier);
 
         return InfractionReportCreatedDTO.from(infractionReport);
     }

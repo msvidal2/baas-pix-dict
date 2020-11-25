@@ -1,5 +1,6 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.infraction;
 
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

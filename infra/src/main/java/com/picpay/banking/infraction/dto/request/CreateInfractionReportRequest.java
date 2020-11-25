@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.dto.request;
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,18 +32,18 @@ public class CreateInfractionReportRequest {
     @XmlElement(name = "Participant")
     private int participant;
     @XmlElement(name = "InfractionReport")
-    private InfractionReport infractionReport;
+    private InfractionReportRequest infractionReportRequest;
 
-    public static CreateInfractionReportRequest from(com.picpay.banking.pix.core.domain.InfractionReport infractionReport) {
-       return CreateInfractionReportRequest.builder()
-           .participant(infractionReport.getIspbRequester())
-           .infractionReport(InfractionReport.builder()
-                                 .infractionType(InfractionType.from(infractionReport.getInfractionType()))
-                                 .reportDetails(infractionReport.getDetails())
-                                 .transactionId(infractionReport.getEndToEndId())
-                                 .build())
-           .build();
-
+    public static CreateInfractionReportRequest from(InfractionReport infractionReport) {
+        return CreateInfractionReportRequest
+            .builder()
+            .participant(infractionReport.getIspbRequester())
+            .infractionReportRequest(InfractionReportRequest.builder()
+                                  .infractionType(InfractionType.from(infractionReport.getInfractionType()))
+                                  .reportDetails(infractionReport.getDetails())
+                                  .transactionId(infractionReport.getEndToEndId())
+                                  .build())
+            .build();
     }
 
 

@@ -6,11 +6,11 @@
 
 package com.picpay.banking.infraction.entity;
 
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +53,7 @@ public class InfractionReportEntity {
     private String analyzeDetails;
 
 
-    public static InfractionReportEntity fromDomain(com.picpay.banking.pix.core.domain.InfractionReport infractionReport) {
+    public static InfractionReportEntity fromDomain(InfractionReport infractionReport) {
         return InfractionReportEntity.builder()
             .infractionReportId(infractionReport.getInfractionReportId())
             .endToEndId(infractionReport.getEndToEndId())
@@ -72,7 +72,7 @@ public class InfractionReportEntity {
             .build();
     }
 
-    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
+    public InfractionReport toDomain() {
         return InfractionReport.builder()
             .infractionReportId(this.getInfractionReportId())
             .endToEndId(this.getEndToEndId())

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,7 +29,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
-public class InfractionReport implements Serializable {
+@XmlRootElement(name = "InfractionReport")
+public class InfractionReportRequest implements Serializable {
 
     @XmlElement(name = "TransactionId")
     private String transactionId;

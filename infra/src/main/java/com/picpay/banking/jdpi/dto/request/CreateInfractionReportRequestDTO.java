@@ -1,6 +1,6 @@
 package com.picpay.banking.jdpi.dto.request;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

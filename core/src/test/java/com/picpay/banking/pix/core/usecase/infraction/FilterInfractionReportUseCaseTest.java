@@ -1,12 +1,11 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -25,7 +25,8 @@ public enum InfractionReportError {
     JDPIRIN005("RIN005", "A situação do Relato de Infração não permite o seu cancelamento."),
     JDPIRIN006("RIN006", "O Relato de Infração só pode ser cancelado pelo PSP relator."),
     JDPIRIN007("RIN007", "O Relato de Infração não pode ser analisado pelo PSP relator."),
-    INFRACTION_REPORT_CONFLICT("RIN008", "Já foi criado um relato de infração com esse request identifier com body diferente");
+    INFRACTION_REPORT_CONFLICT("RIN008", "Já foi criado um relato de infração com esse request identifier com body diferente"),
+    INFRACTION_REPORT_NOT_FOUND("RIN009", "Não foi localizada a infração informada");
 
     private final String code;
     private final String message;

@@ -1,9 +1,9 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.Builder;
 import lombok.Getter;

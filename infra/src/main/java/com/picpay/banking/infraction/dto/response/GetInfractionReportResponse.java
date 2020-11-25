@@ -7,7 +7,8 @@
 
 package com.picpay.banking.infraction.dto.response;
 
-import com.picpay.banking.infraction.dto.request.InfractionReport;
+import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import lombok.Data;
 
 
@@ -18,19 +19,19 @@ import lombok.Data;
 @Data
 public class GetInfractionReportResponse {
 
-    private final InfractionReport infractionReport;
+    private final InfractionReportRequest infractionReportRequest;
 
-    public com.picpay.banking.pix.core.domain.InfractionReport toDomain() {
-        return com.picpay.banking.pix.core.domain.InfractionReport.builder()
-            .infractionReportId(infractionReport.getId())
-            .infractionType(com.picpay.banking.pix.core.domain.InfractionType.resolve(infractionReport.getInfractionType().getValue()))
-            .reportedBy(infractionReport.getReportedBy())
-            .transactionId(infractionReport.getTransactionId())
-            .details(infractionReport.getReportDetails())
-            .ispbDebited(Integer.valueOf(infractionReport.getDebitedParticipant()))
-            .ispbCredited(Integer.valueOf(infractionReport.getCreditedParticipant()))
-            .dateCreate(infractionReport.getCreationTime())
-            .dateLastUpdate(infractionReport.getLastModified())
+    public com.picpay.banking.pix.core.domain.infraction.InfractionReport toDomain() {
+        return com.picpay.banking.pix.core.domain.infraction.InfractionReport.builder()
+            .infractionReportId(infractionReportRequest.getId())
+            .infractionType(InfractionType.resolve(infractionReportRequest.getInfractionType().getValue()))
+            .reportedBy(infractionReportRequest.getReportedBy())
+            .transactionId(infractionReportRequest.getTransactionId())
+            .details(infractionReportRequest.getReportDetails())
+            .ispbDebited(Integer.valueOf(infractionReportRequest.getDebitedParticipant()))
+            .ispbCredited(Integer.valueOf(infractionReportRequest.getCreditedParticipant()))
+            .dateCreate(infractionReportRequest.getCreationTime())
+            .dateLastUpdate(infractionReportRequest.getLastModified())
             .build();
     }
 }

@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;

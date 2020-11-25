@@ -26,6 +26,4 @@ public class InfractionReportException extends UseCaseException {
         this.infractionReportError = infractionReportError;
     }
 
-
-
 }

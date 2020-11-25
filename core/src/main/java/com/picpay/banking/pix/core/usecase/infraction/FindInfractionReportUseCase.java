@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

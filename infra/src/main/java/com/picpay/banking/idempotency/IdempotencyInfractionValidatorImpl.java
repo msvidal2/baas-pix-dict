@@ -4,9 +4,10 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.infraction.idempotency;
+package com.picpay.banking.idempotency;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.exception.InfractionReportError;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
@@ -22,16 +23,16 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class IdempotencyInfractionValidatorImpl implements IdempotencyValidator<com.picpay.banking.pix.core.domain.InfractionReport> {
+public class IdempotencyInfractionValidatorImpl implements IdempotencyValidator<InfractionReport> {
 
     private static final String HASH_NAME = "INFRACTION";
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
     @Override
-    public Optional<com.picpay.banking.pix.core.domain.InfractionReport> validate(final String idempotencyKey,
-                                                                                  final com.picpay.banking.pix.core.domain.InfractionReport compareTo) {
-        com.picpay.banking.pix.core.domain.InfractionReport foundReport = get(idempotencyKey);
+    public Optional<InfractionReport> validate(final String idempotencyKey,
+                                               final InfractionReport compareTo) {
+        InfractionReport foundReport = get(idempotencyKey);
 
         if (foundReport == null)
             return Optional.empty();
@@ -41,10 +42,9 @@ public class IdempotencyInfractionValidatorImpl implements IdempotencyValidator<
         throw new InfractionReportException(InfractionReportError.INFRACTION_REPORT_CONFLICT);
     }
 
-    private com.picpay.banking.pix.core.domain.InfractionReport get(final String idempotencyKey) {
+    private InfractionReport get(final String idempotencyKey) {
         Object value = redisTemplate.opsForHash().get(HASH_NAME, idempotencyKey);
-        return objectMapper.convertValue(value, com.picpay.banking.pix.core.domain.InfractionReport.class);
+        return objectMapper.convertValue(value, InfractionReport.class);
     }
-
 
 }

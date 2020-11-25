@@ -7,7 +7,7 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
-import com.picpay.banking.pix.core.domain.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
