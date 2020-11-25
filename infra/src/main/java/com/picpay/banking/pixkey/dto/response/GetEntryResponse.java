@@ -46,7 +46,6 @@ public class GetEntryResponse {
     private StatisticsResponse statistics;
 
     public PixKey toDomain(final String endToEndId) {
-        // TODO como incluir os atributos que estão comentados???
         return PixKey.builder()
                 .type(KeyType.resolve(entry.getKeyType().getValue()))
                 .key(entry.getKey())
@@ -62,6 +61,7 @@ public class GetEntryResponse {
                 .startPossessionAt(entry.getKeyOwnershipDate())
                 .endToEndId(endToEndId)
                 .correlationId(correlationId)
+                //TODO incluir claim?
 //                .claim()
                 .statistic(statistics.toDomain())
                 .build();
