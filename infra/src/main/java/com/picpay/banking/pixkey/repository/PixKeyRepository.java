@@ -27,4 +27,6 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
             "   AND t.accountType = :accountType")
     List<PixKeyEntity> findByAccount(Integer participant, String branch, String accountNumber, AccountType accountType);
 
+    void removeByIdKeyAndParticipant(String key, Integer participant);
+
 }
