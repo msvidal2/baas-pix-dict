@@ -2,8 +2,8 @@ package com.picpay.banking.claim.ports.bacen;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.dto.request.CreateClaimRequest;
+import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
         return response.toClaim();
     }
 
-    public PixKey createClaimFallback(Claim claim, String requestIdentifier, Exception e) {
+    public Claim createClaimFallback(Claim claim, String requestIdentifier, Exception e) {
         log.error("Claim_fallback_creatingBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),
@@ -42,7 +42,7 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
                 kv("exception", e));
 
         //TODO: tratar essa exception
-        throw new RuntimeException(e);
+        throw BacenExceptionBuilder.from(e).build();
     }
 
 }

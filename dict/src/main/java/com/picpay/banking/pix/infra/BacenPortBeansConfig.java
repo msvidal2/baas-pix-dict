@@ -50,25 +50,6 @@ public class BacenPortBeansConfig {
         return new CompleteClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
-//    @Bean
-//    public CreatePixKeyPort createPixKeyPort(PixKeyJDClient pixKeyJDClient,
-//                                             CreatePixKeyConverter converter,
-//                                             TimeLimiterExecutor timeLimiterExecutor) {
-//        return new CreatePixKeyPortImpl(pixKeyJDClient, converter, timeLimiterExecutor);
-//    }
-
-    @Bean
-    public CreateClaimBacenPort createClaimPort(BacenClaimClient bacenClaimClient) {
-        return new CreateClaimPortBacenImpl(bacenClaimClient);
-    }
-
-//    @Bean
-//    public FindPixKeyPort findPixKeyPort(final PixKeyJDClient pixKeyJDClient,
-//                                         final FindPixKeyConverter findPixKeyConverter,
-//                                         final TimeLimiterExecutor timeLimiterExecutor) {
-//        return new FindPixKeyPortImpl(pixKeyJDClient, findPixKeyConverter, timeLimiterExecutor);
-//    }
-
     @Bean
     public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
         return new FindClaimPortImpl(claimJDClient, timeLimiterExecutor);
