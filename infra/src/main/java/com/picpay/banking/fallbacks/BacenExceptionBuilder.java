@@ -1,12 +1,20 @@
 package com.picpay.banking.fallbacks;
 
 import com.picpay.banking.exceptions.BacenException;
+import com.picpay.banking.jdpi.exception.JDClientException;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
+import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 // TODO: revisar e melhorar
+@Slf4j
 public class BacenExceptionBuilder {
 
     private Exception exception;
@@ -32,7 +40,6 @@ public class BacenExceptionBuilder {
             return handleFeignException((FeignException) exception);
         }
 
-        // TODO: alterar erro
         return new BacenException(INTERNAL_SERVER_ERROR.getReasonPhrase(), INTERNAL_SERVER_ERROR);
     }
 
@@ -45,8 +52,18 @@ public class BacenExceptionBuilder {
     }
 
     private BacenException handleConnectionErrors(FeignException e) {
-        // TODO: implementar tratamento de erros de conexão
-        return null;
+        if (e.getCause() instanceof UnknownHostException) {
+            log.error("client-unknownHost", kv("exception", e.getCause()));
+            return new BacenException(BAD_GATEWAY.getReasonPhrase(), BAD_GATEWAY);
+        }
+
+        if (e.getCause() instanceof SocketTimeoutException) {
+            log.error("client-timeout", kv("exception", e.getCause()));
+            return new BacenException("Timeout", BAD_GATEWAY);
+        }
+
+        log.error("unknown-error", kv("exception", e.getCause()));
+        return new BacenException(BAD_GATEWAY.getReasonPhrase(), BAD_GATEWAY);
     }
 
     private BacenException handleHttpErrors(FeignException e) {
