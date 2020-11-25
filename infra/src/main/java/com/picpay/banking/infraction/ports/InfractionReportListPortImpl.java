@@ -8,8 +8,8 @@ package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.infraction.ports.picpay.InfractionReportRepository;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -7,8 +7,8 @@
 package com.picpay.banking.pix.core.ports.infraction;
 
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 
 import java.time.LocalDateTime;
 import java.util.List;

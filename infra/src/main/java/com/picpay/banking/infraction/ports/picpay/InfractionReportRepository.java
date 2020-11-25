@@ -8,7 +8,7 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

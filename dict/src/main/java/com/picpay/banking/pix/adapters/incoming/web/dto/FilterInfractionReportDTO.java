@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

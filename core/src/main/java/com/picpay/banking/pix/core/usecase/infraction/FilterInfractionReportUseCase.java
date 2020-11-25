@@ -1,11 +1,9 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
