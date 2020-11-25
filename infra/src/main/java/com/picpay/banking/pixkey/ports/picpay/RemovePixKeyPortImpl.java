@@ -12,6 +12,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -31,6 +32,7 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     private final PixKeyRepository pixKeyRepository;
 
     @Override
+    @Transactional
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey remove(String requestIdentifier, PixKey pixKey, RemoveReason reason) {
 
@@ -39,14 +41,14 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
                 kv("pixKey", pixKey.getKey()),
                 kv("reason", reason));
 
-        pixKeyRepository.removeByIdKeyAndParticipant(pixKey.getKey(), pixKey.getIspb());
+        pixKeyRepository.deleteByIdKeyAndParticipant(pixKey.getKey(), pixKey.getIspb());
 
         return pixKey;
 
     }
 
     public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, RemoveReason reason, Exception e) {
-        log.error("PixKey_fallback_updateAccountBacen",
+        log.error("PixKey_fallback_removeAccount",
                 kv("requestIdentifier", requestIdentifier),
                 kv("pixKey", pixKey.getKey()),
                 kv("reason", reason),
