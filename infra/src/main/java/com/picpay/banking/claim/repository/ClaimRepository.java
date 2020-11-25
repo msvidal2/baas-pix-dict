@@ -19,10 +19,10 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     @Query("SELECT c FROM claim c WHERE c.key = :key AND c.status in :openStatus")
     ClaimEntity findOpenClaimByKey(String key, List<ClaimStatus> openStatus);
 
-    @Query("SELECT TOP :limit c FROM claim c WHERE c.claimerParticipant = :claimerParticipant AND c.lastModified BETWEEN :startDate AND :endDate")
-    List<ClaimEntity> findAllClaimsWhereIsClaimerAndHasDates(Integer limit, Integer claimerParticipant, LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT c FROM claim c WHERE c.claimerParticipant = :claimerParticipant AND c.lastModified BETWEEN :startDate AND :endDate AND ROWNUM <= :limit")
+    List<ClaimEntity> findAllClaimsWhereIsClaimer(Integer limit, Integer claimerParticipant, LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query("SELECT TOP :limit c FROM claim c WHERE c.donorParticipant = :donorParticipant AND c.lastModified BETWEEN :startDate AND :endDate")
-    List<ClaimEntity> findAllClaimsWhereIsDonorAndHasDates(Integer limit, Integer donorParticipant,  LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT c FROM claim c WHERE c.donorParticipant = :donorParticipant AND c.lastModified BETWEEN :startDate AND :endDate AND ROWNUM <= :limit")
+    List<ClaimEntity> findAllClaimsWhereIsDonor(Integer limit, Integer donorParticipant, LocalDateTime startDate, LocalDateTime endDate);
 
 }

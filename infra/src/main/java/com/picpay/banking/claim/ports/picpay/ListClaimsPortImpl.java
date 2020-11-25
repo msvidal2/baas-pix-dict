@@ -37,9 +37,9 @@ public class ListClaimsPortImpl implements ListClaimPort {
         // alternativa -> fazer uma consulta de count antes. Se o count for maior que o limit, eh porque hasNext. Desvantagem: duas consultas na base.
 
         if(nonNull(isClaimer)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsClaimerAndHasDates(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         } else if(nonNull(isDonor)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsDonorAndHasDates(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         }
 
         return toClaimIterable(claimEntityList, limit);
