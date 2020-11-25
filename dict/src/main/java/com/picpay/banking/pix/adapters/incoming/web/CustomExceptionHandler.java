@@ -5,6 +5,7 @@ import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,27 @@ public class CustomExceptionHandler {
         var error = errorBuilder.build();
 
         log.error("error_handlePixKeyException", error.toLogJson(e));
+
+        return error;
+    }
+
+    @ExceptionHandler(InfractionReportException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorDTO handleInfractionReportException(InfractionReportException e) {
+        var errorBuilder = ErrorDTO.builder()
+            .code(BAD_REQUEST.value())
+            .error(BAD_REQUEST.getReasonPhrase())
+            .message(e.getMessage())
+            .timestamp(LocalDateTime.now());
+
+        if(!Objects.isNull(e.getInfractionReportError())) {
+            errorBuilder.apiErrorCode(e.getInfractionReportError().getCode())
+                .message(e.getInfractionReportError().getMessage());
+        }
+
+        var error = errorBuilder.build();
+
+        log.error("error_handleInfractionReportException", error.toLogJson(e));
 
         return error;
     }

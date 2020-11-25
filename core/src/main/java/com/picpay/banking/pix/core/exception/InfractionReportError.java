@@ -19,16 +19,15 @@ import lombok.Getter;
 public enum InfractionReportError {
 
     //Criação
-    JDPIRIN001("RIN001", "A transação informada no Relato de Infração não foi encontrada."),
-    JDPIRIN002("RIN002", "O prazo para o Relato de Infração sobre a transação expirou."),
-    JDPIRIN003("RIN003", "Já existe um relato de infração fechado para a transação informada."),
-    JDPIRIN004("RIN004", "Já existe um relato de infração em andamento para a transação informada."),
-    INFRACTION_REPORT_CONFLICT("RIN008", "Já foi criado um relato de infração com esse request identifier com body diferente"),
+    REPORTED_TRANSACTION_NOT_FOUND("RIN001", "A transação informada no Relato de Infração não foi encontrada."),
+    EXPIRED_REPORT_PERIOD("RIN002", "O prazo para o Relato de Infração sobre a transação expirou."),
+    INFRACTION_REPORT_CLOSED("RIN003", "Já existe um relato de infração fechado para a transação informada."),
+    INFRACTION_REPORT_ALREADY_OPEN("RIN004", "Já existe um relato de infração em andamento para a transação informada."),
     //Cancelamento
-    JDPIRIN005("RIN005", "A situação do Relato de Infração não permite o seu cancelamento."),
-    JDPIRIN006("RIN006", "O Relato de Infração só pode ser cancelado pelo PSP relator."),
+    CANNOT_CANCEL_INFRACTION_REPORT("RIN005", "A situação do Relato de Infração não permite o seu cancelamento."),
+    INFRACTION_REPORT_SHOULD_BE_CANCELLED_BY_SUBMITTER("RIN006", "O Relato de Infração só pode ser cancelado pelo PSP relator."),
     //Análise,
-    JDPIRIN007("RIN007", "O Relato de Infração não pode ser analisado pelo PSP relator."),
+    INFRACTION_REPORT_CANT_BE_ANALYZED_BY_SUBMITTER("RIN007", "O Relato de Infração não pode ser analisado pelo PSP relator."),
     //Localizar (Find)
     INFRACTION_REPORT_NOT_FOUND("RIN009", "Não foi localizada a infração informada");
 

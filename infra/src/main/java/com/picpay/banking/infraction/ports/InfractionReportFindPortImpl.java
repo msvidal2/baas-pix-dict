@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.ports;
 
+import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.infraction.ports.picpay.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.exception.InfractionReportError;
@@ -13,6 +14,8 @@ import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -27,11 +30,15 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
     @Override
     public InfractionReport find(final String infractionReportId) {
 
-
         var infractionReportEntity = infractionReportRepository.findById(infractionReportId)
             .orElseThrow(() -> new InfractionReportException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND));
 
         return infractionReportEntity.toDomain();
+    }
+
+    @Override
+    public Optional<InfractionReport> findByEndToEndId(final String endToEndId) {
+        return infractionReportRepository.findByEndToEndId(endToEndId).map(InfractionReportEntity::toDomain);
     }
 
 }

@@ -11,6 +11,9 @@ import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author rafael.braga
  * @version 1.0 18/11/2020
@@ -18,5 +21,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InfractionReportRepository extends JpaRepository<InfractionReportEntity, String> {
 
+    Optional<InfractionReportEntity> findByEndToEndId(String endToEndId);
 
 }
