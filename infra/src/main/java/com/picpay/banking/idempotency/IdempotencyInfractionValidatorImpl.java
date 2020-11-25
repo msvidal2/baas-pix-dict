@@ -41,7 +41,7 @@ public class IdempotencyInfractionValidatorImpl implements IdempotencyValidator<
         throw new InfractionReportException(InfractionReportError.INFRACTION_REPORT_CONFLICT);
     }
 
-    public com.picpay.banking.pix.core.domain.InfractionReport get(final String idempotencyKey) {
+    private com.picpay.banking.pix.core.domain.InfractionReport get(final String idempotencyKey) {
         Object value = redisTemplate.opsForHash().get(HASH_NAME, idempotencyKey);
         return objectMapper.convertValue(value, com.picpay.banking.pix.core.domain.InfractionReport.class);
     }
