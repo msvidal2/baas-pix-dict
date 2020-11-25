@@ -50,7 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 class InfractionReportRequestControllerTest {
 
     private MockMvc mockMvc;
@@ -295,7 +294,7 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        //verify(findInfractionReportUseCase).execute(anyString(), any());
+        verify(findInfractionReportUseCase).execute(anyString());
 
     }
 
