@@ -44,8 +44,7 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(UpdateAccountPixKeyPort updateAccountPixKeyPort,
-                                                                 UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort,
-                                                                 @Qualifier("updatePixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort, dictItemValidator);
+                                                                 UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort) {
+        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort);
     }
 }
