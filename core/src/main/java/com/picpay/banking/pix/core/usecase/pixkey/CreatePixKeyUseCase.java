@@ -53,14 +53,14 @@ public class CreatePixKeyUseCase {
             maxKeysPerAccount = 20;
         }
 
-        var pixKeysExisting =  findPixKeyPort.findByAccount(
+        var pixKeysExisting = findPixKeyPort.findByAccount(
                 pixKey.getIspb(),
                 pixKey.getBranchNumber(),
                 pixKey.getAccountNumber(),
                 pixKey.getAccountType());
 
-        if(pixKeysExisting.size() >= maxKeysPerAccount) {
-            throw new PixKeyException("The maximum number of keys cannot be greater than "+ maxKeysPerAccount);
+        if (pixKeysExisting.size() >= maxKeysPerAccount) {
+            throw new PixKeyException("The maximum number of keys cannot be greater than " + maxKeysPerAccount);
         }
 
         return pixKeysExisting;
@@ -69,7 +69,7 @@ public class CreatePixKeyUseCase {
     private void validateRegisteredAccountForDifferentPerson(PixKey pixKey, List<PixKey> pixKeysExisting) {
         pixKeysExisting.stream().findAny()
                 .ifPresent(pk -> {
-                    if(!pixKey.getTaxIdWithLeftZeros().equals(pk.getTaxIdWithLeftZeros())) {
+                    if (!pixKey.getTaxIdWithLeftZeros().equals(pk.getTaxIdWithLeftZeros())) {
                         throw new PixKeyException(PixKeyError.EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON);
                     }
                 });
@@ -78,8 +78,8 @@ public class CreatePixKeyUseCase {
     private void validateKeyExists(final PixKey pixKey) {
         var optionalPixKey = findPixKeyPort.findPixKey(pixKey.getKey());
         optionalPixKey.ifPresent(pixKeyExisting -> {
-            if(pixKey.getTaxIdWithLeftZeros().equals(pixKeyExisting.getTaxIdWithLeftZeros())) {
-                if(pixKey.equals(pixKeyExisting)) {
+            if (pixKey.getTaxIdWithLeftZeros().equals(pixKeyExisting.getTaxIdWithLeftZeros())) {
+                if (pixKey.equals(pixKeyExisting)) {
                     throw new PixKeyException(PixKeyError.KEY_EXISTS);
                 }
                 throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
