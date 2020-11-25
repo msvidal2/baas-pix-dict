@@ -1,5 +1,6 @@
 package com.picpay.banking.pixkey.ports.picpay;
 
+import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -44,9 +45,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        // TODO: tratar errors
-
-        throw new RuntimeException(e);
+        throw BacenExceptionBuilder.from(e).build();
     }
 
     @Override
