@@ -1,7 +1,5 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.claim.clients.BacenClaimClient;
-import com.picpay.banking.claim.ports.bacen.CreateClaimPortBacenImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.PixKeyJDClient;
@@ -16,6 +14,8 @@ import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;

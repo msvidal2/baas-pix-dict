@@ -11,6 +11,8 @@ import com.picpay.banking.jdpi.ports.claim.*;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;

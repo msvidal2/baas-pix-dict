@@ -8,7 +8,7 @@ import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 
