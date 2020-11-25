@@ -24,6 +24,7 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
 
     @Override
     public InfractionReport find(final String infractionReportId) {
+
         var infractionReportEntity = infractionReportRepository.findById(infractionReportId).orElseThrow(RuntimeException::new);
         return infractionReportEntity.toDomain();
     }
