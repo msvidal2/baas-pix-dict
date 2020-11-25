@@ -1,65 +1,95 @@
 package com.picpay.banking.claim.entity;
 
-import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.claim.dto.response.ClaimStatus;
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pixkey.dto.request.AccountType;
-import com.picpay.banking.pixkey.dto.request.KeyType;
-import com.picpay.banking.pixkey.dto.request.OwnerType;
+import com.picpay.banking.pix.core.domain.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Table(name = "claim")
 @Data
 @Builder
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "claim")
 public class ClaimEntity {
 
     @Id
     private String id;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ClaimType type;
+
+    @Column(nullable = false)
     private String key;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private KeyType keyType;
-    private String claimerParticipant;
+
+    @Column(nullable = false)
+    private Integer claimerParticipant;
+
     private String claimerBranch;
+
+    @Column(nullable = false)
     private String claimerAccountNumber;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountType claimerAccountType;
+
+    @Column(nullable = false)
     private LocalDateTime claimerAccountOpeningDate;
-    private OwnerType claimerType;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PersonType claimerType;
+
+    @Column(nullable = false)
     private String claimerTaxId;
+
+    @Column(nullable = false)
     private String claimerName;
-    private String donorParticipant;
+
+    private Integer donorParticipant;
+
+    @Enumerated(EnumType.STRING)
     private ClaimStatus status;
+
     private LocalDateTime completionPeriodEnd;
+
     private LocalDateTime resolutionPeriodEnd;
+
     private LocalDateTime lastModified;
+
     @CreatedDate
     private LocalDateTime creationDate;
+
     @LastModifiedDate
     private LocalDateTime updateDate;
 
     public static ClaimEntity from(Claim claim) {
         return ClaimEntity.builder()
                 .id(claim.getClaimId())
-                .type(ClaimType.resolve(claim.getClaimType()))
+                .type(claim.getClaimType())
                 .key(claim.getKey())
-                .keyType(KeyType.resolve(claim.getKeyType()))
+                .keyType(claim.getKeyType())
                 .claimerAccountNumber(claim.getAccountNumber())
                 .claimerAccountOpeningDate(claim.getAccountOpeningDate())
-                .claimerAccountType(AccountType.resolve(claim.getAccountType()))
+                .claimerAccountType(claim.getAccountType())
                 .claimerBranch(claim.getBranchNumber())
                 .claimerName(claim.getOwnerName())
-                .claimerParticipant(String.valueOf(claim.getDonorIspb()))
-                .claimerTaxId(claim.getCpfCnpj())
-                .claimerType(OwnerType.resolve(claim.getPersonType()))
-                .donorParticipant(String.valueOf(claim.getDonorIspb()))
+                .claimerParticipant(claim.getDonorIspb())
+                .claimerTaxId(claim.getTaxId())
+                .claimerType(claim.getPersonType())
+                .donorParticipant(claim.getDonorIspb())
                 .status(ClaimStatus.resolve(claim.getClaimSituation()))
                 .completionPeriodEnd(claim.getCompletionThresholdDate())
                 .resolutionPeriodEnd(claim.getResolutionThresholdDate())
@@ -70,18 +100,18 @@ public class ClaimEntity {
     public Claim toClaim() {
         return Claim.builder()
                 .claimId(id)
-                .claimType(type.getClaimType())
+                .claimType(type)
                 .key(key)
-                .keyType(keyType.getType())
-                .donorIspb(Integer.parseInt(claimerParticipant))
+                .keyType(keyType)
+                .donorIspb(claimerParticipant)
                 .branchNumber(claimerBranch)
                 .accountNumber(claimerAccountNumber)
-                .accountType(claimerAccountType.getType())
+                .accountType(claimerAccountType)
                 .accountOpeningDate(claimerAccountOpeningDate)
-                .personType(claimerType.getPersonType())
-                .cpfCnpj(claimerTaxId)
+                .personType(claimerType)
+                .taxId(claimerTaxId)
                 .name(claimerName)
-                .donorIspb(Integer.parseInt(donorParticipant))
+                .donorIspb(donorParticipant)
                 .claimSituation(status.getClaimSituation())
                 .completionThresholdDate(completionPeriodEnd)
                 .resolutionThresholdDate(resolutionPeriodEnd)

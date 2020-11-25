@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class FindPixKeyUseCaseTest {
 
     @Test
     void when_findPixKeyWithSuccess_expect_pixKey() {
-        var pixKeyMockResponse = PixKey.builder()
+        var pixKeyMockResponse = Optional.of(PixKey.builder()
                 .accountNumber("123456")
                 .accountOpeningDate(LocalDateTime.now())
                 .accountType(AccountType.CHECKING)
@@ -48,7 +49,7 @@ class FindPixKeyUseCaseTest {
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .startPossessionAt(LocalDateTime.now())
                 .type(KeyType.CPF)
-                .build();
+                .build());
 
         when(findPixKeyPort.findPixKey(any()))
                 .thenReturn(pixKeyMockResponse);
@@ -83,7 +84,7 @@ class FindPixKeyUseCaseTest {
                 .build();
 
         when(findPixKeyPort.findPixKey(any()))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         when(findPixKeyBacenPort.findPixKey(any(), any(), any()))
                 .thenReturn(pixKeyMockResponse);

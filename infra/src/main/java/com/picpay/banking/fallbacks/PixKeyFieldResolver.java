@@ -1,13 +1,23 @@
 package com.picpay.banking.fallbacks;
 
-import com.picpay.banking.fallbacks.dto.Violation;
-import org.springframework.validation.FieldError;
+import java.util.Map;
 
 public class PixKeyFieldResolver implements FieldResolver {
 
     @Override
-    public FieldError resolve(Violation violation) {
-        return null;
+    public Map<String, String> fieldsMap() {
+        return Map.of(
+                "entry.key", "key",
+                "entry.keytype", "type",
+                "entry.account.participant", "ispb",
+                "entry.account.branch", "branchNumber",
+                "entry.account.accountnumber", "accountNumber",
+                "entry.account.accounttype", "accountType",
+                "entry.account.openingdate", "accountOpeningDate",
+                "entry.owner.type", "personType",
+                "entry.owner.taxidnumber", "taxId",
+                "entry.owner.name", "name"
+        );
     }
 
 }

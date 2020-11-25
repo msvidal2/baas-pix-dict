@@ -1,11 +1,9 @@
 package com.picpay.banking.jdpi.ports.claim;
 
-import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.response.ListClaimDTO;
 import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.claim.ListPendingClaimPortImpl;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
@@ -58,7 +56,7 @@ class ListClaimPortImplTest {
             .accountType(AccountType.SALARY)
             .accountOpeningDate(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
-            .cpfCnpj("1111111111111").build();
+            .taxId("1111111111111").build();
 
         ClaimIterable claimIterable = ClaimIterable.builder()
             .claims(Arrays.asList(claim))

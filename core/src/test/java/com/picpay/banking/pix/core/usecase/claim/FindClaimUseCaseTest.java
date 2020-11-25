@@ -34,7 +34,7 @@ public class FindClaimUseCaseTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .cpfCnpj("12345678902")
+                .taxId("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
 
@@ -51,7 +51,7 @@ public class FindClaimUseCaseTest {
             assertEquals(response.getKeyType(), claim.getKeyType());
             assertEquals(response.getName(), claim.getName());
             assertEquals(response.getIspb(), claim.getIspb());
-            assertEquals(response.getCpfCnpj(), claim.getCpfCnpj());
+            assertEquals(response.getTaxId(), claim.getTaxId());
             assertEquals(response.getPersonType(), claim.getPersonType());
         });
     }

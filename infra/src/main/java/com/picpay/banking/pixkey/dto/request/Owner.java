@@ -38,7 +38,7 @@ public class Owner {
     public static Owner from(Claim claim) {
         return Owner.builder()
                 .type(PersonType.resolve(claim.getPersonType()))
-                .taxIdNumber(claim.getCpfCnpj())
+                .taxIdNumber(claim.getTaxId())
                 .name(claim.getOwnerName())
                 .build();
     }

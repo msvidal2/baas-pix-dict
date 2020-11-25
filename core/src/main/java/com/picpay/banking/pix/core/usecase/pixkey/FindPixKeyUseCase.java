@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -31,10 +32,9 @@ public class FindPixKeyUseCase {
             throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
-        PixKey pixKeyFound = findPixKeyPort.findPixKey(pixKey);
-        if (Objects.isNull(pixKeyFound))
-            pixKeyFound = findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId);
+        Optional<PixKey> optionalPixKey = findPixKeyPort.findPixKey(pixKey);
 
+        PixKey pixKeyFound = optionalPixKey.orElseGet(() -> findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId));
 
         if (pixKeyFound != null)
             log.info("PixKey_foundAccount"

@@ -37,7 +37,7 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),
                 kv("key", claim.getKey()),
-                kv("cpfCnpf", claim.getCpfCnpj()),
+                kv("cpfCnpf", claim.getTaxId()),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 

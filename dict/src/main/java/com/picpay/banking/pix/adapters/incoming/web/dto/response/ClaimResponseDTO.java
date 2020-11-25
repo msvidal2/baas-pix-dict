@@ -50,7 +50,7 @@ public class ClaimResponseDTO {
                 .personType(claim.getPersonType())
                 .name(claim.getName())
                 .fantasyName(claim.getFantasyName())
-                .cpfCnpj(claim.getCpfCnpj())
+                .cpfCnpj(claim.getTaxId())
                 .donorIspb(claim.getDonorIspb())
                 .donorData(claim.getDonorData())
                 .isClaim(claim.getIsClaim())

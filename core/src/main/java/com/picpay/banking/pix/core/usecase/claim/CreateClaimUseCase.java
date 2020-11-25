@@ -1,9 +1,13 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
+import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.exception.ClaimError;
+import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,30 +20,48 @@ public class CreateClaimUseCase {
 
     private final CreateClaimBacenPort createClaimPort;
     private final CreateClaimPort saveClaimPort;
+    private final FindOpenClaimByKeyPort findClaimByKeyPort;
+    private final FindPixKeyPort findPixKeyPort;
 
-    private DictItemValidator validator;
+    private final DictItemValidator validator;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
-        log.debug("CreateClaimUseCase - method execute");
-
         if (requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }
 
         validator.validate(claim);
 
-        //Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
+        validateClaimAlreadyExistsForKey(claim.getKey());
 
-        /*if (claimCreated != null)
-            log.info("Claim_created",
-                    kv("requestIdentifier", requestIdentifier),
-                    kv("claimId", claimCreated.getClaimId()));*/
+        validateClaimTypeInconsistent(claim);
 
-        claim.setClaimSituation(ClaimSituation.OPEN);
-        log.debug("CreateClaimUseCase - saving in db");
-        Claim claimSaved = saveClaimPort.saveClaim(claim, requestIdentifier);
+        Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
 
-        log.debug("Success - " + claimSaved.toString());
-        return claimSaved;
+        log.info("Claim_created",
+                kv("requestIdentifier", requestIdentifier),
+                kv("claimId", claimCreated.getClaimId()));
+
+        return saveClaimPort.saveClaim(claimCreated, requestIdentifier);
     }
+
+    private void validateClaimAlreadyExistsForKey(String key) {
+        findClaimByKeyPort.find(key).ifPresent(claim -> {
+            throw new ClaimException(ClaimError.OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY);
+        });
+    }
+
+    private void validateClaimTypeInconsistent(Claim claim) {
+        findPixKeyPort.findPixKey(claim.getKey()).ifPresent(pixKey -> {
+            if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+                    && pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
+                throw new ClaimException(ClaimError.KEY_ALREADY_BELONGS_TO_CUSTOMER);
+            }
+            if (ClaimType.PORTABILITY.equals(claim.getClaimType())
+                    && !pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
+                throw new ClaimException(ClaimError.INCONSISTENT_PORTABILITY);
+            }
+        });
+    }
+
 }
