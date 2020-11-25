@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ListPixKeyPortImpl implements ListPixKeyPort {
 
-    private final static String CIRCUIT_BREAKER_NAME = "list-pix-key";
+    private static final String CIRCUIT_BREAKER_NAME = "list-pix-key";
 
     private final PixKeyRepository repository;
 
