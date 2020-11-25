@@ -195,11 +195,11 @@ class CreatePixKeyUseCaseTest {
                 .name("Joao da Silva")
                 .build();
 
-        var error = assertThrows(PixKeyException.class, () -> {
-            useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
-        }).getPixKeyError();
+        var error = assertThrows(PixKeyException.class, () ->
+                useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST))
+                .getPixKeyError();
 
-        assertEquals(error, PixKeyError.KEY_EXISTS);
+        assertEquals(PixKeyError.KEY_EXISTS, error);
 
         verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
         verify(findPixKeyPort).findPixKey(anyString());
