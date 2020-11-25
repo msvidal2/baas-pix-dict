@@ -14,15 +14,17 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ListPendingInfractionReportUseCase {
 
-    private InfractionReportPort infractionReportPort;
+//    private InfractionReportPort infractionReportPort;
 
     public List<InfractionReport> execute(@NonNull final Integer ispb, final Integer limite) {
-        List<InfractionReport> infractionsPending = infractionReportPort.listPending(ispb, limite);
-
-        if (infractionsPending != null)
-            log.info("Infraction_listedPending", kv("endToEndId", infractionsPending.size()));
-
-        return infractionsPending;
+        //TODO ajustar com nova porta -> será feito no contexto do sincronizador
+//        List<InfractionReport> infractionsPending = infractionReportPort.listPending(ispb, limite);
+//
+//        if (infractionsPending != null)
+//            log.info("Infraction_listedPending", kv("endToEndId", infractionsPending.size()));
+//
+//        return infractionsPending;
+        return null;
     }
 
 }

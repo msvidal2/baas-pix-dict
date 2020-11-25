@@ -12,21 +12,25 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class CancelInfractionReportUseCase {
 
-    private final InfractionReportPort infractionReportPort;
+//    private final InfractionReportPort infractionReportPort;
 
     public InfractionReport execute(@NonNull final String infractionReportId
             , @NonNull final Integer ispb, @NonNull final String requestIdentifier) {
 
-        InfractionReport infractionReportCanceled = infractionReportPort
-                .cancel(infractionReportId,ispb, requestIdentifier);
+        //TODO ajustar com nova porta
 
-        if (infractionReportCanceled != null)
-            log.info("Infraction_canceled"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("endToEndId", infractionReportCanceled.getEndToEndId())
-                    , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
+//        InfractionReport infractionReportCanceled = infractionReportPort
+//                .cancel(infractionReportId,ispb, requestIdentifier);
+//
+//        if (infractionReportCanceled != null)
+//            log.info("Infraction_canceled"
+//                    , kv("requestIdentifier", requestIdentifier)
+//                    , kv("endToEndId", infractionReportCanceled.getEndToEndId())
+//                    , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
+//
+//        return infractionReportCanceled;f
 
-        return infractionReportCanceled;
+        return null;
     }
 
 }

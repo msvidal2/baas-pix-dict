@@ -16,18 +16,22 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class FilterInfractionReportUseCase {
 
-    private InfractionReportPort infractionReportPort;
+//    private InfractionReportPort infractionReportPort;
 
     public List<InfractionReport> execute(@NonNull Integer ispb, Boolean isDebited, Boolean isCredited
             , InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
 
-        List<InfractionReport> infractions = infractionReportPort
-                .list(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
+        //TODO ajustar com nova porta
 
-        if (infractions != null)
-            log.info("Infraction_filtered", kv("size", infractions.size()));
+//        List<InfractionReport> infractions = infractionReportPort
+//                .list(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
+//
+//        if (infractions != null)
+//            log.info("Infraction_filtered", kv("size", infractions.size()));
+//
+//        return infractions;
 
-        return infractions;
+        return null;
     }
 
 }

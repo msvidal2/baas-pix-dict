@@ -13,21 +13,25 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class AnalyzeInfractionReportUseCase {
 
-    private final InfractionReportPort infractionReportPort;
+//    private final InfractionReportPort infractionReportPort;
 
     public InfractionReport execute(@NonNull final String infractionReportId, @NonNull final Integer ispb
             , @NonNull InfractionAnalyze analyze, @NonNull final String requestIdentifier) {
 
-        InfractionReport InfractionReportAnalysed = infractionReportPort
-                .analyze(infractionReportId,ispb, analyze, requestIdentifier);
+        //TODO ajustar com nova porta
 
-        if (InfractionReportAnalysed != null)
-            log.info("Infraction_analysed"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("endToEndId", InfractionReportAnalysed.getEndToEndId())
-                    , kv("infractionReportId", InfractionReportAnalysed.getInfractionReportId()));
+//        InfractionReport InfractionReportAnalysed = infractionReportPort
+//                .analyze(infractionReportId,ispb, analyze, requestIdentifier);
+//
+//        if (InfractionReportAnalysed != null)
+//            log.info("Infraction_analysed"
+//                    , kv("requestIdentifier", requestIdentifier)
+//                    , kv("endToEndId", InfractionReportAnalysed.getEndToEndId())
+//                    , kv("infractionReportId", InfractionReportAnalysed.getInfractionReportId()));
+//
+//        return InfractionReportAnalysed;
 
-        return InfractionReportAnalysed;
+        return null;
     }
 
 }

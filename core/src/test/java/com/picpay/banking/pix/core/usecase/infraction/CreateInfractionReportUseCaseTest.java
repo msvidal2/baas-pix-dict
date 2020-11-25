@@ -1,8 +1,9 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ class CreateInfractionReportUseCaseTest {
     private CreateInfractionReportUseCase createInfractionReportUseCase;
 
     @Mock
-    private InfractionReportPort infractionReportPort;
+    private CreateInfractionReportPort infractionReportPort;
 
     private InfractionReport infractionReport;
 
