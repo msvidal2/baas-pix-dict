@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.RemoveReason;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
@@ -22,6 +23,7 @@ public class FailureReconciliationSyncByFileUseCase {
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
+    private final FindPixKeyPort findPixKeyPort;
     private final CreatePixKeyUseCase createPixKeyUseCase;
     private final RemovePixKeyUseCase removePixKeyUseCase;
 
@@ -61,14 +63,14 @@ public class FailureReconciliationSyncByFileUseCase {
 
     private void verifyKeysOfUnknowOwnershipOutOfSync(final List<String> cidsInBacen, final KeyType keyType) {
 
-        final var cidsToRemove = this.databaseContentIdentifierPort.findCidsNotSyncToRemove(keyType, cidsInBacen);
-        log.info("Verifying Keys in Bacen to remove from database - cidsToRemove size {}", cidsToRemove.size());
-        cidsToRemove.forEach(cid -> {
-            final var pixKey = this.databaseContentIdentifierPort.findPixKey(cid); //PEGAR DO NOSSO BANCO
-            pixKey.ifPresent(key -> {
-                this.removePixKeyUseCase.execute(UUID.randomUUID().toString(), key, RemoveReason.RECONCILIATION);
-                log.info("Cid {} of key type {} is removed from database because don't exists in bacen", cid, keyType);
-            });
+        final var keysToRemove = this.databaseContentIdentifierPort.findKeysNotSyncToRemove(keyType, cidsInBacen);
+        log.info("Verifying Keys in Bacen to remove from database - keysToRemove size {}", keysToRemove.size());
+        keysToRemove.forEach(keyToRemove -> {
+             this.findPixKeyPort.findPixKey(keyToRemove)
+                .ifPresent(pixKey -> {
+                    this.removePixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, RemoveReason.RECONCILIATION);
+                    log.info("Cid {} of pixKey {} type {} is removed from database because don't exists in bacen", keyToRemove,pixKey.getKey(), keyType);
+                });
         });
     }
 

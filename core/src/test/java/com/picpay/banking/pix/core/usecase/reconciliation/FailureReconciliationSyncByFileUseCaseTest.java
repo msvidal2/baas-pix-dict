@@ -5,6 +5,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
@@ -15,12 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +52,9 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     private CreatePixKeyUseCase createPixKeyUseCase;
     @Mock
     private RemovePixKeyUseCase removePixKeyUseCase;
+
+    @Mock
+    private FindPixKeyPort findPixKeyPort;
 
     @InjectMocks
     private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
@@ -125,8 +131,8 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).then(this::generateCidToInsert);
         when(bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKey);
         when(createPixKeyUseCase.execute(anyString(),any(),any())).thenReturn(PixKey.builder().build());
-        when(databaseContentIdentifierPort.findCidsNotSyncToRemove(any(), anyList())).then(this::generateCidToRemove);
-        when(databaseContentIdentifierPort.findPixKey(anyString())).thenReturn(Optional.of(PixKey.builder().key("2").build()));
+        when(databaseContentIdentifierPort.findKeysNotSyncToRemove(any(), anyList())).then(this::generateKeysToRemove);
+        when(findPixKeyPort.findPixKey(anyString())).then(this::generatePixKeyFindInDatabase);
         doNothing().when(removePixKeyUseCase).execute(anyString(),any(),any());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
@@ -138,8 +144,8 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(databaseContentIdentifierPort).findCidsNotSync(any(), anyList());
         verify(bacenPixKeyByContentIdentifierPort,times(6)).getPixKey(anyString());
         verify(createPixKeyUseCase,times(6)).execute(anyString(),any(),any());
-        verify(databaseContentIdentifierPort).findCidsNotSyncToRemove(any(), anyList());
-        verify(databaseContentIdentifierPort,times(5)).findPixKey(any());
+        verify(databaseContentIdentifierPort).findKeysNotSyncToRemove(any(), anyList());
+        verify(findPixKeyPort,times(5)).findPixKey(any());
         verify(removePixKeyUseCase,times(5)).execute(any(),any(),any());
     }
 
@@ -150,7 +156,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         doNothing().when(databaseContentIdentifierPort).save(any());
         when(bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).thenReturn(Collections.emptyList());
-        when(databaseContentIdentifierPort.findCidsNotSyncToRemove(any(), anyList())).thenReturn(Collections.emptyList());
+        when(databaseContentIdentifierPort.findKeysNotSyncToRemove(any(), anyList())).thenReturn(Collections.emptyList());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
@@ -161,8 +167,8 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(databaseContentIdentifierPort).findCidsNotSync(any(), anyList());
         verify(bacenPixKeyByContentIdentifierPort,never()).getPixKey(anyString());
         verify(createPixKeyUseCase,never()).execute(anyString(),any(),any());
-        verify(databaseContentIdentifierPort).findCidsNotSyncToRemove(any(), anyList());
-        verify(databaseContentIdentifierPort,never()).findPixKey(any());
+        verify(databaseContentIdentifierPort).findKeysNotSyncToRemove(any(), anyList());
+        verify(findPixKeyPort,never()).findPixKey(any());
         verify(removePixKeyUseCase,never()).execute(any(),any(),any());
 
 
@@ -173,8 +179,12 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         return PixKey.builder().accountNumber("0").accountOpeningDate(LocalDateTime.now())
             .branchNumber("1").accountType(AccountType.CHECKING).createdAt(LocalDateTime.now())
             .endToEndId("EndToEndId")
-            .key("key")
+            .key(cid)
             .build();
+    }
+
+    private Optional<PixKey> generatePixKeyFindInDatabase(final InvocationOnMock invocationOnMock) {
+        return Optional.of(generatePixKey(invocationOnMock));
     }
 
     private List<String > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
@@ -184,11 +194,11 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         return cids.stream().filter(s -> s.startsWith("a")).collect(Collectors.toList());
     }
 
-    private List<String > generateCidToRemove(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private List<String > generateKeysToRemove(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
         var cids = (List<String>) invocationOnMock.getArgument(1);
 
-        return cids.stream().filter(s -> s.startsWith("1")).collect(Collectors.toList());
+        return cids.stream().filter(s -> s.startsWith("1")).map(s -> UUID.randomUUID().toString()).collect(Collectors.toList());
     }
 
 }

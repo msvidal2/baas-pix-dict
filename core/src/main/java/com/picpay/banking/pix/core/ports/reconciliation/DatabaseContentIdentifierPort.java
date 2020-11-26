@@ -17,9 +17,7 @@ public interface DatabaseContentIdentifierPort {
 
     Optional<ContentIdentifierFile> findFileRequested(KeyType keyType);
 
-    Optional<ContentIdentifier> findByCid(KeyType keyType, String cid);
-
-    List<String> findCidsNotSyncToRemove(final KeyType keyType, List<String> cids);
+    List<String> findKeysNotSyncToRemove(final KeyType keyType, List<String> cids);
 
     List<String> findCidsNotSync(KeyType keyType, List<String> cidsInBacen);
 
