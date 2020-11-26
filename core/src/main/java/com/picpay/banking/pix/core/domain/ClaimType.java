@@ -12,9 +12,9 @@ public enum ClaimType {
 
     private int value;
 
-    public static ClaimType resolve(Integer value) {
+    public static ClaimType resolve(int value) {
         for(ClaimType claimType : values()) {
-            if (value != null && claimType.value == value.intValue()) {
+            if (claimType.value == value) {
                 return claimType;
             }
         }

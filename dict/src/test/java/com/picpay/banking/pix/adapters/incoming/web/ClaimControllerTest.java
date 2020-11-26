@@ -68,9 +68,9 @@ class ClaimControllerTest {
                 .build();
     }
 
+    //TODO: Corrigir Teste
     @Test
-    @Disabled
-    //TODO validar when_findClaimWithSuccess_expect_statusOk
+    @Disabled("Corrigir Teste")
     void when_findClaimWithSuccess_expect_statusOk() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
@@ -88,9 +88,9 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
-    @Test
-    @Disabled
     //TODO validar when_findClaimWithNonExistentId_expect_statusNotFound
+    @Test
+    @Disabled("validar when_findClaimWithNonExistentId_expect_statusNotFound")
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(NotFoundJdClientException.class);
 
