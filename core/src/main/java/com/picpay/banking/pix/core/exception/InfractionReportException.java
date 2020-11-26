@@ -18,6 +18,7 @@ public class InfractionReportException extends UseCaseException {
     private final InfractionReportError infractionReportError;
 
     public InfractionReportException(final InfractionReportError infractionReportError) {
+        super(infractionReportError.getMessage());
         this.infractionReportError = infractionReportError;
     }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "Claim",
-        url = "${pix.bacen.dict.entries.url}",
+        url = "${pix.bacen.dict.url}",
         path = "/v1")
 @Headers({
         "Content-Encoding: gzip",

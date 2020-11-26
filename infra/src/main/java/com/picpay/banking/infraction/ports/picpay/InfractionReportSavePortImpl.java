@@ -22,14 +22,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InfractionReportSavePortImpl implements InfractionReportSavePort {
 
-    private static final String HASH_NAME = "INFRACTION";
     private final InfractionReportRepository infractionReportRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void save(@NonNull final InfractionReport infractionReport, final @NonNull String requestIdentifier) {
         infractionReportRepository.save(InfractionReportEntity.fromDomain(infractionReport));
-        redisTemplate.opsForHash().put(HASH_NAME, requestIdentifier, infractionReport);
+        redisTemplate.opsForHash().put(InfractionReport.class.getName(), requestIdentifier, infractionReport);
     }
 
 }
