@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
+import static java.util.Objects.isNull;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 
@@ -34,7 +36,8 @@ public class ListClaimUseCase {
             claimIterable = listPendingClaimPort.list(claim, limit, requestIdentifier);
         } else {
             validateClient(isClaimer, isDonor);
-            claimIterable = listClaimPort.list(claim, limit, isClaimer, isDonor, startDate, endDate, requestIdentifier);
+            claimIterable = listClaimPort.list(claim, limit, isClaimer, isDonor, startDate,
+                    isNull(endDate) ? LocalDateTime.now(ZoneId.of("UTC")) : endDate, requestIdentifier);
         }
 
         if (claimIterable != null)
@@ -53,7 +56,5 @@ public class ListClaimUseCase {
         if(isClaim != null && isDonor != null){
             throw new IllegalArgumentException("Donor or Claim is required.");
         }
-
     }
-
 }

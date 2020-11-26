@@ -8,46 +8,46 @@ import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class ListClaimsPortImpl implements ListClaimPort {
 
     private final ClaimRepository claimRepository;
 
     @Value("${picpay.ispb}")
-    private final String picPayParticipantNumber;
+    private String picPayParticipantNumber;
 
     @Override
     public ClaimIterable list(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate, String requestIdentifier) {
         List<ClaimEntity> claimEntityList = new ArrayList<>();
-
-        if(isNull(endDate))
-            endDate = LocalDateTime.now(ZoneId.of("UTC"));
-
-        // limit++ -> pega um registro a mais do que o definido no limite. Se o size da lista retornada for maior que o limit, eh porque hasNext.
-        // alternativa -> fazer uma consulta de count antes. Se o count for maior que o limit, eh porque hasNext. Desvantagem: duas consultas na base.
+        long findSize = 0;
+        Pageable pageable = PageRequest.of(0, limit);
 
         if(nonNull(isClaimer)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate, pageable);
+            findSize = claimRepository.countAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         } else if(nonNull(isDonor)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(limit++, Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate, pageable);
+            findSize = claimRepository.countAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         }
 
-        return toClaimIterable(claimEntityList, limit);
+        return toClaimIterable(claimEntityList, limit, findSize);
     }
 
-    private ClaimIterable toClaimIterable(List<ClaimEntity> claimEntityList, Integer limit){
+    private ClaimIterable toClaimIterable(List<ClaimEntity> claimEntityList, Integer limit, long findSize){
         return ClaimIterable.builder()
-                .hasNext(claimEntityList.size() > limit)
+                .hasNext(findSize > limit)
                 .count(claimEntityList.size())
                 .claims(getClaims(claimEntityList))
                 .build();

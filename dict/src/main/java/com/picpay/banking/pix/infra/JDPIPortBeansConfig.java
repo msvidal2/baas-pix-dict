@@ -59,13 +59,6 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ListClaimPort listClaimPort(ClaimJDClient claimJDClient,
-                                       ListClaimConverter listClaimConverter,
-                                       TimeLimiterExecutor timeLimiterExecutor) {
-        return new ListClaimPortImpl(claimJDClient, listClaimConverter, timeLimiterExecutor);
-    }
-
-    @Bean
     public ListPendingClaimPort listPendingClaimPort(ClaimJDClient claimJDClient,
                                                      ListClaimConverter listClaimConverter,
                                                      TimeLimiterExecutor timeLimiterExecutor) {
