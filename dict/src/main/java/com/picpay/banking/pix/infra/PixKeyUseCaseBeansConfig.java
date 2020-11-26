@@ -37,9 +37,8 @@ public class PixKeyUseCaseBeansConfig {
     }
 
     @Bean
-    public ListPixKeyUseCase listPixKeyUseCase(ListPixKeyPort listPixKeyPort,
-                                               @Qualifier("listPixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new ListPixKeyUseCase(listPixKeyPort, dictItemValidator);
+    public ListPixKeyUseCase listPixKeyUseCase(ListPixKeyPort listPixKeyPort) {
+        return new ListPixKeyUseCase(listPixKeyPort);
     }
 
     @Bean
