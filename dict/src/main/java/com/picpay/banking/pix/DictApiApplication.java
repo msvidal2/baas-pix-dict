@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableFeignClients(basePackages = {"com.picpay.banking.jdpi.clients", "com.picpay.banking.pixkey.clients", "com.picpay.banking.claim.clients","com.picpay.banking.reconciliation.clients"})
 @SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
-@EnableJpaRepositories({"com.picpay.banking.pixkey.repository", "com.picpay.banking.claim.repository"})
-@EntityScan({"com.picpay.banking.pixkey.entity", "com.picpay.banking.claim.entity"})
+@EnableJpaRepositories({"com.picpay.banking.pixkey.repository", "com.picpay.banking.claim.repository","com.picpay.banking.reconciliation.repository"})
+@EntityScan({"com.picpay.banking.pixkey.entity", "com.picpay.banking.claim.entity","com.picpay.banking.reconciliation.entity"})
 public class DictApiApplication {
 
     public static void main(String[] args) {

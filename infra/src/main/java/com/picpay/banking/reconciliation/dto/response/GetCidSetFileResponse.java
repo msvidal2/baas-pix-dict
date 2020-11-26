@@ -22,9 +22,9 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "CreateCidSetFileResponse")
+@XmlRootElement(name = "GetCidSetFileResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CidSetFileResponse {
+public class GetCidSetFileResponse {
 
     @XmlElement(name = "ResponseTime")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)

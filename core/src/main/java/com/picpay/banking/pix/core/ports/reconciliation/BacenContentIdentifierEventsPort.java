@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.KeyType;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface BacenContentIdentifierEventsPort {
 
@@ -14,7 +13,7 @@ public interface BacenContentIdentifierEventsPort {
 
     ContentIdentifierFile requestContentIdentifierFile(KeyType keyType);
 
-    Optional<ContentIdentifierFile> getContentIdentifierFileInBacen(Integer id);
+    ContentIdentifierFile getContentIdentifierFileInBacen(Integer id);
 
     List<String> downloadFile(String url);
 

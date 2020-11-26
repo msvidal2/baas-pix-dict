@@ -3,7 +3,6 @@ package com.picpay.banking.pix.core.ports.reconciliation;
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,12 +14,10 @@ public interface DatabaseContentIdentifierPort {
 
     void save(ContentIdentifierFile contentIdentifierFile);
 
-    Optional<ContentIdentifierFile> findFileRequested(KeyType keyType);
+    Optional<ContentIdentifierFile> findLastFileRequested(KeyType keyType);
 
     List<String> findKeysNotSyncToRemove(final KeyType keyType, List<String> cids);
 
     List<String> findCidsNotSync(KeyType keyType, List<String> cidsInBacen);
-
-    Optional<PixKey> findPixKey(String cid);
 
 }

@@ -37,7 +37,6 @@ public class RequestSyncFileUseCaseTest {
         final var contentIdentifierFile = ContentIdentifierFile.builder()
             .url("url")
             .keyType(KeyType.CPF)
-            .creationTime(LocalDateTime.now())
             .requestTime(LocalDateTime.now())
             .status(ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED)
         .build();

@@ -20,14 +20,18 @@ public class ContentIdentifierFile {
     private KeyType keyType;
     private LocalDateTime requestTime;
 
-    private LocalDateTime creationTime;
     private String url;
     private Long length;
     private String sha256;
 
     public enum StatusContentIdentifierFile{
         REQUESTED,
-        AVAILABLE
+        AVAILABLE,
+        PROCESSING;
+
+        public boolean isNotAvaliable() {
+            return !this.equals(AVAILABLE);
+        }
     }
 
 }

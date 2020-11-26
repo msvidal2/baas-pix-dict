@@ -73,7 +73,6 @@ public class FailureReconciliationSyncByFileUseCaseTest {
             .sha256("")
             .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
             .requestTime(LocalDateTime.now())
-            .creationTime(LocalDateTime.now())
             .url("")
         .build();
 
@@ -124,8 +123,8 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
     @Test
     public void createKeysWhenKeyNotInDatabaseAndRemoveKeysNotInTheFile(){
-        when(databaseContentIdentifierPort.findFileRequested(any())).thenReturn(Optional.of(cidFile));
-        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(Optional.of(cidFile));
+        when(databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(cidFile);
         doNothing().when(databaseContentIdentifierPort).save(any());
         when(bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).then(this::generateCidToInsert);
@@ -137,7 +136,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
-        verify(databaseContentIdentifierPort).findFileRequested(any());
+        verify(databaseContentIdentifierPort).findLastFileRequested(any());
         verify(bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(any());
         verify(databaseContentIdentifierPort).save(any());
         verify(bacenContentIdentifierEventsPort).downloadFile(anyString());
@@ -151,8 +150,8 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
     @Test
     public void dontCreateKeysWhenKeyNotInDatabaseAndDontRemoveKeys(){
-        when(databaseContentIdentifierPort.findFileRequested(any())).thenReturn(Optional.of(cidFile));
-        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(Optional.of(cidFile));
+        when(databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(cidFile);
         doNothing().when(databaseContentIdentifierPort).save(any());
         when(bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).thenReturn(Collections.emptyList());
@@ -160,7 +159,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
-        verify(databaseContentIdentifierPort).findFileRequested(any());
+        verify(databaseContentIdentifierPort).findLastFileRequested(any());
         verify(bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(any());
         verify(databaseContentIdentifierPort).save(any());
         verify(bacenContentIdentifierEventsPort).downloadFile(anyString());

@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
+import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,6 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
@@ -23,11 +23,14 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     private BacenReconciliationClient bacenReconciliationClient;
 
     private String participant;
+    private String urlGateway;
 
-    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient, @Value("${picpay.ispb}") String participant) {
+    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient
+        , @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway ) {
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
+        this.urlGateway = urlGateway;
     }
 
     @Override
@@ -38,18 +41,27 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     @Override
     public ContentIdentifierFile requestContentIdentifierFile(final KeyType keyType) {
 
-        //return this.bacenSyncClient.requestCid(new CidSetFileRequest());
-        return null;
+        final var request = CidSetFileRequest.builder()
+            .keyType(keyType)
+            .participant(participant)
+            .build();
+
+        final var response = this.bacenReconciliationClient.requestCidFile(request);
+
+        return response.toDomain();
     }
 
     @Override
-    public Optional<ContentIdentifierFile> getContentIdentifierFileInBacen(final Integer id) {
-        return Optional.empty();
+    public ContentIdentifierFile getContentIdentifierFileInBacen(final Integer id) {
+        final var cidFile = this.bacenReconciliationClient.getCidFile(id, participant);
+        return cidFile.toDomain();
     }
 
     @Override
     public List<String> downloadFile(final String url) {
-        final var file = this.bacenArqClient.request(URI.create(url));
+        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );//CHANGE HOST TO GATEWAY
+
+        final var file = this.bacenArqClient.request(URI.create(urlFile));
         return Arrays.asList(file.split("\n"));
     }
 

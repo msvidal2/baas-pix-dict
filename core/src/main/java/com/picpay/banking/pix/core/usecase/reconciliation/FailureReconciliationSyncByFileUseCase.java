@@ -1,20 +1,14 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.RemoveReason;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
-import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Slf4j
@@ -24,54 +18,54 @@ public class FailureReconciliationSyncByFileUseCase {
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final FindPixKeyPort findPixKeyPort;
-    private final CreatePixKeyUseCase createPixKeyUseCase;
-    private final RemovePixKeyUseCase removePixKeyUseCase;
+    private final CreatePixKeyPort createPixKeyPort;
 
     public void execute(KeyType keyType) {
-        this.databaseContentIdentifierPort.findFileRequested(keyType).ifPresent(this::processFile);
+        this.databaseContentIdentifierPort.findLastFileRequested(keyType).ifPresent(this::processFile);
     }
 
     private void processFile(final ContentIdentifierFile contentIdentifierFile) {
-        final var fileAvailableInBacen = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFile.getId());
+        final var availableFile = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFile.getId());
 
-        fileAvailableInBacen.ifPresent(availableFile -> {
-            this.databaseContentIdentifierPort.save(availableFile);
+        if(availableFile == null || availableFile.getStatus().isNotAvaliable()) {
+            return;
+        }
 
-            // final var url = availableFile.getUrl().replace("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway );//CHANGE HOST TO GATEWAY
-
-            final var cids = this.bacenContentIdentifierEventsPort.downloadFile(availableFile.getUrl());
-
-            final var keyType = availableFile.getKeyType();
-
-            this.verifyKeysOfOurOwnershipOutOfSync(cids, keyType);
-            this.verifyKeysOfUnknowOwnershipOutOfSync(cids, keyType);
-        });
+        //this.databaseContentIdentifierPort.save(availableFile);
+//
+        //final var cids = this.bacenContentIdentifierEventsPort.downloadFile(availableFile.getUrl());
+//
+        //final var keyType = availableFile.getKeyType();
+//
+        //this.verifyKeysOfOurOwnershipOutOfSync(cids, keyType);
+        //this.verifyKeysOfUnknowOwnershipOutOfSync(cids, keyType);
     }
 
-    private void verifyKeysOfOurOwnershipOutOfSync(List<String> cidsInBacen, KeyType keyType) {
+   //private void verifyKeysOfOurOwnershipOutOfSync(List<String> cidsInBacen, KeyType keyType) {
 
-        final var cidsToInsert = this.databaseContentIdentifierPort.findCidsNotSync(keyType, cidsInBacen);
-        log.info("Verifying Keys in Bacen to insert in database - cidsToInsert size {}", cidsToInsert.size());
+   //    final var cidsToInsert = this.databaseContentIdentifierPort.findCidsNotSync(keyType, cidsInBacen);
+   //    log.info("Verifying Keys in Bacen to insert in database - cidsToInsert size {}", cidsToInsert.size());
 
-        cidsToInsert.stream()
-            .forEach(cid -> {
-                final var pixKey = this.bacenPixKeyByContentIdentifierPort.getPixKey(cid);
-                this.createPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, CreateReason.RECONCILIATION);
-                log.info("Cid {} of key type {} inserted in database", cid, keyType);
-            });
-    }
+   //    //TODO
+   //    cidsToInsert.stream()
+   //        .forEach(cid -> {
+   //            final var pixKey = this.bacenPixKeyByContentIdentifierPort.getPixKey(cid);
+   //            this.createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
+   //            log.info("Cid {} of key type {} inserted in database", cid, keyType);
+   //        });
+   //}
 
-    private void verifyKeysOfUnknowOwnershipOutOfSync(final List<String> cidsInBacen, final KeyType keyType) {
+   //private void verifyKeysOfUnknowOwnershipOutOfSync(final List<String> cidsInBacen, final KeyType keyType) {
 
-        final var keysToRemove = this.databaseContentIdentifierPort.findKeysNotSyncToRemove(keyType, cidsInBacen);
-        log.info("Verifying Keys in Bacen to remove from database - keysToRemove size {}", keysToRemove.size());
-        keysToRemove.forEach(keyToRemove -> {
-             this.findPixKeyPort.findPixKey(keyToRemove)
-                .ifPresent(pixKey -> {
-                    this.removePixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, RemoveReason.RECONCILIATION);
-                    log.info("Cid {} of pixKey {} type {} is removed from database because don't exists in bacen", keyToRemove,pixKey.getKey(), keyType);
-                });
-        });
-    }
+   //    final var keysToRemove = this.databaseContentIdentifierPort.findKeysNotSyncToRemove(keyType, cidsInBacen);
+   //    log.info("Verifying Keys in Bacen to remove from database - keysToRemove size {}", keysToRemove.size());
+   //    keysToRemove.forEach(keyToRemove -> {
+   //         this.findPixKeyPort.findPixKey(keyToRemove)
+   //            .ifPresent(pixKey -> {
+   //                //this.removePixKeyPort.remove(UUID.randomUUID().toString(), pixKey, RemoveReason.RECONCILIATION);
+   //                log.info("Cid {} of pixKey {} type {} is removed from database because don't exists in bacen", keyToRemove,pixKey.getKey(), keyType);
+   //            });
+   //    });
+   //}
 
 }
