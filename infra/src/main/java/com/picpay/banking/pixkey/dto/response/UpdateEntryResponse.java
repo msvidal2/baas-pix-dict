@@ -42,11 +42,11 @@ public class UpdateEntryResponse {
     @XmlElement(name = "Entry")
     private Entry entry;
 
-    public PixKey toDomain(String participant) {
+    public PixKey toDomain(PixKey pixKey) {
         return PixKey.builder()
                 .type(KeyType.resolve(entry.getKeyType().getValue()))
                 .key(entry.getKey())
-                .ispb(Integer.parseInt(participant))
+                .ispb(pixKey.getIspb())
                 .branchNumber(entry.getAccount().getBranch())
                 .accountType(AccountType.resolve(entry.getAccount().getAccountType().getValue()))
                 .accountNumber(entry.getAccount().getAccountNumber())
