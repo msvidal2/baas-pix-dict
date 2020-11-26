@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -71,7 +70,7 @@ public class CreateClaimRequestWebDTO {
                 .accountType(accountType)
                 .branchNumber(branchNumber)
                 .claimType(claimType)
-                .cpfCnpj(cpfCnpj)
+                .taxId(cpfCnpj)
                 .ispb(ispb)
                 .key(key)
                 .keyType(keyType)

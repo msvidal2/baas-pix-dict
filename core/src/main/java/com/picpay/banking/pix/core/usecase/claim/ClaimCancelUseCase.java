@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimCancelReason;
-import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -14,7 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ClaimCancelUseCase {
 
-    private ClaimCancelPort claimCancelPort;
+    private CancelClaimPort claimCancelPort;
 
     private DictItemValidator<Claim> validator;
 

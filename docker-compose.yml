@@ -1,0 +1,70 @@
+version: "3.7"
+
+services:
+
+    postgres:
+        container_name: postgres
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: "123456"
+        ports:
+            - "15432:5432"
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        networks:
+            - baas_pix_net
+
+    pgadmin:
+        container_name: pgadmin
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "pix@picpay.com"
+            PGADMIN_DEFAULT_PASSWORD: "123456"
+        ports:
+            - "16543:80"
+        depends_on:
+            - postgres
+        networks:
+            - baas_pix_net
+
+    zookeeper:
+        container_name: zookeeper
+        image: confluentinc/cp-zookeeper:5.3.1
+        restart: always
+        ports:
+            - 2181:2181
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        volumes:
+            - zookeeper:/data
+            - zookeeper:/datalog
+        networks:
+            - baas_pix_net
+
+    kafka:
+        container_name: kafka
+        image: confluentinc/cp-kafka:5.3.1
+        restart: always
+        ports:
+            - 9092:9092
+        depends_on:
+            - zookeeper
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_LOG4J_LOGGERS: 'kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO'
+        volumes:
+            - kafka
+        networks:
+            - baas_pix_net
+
+networks:
+    baas_pix_net:
+
+volumes:
+    postgres:
+    zookeeper:
+    kafka:

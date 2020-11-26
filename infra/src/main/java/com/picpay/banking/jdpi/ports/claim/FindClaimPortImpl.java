@@ -7,7 +7,7 @@ import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
