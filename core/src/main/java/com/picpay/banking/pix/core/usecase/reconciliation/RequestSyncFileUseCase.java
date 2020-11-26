@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
+import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
@@ -13,7 +14,7 @@ public class RequestSyncFileUseCase {
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
 
-    public void execute(KeyType keyType){
+    public ContentIdentifierFile execute(KeyType keyType){
 
         log.info("Requesting CID files from BACEN for key type", keyType);
 
@@ -22,6 +23,7 @@ public class RequestSyncFileUseCase {
         this.databaseContentIdentifierPort.save(contentIdentifierFile);
         log.info("CID files from BACEN requested succesfull {}", contentIdentifierFile);
 
+        return contentIdentifierFile;
     }
 
 }
