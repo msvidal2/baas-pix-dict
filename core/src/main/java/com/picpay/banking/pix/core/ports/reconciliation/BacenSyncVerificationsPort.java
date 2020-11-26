@@ -6,4 +6,5 @@ public interface BacenSyncVerificationsPort {
 
     VsyncResult syncVerification(String vsync);
 
+
 }
