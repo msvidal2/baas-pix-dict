@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -32,13 +31,12 @@ public class ListClaimsPortImpl implements ListClaimPort {
     public ClaimIterable list(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate, String requestIdentifier) {
         List<ClaimEntity> claimEntityList = new ArrayList<>();
         long findSize = 0;
-        Pageable pageable = PageRequest.of(0, limit);
 
         if(nonNull(isClaimer)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate, pageable);
+            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate, PageRequest.of(0, limit));
             findSize = claimRepository.countAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         } else if(nonNull(isDonor)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate, pageable);
+            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate, PageRequest.of(0, limit));
             findSize = claimRepository.countAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
         }
 

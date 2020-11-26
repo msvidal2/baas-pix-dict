@@ -32,4 +32,10 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     @Query("SELECT COUNT(c) FROM claim c WHERE c.donorParticipant = :donorParticipant AND c.lastModified BETWEEN :startDate AND :endDate")
     long countAllClaimsWhereIsDonor(Integer donorParticipant, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query("SELECT c FROM claim c WHERE c.status in :openStatus")
+    List<ClaimEntity> findAllPendingClaims(List<ClaimStatus> openStatus, Pageable pageable);
+
+    @Query("SELECT COUNT(c) FROM claim c WHERE c.status in :openStatus")
+    long countAllPendingClaims(List<ClaimStatus> openStatus);
+
 }

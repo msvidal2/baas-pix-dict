@@ -1,5 +1,6 @@
 package com.picpay.banking.jdpi.ports.claim;
 
+import com.picpay.banking.claim.ports.picpay.ListPendingClaimsPortImpl;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.dto.response.ListClaimDTO;
 import com.picpay.banking.jdpi.dto.response.ListClaimResponseDTO;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 class ListClaimPortImplTest {
 
     @InjectMocks
-    private ListPendingClaimPortImpl port;
+    private ListPendingClaimsPortImpl port;
 
     @Mock
     private TimeLimiterExecutor timeLimiterExecutor;

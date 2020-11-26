@@ -59,13 +59,6 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ListPendingClaimPort listPendingClaimPort(ClaimJDClient claimJDClient,
-                                                     ListClaimConverter listClaimConverter,
-                                                     TimeLimiterExecutor timeLimiterExecutor) {
-        return new ListPendingClaimPortImpl(claimJDClient, listClaimConverter, timeLimiterExecutor);
-    }
-
-    @Bean
     public RemovePixKeyPort removePixKeyPort(PixKeyJDClient pixKeyJDClient,
                                              TimeLimiterExecutor timeLimiterExecutor) {
         return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
