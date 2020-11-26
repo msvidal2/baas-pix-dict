@@ -1,11 +1,10 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
-
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -15,9 +14,8 @@ public class FindInfractionReportUseCase {
 
     private final InfractionReportFindPort infractionReportFindPort;
 
-    public InfractionReport execute(@NonNull final String infractionReportId) {
-
-        if(infractionReportId.isBlank()) {
+    public InfractionReport execute(final String infractionReportId) {
+        if(StringUtils.isBlank(infractionReportId)) {
             throw new IllegalArgumentException("The Infraction report id cannot be empty");
         }
 

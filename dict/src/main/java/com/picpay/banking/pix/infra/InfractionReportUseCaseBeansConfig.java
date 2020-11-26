@@ -2,6 +2,9 @@ package com.picpay.banking.pix.infra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picpay.banking.idempotency.IdempotencyValidatorImpl;
+import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.ports.bacen.CreateInfractionReportPortImpl;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;

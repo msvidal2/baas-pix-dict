@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Component
 @FeignClient(name = "bacenInfractionClient",
-    url = "${pix.bacen.dict.infraction.url}",
+    url = "${pix.bacen.dict.url}",
     path = "/v1/infraction-reports",
     configuration = FeignXmlConfig.class)
 public interface CreateInfractionBacenClient {

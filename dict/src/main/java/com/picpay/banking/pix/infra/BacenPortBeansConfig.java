@@ -1,7 +1,5 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.claim.clients.BacenClaimClient;
-import com.picpay.banking.claim.ports.bacen.CreateClaimPortBacenImpl;
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.ports.bacen.CreateInfractionReportPortImpl;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
@@ -10,12 +8,20 @@ import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.claim.*;
-import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
-import com.picpay.banking.jdpi.ports.pixkey.ListPixKeyPortImpl;
+import com.picpay.banking.jdpi.ports.claim.ClaimCancelPortImpl;
+import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
+import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
+import com.picpay.banking.jdpi.ports.claim.FindClaimPortImpl;
+import com.picpay.banking.jdpi.ports.claim.ListClaimPortImpl;
+import com.picpay.banking.jdpi.ports.claim.ListPendingClaimPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
-import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
@@ -81,9 +87,10 @@ public class BacenPortBeansConfig {
     }
 
     @Bean
-    public CreateInfractionReportPort infractionReportPort(final TimeLimiterExecutor timeLimitExecutor,
-                                                           final CreateInfractionBacenClient bacenClient) {
-        return new CreateInfractionReportPortImpl(bacenClient, timeLimitExecutor);
+    public CreateInfractionReportPort infractionReportPort(final CreateInfractionBacenClient bacenClient,
+                                                           final TimeLimiterExecutor timeLimiterExecutor) {
+        return new CreateInfractionReportPortImpl(bacenClient, timeLimiterExecutor);
     }
+
 
 }
