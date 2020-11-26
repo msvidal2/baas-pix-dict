@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.validators.*;
 import com.picpay.banking.pix.core.validators.pixkey.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,24 +9,6 @@ import java.util.List;
 
 @Configuration
 public class PixKeyValidatorConfiguration {
-
-    @Bean
-    public DictItemValidator createPixKeyItemValidator() {
-        return new PixKeyValidatorComposite(
-                List.of(
-                        new KeyTypeItemValidator(),
-                        new KeyItemValidator(),
-                        new IspbItemValidator(),
-                        new BranchNumberItemValidator(),
-                        new AccountTypeItemValidator(),
-                        new AccountNumberItemValidator(),
-                        new AccountOpeningDateItemValidator(),
-                        new PersonTypeItemValidator(),
-                        new CpfCnpjItemValidator(),
-                        new NameItemValidator(),
-                        new FantasyNameItemValidator()
-                ));
-    }
 
     @Bean
     public DictItemValidator findPixKeyItemValidator() {
@@ -40,9 +22,9 @@ public class PixKeyValidatorConfiguration {
     public DictItemValidator removePixKeyItemValidator() {
         return new PixKeyValidatorComposite(
                 List.of(
-                        new KeyTypeItemValidator(),
-                        new KeyItemValidator(),
-                        new IspbItemValidator()
+//                        new KeyTypeItemValidator(),
+//                        new KeyItemValidator(),
+//                        new IspbValidator()
                 ));
     }
 
@@ -50,12 +32,12 @@ public class PixKeyValidatorConfiguration {
     public DictItemValidator updatePixKeyItemValidator() {
         return new PixKeyValidatorComposite(
                 List.of(
-                        new KeyItemValidator(),
-                        new IspbItemValidator(),
-                        new BranchNumberItemValidator(),
-                        new AccountTypeItemValidator(),
-                        new AccountNumberItemValidator(),
-                        new AccountOpeningDateItemValidator()
+//                        new KeyItemValidator(),
+//                        new IspbValidator(),
+//                        new BranchNumberItemValidator(),
+//                        new AccountTypeValidator(),
+//                        new AccountNumberValidator(),
+//                        new AccountOpeningDateValidator()
                 ));
     }
 
@@ -63,12 +45,12 @@ public class PixKeyValidatorConfiguration {
     public DictItemValidator listPixKeyItemValidator() {
         return new PixKeyValidatorComposite(
                 List.of(
-                        new CpfCnpjItemValidator(),
-                        new PersonTypeItemValidator(),
-                        new AccountTypeItemValidator(),
-                        new AccountNumberItemValidator(),
-                        new IspbItemValidator(),
-                        new BranchNumberItemValidator()
+//                        new TaxIdValidator(),
+//                        new PersonTypeValidator(),
+//                        new AccountTypeValidator(),
+//                        new AccountNumberValidator(),
+//                        new IspbValidator(),
+//                        new BranchNumberItemValidator()
                 ));
     }
 }

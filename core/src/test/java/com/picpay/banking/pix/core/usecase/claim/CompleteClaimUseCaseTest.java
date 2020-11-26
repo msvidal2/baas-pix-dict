@@ -2,8 +2,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;

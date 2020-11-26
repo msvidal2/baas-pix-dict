@@ -8,7 +8,7 @@ import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 
@@ -31,7 +31,7 @@ public class ListPendingClaimPortImpl implements ListPendingClaimPort {
         var listClaimRequestDTO = ListPendingClaimRequestDTO.builder()
             .ispb(claim.getIspb())
             .tpPessoaLogada(claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
-            .cpfCnpjLogado(claim.getCpfCnpj() != null ? Long.parseLong(claim.getCpfCnpj()) : null)
+            .cpfCnpjLogado(claim.getTaxId() != null ? Long.parseLong(claim.getTaxId()) : null)
             .nrAgenciaLogada(claim.getBranchNumber())
             .nrContaLogada(claim.getAccountNumber())
             .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)

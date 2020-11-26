@@ -1,9 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.jdpi.exception.JDClientException;
 import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
+import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
@@ -25,25 +31,49 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler({JDClientException.class})
-    public ResponseEntity<ErrorDTO> handleJDClientException(final JDClientException ex) {
-        ResponseEntity<ErrorDTO> responseEntity = ClientErrorResponseFactory.newErrorDTO(ex);
+    @ExceptionHandler(BacenException.class)
+    public ResponseEntity<ErrorDTO> handleBacenException(BacenException e) {
+        var bacenError = e.getBacenError();
 
-        ErrorDTO errorDTO = responseEntity.getBody();
+        var errorBuilder = ErrorDTO.builder()
+                .code(e.getHttpStatus().value())
+                .error(e.getHttpStatus().getReasonPhrase())
+                .apiErrorCode(bacenError.getMessage())
+                .message(bacenError.getDetail());
 
-        log.error("error_handleJDClientException", errorDTO.toLogJson(ex));
+        if(bacenError.getFields() != null && bacenError.getFields().isEmpty()) {
+            var fields = bacenError.getFields()
+                    .stream()
+                    .map(FieldErrorDTO::from)
+                    .collect(Collectors.toList());
 
-        return responseEntity;
+            errorBuilder.fieldErrors(fields);
+        }
+
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(errorBuilder.build());
     }
 
-    @ExceptionHandler(NotFoundJdClientException.class)
-    @ResponseStatus(NOT_FOUND)
-    public ErrorDTO handleNotFoundJdClientException(final NotFoundJdClientException ex) {
-        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, Optional.ofNullable(ex.getMessage()).orElse("Resource not found"));
+    @ExceptionHandler(PixKeyException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorDTO handlePixKeyException(PixKeyException e) {
+        var errorBuilder = ErrorDTO.builder()
+                .code(BAD_REQUEST.value())
+                .error(BAD_REQUEST.getReasonPhrase())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now());
 
-        log.error("error_handleNotFoundJdClientException", errorDTO.toLogJson(ex));
+        if(!Objects.isNull(e.getPixKeyError())) {
+            errorBuilder.apiErrorCode(e.getPixKeyError().getCode())
+                    .message(e.getPixKeyError().getMessage());
+        }
 
-        return errorDTO;
+        var error = errorBuilder.build();
+
+        log.error("error_handlePixKeyException", error.toLogJson(e));
+
+        return error;
     }
 
     @ExceptionHandler({
@@ -65,6 +95,8 @@ public class CustomExceptionHandler {
         ErrorDTO errorDTO = ErrorDTO.from(INTERNAL_SERVER_ERROR, ex.getMessage());
 
         log.error("error_handleInternalException", errorDTO.toLogJson(ex));
+
+        log.error(ex.getMessage(), ex);
 
         return errorDTO;
     }

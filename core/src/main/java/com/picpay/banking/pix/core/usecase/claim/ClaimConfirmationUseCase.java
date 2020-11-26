@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.claim.ClaimConfirmationPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -16,7 +16,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ClaimConfirmationUseCase {
 
-    private ClaimConfirmationPort claimConfirmationPort;
+    private ConfirmationClaimPort claimConfirmationPort;
 
     private DictItemValidator<Claim> validator;
 
