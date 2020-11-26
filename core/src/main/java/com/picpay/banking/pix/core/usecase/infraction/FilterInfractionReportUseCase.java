@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +17,17 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class FilterInfractionReportUseCase {
 
-//    private InfractionReportPort infractionReportPort;
+    private InfractionReportListPort infractionReportListPort;
 
-    public List<InfractionReport> execute(@NonNull Integer ispb, Boolean isDebited, Boolean isCredited
-            , InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
+    public List<InfractionReport> execute(@NonNull Integer ispb, InfractionReportSituation situation,
+        LocalDateTime dateStart, LocalDateTime dateEnd) {
 
-        //TODO ajustar com nova porta
+        List<InfractionReport> infractions = infractionReportListPort.list(ispb, situation, dateStart, dateEnd);
 
-//        List<InfractionReport> infractions = infractionReportPort
-//                .list(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
-//
-//        if (infractions != null)
-//            log.info("Infraction_filtered", kv("size", infractions.size()));
-//
-//        return infractions;
+        if (infractions != null)
+            log.info("Infraction_filtered", kv("size", infractions.size()));
 
-        return null;
+        return infractions;
     }
 
 }

@@ -9,6 +9,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +48,8 @@ class InfractionReportRequestControllerTest {
     private CreateInfractionReportUseCase createInfractionReportUseCase;
     @Mock
     private FilterInfractionReportUseCase filterInfractionReportUseCase;
+    @Mock
+    private FindInfractionReportUseCase findInfractionReportUseCase;
     private MockMvc mockMvc;
     private InfractionReport infractionReport;
     private InfractionReport findInfractionReport;
@@ -206,27 +209,52 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
+    void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
+        when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
+
+        mockMvc.perform(get("/v1/infraction-report/{infractionReportId}", UUID.randomUUID().toString())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endToEndId", equalTo("E9999901012341234123412345678900")))
+            .andExpect(jsonPath("$.type", equalTo("FRAUD")))
+            .andExpect(jsonPath("$.details", equalTo("situacao irregular da cartao")))
+            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")))
+            .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
+            .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
+
+        verify(findInfractionReportUseCase).execute(anyString());
+
+    }
+
+    @Test
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
-        when(filterInfractionReportUseCase.execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class))).thenReturn(List.of(findInfractionReport));
+        when(filterInfractionReportUseCase.execute(anyInt(),nullable(InfractionReportSituation.class),nullable(LocalDateTime.class),
+                                                   nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
 
         mockMvc.perform(get("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .queryParam("ispb", "1"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .queryParam("ispb", "1"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());
 
-        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class));
+        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(
+            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class));
 
     }
 
     @Test
     void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         mockMvc.perform(get("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))
