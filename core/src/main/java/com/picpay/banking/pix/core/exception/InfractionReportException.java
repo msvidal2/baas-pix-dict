@@ -21,9 +21,4 @@ public class InfractionReportException extends UseCaseException {
         this.infractionReportError = infractionReportError;
     }
 
-    public InfractionReportException(final String message, final InfractionReportError infractionReportError) {
-        super(message);
-        this.infractionReportError = infractionReportError;
-    }
-
 }

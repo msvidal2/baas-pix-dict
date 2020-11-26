@@ -45,7 +45,7 @@ public class InfractionReportEntity {
     private int ispbDebited;
     private int ispbCredited;
     private LocalDateTime createdDate;
-    private LocalDateTime lastUpdateDate;
+    private LocalDateTime lastUpdatedDate;
     private int ispbRequester;
     private InfractionType infractionType;
     private String details;
@@ -63,7 +63,7 @@ public class InfractionReportEntity {
             .ispbDebited(infractionReport.getIspbDebited())
             .ispbCredited(infractionReport.getIspbCredited())
             .createdDate(infractionReport.getDateCreate())
-            .lastUpdateDate(infractionReport.getDateLastUpdate())
+            .lastUpdatedDate(infractionReport.getDateLastUpdate())
             .ispbRequester(infractionReport.getIspbRequester())
             .infractionType(infractionReport.getInfractionType())
             .details(infractionReport.getDetails())
@@ -82,7 +82,7 @@ public class InfractionReportEntity {
             .ispbDebited(this.getIspbDebited())
             .ispbCredited(this.getIspbCredited())
             .dateCreate(this.getCreatedDate())
-            .dateLastUpdate(this.getLastUpdateDate())
+            .dateLastUpdate(this.getLastUpdatedDate())
             .ispbRequester(this.getIspbRequester())
             .infractionType(this.getInfractionType())
             .details(this.getDetails())

@@ -9,6 +9,8 @@ package com.picpay.banking.pix.core.ports.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
+import java.util.Optional;
+
 /**
  * @author rafael.braga
  * @version 1.0 18/11/2020
@@ -16,5 +18,6 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 public interface InfractionReportFindPort {
 
    InfractionReport find(String infractionReportId);
+   Optional<InfractionReport> findByEndToEndId(String endToEndId);
 
 }
