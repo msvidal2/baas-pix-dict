@@ -5,9 +5,10 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
-import com.picpay.banking.pix.core.validators.*;
-import com.picpay.banking.pix.core.validators.pixkey.*;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.validators.pixkey.PixKeyValidatorComposite;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,9 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Mock
     private UpdateAccountPixKeyPort updateAccountPort;
 
+    @Mock
+    private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
+
     private DictItemValidator dictItemValidator = new PixKeyValidatorComposite(
             List.of(
 //                    new KeyTypeItemValidator(),
@@ -45,7 +49,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     );
 
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, dictItemValidator);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort, dictItemValidator);
 
     @Test
     public void testUpdate() {
@@ -63,7 +67,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(anyString(), any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
     }
@@ -119,7 +123,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(anyString(), any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
     }
