@@ -19,11 +19,8 @@ public class RequestSyncFileUseCase {
 
         final var contentIdentifierFile = this.bacenContentIdentifierEventsPort.requestContentIdentifierFile(keyType);
 
-        contentIdentifierFile.ifPresent(bacenContentIdentifierFile -> {
-            this.databaseContentIdentifierPort.save(bacenContentIdentifierFile);
-            log.info("CID files from BACEN requested succesfull {}", contentIdentifierFile);
-        });
-
+        this.databaseContentIdentifierPort.save(contentIdentifierFile);
+        log.info("CID files from BACEN requested succesfull {}", contentIdentifierFile);
 
     }
 

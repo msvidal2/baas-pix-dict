@@ -12,7 +12,7 @@ public interface BacenContentIdentifierEventsPort {
 
     List<ContentIdentifierEvent> list(KeyType keyType, LocalDateTime startTime, LocalDateTime endTime);
 
-    Optional<ContentIdentifierFile> requestContentIdentifierFile(KeyType keyType);
+    ContentIdentifierFile requestContentIdentifierFile(KeyType keyType);
 
     Optional<ContentIdentifierFile> getContentIdentifierFileInBacen(Integer id);
 
