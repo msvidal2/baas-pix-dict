@@ -6,6 +6,7 @@ package com.picpay.banking.pixkey.repository;
  */
 
 import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,5 +29,22 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     List<PixKeyEntity> findByAccount(Integer participant, String branch, String accountNumber, AccountType accountType);
 
     void deleteByIdKeyAndParticipant(String key, Integer participant);
+
+    @Query("SELECT t FROM pix_key t " +
+            "WHERE t.id.taxId = :taxId " +
+            "   AND t.personType = :personType " +
+            "   AND t.branch = :branch " +
+            "   AND t.accountNumber = :accountNumber " +
+            "   AND t.accountType = :accountType " +
+            "   AND t.participant = :participant")
+    List<PixKeyEntity> findKeys(String taxId, PersonType personType, String branch, String accountNumber, AccountType accountType, Integer participant);
+
+    @Query("SELECT t FROM pix_key t " +
+            "WHERE t.id.taxId = :taxId " +
+            "   AND t.personType = :personType " +
+            "   AND t.accountNumber = :accountNumber " +
+            "   AND t.accountType = :accountType " +
+            "   AND t.participant = :participant")
+    List<PixKeyEntity> findKeys(String taxId, PersonType personType, String accountNumber, AccountType accountType, Integer participant);
 
 }
