@@ -20,7 +20,7 @@ public class CreateClaimUseCase {
 
     private final CreateClaimBacenPort createClaimPort;
     private final CreateClaimPort saveClaimPort;
-    private final FindOpenClaimByKeyPort findClaimByKeyPort;
+    private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
     private final FindPixKeyPort findPixKeyPort;
 
     private final DictItemValidator validator;
@@ -45,7 +45,7 @@ public class CreateClaimUseCase {
     }
 
     private void validateClaimAlreadyExistsForKey(String key) {
-        findClaimByKeyPort.find(key).ifPresent(claim -> {
+        findOpenClaimByKeyPort.find(key).ifPresent(claim -> {
             throw new ClaimException(ClaimError.OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY);
         });
     }

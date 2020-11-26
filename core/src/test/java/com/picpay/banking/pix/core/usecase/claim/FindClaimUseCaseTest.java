@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -38,7 +40,7 @@ public class FindClaimUseCaseTest {
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
 
-        when(findClaimPort.findClaim(anyString(), anyString(), anyBoolean())).thenReturn(claim);
+        when(findClaimPort.findClaim(anyString(), anyString(), anyBoolean())).thenReturn(Optional.of(claim));
 
         assertDoesNotThrow(() -> {
             var response = findClaimUseCase.execute("123456", "123", false);

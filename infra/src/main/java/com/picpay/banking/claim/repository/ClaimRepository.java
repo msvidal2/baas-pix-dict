@@ -6,6 +6,7 @@ package com.picpay.banking.claim.repository;/*
 
 import com.picpay.banking.claim.dto.response.ClaimStatus;
 import com.picpay.banking.claim.entity.ClaimEntity;
+import com.picpay.banking.pix.core.domain.Claim;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,11 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
 
     @Query("SELECT c FROM claim c WHERE c.key = :key AND c.status in :openStatus")
     ClaimEntity findOpenClaimByKey(String key, List<ClaimStatus> openStatus);
+
+    @Query("SELECT c FROM claim c WHERE c.id = :id AND c.claimerParticipant = :ispb")
+    ClaimEntity findClaimerClaimById(String id, String ispb);
+
+    @Query("SELECT c FROM claim c WHERE c.id = :id AND c.donorParticipant = :ispb")
+    ClaimEntity findDonorClaimById(String id, String ispb);
 
 }
