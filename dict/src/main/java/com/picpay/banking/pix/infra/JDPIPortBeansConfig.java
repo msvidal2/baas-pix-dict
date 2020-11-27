@@ -9,7 +9,6 @@ import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.ClaimCancelPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
 import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
-import com.picpay.banking.jdpi.ports.claim.FindClaimPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ListClaimPortImpl;
 import com.picpay.banking.jdpi.ports.claim.ListPendingClaimPortImpl;
 import com.picpay.banking.jdpi.ports.pixkey.RemovePixKeyPortImpl;
@@ -17,7 +16,6 @@ import com.picpay.banking.jdpi.ports.pixkey.UpdateAccountPixKeyPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
@@ -50,11 +48,6 @@ public class JDPIPortBeansConfig {
     @Bean
     public CompleteClaimPort completeClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
         return new CompleteClaimPortImpl(claimJDClient, timeLimiterExecutor);
-    }
-
-    @Bean
-    public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
-        return new FindClaimPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean
