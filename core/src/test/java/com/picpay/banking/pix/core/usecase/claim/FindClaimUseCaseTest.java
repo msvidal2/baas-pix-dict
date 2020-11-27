@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ public class FindClaimUseCaseTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .taxId("12345678902")
+                .cpfCnpj("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
 
@@ -52,7 +53,7 @@ public class FindClaimUseCaseTest {
             assertEquals(response.getKeyType(), claim.getKeyType());
             assertEquals(response.getName(), claim.getName());
             assertEquals(response.getIspb(), claim.getIspb());
-            assertEquals(response.getTaxId(), claim.getTaxId());
+            assertEquals(response.getCpfCnpj(), claim.getCpfCnpj());
             assertEquals(response.getPersonType(), claim.getPersonType());
         });
     }
@@ -61,7 +62,8 @@ public class FindClaimUseCaseTest {
     void when_findClaimAndNotFind_expect_nullResults() {
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.empty());
 
-        assertDoesNotThrow(() -> assertNull(findClaimUseCase.execute("123456", "123", false)));
+        assertThrows(ResourceNotFoundException.class,
+                () -> findClaimUseCase.execute("123456", "123", false));
     }
 
 }

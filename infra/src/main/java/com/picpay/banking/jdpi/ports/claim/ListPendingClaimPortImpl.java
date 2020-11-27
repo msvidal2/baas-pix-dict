@@ -31,7 +31,7 @@ public class ListPendingClaimPortImpl implements ListPendingClaimPort {
         var listClaimRequestDTO = ListPendingClaimRequestDTO.builder()
             .ispb(claim.getIspb())
             .tpPessoaLogada(claim.getPersonType() != null ? claim.getPersonType().getValue() : null)
-            .cpfCnpjLogado(claim.getTaxId() != null ? Long.parseLong(claim.getTaxId()) : null)
+            .cpfCnpjLogado(claim.getCpfCnpj() != null ? Long.parseLong(claim.getCpfCnpj()) : null)
             .nrAgenciaLogada(claim.getBranchNumber())
             .nrContaLogada(claim.getAccountNumber())
             .tpContaLogada(claim.getAccountType() != null ? claim.getAccountType().getValue() : null)

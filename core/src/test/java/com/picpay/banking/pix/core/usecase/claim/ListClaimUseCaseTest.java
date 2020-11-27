@@ -63,7 +63,7 @@ class ListClaimUseCaseTest {
                 .accountNumber("123456")
                 .accountOpeningDate(LocalDateTime.now())
                 .personType(INDIVIDUAL_PERSON)
-                .taxId("28592755093")
+                .cpfCnpj("28592755093")
                 .donorIspb(3456345)
                 .donorData(DonorData.builder()
                         .cpfCnpj(70950328073L)
