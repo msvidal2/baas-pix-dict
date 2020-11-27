@@ -25,7 +25,7 @@ public class FindClaimPortImpl implements FindClaimPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "findClaimFallback")
-    public Optional<Claim> findClaim(String claimId, String ispb, boolean reivindicador) {
+    public Optional<Claim> findClaim(String claimId, Integer ispb, boolean reivindicador) {
         if (reivindicador) {
             return getClaim(claimRepository.findClaimerClaimById(claimId, ispb));
         }
@@ -37,7 +37,7 @@ public class FindClaimPortImpl implements FindClaimPort {
                 .map(ClaimEntity::toClaim);
     }
 
-    public Optional<Claim> findClaimFallback(String claimId, String ispb, boolean reivindicador, Exception e) {
+    public Optional<Claim> findClaimFallback(String claimId, Integer ispb, boolean reivindicador, Exception e) {
         log.error("Claim_fallback_findDB",
                 kv("claimId", claimId),
                 kv("exceptionMessage", e.getMessage()),

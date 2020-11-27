@@ -20,9 +20,9 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     ClaimEntity findOpenClaimByKey(String key, List<ClaimStatus> openStatus);
 
     @Query("SELECT c FROM claim c WHERE c.id = :id AND c.claimerParticipant = :ispb")
-    ClaimEntity findClaimerClaimById(String id, String ispb);
+    ClaimEntity findClaimerClaimById(String id, Integer ispb);
 
     @Query("SELECT c FROM claim c WHERE c.id = :id AND c.donorParticipant = :ispb")
-    ClaimEntity findDonorClaimById(String id, String ispb);
+    ClaimEntity findDonorClaimById(String id, Integer ispb);
 
 }

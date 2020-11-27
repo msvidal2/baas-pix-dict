@@ -12,8 +12,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +39,7 @@ public class FindClaimUseCaseTest {
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
 
-        when(findClaimPort.findClaim(anyString(), anyString(), anyBoolean())).thenReturn(Optional.of(claim));
+        when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claim));
 
         assertDoesNotThrow(() -> {
             var response = findClaimUseCase.execute("123456", "123", false);
@@ -56,6 +55,13 @@ public class FindClaimUseCaseTest {
             assertEquals(response.getTaxId(), claim.getTaxId());
             assertEquals(response.getPersonType(), claim.getPersonType());
         });
+    }
+
+    @Test
+    void when_findClaimAndNotFind_expect_nullResults() {
+        when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.empty());
+
+        assertDoesNotThrow(() -> assertNull(findClaimUseCase.execute("123456", "123", false)));
     }
 
 }
