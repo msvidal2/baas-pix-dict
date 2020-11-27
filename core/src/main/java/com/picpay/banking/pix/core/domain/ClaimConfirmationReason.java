@@ -13,9 +13,9 @@ public enum ClaimConfirmationReason {
 
     private int value;
 
-    public static ClaimConfirmationReason resolve(Integer value) {
+    public static ClaimConfirmationReason resolve(int value) {
         for(ClaimConfirmationReason reason : values()) {
-            if (value != null && reason.value == value.intValue()) {
+            if (reason.value == value) {
                 return reason;
             }
         }
