@@ -36,7 +36,7 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
 
     @Override
     public Optional<InfractionReport> findByEndToEndId(final String endToEndId) {
-        return null; //infractionReportRepository.findByEndToEndId(endToEndId).map(InfractionReportEntity::toDomain);
+        return infractionReportRepository.findByEndToEndId(endToEndId).map(InfractionReportEntity::toDomain);
     }
 
 }
