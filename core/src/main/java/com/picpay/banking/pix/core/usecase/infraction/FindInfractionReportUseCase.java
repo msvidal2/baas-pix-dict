@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.exception.InfractionReportError;
-import com.picpay.banking.pix.core.exception.InfractionReportException;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class FindInfractionReportUseCase {
         }
 
         var infractionReportFound = infractionReportFindPort.find(infractionReportId)
-            .orElseThrow(() -> new InfractionReportException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND.getMessage()));
 
         if (infractionReportFound != null)
             log.info("Infraction_found"

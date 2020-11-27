@@ -6,6 +6,8 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import com.picpay.banking.pix.core.exception.InfractionReportError;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -50,6 +54,14 @@ class FindInfractionReportUseCaseTest {
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 
+    }
+
+    @Test
+    void when_infraction_not_found_then_throw_ResourceNotFoundException() {
+        when(infractionReportPort.find(anyString())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> findInfractionReportUseCase.execute("ID_REPORT"))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining(InfractionReportError.INFRACTION_REPORT_NOT_FOUND.getMessage());
     }
 
     @Test
