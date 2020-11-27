@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.dto.request;
 
+import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.infraction.dto.response.Status;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,7 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 
 /**
@@ -29,8 +29,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
-@XmlRootElement(name = "InfractionReport")
-public class InfractionReportRequest implements Serializable {
+public class InfractionReportRequest {
 
     @XmlElement(name = "TransactionId")
     private String transactionId;
@@ -49,8 +48,10 @@ public class InfractionReportRequest implements Serializable {
     @XmlElement(name = "CreditedParticipant")
     private String creditedParticipant;
     @XmlElement(name = "CreationTime")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime creationTime;
     @XmlElement(name = "LastModified")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastModified;
 
 }

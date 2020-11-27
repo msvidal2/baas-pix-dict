@@ -23,6 +23,7 @@ import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSitu
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -115,7 +116,7 @@ class CreateInfractionReportUseCaseTest {
     }
 
     @Test
-    void when_createInfractionReportWithNullRequestIdentifierParams_expect_throwsANullException() {
+    void when_createInfractionReportWithNullRequestIdentifierParams_expect_throwsIllegalArgument() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
         assertThatThrownBy(() ->createInfractionReportUseCase.execute(infractionReport, null))
             .isInstanceOf(IllegalArgumentException.class)
