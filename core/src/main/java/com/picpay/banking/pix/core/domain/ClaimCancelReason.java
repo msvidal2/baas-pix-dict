@@ -14,9 +14,9 @@ public enum  ClaimCancelReason {
 
     private int value;
 
-    public static ClaimCancelReason resolve(Integer value) {
+    public static ClaimCancelReason resolve(int value) {
         for(ClaimCancelReason claimCancelReason : values()) {
-            if (value != null && claimCancelReason.value == value.intValue()) {
+            if (claimCancelReason.value == value) {
                 return claimCancelReason;
             }
         }

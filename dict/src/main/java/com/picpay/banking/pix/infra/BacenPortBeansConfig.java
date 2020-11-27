@@ -3,7 +3,6 @@ package com.picpay.banking.pix.infra;
 import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
-import com.picpay.banking.jdpi.converter.ListClaimConverter;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.jdpi.ports.claim.*;
@@ -43,6 +42,18 @@ public class BacenPortBeansConfig {
     @Bean
     public FindClaimPort findClaimPort(ClaimJDClient claimJDClient, TimeLimiterExecutor timeLimiterExecutor) {
         return new FindClaimPortImpl(claimJDClient, timeLimiterExecutor);
+    }
+
+    @Bean
+    public RemovePixKeyPort removePixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                             TimeLimiterExecutor timeLimiterExecutor) {
+        return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
+    }
+
+    @Bean
+    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                                           TimeLimiterExecutor timeLimiterExecutor) {
+        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
     }
 
     @Bean

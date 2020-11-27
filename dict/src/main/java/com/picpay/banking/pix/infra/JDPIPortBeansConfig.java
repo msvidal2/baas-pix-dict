@@ -60,6 +60,18 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
+    public RemovePixKeyPort removePixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                             TimeLimiterExecutor timeLimiterExecutor) {
+        return new RemovePixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
+    }
+
+    @Bean
+    public UpdateAccountPixKeyPort updateAccountPixKeyPort(PixKeyJDClient pixKeyJDClient,
+                                                           TimeLimiterExecutor timeLimiterExecutor) {
+        return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
+    }
+
+    @Bean
     public InfractionReportPort infractionReportPort(InfractionReportJDClient infractionReportJDClient,
                                                      TimeLimiterExecutor timeLimiterExecutor) {
         return new InfractionReportPortImpl(infractionReportJDClient, timeLimiterExecutor);
