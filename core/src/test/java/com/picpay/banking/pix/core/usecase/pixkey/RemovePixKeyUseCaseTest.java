@@ -3,8 +3,8 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
-import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
-import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import com.picpay.banking.pix.core.validators.pixkey.KeyItemValidator;
@@ -30,6 +30,9 @@ public class RemovePixKeyUseCaseTest {
     @Mock
     private RemovePixKeyPort removePixKeyPort;
 
+    @Mock
+    private RemovePixKeyBacenPort removePixKeyBacenPort;
+
     private DictItemValidator dictItemValidator = new PixKeyValidatorComposite(
             List.of(
                     new KeyTypeItemValidator(),
@@ -38,7 +41,7 @@ public class RemovePixKeyUseCaseTest {
 
     @InjectMocks
     private RemovePixKeyUseCase useCase = new RemovePixKeyUseCase(
-            removePixKeyPort, dictItemValidator);
+            removePixKeyPort, removePixKeyBacenPort, dictItemValidator);
 
     @Test
     public void testRemove() {

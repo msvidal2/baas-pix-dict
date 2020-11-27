@@ -1,5 +1,6 @@
 package com.picpay.banking.claim.ports.picpay;
 
+import com.picpay.banking.claim.dto.response.ClaimStatus;
 import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.repository.ClaimRepository;
 import com.picpay.banking.pix.core.domain.Claim;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
-
-import static com.picpay.banking.claim.dto.response.ClaimStatus.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,10 +21,11 @@ public class FindOpenClaimByKeyPortImpl implements FindOpenClaimByKeyPort {
     @Override
     public Optional<Claim> find(String key) {
 
-        ClaimEntity claimEntity = claimRepository.findOpenClaimByKey(key, List.of(OPEN, WAITING_RESOLUTION, CONFIRMED));
+        ClaimEntity claimEntity = claimRepository.findOpenClaimByKey(key, ClaimStatus.getPending());
 
         return Optional.ofNullable(claimEntity)
                 .map(ClaimEntity::toClaim);
     }
+
 
 }

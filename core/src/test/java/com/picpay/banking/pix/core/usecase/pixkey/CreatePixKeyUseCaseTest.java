@@ -62,7 +62,7 @@ class CreatePixKeyUseCaseTest {
                 .nameIspb("Empresa Picpay")
                 .branchNumber("1")
                 .accountType(AccountType.SALARY)
-                .accountNumber("1")
+                .accountNumber("1234")
                 .accountOpeningDate(LocalDateTime.now())
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .taxId("57950197048")
