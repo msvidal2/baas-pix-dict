@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +22,7 @@ public class CreateInfractionReportUseCase {
     private final InfractionReportFindPort infractionReportFindPort;
     private final IdempotencyValidator<InfractionReport> idempotency;
 
-    public InfractionReport execute(@NonNull final InfractionReport infractionReport, final String requestIdentifier) {
+    public InfractionReport execute(final InfractionReport infractionReport, final String requestIdentifier) {
         if (StringUtils.isBlank(requestIdentifier)) {
             throw new IllegalArgumentException("The request identifier cannot be empty");
         }
@@ -32,8 +31,7 @@ public class CreateInfractionReportUseCase {
         return existingInfraction.orElseGet(() -> create(infractionReport, requestIdentifier));
     }
 
-    private InfractionReport create(@NonNull final InfractionReport infractionReport,
-                                    @NonNull final String requestIdentifier) {
+    private InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
         var infractionReportCreated = infractionReportPort.create(infractionReport, requestIdentifier);
 
         if (infractionReportCreated != null) {

@@ -6,6 +6,7 @@ CREATE TABLE dict.infraction_report (
 	ispb_debited numeric NOT NULL,
 	ispb_credited numeric NOT NULL,
 	created_date timestamptz NOT NULL,
+	last_updated_date timestamptz NOT NULL,
 	ispb_requester numeric NULL,
 	infraction_type int NOT NULL,
 	details varchar(2000) NULL,

@@ -1,12 +1,16 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimSituation;
+import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +24,9 @@ import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -68,9 +74,7 @@ class ClaimControllerTest {
                 .build();
     }
 
-    //TODO: Corrigir Teste
     @Test
-    @Disabled("Corrigir Teste")
     void when_findClaimWithSuccess_expect_statusOk() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
@@ -88,11 +92,9 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
-    //TODO validar when_findClaimWithNonExistentId_expect_statusNotFound
     @Test
-    @Disabled("validar when_findClaimWithNonExistentId_expect_statusNotFound")
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
-        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(NotFoundJdClientException.class);
+        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
                 .andExpect(status().isNotFound())
