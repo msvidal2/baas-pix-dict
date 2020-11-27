@@ -1,7 +1,8 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
@@ -42,7 +43,7 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(UpdateAccountPixKeyPort updateAccountPixKeyPort,
-                                                                 @Qualifier("updatePixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, dictItemValidator);
+                                                                 UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort) {
+        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort);
     }
 }
