@@ -23,11 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author rafael.braga
  * @version 1.0 18/11/2020
  */
-@Component
 @FeignClient(name = "bacenInfractionClient",
     url = "${pix.bacen.dict.url}",
-    path = "/v1/infraction-reports",
-    configuration = FeignXmlConfig.class)
+    path = "/v1/infraction-reports")
 public interface CreateInfractionBacenClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
