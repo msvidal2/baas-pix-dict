@@ -251,8 +251,6 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        verify(findInfractionReportUseCase).execute(anyString());
-
     }
 
     @Test
@@ -337,7 +335,8 @@ class InfractionReportRequestControllerTest {
 
         mockMvc.perform(get("/v1/infraction-report")
             .contentType(MediaType.APPLICATION_JSON)
-            .queryParam("ispb", "1"))
+            .queryParam("ispb", "1")
+            .queryParam("startDate", "2020-09-01T10:09:49.922138"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());

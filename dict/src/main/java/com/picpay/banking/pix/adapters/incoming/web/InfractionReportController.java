@@ -10,7 +10,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -43,10 +46,10 @@ public class InfractionReportController {
 
     private final FindInfractionReportUseCase findInfractionReportUseCase;
     private final CreateInfractionReportUseCase createInfractionReportUseCase;
+    private final FilterInfractionReportUseCase filterInfractionReportUseCase;
     //    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
     //    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
     //    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
-    //    private final FilterInfractionReportUseCase filterInfractionReportUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new infraction report")
@@ -124,16 +127,13 @@ public class InfractionReportController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> filter(@Valid FilterInfractionReportDTO filter) {
-//        log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
-//
-//        var listInfractionReport = this.filterInfractionReportUseCase.execute(
-//            filter.getIspb(), filter.getEhDebitado(), filter.getEhCreditado(),
-//            InfractionReportSituation.resolve(filter.getStRelatoInfracao()),
-//            filter.getDtHrModificacaoInicio(), filter.getDtHrModificacaoFim(), filter.getNrLimite());
-//
-//        return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
 
-        throw new UnsupportedOperationException("Não implementado");
+        log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
+
+        var listInfractionReport = this.filterInfractionReportUseCase.execute(
+            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime());
+
+        return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+
     }
-
 }
