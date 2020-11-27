@@ -33,23 +33,32 @@ public class InfractionReportRequest {
 
     @XmlElement(name = "TransactionId")
     private String transactionId;
+
     @XmlElement(name = "InfractionType")
     private InfractionType infractionType;
+
     @XmlElement(name = "ReportedBy")
     private ReportedBy reportedBy;
+
     @XmlElement(name = "ReportDetails")
     private String reportDetails;
+
     @XmlElement(name = "Id")
     private String id;
+
     @XmlElement(name = "Status")
     private Status status;
+
     @XmlElement(name = "DebitedParticipant")
     private String debitedParticipant;
+
     @XmlElement(name = "CreditedParticipant")
     private String creditedParticipant;
+
     @XmlElement(name = "CreationTime")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime creationTime;
+
     @XmlElement(name = "LastModified")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastModified;
