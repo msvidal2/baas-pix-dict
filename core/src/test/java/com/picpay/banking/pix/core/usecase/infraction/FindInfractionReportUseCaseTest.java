@@ -65,6 +65,13 @@ class FindInfractionReportUseCaseTest {
     }
 
     @Test
+    void when_infraction_report_id_is_null_throw_IllegalArgumentException() {
+        assertThatThrownBy(() -> findInfractionReportUseCase.execute(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("The Infraction report id cannot be empty");
+    }
+
+    @Test
     void when_findInfractionsWithSuccess_expect_OkWithValidResult() {
         when(infractionReportPort.find(anyString())).thenReturn(Optional.of(infractionReport));
 
