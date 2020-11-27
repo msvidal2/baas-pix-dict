@@ -8,14 +8,14 @@ import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimCancelReason;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.ports.claim.ClaimCancelPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class ClaimCancelPortImpl implements ClaimCancelPort {
+public class ClaimCancelPortImpl implements CancelClaimPort {
 
     private final static String CIRCUIT_BREAKER_NAME = "cancel-claim";
 

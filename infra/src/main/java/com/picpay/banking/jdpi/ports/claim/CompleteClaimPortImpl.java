@@ -6,7 +6,7 @@ import com.picpay.banking.jdpi.dto.request.CompleteClaimRequestDTO;
 import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

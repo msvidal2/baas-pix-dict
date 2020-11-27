@@ -6,47 +6,129 @@
 
 package com.picpay.banking.pixkey.entity;
 
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pixkey.dto.request.Account;
-import com.picpay.banking.pixkey.dto.request.AccountType;
-import com.picpay.banking.pixkey.dto.request.KeyType;
-import com.picpay.banking.pixkey.dto.request.Owner;
-import com.picpay.banking.pixkey.dto.request.Reason;
+import com.picpay.banking.pix.core.domain.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * @author rafael.braga
- * @version 1.0 16/11/2020
- */
-@Table(name = "pix_key")
+
+@Entity(name = "pix_key")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class PixKeyEntity {
 
-    @Id
-    private String key;
-    @CreatedDate
-    private LocalDateTime creationDate;
-    @LastModifiedDate
-    private LocalDateTime updateDate;
-    private KeyType keyType;
-    //Account?
-    private final String participant;
-    private final String branch;
-    private final String accountNumber;
-    private final AccountType accountType;
-    private Account brazilianAccount;
-    private Owner owner;
-    //reason
+    @EmbeddedId
+    private PixKeyIdEntity id;
+
+    @Column(nullable = false)
+    private Integer participant;
+
+    @Column(nullable = false)
+    private String branch;
+
+    @Column(nullable = false)
+    private String accountNumber;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
+    @Column(nullable = false)
+    private LocalDateTime openingDate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PersonType personType;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Reason reason;
 
+    @Column(nullable = false)
+    private String correlationId;
+
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime creationDate;
+
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime ownershipDate;
+
+    @LastModifiedDate
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime updateDate;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime openClaimCreationDate;
+
+    public static PixKeyEntity from(final PixKey pixKey, final CreateReason reason) {
+        return PixKeyEntity.builder()
+                .id(PixKeyIdEntity.builder()
+                        .key(pixKey.getKey())
+                        .type(pixKey.getType())
+                        .taxId(pixKey.getTaxId())
+                        .build())
+                .participant(pixKey.getIspb())
+                .branch(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
+                .accountType(pixKey.getAccountType())
+                .openingDate(pixKey.getAccountOpeningDate())
+                .personType(pixKey.getPersonType())
+                .name(pixKey.getName())
+                .reason(reason.getValue())
+                .correlationId(pixKey.getCorrelationId())
+                .creationDate(pixKey.getCreatedAt())
+                .ownershipDate(pixKey.getStartPossessionAt())
+                .build();
+    }
+
+    public static PixKeyEntity from(final PixKey pixKey, final UpdateReason reason) {
+        return PixKeyEntity.builder()
+                .id(PixKeyIdEntity.builder()
+                        .key(pixKey.getKey())
+                        .type(pixKey.getType())
+                        .taxId(pixKey.getTaxId())
+                        .build())
+                .participant(pixKey.getIspb())
+                .branch(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
+                .accountType(pixKey.getAccountType())
+                .openingDate(pixKey.getAccountOpeningDate())
+                .personType(pixKey.getPersonType())
+                .name(pixKey.getName())
+                .reason(Reason.resolve(reason.getValue()))
+                .correlationId(pixKey.getCorrelationId())
+                .creationDate(pixKey.getCreatedAt())
+                .ownershipDate(pixKey.getStartPossessionAt())
+                .updateDate(LocalDateTime.now())
+                .build();
+    }
+
     public PixKey toPixKey() {
-        return null;
+        return PixKey.builder()
+                .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
+                .key(id.getKey())
+                .ispb(participant)
+                .branchNumber(branch)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .accountOpeningDate(openingDate)
+                .personType(personType)
+                .taxId(id.getTaxId())
+                .name(name)
+                .createdAt(creationDate)
+                .startPossessionAt(ownershipDate)
+                .correlationId(correlationId)
+                .build();
     }
 
 }

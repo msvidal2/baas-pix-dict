@@ -23,7 +23,7 @@ public class CreatePixKeyConverter {
                 .cpfCnpj(Long.valueOf(from.getTaxId()))
                 .nome(from.getName())
                 .nomeFantasia(from.getFantasyName())
-                .motivo(reason.getValue())
+                .motivo(reason.getValue().getValue())
                 .build();
     }
 
@@ -44,7 +44,7 @@ public class CreatePixKeyConverter {
                 .accountOpeningDate(from.getAccountOpeningDate())
                 .createdAt(createPixKeyResponseJDDTO.getDtHrCriacaoChave())
                 .startPossessionAt(createPixKeyResponseJDDTO.getDtHrInicioPosseChave())
-
                 .build();
     }
+
 }
