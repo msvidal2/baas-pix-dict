@@ -30,11 +30,9 @@ public class RemovePixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
         }
 
-        // solitacao de remocao no bacen
         removePixKeyBacenPort.remove(pixKey, reason);
 
-        // realizo a remocao do banco de dados
-        removePixKeyPort.remove(requestIdentifier, pixKey, reason);
+        removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
 
         log.info("PixKey_removed", kv("requestIdentifier", requestIdentifier), kv("key", key));
     }

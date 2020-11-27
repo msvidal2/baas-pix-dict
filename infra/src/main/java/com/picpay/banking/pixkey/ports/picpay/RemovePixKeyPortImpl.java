@@ -34,24 +34,18 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     @Override
     @Transactional
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey remove(String requestIdentifier, PixKey pixKey, RemoveReason reason) {
+    public PixKey remove(String pixKey, Integer participant) {
 
-        log.info("PixKey_try_remove",
-                kv("requestIdentifier", requestIdentifier),
-                kv("pixKey", pixKey.getKey()),
-                kv("reason", reason));
+        pixKeyRepository.deleteByIdKeyAndParticipant(pixKey, participant);
 
-        pixKeyRepository.deleteByIdKeyAndParticipant(pixKey.getKey(), pixKey.getIspb());
-
-        return pixKey;
+        return PixKey.builder().key(pixKey).build();
 
     }
 
-    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, RemoveReason reason, Exception e) {
+    public PixKey fallbackMethod(String pixKey, Integer participant, Exception e) {
         log.error("PixKey_fallback_removeAccount",
-                kv("requestIdentifier", requestIdentifier),
-                kv("pixKey", pixKey.getKey()),
-                kv("reason", reason),
+                kv("pixKey", pixKey),
+                kv("participant", participant),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
