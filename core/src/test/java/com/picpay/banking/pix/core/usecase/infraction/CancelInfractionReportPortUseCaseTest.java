@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @Disabled
-class CancelInfractionReportUseCaseTest {
+class CancelInfractionReportPortUseCaseTest {
 
     @InjectMocks
     private CancelInfractionReportUseCase cancelInfractionReportUseCase;
