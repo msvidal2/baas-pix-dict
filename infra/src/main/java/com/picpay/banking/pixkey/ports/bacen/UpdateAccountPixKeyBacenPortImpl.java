@@ -10,7 +10,6 @@ import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -22,19 +21,13 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  * @version 1.0 25/11/20
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBacenPort {
 
     private static final String CIRCUIT_BREAKER_NAME = "update-account-pix-key-bacen";
 
     private final BacenKeyClient bacenKeyClient;
-
-    private final String participant;
-
-    public UpdateAccountPixKeyBacenPortImpl(BacenKeyClient bacenKeyClient, @Value("${picpay.ispb}") String participant) {
-        this.bacenKeyClient = bacenKeyClient;
-        this.participant = participant;
-    }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
@@ -44,7 +37,7 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
         var updateEntryResponse = bacenKeyClient.updateAccountPixKey(updateEntryRequest, pixKey.getKey());
 
-        return updateEntryResponse.toDomain(participant);
+        return updateEntryResponse.toDomain(pixKey);
 
     }
 

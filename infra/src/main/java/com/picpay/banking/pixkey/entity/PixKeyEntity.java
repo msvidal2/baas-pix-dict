@@ -109,6 +109,7 @@ public class PixKeyEntity {
                 .correlationId(pixKey.getCorrelationId())
                 .creationDate(pixKey.getCreatedAt())
                 .ownershipDate(pixKey.getStartPossessionAt())
+                .updateDate(LocalDateTime.now())
                 .build();
     }
 
@@ -127,8 +128,6 @@ public class PixKeyEntity {
                 .createdAt(creationDate)
                 .startPossessionAt(ownershipDate)
                 .correlationId(correlationId)
-                //TODO incluir claim?
-//                .claim()
                 .build();
     }
 
