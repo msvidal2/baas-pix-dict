@@ -11,6 +11,7 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedD
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
@@ -47,9 +48,8 @@ public class InfractionReportController {
     private final FindInfractionReportUseCase findInfractionReportUseCase;
     private final CreateInfractionReportUseCase createInfractionReportUseCase;
     private final FilterInfractionReportUseCase filterInfractionReportUseCase;
-    //    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
+    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
     //    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
-    //    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new infraction report")
@@ -109,17 +109,15 @@ public class InfractionReportController {
         , @PathVariable("infractionReportId") String infractionReportId
         , @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
 
-//        log.info("Infraction_analyzing"
-//            , kv("requestIdentifier", requestIdentifier)
-//            , kv("infractionReportId", infractionReportId)
-//            , kv("infractionType", dto.getIspb()));
-//
-//        var infractionReport = this.analyzeInfractionReportUseCase
-//            .execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(), requestIdentifier);
-//
-//        return CancelResponseInfractionDTO.from(infractionReport);
+        log.info("Infraction_analyzing"
+            , kv("requestIdentifier", requestIdentifier)
+            , kv("infractionReportId", infractionReportId)
+            , kv("infractionType", dto.getIspb()));
 
-        throw new UnsupportedOperationException("Não implementado");
+        var infractionReport = this.analyzeInfractionReportUseCase
+            .execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(), requestIdentifier);
+
+        return CancelResponseInfractionDTO.from(infractionReport);
     }
 
     @Trace
