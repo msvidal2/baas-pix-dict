@@ -4,15 +4,14 @@ import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 
-public class ClaimCpfCnpjItemValidator implements DictItemValidator<Claim> {
+public class ClaimCpfCnpjItemValidator {
 
-    @Override
-    public void validate(Claim domain) {
-        if (Strings.isNullOrEmpty(String.valueOf(domain.getTaxId()))) {
+    public static void validate(String domain) {
+        if (Strings.isNullOrEmpty(domain)) {
             throw new IllegalArgumentException("cpfCnpj can not be empty");
         }
 
-        if (String.valueOf(domain.getTaxId()).length() > 14) {
+        if (domain.length() > 14) {
             throw new IllegalArgumentException("The number of characters in the cpfCnpj must be less than 15");
         }
     }

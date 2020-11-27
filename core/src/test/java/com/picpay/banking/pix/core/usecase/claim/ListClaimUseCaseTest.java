@@ -3,10 +3,10 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
-import com.picpay.banking.pix.core.validators.claim.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,6 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ListClaimUseCaseTest {
 
+    @InjectMocks
     private ListClaimUseCase useCase;
 
     @Mock
@@ -41,15 +42,6 @@ class ListClaimUseCaseTest {
 
     @BeforeEach
     void setup() {
-        var claimValidator = new ClaimValidatorComposite(List.of(
-                new ClaimIspbItemValidator()
-        ));
-
-        useCase = new ListClaimUseCase(
-                listPendingClaimPort,
-                listClaimPort,
-                claimValidator);
-
         claimRequest = Claim.builder()
                 .ispb(22896431)
                 .personType(PersonType.INDIVIDUAL_PERSON)

@@ -6,15 +6,14 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.claim.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.UUID.randomUUID;
@@ -29,6 +28,7 @@ public class CreateClaimUseCaseTest {
 
     private static final LocalDateTime NOW = LocalDateTime.now();
 
+    @InjectMocks
     private CreateClaimUseCase useCase;
 
     @Mock
@@ -49,21 +49,6 @@ public class CreateClaimUseCaseTest {
 
     @BeforeEach
     public void setup() {
-        var claimValidator = new ClaimValidatorComposite(List.of(
-                new ClaimAccountNumberItemValidator(),
-                new ClaimAccountOpeningDateItemValidator(),
-                new ClaimBranchNumberItemValidator(),
-                new ClaimCpfCnpjItemValidator(),
-                new ClaimFantasyNameItemValidator(),
-                new ClaimIspbItemValidator(),
-                new ClaimNameItemValidator()));
-
-        useCase = new CreateClaimUseCase(
-                createClaimPort,
-                saveClaimPort,
-                findOpenClaimByKeyPort,
-                findPixKeyPort,
-                claimValidator);
 
         claimRequest = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
