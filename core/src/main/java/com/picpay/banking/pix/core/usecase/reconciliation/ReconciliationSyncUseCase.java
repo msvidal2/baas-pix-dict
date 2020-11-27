@@ -3,51 +3,59 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.Vsync;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseVsyncPort;
+import com.picpay.banking.pix.core.ports.reconciliation.BacenReconciliationPort;
+import com.picpay.banking.pix.core.ports.reconciliation.DatabaseReconciliationPort;
+import com.picpay.banking.pix.core.ports.reconciliation.FailureMessagePort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Slf4j
 @AllArgsConstructor
 public class ReconciliationSyncUseCase {
 
-    private DatabaseVsyncPort databaseVsyncPort;
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
-    private BacenSyncVerificationsPort bacenSyncVerificationsPort;
-    private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
+    private final DatabaseReconciliationPort databaseReconciliationPort;
+    private final BacenReconciliationPort bacenReconciliationPort;
+    private final FailureMessagePort failureMessagePort;
 
     public void execute() {
-        // TODO: Esse usecase tem que rodar em horário agendado
+        var startCurrentTimeMillis = System.currentTimeMillis();
+        log.info("ReconciliationSync_started", kv("startCurrentTimeMillis", startCurrentTimeMillis));
 
         List.of(KeyType.values()).forEach(keyType -> {
-            var vsync = databaseVsyncPort.getLastSuccessfulVsync(keyType);
-            if (vsync == null) {
-                vsync = Vsync.builder()
+            var vsync = databaseReconciliationPort.getLastSuccessfulVsync(keyType)
+                .orElseGet(() -> Vsync.builder()
                     .keyType(keyType)
                     .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-                    .build();
-            }
+                    .build());
 
-            List<ContentIdentifier> contentIdentifiers = databaseContentIdentifierPort.listAfterLastSuccessfulVsync(vsync.getKeyType(),
+            List<ContentIdentifier> contentIdentifiers = databaseReconciliationPort.listAfterLastSuccessfulVsync(vsync.getKeyType(),
                 vsync.getSynchronizedAt());
 
             vsync.calculateVsync(contentIdentifiers);
 
-            var result = bacenSyncVerificationsPort.syncVerification(vsync.getVsync());
+            var result = bacenReconciliationPort.syncVerification(vsync.getVsync());
 
             vsync.syncVerificationResult(result);
 
-            databaseVsyncPort.updateVerificationResult(vsync);
+            databaseReconciliationPort.updateVerificationResult(vsync);
 
-            if (vsync.getVsyncResult().equals(Vsync.VsyncResult.NOK)) {
-                failureReconciliationSyncUseCase.execute(vsync);
+            if (vsync.isNOk()) {
+                failureMessagePort.sendMessageForSincronization(vsync);
             }
+
+            log.info("ReconciliationSync_keytype_result",
+                kv("startCurrentTimeMillis", startCurrentTimeMillis),
+                kv("keyType", vsync.getKeyType()),
+                kv("synchronizedAt", vsync.getSynchronizedAt()),
+                kv("vsyncResult", vsync.getVsyncResult()));
         });
+
+        log.info("ReconciliationSync_done", kv("startCurrentTimeMillis", startCurrentTimeMillis));
     }
 
 }

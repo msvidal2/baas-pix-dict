@@ -1,12 +1,12 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
+import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.domain.Vsync;
 import com.picpay.banking.pix.core.domain.Vsync.Action;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.BacenReconciliationPort;
+import com.picpay.banking.pix.core.ports.reconciliation.DatabaseReconciliationPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
 import lombok.AllArgsConstructor;
@@ -14,33 +14,37 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
 @AllArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
-    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
+    private BacenReconciliationPort bacenReconciliationPort;
+    private DatabaseReconciliationPort databaseReconciliationPort;
     private CreatePixKeyUseCase createPixKeyUseCase;
     private RemovePixKeyUseCase removePixKeyUseCase;
 
     public void execute(Vsync vsync) {
-        List<ContentIdentifierEvent> contentIdentifierEvents = bacenContentIdentifierEventsPort
+        List<ContentIdentifier> contentIdentifierEvents = bacenReconciliationPort
             .list(vsync.getKeyType(), vsync.getSynchronizedAt(), LocalDateTime.now());
 
-        List<Action> actions = vsync.identifyActions(contentIdentifierEvents);
+        List<ContentIdentifier> contentIdentifiers = databaseReconciliationPort
+            .listAfterLastSuccessfulVsync(vsync.getKeyType(), vsync.getSynchronizedAt());
+
+        Set<Action> actions = vsync.identifyActions(contentIdentifierEvents, contentIdentifiers);
 
         actions.stream().filter(action -> action.getActionType().equals(Vsync.ActionType.ADD))
             .forEach(action -> createPixKeyUseCase.execute(
                 UUID.randomUUID().toString(),
-                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()),
+                bacenReconciliationPort.getPixKey(action.getCid()),
                 CreateReason.CLIENT_REQUEST)); // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
 
         actions.stream().filter(action -> action.getActionType().equals(Vsync.ActionType.REMOVE))
             .forEach(action -> removePixKeyUseCase.execute(
                 UUID.randomUUID().toString(),
-                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()),
+                bacenReconciliationPort.getPixKey(action.getCid()),
                 RemoveReason.CLIENT_REQUEST)); // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
     }
 
