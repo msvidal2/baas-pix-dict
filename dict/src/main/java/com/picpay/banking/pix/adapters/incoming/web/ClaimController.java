@@ -89,7 +89,7 @@ public class ClaimController {
         var claim = Claim.builder()
             .ispb(requestDTO.getIspb())
             .personType(requestDTO.getPersonType())
-            .taxId(requestDTO.getCpfCnpj())
+            .cpfCnpj(requestDTO.getCpfCnpj())
             .branchNumber(requestDTO.getBranchNumber())
             .accountNumber(requestDTO.getAccountNumber())
             .accountType(requestDTO.getAccountType())

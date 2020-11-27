@@ -81,7 +81,7 @@ public class ClaimResponse {
                 .accountNumber(claimerAccount.getAccountNumber())
                 .accountType(claimerAccount.getAccountType().getType())
                 .accountOpeningDate(claimerAccount.getOpeningDate())
-                .taxId(claimer.getTaxIdNumber())
+                .cpfCnpj(claimer.getTaxIdNumber())
                 .name(claimer.getName())
                 .donorIspb(Integer.parseInt(donorParticipant))
                 .claimSituation(status.getClaimSituation())

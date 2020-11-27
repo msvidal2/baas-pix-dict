@@ -20,6 +20,12 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     @Query("SELECT c FROM claim c WHERE c.key = :key AND c.status in :openStatus")
     ClaimEntity findOpenClaimByKey(String key, List<ClaimStatus> openStatus);
 
+    @Query("SELECT c FROM claim c WHERE c.id = :id AND c.claimerParticipant = :ispb")
+    ClaimEntity findClaimerClaimById(String id, Integer ispb);
+
+    @Query("SELECT c FROM claim c WHERE c.id = :id AND c.donorParticipant = :ispb")
+    ClaimEntity findDonorClaimById(String id, Integer ispb);
+
     @Query("SELECT c FROM claim c WHERE c.claimerParticipant = :claimerParticipant AND c.lastModified BETWEEN :startDate AND :endDate")
     List<ClaimEntity> findAllClaimsWhereIsClaimer(Integer claimerParticipant, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 

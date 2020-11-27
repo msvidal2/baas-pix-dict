@@ -1,8 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,13 +62,12 @@ class ClaimControllerTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .taxId("12345678902")
+                .cpfCnpj("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
     }
 
-    // TODO: Corrigir Teste
-//    @Test
+    @Test
     void when_findClaimWithSuccess_expect_statusOk() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
@@ -88,13 +87,14 @@ class ClaimControllerTest {
 
     @Test
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
-        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(NotFoundJdClientException.class);
+        when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo(404)))
                 .andExpect(jsonPath("$.error", equalTo("Not Found")))
-                .andExpect(jsonPath("$.message", equalTo("Resource not found")));
+                .andExpect(jsonPath("$.apiErrorCode", equalTo("NotFound")))
+                .andExpect(jsonPath("$.message", equalTo("Entidade não encontrada.")));
     }
 
     @Test

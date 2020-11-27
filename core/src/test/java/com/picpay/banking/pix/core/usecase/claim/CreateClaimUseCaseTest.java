@@ -75,7 +75,7 @@ public class CreateClaimUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(NOW)
                 .personType(PersonType.INDIVIDUAL_PERSON)
-                .taxId("11122233300")
+                .cpfCnpj("11122233300")
                 .name("João Silva")
                 .build();
 
@@ -89,7 +89,7 @@ public class CreateClaimUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(NOW)
                 .personType(PersonType.INDIVIDUAL_PERSON)
-                .taxId("11122233300")
+                .cpfCnpj("11122233300")
                 .name("João Silva")
                 .donorIspb(87654321)
                 .claimId("123e4567-e89b-12d3-a456-426655440000")
@@ -135,7 +135,7 @@ public class CreateClaimUseCaseTest {
         when(findPixKeyPort.findPixKey(anyString())).thenReturn(
                 Optional.of(
                         PixKey.builder()
-                                .taxId(claimRequest.getTaxId())
+                                .taxId(claimRequest.getCpfCnpj())
                                 .build()));
 
         assertThrows(ClaimException.class, () -> useCase.execute(claimRequest, randomUUID().toString()));
