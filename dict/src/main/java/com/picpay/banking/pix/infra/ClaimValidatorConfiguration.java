@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.validators.claim.ClaimAccountOpeningDateItemV
 import com.picpay.banking.pix.core.validators.claim.ClaimBranchNumberItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimCpfCnpjItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimFantasyNameItemValidator;
-import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
+import com.picpay.banking.pix.core.validators.ClaimIdValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimNameItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
@@ -35,17 +35,9 @@ public class ClaimValidatorConfiguration {
     }
 
     @Bean
-    public DictItemValidator<Claim> claimCancelItemValidator() {
-        return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
-                new ClaimIspbItemValidator()
-        ));
-    }
-
-    @Bean
     public DictItemValidator<Claim> completeClaimItemValidator() {
         return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
+//                new ClaimIdValidator(),
                 new ClaimIspbItemValidator()
         ));
     }
@@ -62,7 +54,7 @@ public class ClaimValidatorConfiguration {
     @Bean
     public DictItemValidator<Claim> findClaimItemValidator() {
         return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator()
+//                new ClaimIdValidator()
         ));
     }
 
@@ -70,8 +62,8 @@ public class ClaimValidatorConfiguration {
     public DictItemValidator confirmationClaimItemValidator() {
         return new ClaimValidatorComposite(
             List.of(
-                new IspbClaimItemValidator(),
-                new ClaimIdItemValidator()
+                new IspbClaimItemValidator()
+//                new ClaimIdValidator()
            ));
     }
 }
