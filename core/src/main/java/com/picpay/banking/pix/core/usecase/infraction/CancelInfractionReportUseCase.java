@@ -20,6 +20,8 @@ public class CancelInfractionReportUseCase {
 
         var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
 
+        //TODO -> alterar status no db
+
         if (infractionReportCanceled != null)
             log.info("Infraction_canceled"
                     , kv("requestIdentifier", requestIdentifier)

@@ -2,6 +2,10 @@ package com.picpay.banking.infraction.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
+import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,5 +41,20 @@ public class CancelInfractionReportResponse {
 
     @XmlElement(name = "InfractionReport")
     private InfractionReportRequest infractionReport;
+
+    public InfractionReport toDomain() {
+        return InfractionReport.builder()
+                .transactionId(infractionReport.getTransactionId())
+                .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
+                .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))
+                .details(infractionReport.getReportDetails())
+                .infractionReportId(infractionReport.getId())
+                .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
+                .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
+                .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
+                .dateCreate(infractionReport.getCreationTime())
+                .dateLastUpdate(infractionReport.getLastModified())
+                .build();
+    }
 
 }
