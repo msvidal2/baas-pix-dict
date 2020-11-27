@@ -54,7 +54,7 @@ public class ListClaimConverter implements DataConverter<ListClaimResponseDTO, C
             .accountNumber(listClaimDTO.getNrConta())
             .branchNumber(listClaimDTO.getNrAgencia())
             .personType(PersonType.resolve(listClaimDTO.getTpPessoa()))
-            .taxId(String.valueOf(listClaimDTO.getCpfCnpj()))
+            .cpfCnpj(String.valueOf(listClaimDTO.getCpfCnpj()))
             .donorIspb(listClaimDTO.getIspbDoador())
             .confirmationReason(Optional.ofNullable(ClaimConfirmationReason.resolve(listClaimDTO.getMotivoConfirmacao())).orElse(null))
             .cancelReason(Optional.ofNullable(ClaimCancelReason.resolve(listClaimDTO.getMotivoCancelamento())).orElse(null))

@@ -28,7 +28,7 @@ public class Claim {
     private PersonType personType;
     private String name;
     private String fantasyName;
-    private String taxId;
+    private String cpfCnpj;
     private int donorIspb;
     private DonorData donorData;
     private Boolean isClaim;
@@ -54,7 +54,7 @@ public class Claim {
             size = 14;
         }
 
-        return Strings.padStart(taxId, size, '0');
+        return Strings.padStart(cpfCnpj, size, '0');
     }
 
 }

@@ -57,7 +57,7 @@ class ListClaimPortImplTest {
             .accountType(AccountType.SALARY)
             .accountOpeningDate(LocalDateTime.now())
             .personType(PersonType.INDIVIDUAL_PERSON)
-            .taxId("1111111111111").build();
+            .cpfCnpj("1111111111111").build();
 
         ClaimIterable claimIterable = ClaimIterable.builder()
             .claims(Arrays.asList(claim))

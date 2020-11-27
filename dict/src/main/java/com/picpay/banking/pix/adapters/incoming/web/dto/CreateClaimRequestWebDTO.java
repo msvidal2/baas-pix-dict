@@ -70,7 +70,7 @@ public class CreateClaimRequestWebDTO {
                 .accountType(accountType)
                 .branchNumber(branchNumber)
                 .claimType(claimType)
-                .taxId(cpfCnpj)
+                .cpfCnpj(cpfCnpj)
                 .ispb(ispb)
                 .key(key)
                 .keyType(keyType)

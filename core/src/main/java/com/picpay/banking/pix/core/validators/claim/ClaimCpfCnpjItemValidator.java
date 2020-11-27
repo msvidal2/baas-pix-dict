@@ -6,12 +6,12 @@ import com.picpay.banking.pix.core.validators.DictItemValidator;
 
 public class ClaimCpfCnpjItemValidator {
 
-    public static void validate(String domain) {
-        if (Strings.isNullOrEmpty(domain)) {
+    public void validate(Claim domain) {
+        if (Strings.isNullOrEmpty(String.valueOf(domain.getCpfCnpj()))) {
             throw new IllegalArgumentException("cpfCnpj can not be empty");
         }
 
-        if (domain.length() > 14) {
+        if (String.valueOf(domain.getCpfCnpj()).length() > 14) {
             throw new IllegalArgumentException("The number of characters in the cpfCnpj must be less than 15");
         }
     }

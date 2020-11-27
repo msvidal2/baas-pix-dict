@@ -6,6 +6,7 @@ import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import com.picpay.banking.pix.core.exception.PixKeyException;
+import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -136,6 +137,20 @@ public class CustomExceptionHandler {
         ErrorDTO errorDTO = ErrorDTO.from(BAD_REQUEST, ex.getMessage());
 
         log.error("error_handleMissingRequestHeaderException", errorDTO.toLogJson(ex));
+
+        return errorDTO;
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorDTO handleNotFoundException(ResourceNotFoundException ex) {
+
+        ErrorDTO errorDTO = ErrorDTO.from(
+                NOT_FOUND,
+                Optional.ofNullable(ex.getMessage()).orElse("Entidade não encontrada."),
+                "NotFound");
+
+        log.error("error_resourceNotFoundException", errorDTO.toLogJson(ex));
 
         return errorDTO;
     }
