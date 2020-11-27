@@ -251,8 +251,6 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        verify(findInfractionReportUseCase).execute(anyString());
-
     }
 
     @Test
@@ -295,7 +293,6 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionAnalyzed = infractionReport.toBuilder().situation(ANALYZED).build();
 
@@ -334,15 +331,15 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
         when(filterInfractionReportUseCase.execute(anyInt(),nullable(InfractionReportSituation.class),nullable(LocalDateTime.class),
-                                                   nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
+            nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
 
         mockMvc.perform(get("/v1/infraction-report")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .queryParam("ispb", "1"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .queryParam("ispb", "1")
+            .queryParam("startDate", "2020-09-01T10:09:49.922138"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());

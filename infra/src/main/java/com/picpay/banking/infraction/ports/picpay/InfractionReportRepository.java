@@ -4,6 +4,7 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
+
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
@@ -24,11 +25,11 @@ import java.util.Optional;
 @Repository
 public interface InfractionReportRepository extends JpaRepository<InfractionReportEntity, String> {
 
-    Optional<InfractionReportEntity> findByEndToEndId(String endToEndId);
-
     @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND (:situation is null or ir.situation = :situation)" +
-        " AND (ir.lastUpdatedDate is null or ir.lastUpdatedDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdatedDate >= :dateEnd)")
+        " AND (ir.lastUpdatedDate is null or ir.lastUpdateDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdatedDate >= :dateEnd)")
     List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
         @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
+
+    Optional<InfractionReportEntity> findByEndToEndId(String endToEndId);
 
 }
