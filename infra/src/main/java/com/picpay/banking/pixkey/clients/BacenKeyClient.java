@@ -7,8 +7,10 @@
 package com.picpay.banking.pixkey.clients;
 
 import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
+import com.picpay.banking.pixkey.dto.request.RemoveEntryRequest;
 import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
 import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
+import com.picpay.banking.pixkey.dto.response.RemoveEntryResponse;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
 import com.picpay.banking.pixkey.dto.response.UpdateEntryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -40,6 +42,14 @@ public interface BacenKeyClient {
             produces = MediaType.APPLICATION_XML_VALUE)
     UpdateEntryResponse updateAccountPixKey(
             @RequestBody UpdateEntryRequest updateEntryRequest,
+            @PathVariable("key") String pixKey
+    );
+
+    @PostMapping(value = "/entries/{key}/delete",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
+    RemoveEntryResponse removeAccountPixKey(
+            @RequestBody RemoveEntryRequest removeEntryRequest,
             @PathVariable("key") String pixKey
     );
 
