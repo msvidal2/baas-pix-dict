@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public interface InfractionReportFindPort {
 
-   InfractionReport find(String infractionReportId);
+   Optional<InfractionReport> find(String infractionReportId);
    Optional<InfractionReport> findByEndToEndId(String endToEndId);
 
 }

@@ -86,11 +86,5 @@ public class BacenPortBeansConfig {
         return new UpdateAccountPixKeyPortImpl(pixKeyJDClient, timeLimiterExecutor);
     }
 
-    @Bean
-    public CreateInfractionReportPort infractionReportPort(final CreateInfractionBacenClient bacenClient,
-                                                           final TimeLimiterExecutor timeLimiterExecutor) {
-        return new CreateInfractionReportPortImpl(bacenClient, timeLimiterExecutor);
-    }
-
 
 }

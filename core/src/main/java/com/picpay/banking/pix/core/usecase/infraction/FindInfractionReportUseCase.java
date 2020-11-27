@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.exception.InfractionReportError;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,8 @@ public class FindInfractionReportUseCase {
             throw new IllegalArgumentException("The Infraction report id cannot be empty");
         }
 
-        var infractionReportFound = infractionReportFindPort.find(infractionReportId);
+        var infractionReportFound = infractionReportFindPort.find(infractionReportId)
+            .orElseThrow(() -> new InfractionReportException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND));
 
         if (infractionReportFound != null)
             log.info("Infraction_found"

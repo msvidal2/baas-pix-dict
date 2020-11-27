@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -53,7 +54,7 @@ class FindInfractionReportUseCaseTest {
 
     @Test
     void when_findInfractionsWithSuccess_expect_OkWithValidResult() {
-        when(infractionReportPort.find(anyString())).thenReturn(infractionReport);
+        when(infractionReportPort.find(anyString())).thenReturn(Optional.of(infractionReport));
 
         final InfractionReport infractionReport = findInfractionReportUseCase.execute("ID_REPORT");
 
