@@ -21,7 +21,7 @@ public class CreateClaimValidator {
         ClaimAccountNumberItemValidator.validate(claim.getAccountNumber());
         ClaimAccountTypeItemValidator.validate(claim.getAccountType());
         ClaimBranchNumberItemValidator.validate(claim.getBranchNumber());
-        ClaimCpfCnpjItemValidator.validate(claim.getTaxId());
+        ClaimCpfCnpjItemValidator.validate(claim.getCpfCnpj());
         ClaimIspbItemValidator.validate(claim.getIspb());
         ClaimNameItemValidator.validate(claim.getName());
         ClaimFantasyNameItemValidator.validate(claim.getFantasyName());
