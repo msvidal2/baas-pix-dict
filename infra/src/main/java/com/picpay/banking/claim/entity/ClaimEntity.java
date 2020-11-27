@@ -103,7 +103,7 @@ public class ClaimEntity {
                 .claimType(type)
                 .key(key)
                 .keyType(keyType)
-                .donorIspb(claimerParticipant)
+                .donorIspb(donorParticipant)
                 .branchNumber(claimerBranch)
                 .accountNumber(claimerAccountNumber)
                 .accountType(claimerAccountType)
@@ -111,11 +111,11 @@ public class ClaimEntity {
                 .personType(claimerType)
                 .taxId(claimerTaxId)
                 .name(claimerName)
-                .donorIspb(donorParticipant)
                 .claimSituation(status.getClaimSituation())
                 .completionThresholdDate(completionPeriodEnd)
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
+                .ispb(claimerParticipant)
                 .build();
     }
 

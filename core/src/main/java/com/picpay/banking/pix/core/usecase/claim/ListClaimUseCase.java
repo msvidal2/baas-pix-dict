@@ -26,16 +26,17 @@ public class ListClaimUseCase {
     private DictItemValidator<Claim> validator;
 
     public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean isClaimer, final Boolean isDonor,
-                                 final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier){
+                                 final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier) {
 
         validator.validate(claim);
 
         ClaimIterable claimIterable = null;
 
-        if(isPending) {
+        if (isPending) {
             claimIterable = listPendingClaimPort.list(claim, limit, requestIdentifier);
         } else {
             validateClient(isClaimer, isDonor);
+            validateLimit(limit);
             claimIterable = listClaimPort.list(claim, limit, isClaimer, isDonor, startDate,
                     isNull(endDate) ? LocalDateTime.now(ZoneId.of("UTC")) : endDate, requestIdentifier);
         }
@@ -55,6 +56,12 @@ public class ListClaimUseCase {
 
         if(isClaim != null && isDonor != null){
             throw new IllegalArgumentException("Donor or Claim is required.");
+        }
+    }
+
+    private void validateLimit(Integer limit) {
+        if(limit <= 0){
+            throw new IllegalArgumentException("Limit greater than 0 (zero) is required.");
         }
     }
 }
