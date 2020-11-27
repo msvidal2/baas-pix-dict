@@ -5,19 +5,21 @@ import com.picpay.banking.claim.dto.request.ListClaimsRequest;
 import com.picpay.banking.claim.dto.response.ListClaimsResponse;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimBacenPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
-public class ListPendingClaimsPortImpl implements ListPendingClaimPort {
+public class ListClaimsPortBacenImpl implements ListClaimBacenPort {
 
     private final BacenClaimClient bacenClaimClient;
 
     @Override
-    public ClaimIterable list(Claim claim, Integer limit, String requestIdentifier) {
-        ListClaimsRequest request = ListClaimsRequest.from(claim, limit);
+    public ClaimIterable list(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate, String requestIdentifier) {
+        ListClaimsRequest request = ListClaimsRequest.from(claim, limit, isClaimer, isDonor, startDate, endDate);
         ListClaimsResponse response = bacenClaimClient.listClaims(request);
 
         return response.toClaimIterable();
