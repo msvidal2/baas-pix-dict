@@ -163,10 +163,14 @@ public class CustomExceptionHandler {
         return errorDTO;
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
-    public ErrorDTO handleNotFoundException(Exception ex, WebRequest webRequest){
-        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, ex.getMessage());
+    public ErrorDTO handleNotFoundException(ResourceNotFoundException ex) {
+
+        ErrorDTO errorDTO = ErrorDTO.from(
+                NOT_FOUND,
+                Optional.ofNullable(ex.getMessage()).orElse("Entidade não encontrada."),
+                "NotFound");
 
         log.error("error_resourceNotFoundException", errorDTO.toLogJson(ex));
 

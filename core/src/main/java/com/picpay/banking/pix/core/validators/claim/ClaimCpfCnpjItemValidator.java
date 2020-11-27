@@ -8,11 +8,11 @@ public class ClaimCpfCnpjItemValidator implements DictItemValidator<Claim> {
 
     @Override
     public void validate(Claim domain) {
-        if (Strings.isNullOrEmpty(String.valueOf(domain.getTaxId()))) {
+        if (Strings.isNullOrEmpty(String.valueOf(domain.getCpfCnpj()))) {
             throw new IllegalArgumentException("cpfCnpj can not be empty");
         }
 
-        if (String.valueOf(domain.getTaxId()).length() > 14) {
+        if (String.valueOf(domain.getCpfCnpj()).length() > 14) {
             throw new IllegalArgumentException("The number of characters in the cpfCnpj must be less than 15");
         }
     }

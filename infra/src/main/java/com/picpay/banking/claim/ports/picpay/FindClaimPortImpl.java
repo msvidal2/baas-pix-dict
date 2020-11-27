@@ -2,7 +2,6 @@ package com.picpay.banking.claim.ports.picpay;
 
 import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.repository.ClaimRepository;
-import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

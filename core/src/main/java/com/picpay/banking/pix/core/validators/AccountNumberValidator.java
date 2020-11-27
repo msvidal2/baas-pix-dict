@@ -9,8 +9,8 @@ public class AccountNumberValidator {
             throw new IllegalArgumentException("Account number can not be empty");
         }
 
-        if (value.length() < 1 || value.length() > 20) {
-            throw new IllegalArgumentException("The number of characters in the account number must be between 1 and 20");
+        if (value.length() < 4 || value.length() > 20) {
+            throw new IllegalArgumentException("The number of characters in the account number must be between 4 and 20");
         }
     }
 }
