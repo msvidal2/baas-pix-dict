@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -28,5 +29,7 @@ public interface InfractionReportRepository extends JpaRepository<InfractionRepo
         " AND (ir.lastUpdateDate is null or ir.lastUpdateDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdateDate >= :dateEnd)")
     List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
         @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
+
+    Optional<InfractionReportEntity> findByEndToEndId(String endToEndId);
 
 }

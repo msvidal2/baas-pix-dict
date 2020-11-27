@@ -35,9 +35,8 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "createFallback")
     public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
-        CreateInfractionReportRequest requestDto = CreateInfractionReportRequest.from(infractionReport);
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-                                                         () -> bacenClient.create(requestDto),
+                                                         () -> bacenClient.create(CreateInfractionReportRequest.from(infractionReport)),
                                                          requestIdentifier);
         return CreateInfractionReportResponse.toInfractionReport(response);
     }

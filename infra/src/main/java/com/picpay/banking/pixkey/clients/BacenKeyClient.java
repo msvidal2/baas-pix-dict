@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "PixKey",
-        url = "${pix.bacen.dict.entries.url}",
+        url = "${pix.bacen.dict.url}",
         path = "/v1")
 public interface BacenKeyClient {
 

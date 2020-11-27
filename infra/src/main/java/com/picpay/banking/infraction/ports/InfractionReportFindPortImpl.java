@@ -29,11 +29,9 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
 
     @Override
     public InfractionReport find(final String infractionReportId) {
-
-        var infractionReportEntity = infractionReportRepository.findById(infractionReportId)
+        return infractionReportRepository.findById(infractionReportId)
+            .map(InfractionReportEntity::toDomain)
             .orElseThrow(() -> new InfractionReportException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND));
-
-        return infractionReportEntity.toDomain();
     }
 
     @Override

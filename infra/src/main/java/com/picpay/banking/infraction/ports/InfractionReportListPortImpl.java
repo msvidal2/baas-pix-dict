@@ -14,15 +14,12 @@ import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * @author rafael.braga
+ * @author marcelo.vidal
  * @version 1.0 18/11/2020
  */
 @Component
@@ -32,17 +29,12 @@ public class InfractionReportListPortImpl implements InfractionReportListPort {
     private final InfractionReportRepository infractionReportRepository;
 
     @Override
-    public List<InfractionReport> list(final Integer ispb, final InfractionReportSituation situation, final LocalDateTime dateStart,
-        final LocalDateTime dateEnd) {
-
+    public List<InfractionReport> list(final Integer ispb,
+                                       final InfractionReportSituation situation,
+                                       final LocalDateTime dateStart,
+                                       final LocalDateTime dateEnd) {
         var result = infractionReportRepository.list(ispb,situation, dateStart, dateEnd);
-
-        if(result.isEmpty()){
-            return Collections.EMPTY_LIST;
-        }
-
-        var test = result.stream().map(InfractionReportEntity::toDomain).collect(Collectors.toList());
-        return test;
+        return result.stream().map(InfractionReportEntity::toDomain).collect(Collectors.toList());
     }
 
 }

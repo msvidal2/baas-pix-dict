@@ -45,9 +45,9 @@ public class InfractionCrudBacenServer {
             "        <ReportedBy>DEBITED_PARTICIPANT</ReportedBy>\n" +
             "        <ReportDetails>Transação feita através de QR Code falso em boleto</ReportDetails>\n" +
             "        <Id>91d65e98-97c0-4b0f-b577-73625da1f9fc</Id>\n" +
-            "        <Status>CLOSED</Status>\n" +
-            "        <DebitedParticipant>99999010</DebitedParticipant>\n" +
-            "        <CreditedParticipant>99999011</CreditedParticipant>\n" +
+            "        <Status>OPEN</Status>\n" +
+            "        <DebitedParticipant>1234</DebitedParticipant>\n" +
+            "        <CreditedParticipant>56789</CreditedParticipant>\n" +
             "        <CreationTime>2020-01-17T10:00:00Z</CreationTime>\n" +
             "        <LastModified>2020-01-17T10:00:00Z</LastModified>\n" +
             "    </InfractionReport>\n" +

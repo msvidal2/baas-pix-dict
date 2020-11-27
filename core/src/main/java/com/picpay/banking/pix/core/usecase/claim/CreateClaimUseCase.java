@@ -33,7 +33,6 @@ public class CreateClaimUseCase {
         validator.validate(claim);
 
         validateClaimAlreadyExistsForKey(claim.getKey());
-
         validateClaimTypeInconsistent(claim);
 
         Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);

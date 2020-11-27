@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.domain.infraction;
 
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.ANALYZED;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELED;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.RECEIVED;
+import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
+import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_CLOSED;
 
 @Getter
 @Builder(toBuilder = true)
@@ -17,6 +26,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class InfractionReport {
+
+    private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, RECEIVED);
 
     private String infractionReportId;
     private String transactionId;
@@ -36,5 +47,14 @@ public class InfractionReport {
     private String details;
     private String requestIdentifier;
     private InfractionAnalyze analyze;
+
+    public void validateSituation() {
+        if (OPEN_STATES.contains(this.getSituation()))
+            throw new InfractionReportException(INFRACTION_REPORT_ALREADY_OPEN);
+
+        if (this.getSituation().equals(CANCELED)) {
+            throw new InfractionReportException(INFRACTION_REPORT_CLOSED);
+        }
+    }
 
 }
