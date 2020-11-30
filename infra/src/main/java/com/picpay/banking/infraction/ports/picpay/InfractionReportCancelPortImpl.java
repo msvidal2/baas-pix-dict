@@ -30,14 +30,8 @@ public class InfractionReportCancelPortImpl implements InfractionReportCancelPor
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "fallBack")
-    public InfractionReport cancel(String infractionReportId) {
-        var infraEntity = infractionReportRepository
-                .changeSituation(infractionReportId, InfractionReportSituation.CANCELED.getValue());
-
-         if (infraEntity.isPresent())
-             return infraEntity.map(InfractionReportEntity::toDomain).get();
-
-         throw new RuntimeException("Algum erro ocorreu ao tentar atualizar a situação da infração no banco de dados.");
+    public void cancel(String infractionReportId) {
+        infractionReportRepository.changeSituation(infractionReportId, InfractionReportSituation.CANCELED.getValue());
     }
 
     public InfractionReport fallBack(String infractionReportId, Exception e) {

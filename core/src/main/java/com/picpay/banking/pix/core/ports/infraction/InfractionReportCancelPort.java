@@ -4,6 +4,6 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
 public interface InfractionReportCancelPort {
 
-    InfractionReport cancel(String infractionReportId);
+    void cancel(String infractionReportId);
 
 }
