@@ -1,5 +1,6 @@
 package com.picpay.banking.infraction.ports.picpay;
 
+import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
@@ -25,6 +26,9 @@ public class InfractionReportCancelPortImpl implements InfractionReportCancelPor
         var infraEntity = infractionReportRepository
                 .changeSituation(infractionReportId, InfractionReportSituation.CANCELED.getValue());
 
-        return infraEntity.ifPresent(infractionReportEntity -> infractionReportEntity.toDomain());
+         if (infraEntity.isPresent())
+             return infraEntity.map(InfractionReportEntity::toDomain).get();
+
+         throw new RuntimeException("Algum erro ocorreu ao tentar atualizar a situação da infração no banco de dados.");
     }
 }

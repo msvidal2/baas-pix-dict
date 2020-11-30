@@ -6,6 +6,8 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.ports.infraction.CancelInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,10 +33,11 @@ class CancelInfractionReportPortUseCaseTest {
     @InjectMocks
     private CancelInfractionReportUseCase cancelInfractionReportUseCase;
 
-    //TODO ajustar com nova porta
+    @Mock
+    private CancelInfractionReportPort cancelInfractionReportPort;
 
-//    @Mock
-//    private InfractionReportPort infractionReportPort;
+    @Mock
+    private InfractionReportCancelPort infractionReportCancelPort;
 
     private InfractionReport infractionReport;
 
@@ -52,34 +55,36 @@ class CancelInfractionReportPortUseCaseTest {
 
     }
 
-//    @Test
+    @Test
     void when_cancelInfractionsWithSuccess_expect_OkWithValidResult() {
-//        when(infractionReportPort.cancel(anyString(), anyInt(),anyString())).thenReturn(infractionReport);
+        when(cancelInfractionReportPort.cancel(anyString(), anyInt(),anyString())).thenReturn(infractionReport);
+        when(infractionReportCancelPort.cancel(anyString())).thenReturn(infractionReport);
 
         var infractionReport = this.cancelInfractionReportUseCase.execute("1", 1, "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
         assertThat(infractionReport.getEndToEndId()).isNotNull();
 
-//        verify(infractionReportPort).cancel(anyString(), anyInt(),anyString());
+        verify(cancelInfractionReportPort).cancel(anyString(), anyInt(),anyString());
+        verify(infractionReportCancelPort).cancel(anyString());
     }
 
 
-//    @Test
+    @Test
     void when_tryCancelInfractionWithNullParams_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.cancelInfractionReportUseCase.execute(null, null, null));
     }
 
-//    @Test
+    @Test
     void when_tryCancelInfractionWithNullIspb_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.cancelInfractionReportUseCase.execute("1", null, "1"));
     }
 
-//    @Test
+    @Test
     void when_tryCancelInfractionWithNullInfractionReportId_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.cancelInfractionReportUseCase.execute(null, 1, "1"));
     }
 
-//    @Test
+    @Test
     void when_tryCancelInfractionWithNullRequestIdentifier_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.cancelInfractionReportUseCase.execute("1", 1, null));
     }
