@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import com.picpay.banking.pix.core.validators.claim.IspbClaimItemValidator;
-import com.picpay.banking.pix.core.validators.pixkey.ClaimIdtemValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,7 @@ class ClaimConfirmationUseCaseTest {
     public void setup() {
         var validator = new ClaimValidatorComposite(
             List.of(
-                new IspbClaimItemValidator(),
-                new ClaimIdtemValidator()
+                new IspbClaimItemValidator()
            ));
 
         useCase = new ClaimConfirmationUseCase(claimConfirmationPort, validator);
