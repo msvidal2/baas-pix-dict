@@ -2,13 +2,10 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
@@ -53,9 +50,10 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public CompleteClaimUseCase completeClaimUseCase(CompleteClaimPort completeClaimPort,
+    public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
+                                                     CompleteClaimPort completeClaimPort,
                                                      @Qualifier("completeClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CompleteClaimUseCase(completeClaimPort, dictItemValidator);
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, dictItemValidator);
     }
 
     @Bean
