@@ -11,17 +11,17 @@ import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ClaimConfirmationValidator {
+public class ConfirmClaimValidator {
 
     public static void validate(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
-        if(StringUtils.isBlank(requestIdentifier)) {
+        if (StringUtils.isBlank(requestIdentifier)) {
             throw new IllegalArgumentException("Request identifier cannot be empty");
         }
 
         ClaimIdValidator.validate(claim.getClaimId());
         IspbValidator.validate(claim.getIspb());
 
-        if(Objects.isNull(reason)) {
+        if (Objects.isNull(reason)) {
             throw new IllegalArgumentException("Reason cannot be null");
         }
     }

@@ -31,9 +31,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort,
-                                                        @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ConfirmClaimUseCase(claimConfirmationPort,dictItemValidator);
+    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort) {
+        return new ConfirmClaimUseCase(claimConfirmationPort);
     }
 
     @Bean
@@ -44,9 +43,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimCancelUseCase claimCancelUseCase(CancelClaimPort claimCancelPort,
-                                                 @Qualifier("claimCancelItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimCancelUseCase(claimCancelPort, dictItemValidator);
+    public ClaimCancelUseCase claimCancelUseCase(CancelClaimPort claimCancelPort) {
+        return new ClaimCancelUseCase(claimCancelPort);
     }
 
     @Bean
