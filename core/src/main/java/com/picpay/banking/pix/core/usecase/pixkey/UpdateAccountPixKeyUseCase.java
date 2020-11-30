@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +20,12 @@ public class UpdateAccountPixKeyUseCase {
 
     private UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
-    private DictItemValidator dictItemValidator;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final PixKey pixKey,
                           @NonNull final UpdateReason reason) {
 
-        dictItemValidator.validate(pixKey);
+        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         if (requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
@@ -35,10 +35,8 @@ public class UpdateAccountPixKeyUseCase {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
-        // solicitando atualizacao de conta junto ao bacen
         var pixkeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
 
-        // atualizo a informacao no db local
         var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixkeyResponse, reason);
 
         if (pixKeyUpdated != null)

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,5 +26,8 @@ public enum ClaimStatus {
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
     }
-    
+
+    public static List<ClaimStatus> getPending() {
+        return List.of(OPEN, WAITING_RESOLUTION, CONFIRMED);
+    }
 }
