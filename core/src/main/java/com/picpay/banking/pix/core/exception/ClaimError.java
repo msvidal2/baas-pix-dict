@@ -8,11 +8,11 @@ import lombok.Getter;
 public enum ClaimError {
 
     JDPIRVN001("RVN001", "O Identificador da Reivindicação não foi encontrado."),
-    JDPIRVN002("RVN002", "A situação da sua Reivindicação não permite o seu cancelamento."),
-    JDPIRVN003("RVN003", "O motivo para cancelar a sua Reivindicação não é valido."),
-    JDPIRVN004("RVN004", "A situação da Reivindicação de Posse de Chave que você recebeu, não permite o seu cancelamento."),
-    JDPIRVN005("RVN005", "A situação da Portabilidade de Chave que você recebeu, não permite o seu cancelamento."),
-    JDPIRVN006("RVN006", "O motivo para cancelar a Reivindicação que você recebeu não é válido."),
+    CLAIMANT_CANCEL_SITUATION_NOT_ALLOWED("RVN002", "A situação da sua Reivindicação não permite o seu cancelamento."),
+    CLAIMANT_CANCEL_INVALID_REASON("RVN003", "O motivo para cancelar a sua Reivindicação não é valido."),
+    POSSESSION_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION("RVN004", "A situação da Reivindicação de Posse de Chave que você recebeu, não permite o seu cancelamento."),
+    PORTABILITY_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION("RVN005", "A situação da Portabilidade de Chave que você recebeu, não permite o seu cancelamento."),
+    DONOR_CANCEL_INVALID_REASON("RVN006", "O motivo para cancelar a Reivindicação que você recebeu não é válido."),
     JDPIRVN007("RVN007", "A Reivindicação não pode ser confirmada pelo reivindicador da chave."),
     JDPIRVN008("RVN008", "A situação da Reivindicação que você recebeu, não permite confirmação."),
     JDPIRVN009("RVN009", "O motivo para confirmar a Reivindicação que você recebeu não é válido."),

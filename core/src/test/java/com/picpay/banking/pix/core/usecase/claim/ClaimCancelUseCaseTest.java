@@ -2,18 +2,15 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
-import com.picpay.banking.pix.core.validators.ClaimIdValidator;
-import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
-import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static com.picpay.banking.pix.core.domain.ClaimCancelReason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.domain.ClaimSituation.CANCELED;
@@ -26,15 +23,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ClaimCancelUseCaseTest {
 
+    @InjectMocks
     private ClaimCancelUseCase useCase;
 
     @Mock
     private CancelClaimPort claimCancelPort;
 
-    @BeforeEach
-    public void setup() {
-        useCase = new ClaimCancelUseCase(claimCancelPort);
-    }
+    @Mock
+    private FindByIdPort findByIdPort;
 
     @Test
     void testCancel() {

@@ -5,10 +5,7 @@ import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
@@ -48,8 +45,8 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ClaimCancelUseCase claimCancelUseCase(CancelClaimPort claimCancelPort,
-                                                 @Qualifier("claimCancelItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimCancelUseCase(claimCancelPort, dictItemValidator);
+                                                 FindByIdPort findByIdPort) {
+        return new ClaimCancelUseCase(claimCancelPort, findByIdPort);
     }
 
     @Bean

@@ -1,18 +1,16 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimCancelReason;
-import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.exception.ClaimError;
+import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -24,6 +22,25 @@ public class ClaimCancelUseCase {
 
     private final FindByIdPort findByIdPort;
 
+    private static final Map<ClaimType, List<ClaimSituation>> situationsAllowedByType = Map.of(
+        ClaimType.POSSESSION_CLAIM, List.of(ClaimSituation.AWAITING_CLAIM, ClaimSituation.CONFIRMED),
+        ClaimType.PORTABILITY, List.of(ClaimSituation.AWAITING_CLAIM)
+    );
+
+    private static final Map<ClaimCancelReason, List<ClaimantType>> ownershipAllowedReasons = Map.of(
+        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.CLAIMANT),
+        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
+        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
+        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.CLAIMANT)
+    );
+
+    private static final Map<ClaimCancelReason, List<ClaimantType>> portabilityAllowedReasons = Map.of(
+        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
+        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
+        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
+        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.DONOR)
+    );
+
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
                          final ClaimCancelReason reason,
@@ -34,13 +51,8 @@ public class ClaimCancelUseCase {
         var claim = findByIdPort.find(claimCancel.getClaimId())
                 .orElseThrow(ResourceNotFoundException::new);
 
-        if(ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())) {
-
-        }
-
-//        claim.getClaimType()
-
-
+        validateAllowedSituation(claim, canceledClaimant);
+        validateAllowedReason(canceledClaimant, reason, claim);
 
         var claimCanceled = claimCancelPort.cancel(claimCancel, canceledClaimant, reason, requestIdentifier);
 
@@ -51,4 +63,36 @@ public class ClaimCancelUseCase {
 
         return claimCanceled;
     }
+
+    private void validateAllowedSituation(final Claim claim, final boolean canceledClaimant) {
+        var situationsAllowed = situationsAllowedByType.get(claim.getClaimType());
+
+        if (!situationsAllowed.contains(claim.getClaimSituation())) {
+            if(canceledClaimant) {
+                throw new ClaimException(ClaimError.CLAIMANT_CANCEL_SITUATION_NOT_ALLOWED);
+            }
+
+            if(ClaimType.PORTABILITY.equals(claim.getClaimType())) {
+                throw new ClaimException(ClaimError.PORTABILITY_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION);
+            }
+
+            throw new ClaimException(ClaimError.POSSESSION_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION);
+        }
+    }
+
+    private void validateAllowedReason(final boolean canceledClaimant, final ClaimCancelReason reason, final Claim claim) {
+        var allowedReasons = Map.of(ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
+                ClaimType.PORTABILITY, portabilityAllowedReasons)
+                .get(claim.getClaimType())
+                .get(ClaimantType.resolve(canceledClaimant));
+
+        if (!allowedReasons.contains(reason)) {
+            if(canceledClaimant) {
+                throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
+            }
+
+            throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
+        }
+    }
+
 }
