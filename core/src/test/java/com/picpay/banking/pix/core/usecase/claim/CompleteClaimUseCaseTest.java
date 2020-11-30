@@ -2,7 +2,8 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
@@ -28,6 +29,9 @@ public class CompleteClaimUseCaseTest {
     private CompleteClaimUseCase useCase;
 
     @Mock
+    private CompleteClaimBacenPort completeClaimBacenPort;
+
+    @Mock
     private CompleteClaimPort completeClaimPort;
 
     @BeforeEach
@@ -37,7 +41,7 @@ public class CompleteClaimUseCaseTest {
                 new ClaimIspbItemValidator()
         ));
 
-        useCase = new CompleteClaimUseCase(completeClaimPort, validator);
+        useCase = new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, validator);
     }
 
     @Test
@@ -50,7 +54,7 @@ public class CompleteClaimUseCaseTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        when(completeClaimPort.complete(any(), anyString())).thenReturn(claimPortResponse);
+        when(completeClaimBacenPort.complete(any(), anyString())).thenReturn(claimPortResponse);
 
         assertDoesNotThrow(() -> {
             var completeClaimResponse = useCase.execute(
