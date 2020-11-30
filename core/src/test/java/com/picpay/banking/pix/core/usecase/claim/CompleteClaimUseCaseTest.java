@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
+import com.picpay.banking.pix.core.validators.ClaimIdValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +33,7 @@ public class CompleteClaimUseCaseTest {
     @BeforeEach
     public void setup() {
         var validator = new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
+//                new ClaimIdValidator(),
                 new ClaimIspbItemValidator()
         ));
 

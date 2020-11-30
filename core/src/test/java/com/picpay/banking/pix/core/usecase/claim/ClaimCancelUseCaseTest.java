@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
+import com.picpay.banking.pix.core.validators.ClaimIdValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.Assertions;
@@ -33,12 +33,7 @@ class ClaimCancelUseCaseTest {
 
     @BeforeEach
     public void setup() {
-        var validator = new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
-                new ClaimIspbItemValidator()
-        ));
-
-        useCase = new ClaimCancelUseCase(claimCancelPort, validator);
+        useCase = new ClaimCancelUseCase(claimCancelPort);
     }
 
     @Test
