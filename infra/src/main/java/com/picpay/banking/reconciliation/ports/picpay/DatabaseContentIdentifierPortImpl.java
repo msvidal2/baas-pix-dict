@@ -1,19 +1,23 @@
 package com.picpay.banking.reconciliation.ports.picpay;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
+import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
+import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierFileEntity;
+import com.picpay.banking.reconciliation.repository.ContentIdentifierActionRepository;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierFileRepository;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +28,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
 
     private ContentIdentifierFileRepository contentIdentifierFileRepository;
     private ContentIdentifierRepository contentIdentifierRepository;
+    private ContentIdentifierActionRepository contentIdentifierActionRepository;
 
     @Override
     public List<ContentIdentifier> listAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedAt) {
@@ -31,56 +36,53 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     }
 
     @Override
-    public void save(final ContentIdentifierFile contentIdentifierFile) {
+    public void save(final ContentIdentifier contentIdentifier) {
+        this.contentIdentifierRepository.save(ContentIdentifierEntity.from(contentIdentifier));
+    }
+
+    @Override
+    public void saveFile(final ContentIdentifierFile contentIdentifierFile) {
        this.contentIdentifierFileRepository.save(ContentIdentifierFileEntity.from(contentIdentifierFile));
     }
 
     @Override
+    public Optional<ContentIdentifier> findByCid(final String cid) {
+        return this.contentIdentifierRepository.findById(cid).map(ContentIdentifierEntity::toDomain);
+    }
+
+    @Override
+    public void delete(final String cid) {
+        this.contentIdentifierRepository.deleteById(cid);
+    }
+
+    @Override
     public Optional<ContentIdentifierFile> findLastFileRequested(final KeyType keyType) {
-        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(keyType, List.of(
-            ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED));
+        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType), List.of(
+            ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED))
+        .map(ContentIdentifierFileEntity::toDomain);
     }
 
     @Override
-    public List<String> findKeysNotSyncToRemove(final KeyType keyType, final List<String> cidsInBacen) {
-
-        var cidsToRemove = new ArrayList<String>();
-
-        var actualPage = 0;
-        var totalPages = 0;
-
-        do {
-            var page = this.contentIdentifierRepository.findAllByKeyType(keyType,PageRequest.of(actualPage, 100));
-
-            final var cidsInDatabase = page.toList().stream().map(ContentIdentifierEntity::getCid).collect(Collectors.toList());
-            cidsInDatabase.retainAll(cidsInBacen);
-            cidsToRemove.addAll(cidsInDatabase);
-
-            totalPages = page.getTotalPages();
-            actualPage++;;
-        }while (actualPage <= totalPages);
-
-        return cidsToRemove;
+    public List<ContentIdentifier> listAll(KeyType keyType) {
+        return this.contentIdentifierRepository.findAllByKeyType(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType))
+            .stream().map(ContentIdentifierEntity::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findCidsNotSync(final KeyType keyType, final List<String> cidsInBacen) {
+    public void saveAction(Integer idReference,PixKey key, String cid, ContentIdentifierAction action){
+        final var contentIdentifierActionEntity = ContentIdentifierActionEntity.builder()
+            .action(action)
+            .cid(cid)
+            .pixKey(PixKeyEntity.from(key, CreateReason.RECONCILIATION))
+            .idContentIdentifierFile(idReference)
+            .build();
 
-        var actualPage = 0;
-        var totalPages = 0;
-
-        do {
-            var page = this.contentIdentifierRepository.findAllByKeyType(keyType,PageRequest.of(actualPage, 100));
-
-            final var cidsInDatabase = page.toList().stream().map(ContentIdentifierEntity::getCid).collect(Collectors.toList());
-            cidsInBacen.retainAll(cidsInDatabase);
-
-            totalPages = page.getTotalPages();
-            actualPage++;
-        }while (actualPage <= totalPages);
-
-        return cidsInBacen;
+        this.contentIdentifierActionRepository.save(contentIdentifierActionEntity);
     }
 
+    @Override
+    public Optional<ContentIdentifier> findByKey(final String key) {
+        return this.contentIdentifierRepository.findByKey(key).map(ContentIdentifierEntity::toDomain);
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenSyncVerificationsPort;
@@ -13,6 +15,7 @@ import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationS
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.RequestSyncFileUseCase;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,11 +29,12 @@ public class ReconciliationUseCaseBeansConfig {
 
     @Bean
     public FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase(
+        @Value("${picpay.ispb}") Integer participant,
         BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort,
         DatabaseContentIdentifierPort databaseContentIdentifierPort, BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort,
-        FindPixKeyPort findPixKeyPort, CreatePixKeyUseCase createPixKeyUseCase, RemovePixKeyUseCase removePixKeyUseCase) {
-        return new FailureReconciliationSyncByFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
-            bacenPixKeyByContentIdentifierPort, findPixKeyPort, createPixKeyUseCase, removePixKeyUseCase);
+        CreatePixKeyPort createPixKeyPort, RemovePixKeyPort removePixKeyPort, FindPixKeyPort findPixKeyPort) {
+        return new FailureReconciliationSyncByFileUseCase(participant,bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
+            bacenPixKeyByContentIdentifierPort, createPixKeyPort, findPixKeyPort,removePixKeyPort);
     }
 
     @Bean

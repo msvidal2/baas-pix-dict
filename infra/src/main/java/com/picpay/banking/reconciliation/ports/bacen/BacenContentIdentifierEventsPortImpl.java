@@ -42,7 +42,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     public ContentIdentifierFile requestContentIdentifierFile(final KeyType keyType) {
 
         final var request = CidSetFileRequest.builder()
-            .keyType(keyType)
+            .keyType(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType))
             .participant(participant)
             .build();
 

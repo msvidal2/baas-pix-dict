@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.domain;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class ContentIdentifier {
 
@@ -11,4 +11,5 @@ public class ContentIdentifier {
     private String key;
     private KeyType keyType;
 
+    private PixKey pixKey;
 }

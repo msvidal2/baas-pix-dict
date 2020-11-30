@@ -23,6 +23,4 @@ public class PixKeyIdEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private KeyType type;
 
-    private String taxId;
-
 }

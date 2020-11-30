@@ -3,6 +3,7 @@ package com.picpay.banking.reconciliation.ports.bacen;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +20,12 @@ public class BacenPixKeyByContentIdentifierPortImpl implements BacenPixKeyByCont
 
     @Override
     public PixKey getPixKey(final String cid) {
-        final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
-        return response.toDomain();
+        try {
+            final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
+            return response.toDomain();
+        }catch (FeignException.NotFound ex){
+            return null;
+        }
     }
 
 }

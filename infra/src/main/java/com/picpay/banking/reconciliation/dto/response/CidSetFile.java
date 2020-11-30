@@ -3,7 +3,7 @@ package com.picpay.banking.reconciliation.dto.response;
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,7 +63,7 @@ public class CidSetFile {
             .id(id)
             .requestTime(requestTime)
             .status(status)
-            .keyType(keyType)
+            .keyType(keyType.getType())
             .sha256(sha256)
             .url(url)
             .length(length)

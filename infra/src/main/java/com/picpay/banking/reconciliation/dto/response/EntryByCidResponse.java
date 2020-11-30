@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author Luis Silva
@@ -40,6 +41,9 @@ public class EntryByCidResponse {
     @XmlElement(name = "Cid")
     private String cid;
 
+    @XmlElement(name = "RequestId")
+    private String requestId;
+
     @XmlElement(name = "Entry")
     private Entry entry;
 
@@ -58,6 +62,7 @@ public class EntryByCidResponse {
             .createdAt(entry.getCreationDate())
             .startPossessionAt(entry.getKeyOwnershipDate())
             .correlationId(correlationId)
+            .requestId(UUID.fromString(requestId))
         .build();
     }
 

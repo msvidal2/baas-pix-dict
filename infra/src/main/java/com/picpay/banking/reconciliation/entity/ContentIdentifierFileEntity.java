@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,12 +54,24 @@ public class ContentIdentifierFileEntity {
     public static ContentIdentifierFileEntity from(final ContentIdentifierFile contentIdentifierFile) {
         return ContentIdentifierFileEntity.builder()
             .id(contentIdentifierFile.getId())
-            .keyType(contentIdentifierFile.getKeyType())
+            .keyType(KeyType.resolve(contentIdentifierFile.getKeyType()))
             .length(contentIdentifierFile.getLength())
             .requestTime(contentIdentifierFile.getRequestTime())
             .sha256(contentIdentifierFile.getSha256())
             .status(contentIdentifierFile.getStatus())
             .url(contentIdentifierFile.getUrl())
+        .build();
+    }
+
+    public  ContentIdentifierFile toDomain() {
+        return ContentIdentifierFile.builder()
+            .id(id)
+            .keyType(keyType.getType())
+            .length(length)
+            .requestTime(requestTime)
+            .sha256(sha256)
+            .status(status)
+            .url(url)
         .build();
     }
 

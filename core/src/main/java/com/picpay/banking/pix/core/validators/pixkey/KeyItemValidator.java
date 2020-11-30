@@ -12,7 +12,7 @@ public class KeyItemValidator implements DictItemValidator<PixKey> {
 
     @Override
     public void validate(PixKey pixKey) {
-        if(KeyType.RANDOM.equals(pixKey.getType())) {
+        if(KeyType.EVP.equals(pixKey.getType())) {
             if (pixKey.getKey() == null || pixKey.getKey().isEmpty()) {
                 return;
             }

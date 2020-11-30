@@ -17,7 +17,7 @@ public class RequestSyncFileUseCase {
     public ContentIdentifierFile execute(KeyType keyType){
         log.info("Requesting CID files from BACEN for key type", keyType);
         final var contentIdentifierFile = this.bacenContentIdentifierEventsPort.requestContentIdentifierFile(keyType);
-        this.databaseContentIdentifierPort.save(contentIdentifierFile);
+        this.databaseContentIdentifierPort.saveFile(contentIdentifierFile);
         log.info("CID files from BACEN requested succesfull {} {}", contentIdentifierFile.getId(),contentIdentifierFile.getKeyType());
         return contentIdentifierFile;
     }

@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.dto.request;
 
-import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

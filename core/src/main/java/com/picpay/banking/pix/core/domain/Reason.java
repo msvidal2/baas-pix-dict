@@ -14,7 +14,8 @@ public enum Reason {
     BRANCH_TRANSFER(2),
     INACTIVITY(3),
     FRAUD(4),
-    DEFAULT_RESPONSE(5);
+    DEFAULT_RESPONSE(5),
+    RECONCILIATION(-1);
 
     private Integer value;
 

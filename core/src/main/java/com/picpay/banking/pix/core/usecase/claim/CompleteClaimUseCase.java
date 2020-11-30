@@ -27,7 +27,7 @@ public class CompleteClaimUseCase {
             throw new UseCaseException("You must inform a request identifier");
         }
 
-        Claim claimCompleted = completeClaimPort.complete(claim, requestIdentifier);
+        Claim claimCompleted = this.completeClaimPort.complete(claim, requestIdentifier);
 
         if (claimCompleted != null)
             log.info("Claim_completed",

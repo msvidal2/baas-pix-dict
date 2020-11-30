@@ -2,33 +2,33 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
+import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
-import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -49,32 +49,51 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     @Mock
     private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     @Mock
-    private CreatePixKeyUseCase createPixKeyUseCase;
+    private CreatePixKeyPort createPixKeyPort;
     @Mock
-    private RemovePixKeyUseCase removePixKeyUseCase;
-
+    private RemovePixKeyPort removePixKeyPort;
     @Mock
     private FindPixKeyPort findPixKeyPort;
 
-    @InjectMocks
     private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
-    private ContentIdentifier contentIdentifier;
     private ContentIdentifierFile cidFile;
     private List<String> cids;
+    private PixKey pixKey;
 
     @BeforeEach
     public void init(){
+
+        this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
+            22896431,bacenContentIdentifierEventsPort,databaseContentIdentifierPort,bacenPixKeyByContentIdentifierPort,
+            createPixKeyPort,findPixKeyPort,removePixKeyPort
+        );
 
         this.cidFile = ContentIdentifierFile.builder()
             .id(1)
             .keyType(KeyType.CPF)
             .length(32000L)
             .sha256("")
-            .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
+            .status(ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING)
             .requestTime(LocalDateTime.now())
-            .url("")
+            .url("url")
         .build();
+
+        this.pixKey = PixKey.builder()
+            .type(KeyType.EMAIL)
+            .key("joao@picpay.com")
+            .ispb(1)
+            .nameIspb("Empresa Picpay")
+            .branchNumber("1")
+            .accountType(AccountType.SALARY)
+            .accountNumber("1")
+            .accountOpeningDate(LocalDateTime.now())
+            .personType(PersonType.INDIVIDUAL_PERSON)
+            .taxId("57950197048")
+            .name("Joao da Silva")
+            .fantasyName("Nome Fantasia")
+            .endToEndId("endToEndId")
+            .requestId(UUID.randomUUID()).build();
 
         this.cids = List.of(
            "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a",
@@ -88,7 +107,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
            "bc915cf1fb2c7b4937343e44b4b60f44dd7859c0600e4ef38868a21a12f3a1a4",
            "11c7b17e78383318e5dead150ecfd4e0c3e6ef0539f6d4d3df4749cbe02689e5",
            "db01597005d44ed5151886cd705a9147be0336e4cbe70ff4592cc31646dd4e33",
-           "aa87970249c347b0f0f04261d86b6888ed46bd4462890d4f198ccea093c8b53f",
+           "1a87970249c347b0f0f04261d86b6888ed46bd4462890d4f198ccea093c8b53f",
            "477622204f462e36b951f3793ce37639fd45344cd47b2ce4586ca286a976ec91",
            "4a41744ae57a1892cb74e6a049ba8d4061028d75e17036e77da77237e5789f28",
            "3b9124780499e81f39dec26a4563a28a4590c084fb26b8fd1ebc9f675b09ece7",
@@ -114,66 +133,177 @@ public class FailureReconciliationSyncByFileUseCaseTest {
            "44f9bed17c0b6690c72d94f097a48753ce09163f2d653343d4fb420d3a7828ce",
            "9b139ec4dddb7601f2aa5409ae299eccf55b8b8fe228369cd9332b65c181df17",
            "52f858365aa2b5aa86dbc1d3ae0b46c343393dee3c85b1b1f4b9c4c654f787b4",
-           "1f50cfbe1107e0fee4fdd41a28fe00532035d1347092123a0e6cc30bdf40e942",
+           "6f50cfbe1107e0fee4fdd41a28fe00532035d1347092123a0e6cc30bdf40e942",
            "18d9e3ae3af99617fa34b863c1bed19985653446bf8a9d236eb803f93525da23",
            "7cfeaccad7dc5fd66b5b1cde01a912741cdae5388362863fa56e71a748f4e17a",
            "fdbdd17771d179a04292245e6b19704c438500b44db29c91636ad671ebe99c15",
            "69db9b861be66f434f8ef722f480195b56aaadb7135b9089c53e161000af41da");
     }
 
-    //@Test
-    public void createKeysWhenKeyNotInDatabaseAndRemoveKeysNotInTheFile(){
-        when(databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
-        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(cidFile);
-        doNothing().when(databaseContentIdentifierPort).save(any());
-        when(bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
-        when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).then(this::generateCidToInsert);
-        when(bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKey);
-        when(createPixKeyUseCase.execute(anyString(),any(),any())).thenReturn(PixKey.builder().build());
-        when(databaseContentIdentifierPort.findKeysNotSyncToRemove(any(), anyList())).then(this::generateKeysToRemove);
-        when(findPixKeyPort.findPixKey(anyString())).then(this::generatePixKeyFindInDatabase);
-        doNothing().when(removePixKeyUseCase).execute(anyString(),any(),any());
+    @Test
+    public void dontProcessWhenNotExistFilesRequestedInBacen(){
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.empty());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
-        verify(databaseContentIdentifierPort).findLastFileRequested(any());
-        verify(bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(any());
-        verify(databaseContentIdentifierPort).save(any());
-        verify(bacenContentIdentifierEventsPort).downloadFile(anyString());
-        verify(databaseContentIdentifierPort).findCidsNotSync(any(), anyList());
-        verify(bacenPixKeyByContentIdentifierPort,times(6)).getPixKey(anyString());
-        verify(createPixKeyUseCase,times(6)).execute(anyString(),any(),any());
-        verify(databaseContentIdentifierPort).findKeysNotSyncToRemove(any(), anyList());
-        verify(findPixKeyPort,times(5)).findPixKey(any());
-        verify(removePixKeyUseCase,times(5)).execute(any(),any(),any());
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort,never()).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort,never()).listAll(any());
+        verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
 
-    //@Test
-    public void dontCreateKeysWhenKeyNotInDatabaseAndDontRemoveKeys(){
-        when(databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
-        when(bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(any())).thenReturn(cidFile);
-        doNothing().when(databaseContentIdentifierPort).save(any());
-        when(bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
-        when(databaseContentIdentifierPort.findCidsNotSync(any(),anyList())).thenReturn(Collections.emptyList());
-        when(databaseContentIdentifierPort.findKeysNotSyncToRemove(any(), anyList())).thenReturn(Collections.emptyList());
+    @Test
+    public void dontInsertKeysFromBacenWhenFileNotAvailable(){
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(cidFile);
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
-        verify(databaseContentIdentifierPort).findLastFileRequested(any());
-        verify(bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(any());
-        verify(databaseContentIdentifierPort).save(any());
-        verify(bacenContentIdentifierEventsPort).downloadFile(anyString());
-        verify(databaseContentIdentifierPort).findCidsNotSync(any(), anyList());
-        verify(bacenPixKeyByContentIdentifierPort,never()).getPixKey(anyString());
-        verify(createPixKeyUseCase,never()).execute(anyString(),any(),any());
-        verify(databaseContentIdentifierPort).findKeysNotSyncToRemove(any(), anyList());
-        verify(findPixKeyPort,never()).findPixKey(any());
-        verify(removePixKeyUseCase,never()).execute(any(),any(),any());
-
-
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort,never()).listAll(any());
+        verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
 
-    private PixKey generatePixKey(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    @Test
+    public void dontInsertKeysFromBacenWhenFileIsNull(){
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(null);
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort,never()).listAll(any());
+        verify(this.databaseContentIdentifierPort,never()).saveFile(any());
+    }
+
+    @Test
+    public void insertKeysFromBacen(){
+        final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
+
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
+        when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
+        when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
+        doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(),any(),anyString(),any());
+        doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort).listAll(any());
+        verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
+        verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
+        verify(this.databaseContentIdentifierPort,times(5)).saveAction(anyInt(),any(),anyString(),argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierAction.ADDED)));
+        verify(this.databaseContentIdentifierPort).saveFile(any());
+    }
+
+    @Test
+    public void updateKeysFromBacen(){
+        final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
+
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
+        when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
+        when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
+        when(this.findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
+        doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(),any(),anyString(),any());
+        doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort).listAll(any());
+        verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
+        verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
+        verify(this.findPixKeyPort,times(5)).findPixKey(any());
+        verify(this.databaseContentIdentifierPort,times(5)).saveAction(anyInt(),any(),anyString(),argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierAction.UPDATED)));
+        verify(this.databaseContentIdentifierPort).saveFile(any());
+    }
+
+    @Test
+    public void removeKeysFromBacen(){
+        final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
+        final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
+        final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
+                .cid(cid).pixKey(PixKey.builder().build())
+                .keyType(KeyType.CPF).key(UUID.randomUUID().toString()).build()).collect(Collectors.toList());
+        contentIdentifiers.add(contentIdentifiersToRemove);
+
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
+        when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(null);
+        when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
+        doNothing().when(this.databaseContentIdentifierPort).delete(any());
+        when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(null);
+        when(this.removePixKeyPort.remove(any(),anyInt())).thenReturn(PixKey.builder().build());
+        doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(),any(),anyString(),any());
+        doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+       verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+       verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+       verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+       verify(this.databaseContentIdentifierPort).listAll(any());
+       verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
+       verify(this.createPixKeyPort,never()).createPixKey(any(),any());
+       verify(this.databaseContentIdentifierPort).findByCid(anyString());
+       verify(this.databaseContentIdentifierPort).delete(any());
+       verify(this.removePixKeyPort).remove(any(),anyInt());
+       verify(this.databaseContentIdentifierPort).saveAction(anyInt(),any(),anyString(),argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierAction.REMOVED)));
+       verify(this.databaseContentIdentifierPort).saveFile(any());
+    }
+
+    @Test
+    public void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan(){
+        final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
+        final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
+        final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
+            .cid(cid).pixKey(PixKey.builder().build())
+            .keyType(KeyType.CPF).key(UUID.randomUUID().toString()).build()).collect(Collectors.toList());
+        contentIdentifiers.add(contentIdentifiersToRemove);
+
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
+        when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
+        when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(null,pixKey);
+        when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
+        doNothing().when(this.databaseContentIdentifierPort).delete(any());
+        doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.databaseContentIdentifierPort).listAll(any());
+        verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
+        verify(this.createPixKeyPort,never()).createPixKey(any(),any());
+        verify(this.databaseContentIdentifierPort).findByCid(anyString());
+        verify(this.databaseContentIdentifierPort).delete(any());
+        verify(this.removePixKeyPort,never()).remove(any(),anyInt());
+        verify(this.databaseContentIdentifierPort,never()).saveAction(anyInt(),any(),anyString(),any());
+        verify(this.databaseContentIdentifierPort).saveFile(any());
+    }
+
+
+    private PixKey generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var cid = (String) invocationOnMock.getArgument(0);
         return PixKey.builder().accountNumber("0").accountOpeningDate(LocalDateTime.now())
             .branchNumber("1").accountType(AccountType.CHECKING).createdAt(LocalDateTime.now())
@@ -182,22 +312,16 @@ public class FailureReconciliationSyncByFileUseCaseTest {
             .build();
     }
 
-    private Optional<PixKey> generatePixKeyFindInDatabase(final InvocationOnMock invocationOnMock) {
-        return Optional.of(generatePixKey(invocationOnMock));
+    private PixKey generatePixKeyFromDomain(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+        return invocationOnMock.getArgument(0);
     }
 
-    private List<String > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private List<ContentIdentifier > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
-        var cids = (List<String>) invocationOnMock.getArgument(1);
-
-        return cids.stream().filter(s -> s.startsWith("a")).collect(Collectors.toList());
-    }
-
-    private List<String > generateKeysToRemove(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
-        var keyType = (KeyType) invocationOnMock.getArgument(0);
-        var cids = (List<String>) invocationOnMock.getArgument(1);
-
-        return cids.stream().filter(s -> s.startsWith("1")).map(s -> UUID.randomUUID().toString()).collect(Collectors.toList());
+        return cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> ContentIdentifier.builder()
+                .cid(s).pixKey(PixKey.builder().build())
+                .keyType(keyType).key(UUID.randomUUID().toString()).build()
+        ).collect(Collectors.toList());
     }
 
 }

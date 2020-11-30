@@ -31,7 +31,7 @@ public class UpdateAccountPixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
         }
 
-        if (KeyType.RANDOM.equals(pixKey.getType()) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
+        if (KeyType.EVP.equals(pixKey.getType()) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 

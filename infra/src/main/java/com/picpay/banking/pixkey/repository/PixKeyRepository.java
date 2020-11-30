@@ -31,7 +31,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     void deleteByIdKeyAndParticipant(String key, Integer participant);
 
     @Query("SELECT t FROM pix_key t " +
-            "WHERE t.id.taxId = :taxId " +
+            "WHERE t.taxId = :taxId " +
             "   AND t.personType = :personType " +
             "   AND t.branch = :branch " +
             "   AND t.accountNumber = :accountNumber " +
@@ -40,7 +40,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     List<PixKeyEntity> findKeys(String taxId, PersonType personType, String branch, String accountNumber, AccountType accountType, Integer participant);
 
     @Query("SELECT t FROM pix_key t " +
-            "WHERE t.id.taxId = :taxId " +
+            "WHERE t.taxId = :taxId " +
             "   AND t.personType = :personType " +
             "   AND t.accountNumber = :accountNumber " +
             "   AND t.accountType = :accountType " +

@@ -15,6 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Entity(name = "pix_key")
@@ -70,66 +71,75 @@ public class PixKeyEntity {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime openClaimCreationDate;
 
+    @Column
+    private String taxId;
+
+    @Column
+    private String requestId;
+
     public static PixKeyEntity from(final PixKey pixKey, final CreateReason reason) {
         return PixKeyEntity.builder()
-                .id(PixKeyIdEntity.builder()
-                        .key(pixKey.getKey())
-                        .type(pixKey.getType())
-                        .taxId(pixKey.getTaxId())
-                        .build())
-                .participant(pixKey.getIspb())
-                .branch(pixKey.getBranchNumber())
-                .accountNumber(pixKey.getAccountNumber())
-                .accountType(pixKey.getAccountType())
-                .openingDate(pixKey.getAccountOpeningDate())
-                .personType(pixKey.getPersonType())
-                .name(pixKey.getName())
-                .reason(reason.getValue())
-                .correlationId(pixKey.getCorrelationId())
-                .creationDate(pixKey.getCreatedAt())
-                .ownershipDate(pixKey.getStartPossessionAt())
-                .build();
+            .id(PixKeyIdEntity.builder()
+                .key(pixKey.getKey())
+                .type(pixKey.getType())
+                .build())
+            .requestId(pixKey.getRequestId().toString())
+            .taxId(pixKey.getTaxId())
+            .participant(pixKey.getIspb())
+            .branch(pixKey.getBranchNumber())
+            .accountNumber(pixKey.getAccountNumber())
+            .accountType(pixKey.getAccountType())
+            .openingDate(pixKey.getAccountOpeningDate())
+            .personType(pixKey.getPersonType())
+            .name(pixKey.getName())
+            .reason(reason.getValue())
+            .correlationId(pixKey.getCorrelationId())
+            .creationDate(pixKey.getCreatedAt())
+            .ownershipDate(pixKey.getStartPossessionAt())
+            .build();
     }
 
     public static PixKeyEntity from(final PixKey pixKey, final UpdateReason reason) {
         return PixKeyEntity.builder()
-                .id(PixKeyIdEntity.builder()
-                        .key(pixKey.getKey())
-                        .type(pixKey.getType())
-                        .taxId(pixKey.getTaxId())
-                        .build())
-                .participant(pixKey.getIspb())
-                .branch(pixKey.getBranchNumber())
-                .accountNumber(pixKey.getAccountNumber())
-                .accountType(pixKey.getAccountType())
-                .openingDate(pixKey.getAccountOpeningDate())
-                .personType(pixKey.getPersonType())
-                .name(pixKey.getName())
-                .reason(Reason.resolve(reason.getValue()))
-                .correlationId(pixKey.getCorrelationId())
-                .creationDate(pixKey.getCreatedAt())
-                .ownershipDate(pixKey.getStartPossessionAt())
-                .build();
+            .id(PixKeyIdEntity.builder()
+                .key(pixKey.getKey())
+                .type(pixKey.getType())
+                .build())
+            .taxId(pixKey.getTaxId())
+            .requestId(pixKey.getRequestId().toString())
+            .participant(pixKey.getIspb())
+            .branch(pixKey.getBranchNumber())
+            .accountNumber(pixKey.getAccountNumber())
+            .accountType(pixKey.getAccountType())
+            .openingDate(pixKey.getAccountOpeningDate())
+            .personType(pixKey.getPersonType())
+            .name(pixKey.getName())
+            .reason(Reason.resolve(reason.getValue()))
+            .correlationId(pixKey.getCorrelationId())
+            .creationDate(pixKey.getCreatedAt())
+            .ownershipDate(pixKey.getStartPossessionAt())
+            .build();
     }
 
     public PixKey toPixKey() {
         return PixKey.builder()
-                .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
-                .key(id.getKey())
-                .ispb(participant)
-                .branchNumber(branch)
-                .accountType(accountType)
-                .accountNumber(accountNumber)
-                .accountOpeningDate(openingDate)
-                .personType(personType)
-                .taxId(id.getTaxId())
-                .name(name)
-                .createdAt(creationDate)
-                .startPossessionAt(ownershipDate)
-                .correlationId(correlationId)
-                //TODO incluir claim?
-//                .claim()
-                .build();
+            .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
+            .key(id.getKey())
+            .ispb(participant)
+            .branchNumber(branch)
+            .accountType(accountType)
+            .accountNumber(accountNumber)
+            .accountOpeningDate(openingDate)
+            .personType(personType)
+            .taxId(taxId)
+            .name(name)
+            .createdAt(creationDate)
+            .startPossessionAt(ownershipDate)
+            .correlationId(correlationId)
+            .requestId(UUID.fromString(requestId))
+            //TODO incluir claim?
+            //                .claim()
+            .build();
     }
 
 }

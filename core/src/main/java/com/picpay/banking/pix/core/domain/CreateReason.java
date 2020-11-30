@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum CreateReason {
 
     CLIENT_REQUEST(Reason.CLIENT_REQUEST),
-    RECONCILIATION(Reason.DEFAULT_RESPONSE);
+    RECONCILIATION(Reason.RECONCILIATION);
 
     private Reason value;
 

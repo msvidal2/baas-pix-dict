@@ -1,8 +1,10 @@
 package com.picpay.banking.pix.core.ports.reconciliation;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
+import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,12 +14,20 @@ public interface DatabaseContentIdentifierPort {
 
     List<ContentIdentifier> listAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedAt);
 
-    void save(ContentIdentifierFile contentIdentifierFile);
+    void save(ContentIdentifier contentIdentifier);
+
+    void saveFile(ContentIdentifierFile contentIdentifierFile);
 
     Optional<ContentIdentifierFile> findLastFileRequested(KeyType keyType);
 
-    List<String> findKeysNotSyncToRemove(final KeyType keyType, List<String> cids);
+    List<ContentIdentifier> listAll(KeyType keyType);
 
-    List<String> findCidsNotSync(KeyType keyType, List<String> cidsInBacen);
+    Optional<ContentIdentifier> findByCid(String cid);
+
+    void delete(String cid);
+
+    void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierAction action);
+
+    Optional<ContentIdentifier> findByKey(String key);
 
 }

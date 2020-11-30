@@ -1,7 +1,8 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 /**
@@ -40,11 +45,24 @@ public class ContentIdentifierEntity {
     @Builder.Default
     private LocalDateTime requestTime = LocalDateTime.now();
 
+    @JoinColumns({@JoinColumn(name = "key", insertable = false, updatable = false), @JoinColumn(name = "keyType", insertable = false, updatable = false)})
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PixKeyEntity pixKey;
+
     public static ContentIdentifierEntity from(final ContentIdentifier contentIdentifier) {
         return ContentIdentifierEntity.builder()
             .cid(contentIdentifier.getCid())
-            .keyType(contentIdentifier.getKeyType())
+            .keyType(KeyType.resolve(contentIdentifier.getKeyType()))
             .key(contentIdentifier.getKey())
+            .build();
+    }
+
+    public ContentIdentifier toDomain() {
+        return ContentIdentifier.builder()
+            .cid(cid)
+            .keyType(keyType.getType())
+            .key(key)
+            .pixKey(pixKey == null ? null : pixKey.toPixKey())
             .build();
     }
 

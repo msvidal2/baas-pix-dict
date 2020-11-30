@@ -13,8 +13,8 @@ public enum KeyType {
     CPF(com.picpay.banking.pix.core.domain.KeyType.CPF, 0),
     CNPJ(com.picpay.banking.pix.core.domain.KeyType.CNPJ, 1),
     EMAIL(com.picpay.banking.pix.core.domain.KeyType.EMAIL, 2),
-    PHONE(com.picpay.banking.pix.core.domain.KeyType.CELLPHONE, 3),
-    EVP(com.picpay.banking.pix.core.domain.KeyType.RANDOM, 4);
+    PHONE(com.picpay.banking.pix.core.domain.KeyType.PHONE, 3),
+    EVP(com.picpay.banking.pix.core.domain.KeyType.EVP, 4);
 
     private com.picpay.banking.pix.core.domain.KeyType type;
     private int value;

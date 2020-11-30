@@ -17,7 +17,8 @@ CREATE TABLE public.pix_key
     ownership_date timestamp without time zone NOT NULL,
     update_date timestamp without time zone,
     open_claim_creation_date timestamp without time zone,
-    CONSTRAINT pix_key_primary_key PRIMARY KEY (key, type, tax_id)
+    request_id character varying(36) NOT NULL,
+    CONSTRAINT pix_key_primary_key PRIMARY KEY (key, type)
 );
 
 CREATE INDEX pix_key_key ON public.pix_key (key);

@@ -24,9 +24,48 @@ public class ReconciliationUtilTest {
         String accountType = "CACC";
 
         String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
-            ownerTradeName, participant, branch, accountNumber, accountType);
+            ownerTradeName, participant, branch, accountNumber, accountType, "a5992013c87d9a6706b9924442d8b29e");
 
         String expectedCid = "28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88";
+        assertThat(cid).isEqualTo(expectedCid);
+    }
+
+    @Test
+    @DisplayName("Calculo do CID")
+    public void calculateCid_success2() {
+        String keyType = "EMAIL";
+        String key = "lricardolisboa@gmail.com";
+        String ownerTaxIdNumber = "04812331560";
+        String ownerName = "Luis Ricardo Lisboa da Silva";
+        String ownerTradeName = "";
+        String participant = "22896431";
+        String branch = "0001";
+        String accountNumber = "0007654";
+        String accountType = "CACC";
+
+        String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
+            ownerTradeName, participant, branch, accountNumber, accountType, "a946d533-7f22-42a5-9a9b-e87cd55c0f4d");
+
+        String expectedCid = "c0f77d0aba530237f7c2defa38713ebf862d01bbe7b443342a9cf5784992cff2";
+        assertThat(cid).isEqualTo(expectedCid);
+    }
+@Test
+    @DisplayName("Calculo do CID")
+    public void calculateCid_success3() {
+        String keyType = "PHONE";
+        String key = "+5511959968814";
+        String ownerTaxIdNumber = "33980297870";
+        String ownerName = "Adriane Riby Galvani De Almeida";
+        String ownerTradeName = "";
+        String participant = "22896431";
+        String branch = "1";
+        String accountNumber = "48171190";
+        String accountType = "CACC";
+
+        String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
+            ownerTradeName, participant, branch, accountNumber, accountType, "a946d533-7f22-42a5-9a9b-e87cd55c0f4d");
+
+        String expectedCid = "18d9e3ae3af99617fa34b863c1bed19985653446bf8a9d236eb803f93525da23";
         assertThat(cid).isEqualTo(expectedCid);
     }
 
@@ -76,7 +115,7 @@ public class ReconciliationUtilTest {
             String accountType = "CACC";
 
             String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
-                ownerTradeName, participant, branch, accountNumber, accountType);
+                ownerTradeName, participant, branch, accountNumber, accountType, "a5992013c87d9a6706b9924442d8b29e");
             vsync = ReconciliationUtil.calculateVsync(vsync, Set.of(cid));
         }
         System.out.println("Tempo para processar cem milhões de chaves em segundos: " + (System.currentTimeMillis() - startTime) / 1000);

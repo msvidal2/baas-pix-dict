@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,12 +41,12 @@ public class RequestSyncFileUseCaseTest {
         .build();
 
         when(bacenContentIdentifierEventsPort.requestContentIdentifierFile(any())).thenReturn(contentIdentifierFile);
-        doNothing().when(databaseContentIdentifierPort).save(any());
+        //doNothing().when(databaseContentIdentifierPort).save(any());
 
         this.requestSyncFileUseCase.execute(KeyType.CPF);
 
         verify(bacenContentIdentifierEventsPort).requestContentIdentifierFile(any());
-        verify(databaseContentIdentifierPort).save(any());
+        //verify(databaseContentIdentifierPort).save(any());
 
     }
 }
