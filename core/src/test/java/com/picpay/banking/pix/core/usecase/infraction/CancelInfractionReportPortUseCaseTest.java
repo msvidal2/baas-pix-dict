@@ -58,7 +58,6 @@ class CancelInfractionReportPortUseCaseTest {
     @Test
     void when_cancelInfractionsWithSuccess_expect_OkWithValidResult() {
         when(cancelInfractionReportPort.cancel(anyString(), anyInt(),anyString())).thenReturn(infractionReport);
-        when(infractionReportCancelPort.cancel(anyString())).thenReturn(infractionReport);
 
         var infractionReport = this.cancelInfractionReportUseCase.execute("1", 1, "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
