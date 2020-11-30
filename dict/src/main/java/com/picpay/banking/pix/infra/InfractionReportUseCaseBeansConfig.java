@@ -2,14 +2,16 @@ package com.picpay.banking.pix.infra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picpay.banking.idempotency.IdempotencyValidatorImpl;
-import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
-import com.picpay.banking.infraction.ports.bacen.CreateInfractionReportPortImpl;
-import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.ports.infraction.AnalyzeInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
 import org.springframework.context.annotation.Bean;
@@ -36,5 +38,18 @@ public class InfractionReportUseCaseBeansConfig {
     public IdempotencyValidator<InfractionReport> idempotencyValidator(final RedisTemplate<String, Object> redisTemplate, final ObjectMapper objectMapper) {
         return new IdempotencyValidatorImpl<>(redisTemplate, objectMapper, InfractionReport.class);
     }
+
+    @Bean
+    public FilterInfractionReportUseCase filterInfractionReportUseCase(InfractionReportListPort infractionReportListPort) {
+        return new FilterInfractionReportUseCase(infractionReportListPort);
+    }
+
+    @Bean
+    public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(AnalyzeInfractionReportPort analyzeInfractionReportPort,
+        InfractionReportAnalyzePort infractionReportAnalyzePort) {
+        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportAnalyzePort);
+    }
+
+
 
 }

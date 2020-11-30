@@ -29,7 +29,7 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
 
     @Override
     public InfractionReport analyze(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
-        final String requestIdentifier) {
+        final LocalDateTime dateLastUpdate, final String requestIdentifier) {
 
         final Optional<InfractionReportEntity> infractionOptional = infractionReportRepository.findById(infractionReportId);
 
@@ -37,7 +37,7 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
             InfractionReportEntity infractionReportEntity = infractionOptional.get();
             infractionReportEntity.setAnalyzeResult(analyze.getAnalyzeResult());
             infractionReportEntity.setAnalyzeDetails(analyze.getDetails());
-            infractionReportEntity.setLastUpdatedDate(LocalDateTime.now());
+            infractionReportEntity.setLastUpdatedDate(dateLastUpdate);
             infractionReportRepository.saveAndFlush(infractionReportEntity);
             return infractionReportEntity.toDomain();
         }

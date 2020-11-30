@@ -9,9 +9,8 @@ package com.picpay.banking.pix.core.ports.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import lombok.NonNull;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 /**
  * @author rafael.braga
@@ -20,6 +19,6 @@ import java.util.Optional;
 public interface InfractionReportAnalyzePort {
 
    InfractionReport analyze(final String infractionReportId, final Integer ispb,
-       InfractionAnalyze analyze, final String requestIdentifier);
+       InfractionAnalyze analyze, final LocalDateTime dateLastUpdate, final String requestIdentifier);
 
 }
