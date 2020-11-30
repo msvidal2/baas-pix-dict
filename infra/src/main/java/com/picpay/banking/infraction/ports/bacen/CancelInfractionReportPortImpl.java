@@ -4,7 +4,6 @@ import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
-import com.picpay.banking.infraction.dto.response.CancelInfractionReportResponse;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.CancelInfractionReportPort;

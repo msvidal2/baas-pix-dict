@@ -1,12 +1,17 @@
 package com.picpay.banking.infraction.ports.picpay;
 
+import com.picpay.banking.fallbacks.BacenExceptionBuilder;
+import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * Class comments go here...
@@ -19,9 +24,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InfractionReportCancelPortImpl implements InfractionReportCancelPort {
 
-    private InfractionReportRepository infractionReportRepository;
+    private static final String CIRCUIT_BREAKER_CREATE_NAME = "cancel-infraction";
+
+    private final InfractionReportRepository infractionReportRepository;
 
     @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "fallBack")
     public InfractionReport cancel(String infractionReportId) {
         var infraEntity = infractionReportRepository
                 .changeSituation(infractionReportId, InfractionReportSituation.CANCELED.getValue());
@@ -31,4 +39,16 @@ public class InfractionReportCancelPortImpl implements InfractionReportCancelPor
 
          throw new RuntimeException("Algum erro ocorreu ao tentar atualizar a situação da infração no banco de dados.");
     }
+
+    public InfractionReport fallBack(String infractionReportId, Exception e) {
+        log.error("Infraction_fallback_cancelBacen -> {} {}",
+                kv("infractionReportId", infractionReportId),
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
+        throw BacenExceptionBuilder.from(e)
+                .withFieldResolver(new PixKeyFieldResolver())
+                .build();
+    }
+
 }
