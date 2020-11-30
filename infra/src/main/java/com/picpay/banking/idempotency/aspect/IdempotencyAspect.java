@@ -29,7 +29,8 @@ import java.util.Optional;
  * When a method is annotated with @ValidateIdempotency, it tries to locate a target object in a Redis Cache, using the value of the argument annotated
  * with @IdempotencyKey as the hash key on Redis.
  * If a value is found, it compares the found value with the current method parameter. If a cache result is found, but the value doesn't match, then an
- * IdempotencyException is thrown. If it matches, then the value is returned directly from the cache.
+ * IdempotencyException is thrown. If it matches, then the value is returned directly from the cache and the method execution is cut short.
+ * To find the comparison target, the aspects looks for an object that matches the type provided for the annotation. 
  * @author rafael.braga
  * @version 1.0 27/11/2020
  */
