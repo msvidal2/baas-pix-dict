@@ -12,5 +12,6 @@ CREATE TABLE dict.infraction_report (
 	details varchar(2000) NULL,
 	request_identifier varchar(36) NOT NULL,
 	analyze_result int null,
-	analyze_details varchar(2000) NULL
+	analyze_details varchar(2000) NULL,
+    CONSTRAINT infraction_report_id_primary_key PRIMARY KEY (infraction_report_id)
 );
