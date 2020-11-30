@@ -42,15 +42,15 @@ public class ClaimController {
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(CREATED)
-    public ClaimResponseDTO create(@RequestHeader String requestIdentifier
-            , @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
+    public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
+                                   @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
-        log.info("Claim_creating"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("Key", requestDTO.getKey())
-                , kv("NameIspb", requestDTO.getIspb())
-                , kv("AccountNumber", requestDTO.getAccountNumber())
-                , kv("BranchNumber", requestDTO.getBranchNumber()));
+        log.info("Claim_creating",
+                kv("requestIdentifier", requestIdentifier),
+                kv("Key", requestDTO.getKey()),
+                kv("NameIspb", requestDTO.getIspb()),
+                kv("AccountNumber", requestDTO.getAccountNumber()),
+                kv("BranchNumber", requestDTO.getBranchNumber()));
 
         var claim = createAddressKeyUseCase.execute(requestDTO.toDomain(), requestIdentifier);
 
@@ -60,13 +60,14 @@ public class ClaimController {
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
-    public Claim confirm(@RequestHeader String requestIdentifier, @PathVariable String claimId
-            , @RequestBody @Validated ClaimConfirmationDTO dto) {
+    public Claim confirm(@RequestHeader String requestIdentifier,
+                         @PathVariable String claimId,
+                         @RequestBody @Validated ClaimConfirmationDTO dto) {
 
-        log.info("Claim_confirming"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("claimId", claimId)
-                , kv("dto", dto));
+        log.info("Claim_confirming",
+                kv("requestIdentifier", requestIdentifier),
+                kv("claimId", claimId),
+                kv("dto", dto));
 
         var claim = Claim.builder()
             .claimId(claimId)
@@ -81,10 +82,12 @@ public class ClaimController {
     @ApiOperation(value = "List Claim.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ClaimIterable list(@RequestHeader String requestIdentifier, @Valid ListClaimRequestWebDTO requestDTO) {
-        log.info("Claim_listing"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("dto", requestDTO));
+    public ClaimIterable list(@RequestHeader String requestIdentifier,
+                              @Valid ListClaimRequestWebDTO requestDTO) {
+
+        log.info("Claim_listing",
+                kv("requestIdentifier", requestIdentifier),
+                kv("dto", requestDTO));
 
         var claim = Claim.builder()
             .ispb(requestDTO.getIspb())
@@ -104,13 +107,14 @@ public class ClaimController {
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
-    public Claim cancel(@RequestHeader String requestIdentifier, @PathVariable String claimId
-            , @RequestBody @Validated ClaimCancelDTO dto) {
+    public Claim cancel(@RequestHeader String requestIdentifier,
+                        @PathVariable String claimId,
+                        @RequestBody @Validated ClaimCancelDTO dto) {
 
-        log.info("Claim_canceling"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("claimId", claimId)
-                , kv("dto", dto));
+        log.info("Claim_canceling",
+                kv("requestIdentifier", requestIdentifier),
+                kv("claimId", claimId),
+                kv("dto", dto));
 
         var claim = Claim.builder()
                 .claimId(claimId)
@@ -123,13 +127,14 @@ public class ClaimController {
     @Trace
     @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
-    public Claim complete(@RequestHeader String requestIdentifier, @PathVariable String claimId
-            , @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
+    public Claim complete(@RequestHeader String requestIdentifier,
+                          @PathVariable String claimId,
+                          @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
 
-        log.info("Claim_completing"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("claimId", claimId)
-                , kv("dto", dto));
+        log.info("Claim_completing",
+                kv("requestIdentifier", requestIdentifier),
+                kv("claimId", claimId),
+                kv("dto", dto));
 
         return completeClaimUseCase.execute(Claim.builder()
                         .claimId(claimId)
@@ -142,10 +147,15 @@ public class ClaimController {
     @ApiOperation(value = "Find Claim by Claim Id.")
     @GetMapping("/{claimId}")
     @ResponseStatus(HttpStatus.OK)
-    public Claim find(@PathVariable String claimId, @RequestParam("ispb") String ispb, @RequestParam("reivindicador") boolean reivindicador) {
+    public ClaimResponseDTO find(@PathVariable String claimId,
+                                 @RequestParam("ispb") String ispb,
+                                 @RequestParam("reivindicador") boolean reivindicador) {
+
         log.info("Claim_finding", kv("claimId", claimId));
 
-        return findClaimUseCase.execute(claimId, ispb, reivindicador);
+        var claim = findClaimUseCase.execute(claimId, ispb, reivindicador);
+
+        return ClaimResponseDTO.from(claim);
     }
 
 }
