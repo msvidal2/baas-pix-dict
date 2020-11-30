@@ -15,3 +15,5 @@ CREATE TABLE dict.infraction_report (
 	analyze_details varchar(2000) NULL,
     CONSTRAINT infraction_report_id_primary_key PRIMARY KEY (infraction_report_id)
 );
+
+CREATE INDEX infraction_report_e2e ON dict.infraction_report (end_to_end_id);
