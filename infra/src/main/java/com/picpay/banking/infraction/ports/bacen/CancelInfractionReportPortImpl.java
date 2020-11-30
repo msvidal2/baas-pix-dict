@@ -26,12 +26,12 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class CancelInfractionReportPortImpl implements CancelInfractionReportPort {
 
-    private static final String CIRCUIT_BREAKER_CREATE_NAME = "cancel-infraction";
+    private static final String CIRCUIT_BREAKER_CREATE_NAME = "cancel-infraction-bacen";
     private final CreateInfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "fallback")
+    @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "fallBack")
     public InfractionReport cancel(String infractionReportId, Integer ispb, String requestIdentifier) {
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
                 () -> bacenClient.cancel(CancelInfractionReportRequest.from(infractionReportId, ispb),
@@ -40,8 +40,8 @@ public class CancelInfractionReportPortImpl implements CancelInfractionReportPor
         return response.toDomain();
     }
 
-    public InfractionReport fallback(String infractionReportId, Integer ispb, String requestIdentifier, Exception e) {
-        log.error("Infraction_fallback_cancelBacen -> identifier: {} ispb: {} infractionReportId: {}",
+    public InfractionReport fallBack(String infractionReportId, Integer ispb, String requestIdentifier, Exception e) {
+        log.error("Infraction_fallback_cancelBacen -> {} {} {} {}",
                 kv("requestIdentifier", requestIdentifier),
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),
