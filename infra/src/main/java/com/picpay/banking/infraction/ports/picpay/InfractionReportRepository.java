@@ -7,6 +7,8 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,5 +32,7 @@ public interface InfractionReportRepository extends JpaRepository<InfractionRepo
         " AND (ir.lastUpdatedDate is null or ir.lastUpdatedDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdatedDate >= :dateEnd)")
     List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
         @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
+
+    Optional<InfractionReportEntity> changeSituation(String infractionReportId, int situation);
 
 }
