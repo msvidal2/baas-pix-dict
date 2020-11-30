@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import com.picpay.banking.pix.core.validators.claim.IspbClaimItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.ClaimIdtemValidator;
@@ -25,12 +25,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClaimConfirmationUseCaseTest {
+class ConfirmClaimUseCaseTest {
 
-    private ClaimConfirmationUseCase useCase;
+    private ConfirmClaimUseCase useCase;
 
     @Mock
-    private ConfirmationClaimPort claimConfirmationPort;
+    private ConfirmClaimPort claimConfirmationPort;
 
     @BeforeEach
     public void setup() {
@@ -40,7 +40,7 @@ class ClaimConfirmationUseCaseTest {
                 new ClaimIdtemValidator()
            ));
 
-        useCase = new ClaimConfirmationUseCase(claimConfirmationPort, validator);
+        useCase = new ConfirmClaimUseCase(claimConfirmationPort, validator);
     }
 
     @Test

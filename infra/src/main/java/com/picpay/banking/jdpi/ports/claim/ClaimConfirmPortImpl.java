@@ -7,12 +7,12 @@ import com.picpay.banking.jdpi.fallbacks.JDClientExceptionFactory;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ClaimConfirmationPortImpl implements ConfirmationClaimPort {
+public class ClaimConfirmPortImpl implements ConfirmClaimPort {
 
     private final static String CIRCUIT_BREAKER_NAME = "confirm-claim";
 

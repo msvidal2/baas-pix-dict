@@ -3,32 +3,30 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
-import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
 @Slf4j
-public class ClaimConfirmationUseCase {
+public class ConfirmClaimUseCase {
 
-    private ConfirmationClaimPort claimConfirmationPort;
+    private ConfirmClaimPort confirmClaimPort;
 
     private DictItemValidator<Claim> validator;
 
-    public Claim execute(Claim claim,
-                         @NonNull final ClaimConfirmationReason reason,
-                         @NonNull final String requestIdentifier) {
+    public Claim execute(final Claim claim,
+                         final ClaimConfirmationReason reason,
+                         final String requestIdentifier) {
 
         validateRequestFields(reason, requestIdentifier);
 
         validator.validate(claim);
 
-        Claim claimConfirmed = claimConfirmationPort.confirm(claim, reason, requestIdentifier);
+        Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
 
         if (claimConfirmed != null)
             log.info("Claim_confirmed",
@@ -44,17 +42,6 @@ public class ClaimConfirmationUseCase {
         }
         if (reason == null) {
             throw new IllegalArgumentException("reason can not be empty");
-        }
-    }
-
-    private void validateParams(String claimId, int ispb, String requestIdentifier) {
-
-        if(ispb <= 0) {
-            throw new UseCaseException("Invalid ispb code");
-        }
-
-        if(requestIdentifier.isBlank()) {
-            throw new UseCaseException("You must inform a request identifier");
         }
     }
 

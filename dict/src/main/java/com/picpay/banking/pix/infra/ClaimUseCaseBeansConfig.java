@@ -1,17 +1,14 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
@@ -34,9 +31,9 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationUseCase claimConfirmationUseCase(ConfirmationClaimPort claimConfirmationPort,
-                                                             @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimConfirmationUseCase(claimConfirmationPort,dictItemValidator);
+    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort,
+                                                        @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
+        return new ConfirmClaimUseCase(claimConfirmationPort,dictItemValidator);
     }
 
     @Bean

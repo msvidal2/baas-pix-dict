@@ -60,6 +60,15 @@ public class ClaimResponse {
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastModified;
 
+    @XmlElement(name = "ConfirmReason")
+    private ConfirmReasonResponse confirmReason;
+
+    @XmlElement(name = "CancelReason")
+    private CancelReasonResponse cancelReason;
+
+    @XmlElement(name = "CancelledBy")
+    private CancelledByResponse cancelledBy;
+
     public static ClaimResponse from(Claim claim) {
         return ClaimResponse.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
@@ -89,6 +98,7 @@ public class ClaimResponse {
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
                 .personType(claimer.getType().getPersonType())
+                .confirmationReason(confirmReason.getConfirmationReason())
                 .build();
     }
 
