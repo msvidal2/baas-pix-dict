@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ClaimConfirmationUseCaseTest {
 
-    private ClaimConfirmationUseCase useCase;
+    /*private ClaimConfirmationUseCaseTest useCase;
 
     @Mock
     private ConfirmClaimPort claimConfirmationPort;
@@ -102,5 +102,5 @@ class ClaimConfirmationUseCaseTest {
                 .claimId(randomUUID().toString())
                 .ispb(23542432).build();
             useCase.execute(claim, CLIENT_REQUEST, null);});
-    }
+    }*/
 }
