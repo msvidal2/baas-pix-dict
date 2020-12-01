@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
+import com.picpay.banking.claim.dto.response.ClaimResponse;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
@@ -107,7 +108,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
-    public Claim cancel(@RequestHeader String requestIdentifier,
+    public ClaimResponse cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
 
@@ -121,7 +122,9 @@ public class ClaimController {
                 .ispb(dto.getIspb())
                 .build();
 
-        return claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
+        var claimCancelled = claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
+
+        return ClaimResponse.from(claim);
     }
 
     @Trace
