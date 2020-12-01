@@ -5,7 +5,7 @@ import com.picpay.banking.jdpi.clients.InfractionReportJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
+import com.picpay.banking.jdpi.ports.claim.ClaimConfirmPortImpl;
 import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;

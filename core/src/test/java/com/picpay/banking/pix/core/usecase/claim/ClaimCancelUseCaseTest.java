@@ -83,7 +83,7 @@ class ClaimCancelUseCaseTest {
                 .build();
 
         when(findByIdPort.find(anyString())).thenReturn(Optional.of(claimFindMock));
-        when(cancelClaimBacenPort.cancel(anyString(), any(), anyInt())).thenReturn(claimCancelled);
+        when(cancelClaimBacenPort.cancel(anyString(), any(), anyInt(), anyString())).thenReturn(claimCancelled);
 
         var claimCancel = Claim.builder()
                 .claimId("123e4567-e89b-12d3-a456-426655440000")
@@ -110,8 +110,8 @@ class ClaimCancelUseCaseTest {
         });
 
         verify(findByIdPort).find(anyString());
-        verify(cancelClaimBacenPort).cancel(anyString(), any(), anyInt());
-        verify(cancelClaimPort).cancel(any(), any(), requestIdentifier);
+        verify(cancelClaimBacenPort).cancel(anyString(), any(), anyInt(), anyString());
+        verify(cancelClaimPort).cancel(any(), any(), anyString());
     }
 
     @Test
