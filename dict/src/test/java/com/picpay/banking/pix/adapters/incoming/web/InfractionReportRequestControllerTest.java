@@ -4,19 +4,19 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportD
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
-import static com.picpay.banking.pix.core.domain.InfractionReportSituation.ANALYZED;
-import static com.picpay.banking.pix.core.domain.InfractionReportSituation.CANCELED;
-import static com.picpay.banking.pix.core.domain.InfractionReportSituation.OPEN;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.ANALYZED;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELED;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class InfractionReportControllerTest {
+class InfractionReportRequestControllerTest {
 
     private MockMvc mockMvc;
 
@@ -58,9 +58,6 @@ class InfractionReportControllerTest {
 
     @Mock
     private CreateInfractionReportUseCase createInfractionReportUseCase;
-
-    @Mock
-    private ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
 
     @Mock
     private CancelInfractionReportUseCase cancelInfractionReportUseCase;
@@ -89,7 +86,7 @@ class InfractionReportControllerTest {
 
         findInfractionReport = InfractionReport.builder()
             .endToEndId("E9999901012341234123412345678900")
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .details("situacao irregular da cartao")
             .infractionReportId("996196e5-c469-4069-b231-34a93ff7b89b")
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
@@ -110,7 +107,7 @@ class InfractionReportControllerTest {
             .ispbCredited(56789)
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
-            .type(InfractionType.FRAUD)
+            .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 
@@ -131,17 +128,17 @@ class InfractionReportControllerTest {
         final InfractionReportCreatedDTO infractionReportCreatedDTO = InfractionReportCreatedDTO.from(infractionReport);
 
         mockMvc.perform(post("/v1/infraction-report")
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
-                .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
-                .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-                .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-                .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
-                .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
-                .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
     }
 
     @Test
@@ -155,8 +152,8 @@ class InfractionReportControllerTest {
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isBadRequest());
     }
 
@@ -170,8 +167,8 @@ class InfractionReportControllerTest {
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isBadRequest());
     }
 
@@ -185,8 +182,8 @@ class InfractionReportControllerTest {
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isBadRequest());
     }
 
@@ -200,8 +197,8 @@ class InfractionReportControllerTest {
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
             .andExpect(status().isBadRequest());
     }
 
@@ -216,68 +213,29 @@ class InfractionReportControllerTest {
             .build();
 
         mockMvc.perform(post("/v1/infraction-report")
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
-                .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
-                .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-                .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-                .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
-                .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
-                .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
+            .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
+            .andExpect(jsonPath("$.situation", equalTo("OPEN")))
+            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
+            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
+            .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
 
         verify(createInfractionReportUseCase).execute(any(), anyString());
 
     }
 
     @Test
-    void when_RequestListInfractions_expect_statusOk() throws Exception {
-        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
-
-        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
-            .queryParam("limit", "1")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].infractionReportId").exists())
-            .andExpect(jsonPath("$.[0].reportedBy").exists())
-            .andExpect(jsonPath("$.[0].situation").exists())
-            .andExpect(jsonPath("$.[0].ispbDebited").exists())
-            .andExpect(jsonPath("$.[0].ispbCredited").exists())
-            .andExpect(jsonPath("$.[0].dateCreate").exists())
-            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
-
-        verify(listPendingInfractionReportUseCase).execute(anyInt(), anyInt());
-    }
-
-    @Test
-    void when_RequestListInfractionsWithoutLimit_expect_statusOk() throws Exception {
-        when(listPendingInfractionReportUseCase.execute(anyInt(), anyInt())).thenReturn(listInfractionReport);
-
-        mockMvc.perform(get("/v1/infraction-report/pending/{ispb}", 1)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].infractionReportId").exists())
-            .andExpect(jsonPath("$.[0].reportedBy").exists())
-            .andExpect(jsonPath("$.[0].situation").exists())
-            .andExpect(jsonPath("$.[0].ispbDebited").exists())
-            .andExpect(jsonPath("$.[0].ispbCredited").exists())
-            .andExpect(jsonPath("$.[0].dateCreate").exists())
-            .andExpect(jsonPath("$.[0].dateLastUpdate").exists());
-
-        verify(listPendingInfractionReportUseCase).execute(anyInt(), argThat(limitDefault -> limitDefault == 10));
-    }
-
-    @Test
     void when_FindInfractionRequestWithSuccess_expect_statusOk() throws Exception {
-        when(findInfractionReportUseCase.execute(anyString(), any())).thenReturn(findInfractionReport);
+        when(findInfractionReportUseCase.execute(anyString())).thenReturn(findInfractionReport);
 
         mockMvc.perform(get("/v1/infraction-report/{infractionReportId}", UUID.randomUUID().toString())
-            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.endToEndId", equalTo("E9999901012341234123412345678900")))
@@ -293,11 +251,12 @@ class InfractionReportControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        verify(findInfractionReportUseCase).execute(anyString(), any());
+        verify(findInfractionReportUseCase).execute(anyString());
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestCancelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionCanceled = infractionReport.toBuilder().situation(CANCELED).build();
 
@@ -306,35 +265,37 @@ class InfractionReportControllerTest {
         var request = CancelInfractionDTO.builder().ispb(1).build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.endToEndId").exists())
-                .andExpect(jsonPath("$.infractionReportId").exists())
-                .andExpect(jsonPath("$.situation",equalTo(CANCELED.name())));
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endToEndId").exists())
+            .andExpect(jsonPath("$.infractionReportId").exists())
+            .andExpect(jsonPath("$.situation",equalTo(CANCELED.name())));
 
         verify(cancelInfractionReportUseCase).execute(anyString(), anyInt(),anyString());
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestCancelInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = CancelInfractionDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code",equalTo(400)))
-                .andExpect(jsonPath("$.fieldErrors").exists());
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code",equalTo(400)))
+            .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionAnalyzed = infractionReport.toBuilder().situation(ANALYZED).build();
 
@@ -343,56 +304,59 @@ class InfractionReportControllerTest {
         var request = AnalyzeInfractionReportDTO.builder().ispb(1).result(InfractionAnalyzeResult.ACCEPTED).details("details").build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.endToEndId").exists())
-                .andExpect(jsonPath("$.infractionReportId").exists())
-                .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endToEndId").exists())
+            .andExpect(jsonPath("$.infractionReportId").exists())
+            .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
 
         verify(analyzeInfractionReportUseCase).execute(anyString(), anyInt(),any(),anyString());
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzeInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = AnalyzeInfractionReportDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
-                .header("requestIdentifier", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.asJsonString(request)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code",equalTo(400)))
-                .andExpect(jsonPath("$.fieldErrors").exists());
+                            .header("requestIdentifier", UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.asJsonString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code",equalTo(400)))
+            .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
-        when(filterInfractionReportUseCase.execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class))).thenReturn(List.of(findInfractionReport));
+        when(filterInfractionReportUseCase.execute(anyInt(),nullable(InfractionReportSituation.class),nullable(LocalDateTime.class),
+                                                   nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
 
         mockMvc.perform(get("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON)
-            .queryParam("ispb", "1"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .queryParam("ispb", "1"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());
 
-        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(Boolean.class),nullable(Boolean.class),nullable(
-            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class),nullable(Integer.class));
+        verify(filterInfractionReportUseCase).execute(anyInt(),nullable(
+            InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class));
 
     }
 
     @Test
+    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         mockMvc.perform(get("/v1/infraction-report")
-            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))

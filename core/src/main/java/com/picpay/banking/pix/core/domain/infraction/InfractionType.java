@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.infraction;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ public enum InfractionType {
 
     FRAUD (0),
     PLD_FT (1);
-
 
     private int value;
 

@@ -17,7 +17,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @AllArgsConstructor
 public class TimeLimiterExecutor {
 
-    private TimeLimiterRegistry timeLimiterRegistry;
+    private final TimeLimiterRegistry timeLimiterRegistry;
 
     public <T> T execute(final String timerLimiterName, final Supplier<T> supplier, final String requestIdentifier) {
         final var timeLimiter = timeLimiterRegistry.timeLimiter(timerLimiterName);
