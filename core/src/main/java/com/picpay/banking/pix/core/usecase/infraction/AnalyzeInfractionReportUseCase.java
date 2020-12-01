@@ -34,9 +34,7 @@ public class AnalyzeInfractionReportUseCase {
 
         if (infractionReportAnalysed != null) {
 
-            InfractionReport infractionReport = infractionReportAnalyzePort
-                .analyze(infractionReportAnalysed.getInfractionReportId(), infractionReportAnalysed.getIspbRequester(),
-                    infractionReportAnalysed.getAnalyze(), infractionReportAnalysed.getDateLastUpdate(), requestIdentifier);
+            InfractionReport infractionReport = infractionReportAnalyzePort.analyze(infractionReportAnalysed);
 
             log.info("Infraction_analysed"
                 , kv("requestIdentifier", requestIdentifier)

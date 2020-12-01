@@ -315,7 +315,6 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzeInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = AnalyzeInfractionReportDTO.builder().build();
 
@@ -350,7 +349,6 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         mockMvc.perform(get("/v1/infraction-report")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -360,5 +358,4 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
-
 }

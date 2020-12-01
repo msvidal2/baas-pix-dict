@@ -19,10 +19,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 
-/**
- * @author rafael.braga
- * @version 1.0 18/11/2020
- */
 @Component
 @RequiredArgsConstructor
 public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzePort {
@@ -30,18 +26,17 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
     private final InfractionReportRepository infractionReportRepository;
 
     @Override
-    public InfractionReport analyze(final String infractionReportId, final Integer ispb, final InfractionAnalyze analyze,
-        final LocalDateTime dateLastUpdate, final String requestIdentifier) {
+    public InfractionReport analyze(InfractionReport infractionReportAnalysed) {
 
-        final Optional<InfractionReportEntity> infractionOptional = infractionReportRepository.findById(infractionReportId.toUpperCase());
+        final Optional<InfractionReportEntity> infractionOptional = infractionReportRepository.findById(infractionReportAnalysed.getInfractionReportId().toUpperCase());
         var result =  infractionOptional.map(inf ->  {
-            inf.setAnalyzeResult(analyze.getAnalyzeResult());
-            inf.setAnalyzeDetails(analyze.getDetails());
-            inf.setLastUpdatedDate(dateLastUpdate);
+            inf.setAnalyzeResult(infractionReportAnalysed.getAnalyze().getAnalyzeResult());
+            inf.setAnalyzeDetails(infractionReportAnalysed.getAnalyze().getDetails());
+            inf.setLastUpdatedDate(infractionReportAnalysed.getDateLastUpdate());
             infractionReportRepository.saveAndFlush(inf);
             return inf.toDomain();
-        });
+        }).orElseThrow(() -> new InfractionReportException(InfractionReportError.REPORTED_TRANSACTION_NOT_FOUND));
 
-        return result.get();
+        return result;
     }
 }

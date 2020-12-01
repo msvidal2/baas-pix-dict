@@ -7,18 +7,11 @@
 package com.picpay.banking.pix.core.ports.infraction;
 
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
-import java.time.LocalDateTime;
 
-/**
- * @author rafael.braga
- * @version 1.0 18/11/2020
- */
 public interface InfractionReportAnalyzePort {
 
-   InfractionReport analyze(final String infractionReportId, final Integer ispb,
-       InfractionAnalyze analyze, final LocalDateTime dateLastUpdate, final String requestIdentifier);
+    InfractionReport analyze(InfractionReport infractionReportAnalysed);
 
 }
