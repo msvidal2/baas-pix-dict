@@ -1,4 +1,3 @@
-
 CREATE TABLE dict.pix_key
 (
     key character varying(100)  NOT NULL,
@@ -17,10 +16,11 @@ CREATE TABLE dict.pix_key
     ownership_date timestamp without time zone NOT NULL,
     update_date timestamp without time zone,
     open_claim_creation_date timestamp without time zone,
-    CONSTRAINT pix_key_primary_key PRIMARY KEY (key, type, tax_id)
+    request_id character varying(36) NOT NULL,
+    CONSTRAINT pix_key_primary_key PRIMARY KEY (key, type)
 );
 
 CREATE INDEX pix_key_key ON dict.pix_key (key);
-CREATE INDEX pix_key_key_type ON dict.pix_key (key, type);a
+CREATE INDEX pix_key_key_type ON dict.pix_key (key, type);
 CREATE INDEX pix_key_taxId ON dict.pix_key (tax_id);
 CREATE INDEX pix_key_account ON dict.pix_key (participant, branch, account_number, account_type);

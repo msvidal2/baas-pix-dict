@@ -5,7 +5,7 @@ CREATE TABLE dict.content_identifier
     key_type character varying(20) NOT NULL,
     creation_date timestamp without time zone NOT NULL,
     CONSTRAINT content_identifier_pkey PRIMARY KEY (cid),
-    FOREIGN KEY (key,key_type) REFERENCES pix_key(key,type)
+    FOREIGN KEY (key,key_type) REFERENCES dict.pix_key(key,type)
 );
 
 CREATE TABLE dict.content_identifier_file

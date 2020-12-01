@@ -97,6 +97,7 @@ public class PixKeyEntity {
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
+            .requestId(pixKey.getRequestId().toString())
             .build();
     }
 
@@ -119,6 +120,7 @@ public class PixKeyEntity {
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
+            .requestId(pixKey.getRequestId().toString())
             .build();
     }
 
