@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
-import static com.picpay.banking.pix.core.domain.KeyType.CPF;
-import static com.picpay.banking.pix.core.domain.KeyType.EMAIL;
+import static com.picpay.banking.pix.core.domain.KeyType.*;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator.validate;
 import static java.util.UUID.randomUUID;
@@ -23,6 +22,23 @@ class CreatePixKeyValidatorTest {
         var pixKey = PixKey.builder()
                 .type(EMAIL)
                 .key("joao@picpay.com")
+                .ispb(24534534)
+                .branchNumber("1")
+                .accountType(CHECKING)
+                .accountNumber("010023456")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(INDIVIDUAL_PERSON)
+                .taxId("24897099099")
+                .name("Joao da Silva")
+                .build();
+
+        assertDoesNotThrow(() -> validate(randomUUID().toString(), pixKey, CLIENT_REQUEST));
+    }
+
+    @Test
+    void when_validateWithSuccessRandom_expect_noExceptions() {
+        var pixKey = PixKey.builder()
+                .type(RANDOM)
                 .ispb(24534534)
                 .branchNumber("1")
                 .accountType(CHECKING)
