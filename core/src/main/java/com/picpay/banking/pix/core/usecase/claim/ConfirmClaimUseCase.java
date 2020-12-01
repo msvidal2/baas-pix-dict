@@ -39,6 +39,7 @@ public class ConfirmClaimUseCase {
 
         validateClaimSituation(claim);
         validateClaimReason(claim);
+        validateResolutionPeriod(claim);
 
         Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
 
@@ -66,6 +67,14 @@ public class ConfirmClaimUseCase {
         if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
                 && !ownershipConfirmReasons().contains(claim.getConfirmationReason())) {
             throw new ClaimException(ClaimError.INVALID_CLAIM_REASON);
+        }
+    }
+
+    private void validateResolutionPeriod(Claim claim) {
+        if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())) {
+            if (ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())) {
+
+            }
         }
     }
 

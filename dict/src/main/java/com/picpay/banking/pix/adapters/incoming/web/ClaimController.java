@@ -70,8 +70,9 @@ public class ClaimController {
                 kv("dto", dto));
 
         var claim = Claim.builder()
-            .claimId(claimId)
-            .ispb(dto.getIspb()).build();
+                .claimId(claimId)
+                .ispb(dto.getIspb())
+                .build();
 
         return confirmClaimUseCase.execute(claim,
                 dto.getReason(),
