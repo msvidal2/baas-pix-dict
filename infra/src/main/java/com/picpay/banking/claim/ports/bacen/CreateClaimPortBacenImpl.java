@@ -41,7 +41,6 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        //TODO: tratar essa exception
         throw BacenExceptionBuilder.from(e).build();
     }
 

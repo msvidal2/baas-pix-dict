@@ -1,21 +1,17 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 
 @Builder
-@Setter
-@Getter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateInfractionReportRequestWebDTO {
@@ -35,13 +31,14 @@ public class CreateInfractionReportRequestWebDTO {
     @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction")
     private String details;
 
-    public InfractionReport toInfractionReport() {
+    public static InfractionReport from(CreateInfractionReportRequestWebDTO request) {
         return InfractionReport.builder()
-            .ispbRequester(Integer.parseInt(ispbRequester))
-            .endToEndId(endToEndId)
-            .type(infractionType)
-            .details(details)
+            .ispbRequester(Integer.parseInt(request.getIspbRequester()))
+            .endToEndId(request.getEndToEndId())
+            .infractionType(request.getInfractionType())
+            .details(request.getDetails())
             .build();
     }
+
 
 }

@@ -5,8 +5,6 @@ import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
-import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +39,8 @@ public class CompleteClaimUseCaseTest {
     @BeforeEach
     public void setup() {
         var validator = new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
-                new ClaimIspbItemValidator()
+     //           new ClaimIdValidator(),
+     //           new ClaimIspbItemValidator()
         ));
 
         useCase = new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, validator);
@@ -80,9 +78,9 @@ public class CompleteClaimUseCaseTest {
     void testCompletemNullClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId(null)
-                            .ispb(23542432)
-                            .build(),
+                                .claimId(null)
+                                .ispb(23542432)
+                                .build(),
                         randomUUID().toString()));
     }
 
@@ -90,9 +88,9 @@ public class CompleteClaimUseCaseTest {
     void testCompleteEmptyClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId("")
-                            .ispb(23542432)
-                            .build(),
+                                .claimId("")
+                                .ispb(23542432)
+                                .build(),
                         randomUUID().toString()));
     }
 
@@ -100,9 +98,9 @@ public class CompleteClaimUseCaseTest {
     void testCompleteInvalidClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId("adncyt3874yt837y")
-                            .ispb(23542432)
-                            .build(),
+                                .claimId("adncyt3874yt837y")
+                                .ispb(23542432)
+                                .build(),
                         randomUUID().toString()));
     }
 
@@ -110,9 +108,9 @@ public class CompleteClaimUseCaseTest {
     void testCompleteNullRequestIdentifier() {
         assertThrows(NullPointerException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId(randomUUID().toString())
-                            .ispb(23423)
-                            .build(),
+                                .claimId(randomUUID().toString())
+                                .ispb(23423)
+                                .build(),
                         null));
     }
 
@@ -120,9 +118,9 @@ public class CompleteClaimUseCaseTest {
     void testCompleteInvalidIspb() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId(randomUUID().toString())
-                            .ispb(0)
-                            .build(),
+                                .claimId(randomUUID().toString())
+                                .ispb(0)
+                                .build(),
                         randomUUID().toString()));
     }
 
@@ -130,9 +128,9 @@ public class CompleteClaimUseCaseTest {
     void testCompleteNegativeIspb() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
-                            .claimId(randomUUID().toString())
-                            .ispb(-42432)
-                            .build(),
+                                .claimId(randomUUID().toString())
+                                .ispb(-42432)
+                                .build(),
                         randomUUID().toString()));
     }
 
