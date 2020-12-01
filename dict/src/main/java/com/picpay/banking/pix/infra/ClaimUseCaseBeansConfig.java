@@ -5,10 +5,10 @@ import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
@@ -28,9 +28,8 @@ public class ClaimUseCaseBeansConfig {
     public CreateClaimUseCase createClaimUseCase(CreateClaimBacenPort createClaimPort,
                                                  CreateClaimPort saveClaimPort,
                                                  FindOpenClaimByKeyPort findClaimByKeyPort,
-                                                 FindPixKeyPort findPixKeyPort,
-                                                 @Qualifier("createClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort, dictItemValidator);
+                                                 FindPixKeyPort findPixKeyPort) {
+        return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort);
     }
 
     @Bean
@@ -41,9 +40,8 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ListClaimUseCase listClaimUseCase(ListPendingClaimPort listPendingClaimPort,
-                                             ListClaimPort listClaimPort,
-                                             @Qualifier("listClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ListClaimUseCase(listPendingClaimPort,listClaimPort,dictItemValidator);
+                                             ListClaimPort listClaimPort) {
+        return new ListClaimUseCase(listPendingClaimPort,listClaimPort);
     }
 
     @Bean

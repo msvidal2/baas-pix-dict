@@ -1,4 +1,4 @@
-CREATE TABLE public.claim
+CREATE TABLE dict.claim
 (
     id character varying(100) NOT NULL,
     type character varying(20) NOT NULL,

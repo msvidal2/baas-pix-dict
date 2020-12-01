@@ -7,14 +7,18 @@
 package com.picpay.banking.pixkey.clients;
 
 import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
+import com.picpay.banking.pixkey.dto.request.RemoveEntryRequest;
+import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
 import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
+import com.picpay.banking.pixkey.dto.response.RemoveEntryResponse;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
+import com.picpay.banking.pixkey.dto.response.UpdateEntryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "PixKey",
-        url = "${pix.bacen.dict.entries.url}",
+        url = "${pix.bacen.dict.url}",
         path = "/v1")
 public interface BacenKeyClient {
 
@@ -30,7 +34,23 @@ public interface BacenKeyClient {
             @RequestHeader("PI-RequestingParticipant") String requestingParticipant,
             @RequestHeader("PI-PayerId") String payerId,
             @RequestHeader("PI-EndToEndId") String endToEndId,
-            @PathVariable("key") String picKey
+            @PathVariable("key") String pixKey
+    );
+
+    @PutMapping(value = "/entries/{key}",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
+    UpdateEntryResponse updateAccountPixKey(
+            @RequestBody UpdateEntryRequest updateEntryRequest,
+            @PathVariable("key") String pixKey
+    );
+
+    @PostMapping(value = "/entries/{key}/delete",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
+    RemoveEntryResponse removeAccountPixKey(
+            @RequestBody RemoveEntryRequest removeEntryRequest,
+            @PathVariable("key") String pixKey
     );
 
 }

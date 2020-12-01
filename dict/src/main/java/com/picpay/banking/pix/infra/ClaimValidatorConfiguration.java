@@ -20,49 +20,20 @@ import java.util.List;
 @Configuration
 public class ClaimValidatorConfiguration {
 
-    @Bean
-    public DictItemValidator createClaimItemValidator() {
-        return new ClaimValidatorComposite(
-                List.of(
-                        new ClaimAccountNumberItemValidator(),
-                        new ClaimAccountOpeningDateItemValidator(),
-                        new ClaimBranchNumberItemValidator(),
-                        new ClaimCpfCnpjItemValidator(),
-                        new ClaimFantasyNameItemValidator(),
-                        new ClaimIspbItemValidator(),
-                        new ClaimNameItemValidator()
-                ));
-    }
 
     @Bean
     public DictItemValidator<Claim> claimCancelItemValidator() {
         return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
-                new ClaimIspbItemValidator()
+                //new ClaimIdItemValidator(),
+                //new ClaimIspbItemValidator()
         ));
     }
 
     @Bean
     public DictItemValidator<Claim> completeClaimItemValidator() {
         return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator(),
-                new ClaimIspbItemValidator()
-        ));
-    }
-
-    @Bean
-    public DictItemValidator listClaimItemValidator() {
-        return new ClaimValidatorComposite(
-            List.of(
-                new ClaimIspbItemValidator()
-                   )
-        );
-    }
-
-    @Bean
-    public DictItemValidator<Claim> findClaimItemValidator() {
-        return new ClaimValidatorComposite(List.of(
-                new ClaimIdItemValidator()
+                //new ClaimIdItemValidator(),
+                //new ClaimIspbItemValidator()
         ));
     }
 

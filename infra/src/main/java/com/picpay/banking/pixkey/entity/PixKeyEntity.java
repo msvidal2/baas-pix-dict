@@ -91,6 +91,28 @@ public class PixKeyEntity {
                 .build();
     }
 
+    public static PixKeyEntity from(final PixKey pixKey, final UpdateReason reason) {
+        return PixKeyEntity.builder()
+                .id(PixKeyIdEntity.builder()
+                        .key(pixKey.getKey())
+                        .type(pixKey.getType())
+                        .taxId(pixKey.getTaxId())
+                        .build())
+                .participant(pixKey.getIspb())
+                .branch(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
+                .accountType(pixKey.getAccountType())
+                .openingDate(pixKey.getAccountOpeningDate())
+                .personType(pixKey.getPersonType())
+                .name(pixKey.getName())
+                .reason(Reason.resolve(reason.getValue()))
+                .correlationId(pixKey.getCorrelationId())
+                .creationDate(pixKey.getCreatedAt())
+                .ownershipDate(pixKey.getStartPossessionAt())
+                .updateDate(LocalDateTime.now())
+                .build();
+    }
+
     public PixKey toPixKey() {
         return PixKey.builder()
                 .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
@@ -106,8 +128,6 @@ public class PixKeyEntity {
                 .createdAt(creationDate)
                 .startPossessionAt(ownershipDate)
                 .correlationId(correlationId)
-                //TODO incluir claim?
-//                .claim()
                 .build();
     }
 

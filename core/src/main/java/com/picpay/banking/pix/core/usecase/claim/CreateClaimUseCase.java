@@ -8,7 +8,7 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,20 +20,17 @@ public class CreateClaimUseCase {
 
     private final CreateClaimBacenPort createClaimPort;
     private final CreateClaimPort saveClaimPort;
-    private final FindOpenClaimByKeyPort findClaimByKeyPort;
+    private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
     private final FindPixKeyPort findPixKeyPort;
-
-    private final DictItemValidator validator;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
         if (requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }
 
-        validator.validate(claim);
+        CreateClaimValidator.validate(requestIdentifier, claim);
 
         validateClaimAlreadyExistsForKey(claim.getKey());
-
         validateClaimTypeInconsistent(claim);
 
         Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
@@ -46,7 +43,7 @@ public class CreateClaimUseCase {
     }
 
     private void validateClaimAlreadyExistsForKey(String key) {
-        findClaimByKeyPort.find(key).ifPresent(claim -> {
+        findOpenClaimByKeyPort.find(key).ifPresent(claim -> {
             throw new ClaimException(ClaimError.OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY);
         });
     }

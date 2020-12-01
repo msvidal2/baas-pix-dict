@@ -1,12 +1,10 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.*;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,8 +23,9 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public RemovePixKeyUseCase removePixKeyUseCase(RemovePixKeyPort removePixKeyPort,
+                                                   RemovePixKeyBacenPort removePixKeyBacenPort,
                                                    @Qualifier("removePixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new RemovePixKeyUseCase(removePixKeyPort, dictItemValidator);
+        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort, dictItemValidator);
     }
 
     @Bean
@@ -42,7 +41,7 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(UpdateAccountPixKeyPort updateAccountPixKeyPort,
-                                                                 @Qualifier("updatePixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, dictItemValidator);
+                                                                 UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort) {
+        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort);
     }
 }
