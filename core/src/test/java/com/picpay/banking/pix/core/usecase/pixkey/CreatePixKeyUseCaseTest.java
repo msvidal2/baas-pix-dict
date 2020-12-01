@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
@@ -62,7 +59,7 @@ class CreatePixKeyUseCaseTest {
                 .nameIspb("Empresa Picpay")
                 .branchNumber("1")
                 .accountType(AccountType.SALARY)
-                .accountNumber("1")
+                .accountNumber("1234")
                 .accountOpeningDate(LocalDateTime.now())
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .taxId("57950197048")
@@ -89,6 +86,44 @@ class CreatePixKeyUseCaseTest {
             assertEquals(pixKey.getKey(), response.getKey());
             assertEquals(pixKeyCreated.getCreatedAt(), response.getCreatedAt());
             assertEquals(pixKeyCreated.getStartPossessionAt(), response.getStartPossessionAt());
+        });
+
+        verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
+        verify(createPixKeyPort).createPixKey(any(), any());
+    }
+
+    @Test
+    void when_executeWithSuccessRandomKey_expect_pixKeyWithCreatedAt() {
+        var pixKeyCreatedMock = PixKey.builder()
+                .key(randomUUID().toString())
+                .createdAt(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now())
+                .build();
+
+        when(createPixKeyBacenPortBacen.create(anyString(), any(), any()))
+                .thenReturn(pixKeyCreatedMock);
+
+        var randomPixKey = PixKey.builder()
+                .type(KeyType.RANDOM)
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1234")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
+                .endToEndId("endToEndId").build();
+
+        assertDoesNotThrow(() -> {
+            var response = useCase.execute(randomUUID().toString(), randomPixKey, CLIENT_REQUEST);
+
+            assertNotNull(response);
+            assertEquals(pixKeyCreatedMock.getKey(), response.getKey());
+            assertEquals(pixKeyCreatedMock.getCreatedAt(), response.getCreatedAt());
+            assertEquals(pixKeyCreatedMock.getStartPossessionAt(), response.getStartPossessionAt());
         });
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());

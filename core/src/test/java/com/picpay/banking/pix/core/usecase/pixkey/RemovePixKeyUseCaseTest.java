@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
-import com.picpay.banking.pix.core.validators.pixkey.KeyItemValidator;
+import com.picpay.banking.pix.core.validators.KeyItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.KeyTypeItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.PixKeyValidatorComposite;
 import org.junit.jupiter.api.Test;
@@ -35,8 +35,8 @@ public class RemovePixKeyUseCaseTest {
 
     private DictItemValidator dictItemValidator = new PixKeyValidatorComposite(
             List.of(
-                    new KeyTypeItemValidator(),
-                    new KeyItemValidator()
+//                    new KeyTypeItemValidator(),
+//                    new KeyItemValidator()
             ));
 
     @InjectMocks

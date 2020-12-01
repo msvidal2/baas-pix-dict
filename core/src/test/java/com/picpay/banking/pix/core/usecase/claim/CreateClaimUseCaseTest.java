@@ -6,15 +6,14 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.claim.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.UUID.randomUUID;
@@ -29,6 +28,7 @@ public class CreateClaimUseCaseTest {
 
     private static final LocalDateTime NOW = LocalDateTime.now();
 
+    @InjectMocks
     private CreateClaimUseCase useCase;
 
     @Mock
@@ -49,21 +49,6 @@ public class CreateClaimUseCaseTest {
 
     @BeforeEach
     public void setup() {
-        var claimValidator = new ClaimValidatorComposite(List.of(
-                new ClaimAccountNumberItemValidator(),
-                new ClaimAccountOpeningDateItemValidator(),
-                new ClaimBranchNumberItemValidator(),
-                new ClaimCpfCnpjItemValidator(),
-                new ClaimFantasyNameItemValidator(),
-                new ClaimIspbItemValidator(),
-                new ClaimNameItemValidator()));
-
-        useCase = new CreateClaimUseCase(
-                createClaimPort,
-                saveClaimPort,
-                findOpenClaimByKeyPort,
-                findPixKeyPort,
-                claimValidator);
 
         claimRequest = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
@@ -75,7 +60,7 @@ public class CreateClaimUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(NOW)
                 .personType(PersonType.INDIVIDUAL_PERSON)
-                .taxId("11122233300")
+                .cpfCnpj("11122233300")
                 .name("João Silva")
                 .build();
 
@@ -89,7 +74,7 @@ public class CreateClaimUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(NOW)
                 .personType(PersonType.INDIVIDUAL_PERSON)
-                .taxId("11122233300")
+                .cpfCnpj("11122233300")
                 .name("João Silva")
                 .donorIspb(87654321)
                 .claimId("123e4567-e89b-12d3-a456-426655440000")
@@ -135,7 +120,7 @@ public class CreateClaimUseCaseTest {
         when(findPixKeyPort.findPixKey(anyString())).thenReturn(
                 Optional.of(
                         PixKey.builder()
-                                .taxId(claimRequest.getTaxId())
+                                .taxId(claimRequest.getCpfCnpj())
                                 .build()));
 
         assertThrows(ClaimException.class, () -> useCase.execute(claimRequest, randomUUID().toString()));

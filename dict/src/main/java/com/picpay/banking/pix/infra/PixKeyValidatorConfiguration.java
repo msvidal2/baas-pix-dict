@@ -14,7 +14,7 @@ public class PixKeyValidatorConfiguration {
     public DictItemValidator findPixKeyItemValidator() {
         return new PixKeyValidatorComposite(
                 List.of(
-                        new KeyItemValidator()
+//                        new KeyItemValidator()
                 ));
     }
 

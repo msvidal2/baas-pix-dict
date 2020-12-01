@@ -22,7 +22,7 @@ public class RemovePixKeyUseCase {
     public void execute(@NonNull final String requestIdentifier,
                         @NonNull final PixKey pixKey,
                         @NonNull final RemoveReason reason) {
-        dictItemValidator.validate(pixKey);
+        dictItemValidator.validate(pixKey); // TODO: mudar para seguir o padrão de validação do create key
 
         String key = pixKey.getKey();
 

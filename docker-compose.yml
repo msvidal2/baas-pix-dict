@@ -61,6 +61,16 @@ services:
         networks:
             - baas_pix_net
 
+    redis:
+        container_name: redis
+        image: redis
+        restart: always
+        command: [ "redis-server", "--appendonly", "yes" ]
+        ports:
+            - "6379:6379"
+        networks:
+            - baas_pix_net
+
 networks:
     baas_pix_net:
 

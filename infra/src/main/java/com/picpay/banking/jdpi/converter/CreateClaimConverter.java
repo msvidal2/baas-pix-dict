@@ -12,7 +12,7 @@ public class CreateClaimConverter {
     public CreateClaimRequestDTO convert(final Claim claim) {
         return CreateClaimRequestDTO.builder()
                 .chave(claim.getKey())
-                .cpfCnpj(Long.parseLong(claim.getTaxId()))
+                .cpfCnpj(Long.parseLong(claim.getCpfCnpj()))
                 .dtHrAberturaConta(claim.getAccountOpeningDate())
                 .ispb(claim.getIspb())
                 .nome(claim.getName())
@@ -32,7 +32,7 @@ public class CreateClaimConverter {
                 .accountType(               from.getAccountType())
                 .branchNumber(              from.getBranchNumber())
                 .claimType(                 from.getClaimType())
-                .taxId(                   from.getTaxId())
+                .cpfCnpj(                   from.getCpfCnpj())
                 .ispb(                      from.getIspb())
                 .key(                       from.getKey())
                 .keyType(                   from.getKeyType())

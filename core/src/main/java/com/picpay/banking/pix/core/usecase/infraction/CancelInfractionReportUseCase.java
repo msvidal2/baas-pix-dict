@@ -1,8 +1,9 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.ports.infraction.CancelInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +14,16 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class CancelInfractionReportUseCase {
 
-    private final InfractionReportPort infractionReportPort;
+    private final CancelInfractionReportPort cancelInfractionReportPort;
+
+    private final InfractionReportCancelPort infractionReportCancelPort;
 
     public InfractionReport execute(@NonNull final String infractionReportId
             , @NonNull final Integer ispb, @NonNull final String requestIdentifier) {
 
-        InfractionReport infractionReportCanceled = infractionReportPort
-                .cancel(infractionReportId,ispb, requestIdentifier);
+        var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
+
+        infractionReportCancelPort.cancel(infractionReportId);
 
         if (infractionReportCanceled != null)
             log.info("Infraction_canceled"
@@ -28,6 +32,7 @@ public class CancelInfractionReportUseCase {
                     , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
 
         return infractionReportCanceled;
+
     }
 
 }

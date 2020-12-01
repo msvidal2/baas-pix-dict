@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
+import com.picpay.banking.claim.dto.ClaimReason;
 import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pixkey.dto.request.Account;
@@ -60,6 +61,15 @@ public class ClaimResponse {
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastModified;
 
+    @XmlElement(name = "ConfirmReason")
+    private ClaimReason confirmReason;
+
+    @XmlElement(name = "CancelReason")
+    private ClaimReason cancelReason;
+
+    @XmlElement(name = "CancelledBy")
+    private CancelledBy cancelledBy;
+
     public static ClaimResponse from(Claim claim) {
         return ClaimResponse.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
@@ -71,6 +81,10 @@ public class ClaimResponse {
     }
 
     public Claim toClaim() {
+        return toClaim(null);
+    }
+
+    public Claim toClaim(final String correlationId) {
         return Claim.builder()
                 .claimId(id)
                 .claimType(type.getClaimType())
@@ -81,7 +95,7 @@ public class ClaimResponse {
                 .accountNumber(claimerAccount.getAccountNumber())
                 .accountType(claimerAccount.getAccountType().getType())
                 .accountOpeningDate(claimerAccount.getOpeningDate())
-                .taxId(claimer.getTaxIdNumber())
+                .cpfCnpj(claimer.getTaxIdNumber())
                 .name(claimer.getName())
                 .donorIspb(Integer.parseInt(donorParticipant))
                 .claimSituation(status.getClaimSituation())
@@ -89,6 +103,10 @@ public class ClaimResponse {
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
                 .personType(claimer.getType().getPersonType())
+                .cancelReason(cancelReason != null ? cancelReason.getCancelReason() : null)
+                .confirmationReason(confirmReason != null ? confirmReason.getConfirmationReason() : null)
+                .isClaim(cancelledBy != null ? cancelledBy.isValue() : null)
+                .correlationId(correlationId)
                 .build();
     }
 
