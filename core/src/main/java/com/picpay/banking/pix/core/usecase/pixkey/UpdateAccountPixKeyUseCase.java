@@ -34,9 +34,9 @@ public class UpdateAccountPixKeyUseCase {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
-        var pixkeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+        var pixKeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
 
-        var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixkeyResponse, reason);
+        var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixKeyResponse, reason);
 
         if (pixKeyUpdated != null)
             log.info("PixKey_updated"

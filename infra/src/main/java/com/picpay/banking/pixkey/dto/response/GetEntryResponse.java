@@ -59,7 +59,7 @@ public class GetEntryResponse {
                 .name(entry.getOwner().getName())
                 .createdAt(entry.getCreationDate())
                 .startPossessionAt(entry.getKeyOwnershipDate())
-                .endToEndId(endToEndId)
+//                .endToEndId(endToEndId)
                 .correlationId(correlationId)
                 //TODO incluir claim?
 //                .claim()
