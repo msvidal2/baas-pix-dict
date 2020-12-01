@@ -22,9 +22,8 @@ public class ClaimUseCaseBeansConfig {
     public CreateClaimUseCase createClaimUseCase(CreateClaimBacenPort createClaimPort,
                                                  CreateClaimPort saveClaimPort,
                                                  FindOpenClaimByKeyPort findClaimByKeyPort,
-                                                 FindPixKeyPort findPixKeyPort,
-                                                 @Qualifier("createClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort, dictItemValidator);
+                                                 FindPixKeyPort findPixKeyPort) {
+        return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort);
     }
 
     @Bean
@@ -34,9 +33,8 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ListClaimUseCase listClaimUseCase(ListPendingClaimPort listPendingClaimPort,
-                                             ListClaimPort listClaimPort,
-                                             @Qualifier("listClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ListClaimUseCase(listPendingClaimPort,listClaimPort,dictItemValidator);
+                                             ListClaimPort listClaimPort) {
+        return new ListClaimUseCase(listPendingClaimPort,listClaimPort);
     }
 
     @Bean

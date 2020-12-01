@@ -20,19 +20,6 @@ import java.util.List;
 @Configuration
 public class ClaimValidatorConfiguration {
 
-    @Bean
-    public DictItemValidator createClaimItemValidator() {
-        return new ClaimValidatorComposite(
-                List.of(
-                        new ClaimAccountNumberItemValidator(),
-                        new ClaimAccountOpeningDateItemValidator(),
-                        new ClaimBranchNumberItemValidator(),
-                        new ClaimCpfCnpjItemValidator(),
-                        new ClaimFantasyNameItemValidator(),
-                        new ClaimIspbItemValidator(),
-                        new ClaimNameItemValidator()
-                ));
-    }
 
     @Bean
     public DictItemValidator<Claim> completeClaimItemValidator() {

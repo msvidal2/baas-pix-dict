@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class BacenExceptionBuilder {
 
-    private Exception exception;
+    private final Exception exception;
 
     private FieldResolver fieldResolver;
 

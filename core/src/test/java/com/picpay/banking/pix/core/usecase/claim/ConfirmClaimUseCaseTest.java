@@ -21,9 +21,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ConfirmClaimUseCaseTest {
+class ClaimConfirmationUseCaseTest {
 
-    private ConfirmClaimUseCase useCase;
+    private ClaimConfirmationUseCase useCase;
 
     @Mock
     private ConfirmClaimPort claimConfirmationPort;
