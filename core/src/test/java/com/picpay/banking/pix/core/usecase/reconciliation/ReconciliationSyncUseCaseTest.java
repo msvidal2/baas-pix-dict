@@ -1,10 +1,14 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.Vsync;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenReconciliationPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseReconciliationPort;
-import com.picpay.banking.pix.core.ports.reconciliation.FailureMessagePort;
+import com.picpay.banking.pix.core.domain.SyncVerifier;
+import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.ReconciliationBacenPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.FailureReconciliationMessagePort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,71 +20,83 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReconciliationSyncUseCaseTest {
+class ReconciliationSyncUseCaseTest {
 
     @Mock
-    private DatabaseReconciliationPort databaseReconciliationPort;
+    private SyncVerifierPort syncVerifierPort;
     @Mock
-    private BacenReconciliationPort bacenReconciliationPort;
+    private SyncVerifierHistoricPort syncVerifierHistoricPort;
     @Mock
-    private FailureMessagePort failureMessagePort;
+    private ContentIdentifierEventPort contentIdentifierEventPort;
+    @Mock
+    private ReconciliationBacenPort reconciliationBacenPort;
+    @Mock
+    private FailureReconciliationMessagePort failureReconciliationMessagePort;
 
-    @Test
-    @DisplayName("Quando OK não deve executar nenhuma ação")
-    public void when_ok_no_action_happens() {
-        when(databaseReconciliationPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.ofNullable(null));
+    private ReconciliationSyncUseCase reconciliationSyncUseCase;
 
-        when(databaseReconciliationPort.listAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(new ArrayList<>());
-
-        when(bacenReconciliationPort.syncVerification(any()))
-            .thenReturn(Vsync.VsyncResult.OK);
-
-        ReconciliationSyncUseCase reconciliationSyncUseCase = new ReconciliationSyncUseCase(
-            databaseReconciliationPort,
-            bacenReconciliationPort,
-            failureMessagePort);
-
-        reconciliationSyncUseCase.execute();
-
-        verify(failureMessagePort, times(0)).sendMessageForSincronization(any());
+    @BeforeEach
+    private void beforeEach() {
+        reconciliationSyncUseCase = new ReconciliationSyncUseCase(
+            syncVerifierPort,
+            syncVerifierHistoricPort,
+            contentIdentifierEventPort,
+            reconciliationBacenPort,
+            failureReconciliationMessagePort);
     }
 
     @Test
     @DisplayName("Quando OK não deve executar nenhuma ação")
-    public void run() {
-        when(databaseReconciliationPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.ofNullable(null));
+    void when_ok_no_action_happens() {
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.empty());
 
-        when(databaseReconciliationPort.getLastSuccessfulVsync(KeyType.CPF))
-            .thenReturn(Optional.ofNullable(Vsync.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.empty());
 
-        when(databaseReconciliationPort.listAfterLastSuccessfulVsync(any(), any()))
+        when(contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(any(), any()))
             .thenReturn(new ArrayList<>());
 
-        when(bacenReconciliationPort.syncVerification(any()))
-            .thenReturn(Vsync.VsyncResult.OK);
-
-        ReconciliationSyncUseCase reconciliationSyncUseCase = new ReconciliationSyncUseCase(
-            databaseReconciliationPort,
-            bacenReconciliationPort,
-            failureMessagePort);
+        when(reconciliationBacenPort.syncVerification(any()))
+            .thenReturn(SyncVerifierResult.OK);
 
         reconciliationSyncUseCase.execute();
 
-        verify(failureMessagePort, times(0)).sendMessageForSincronization(any());
+        verify(syncVerifierPort, times(5)).update(any());
+        verify(syncVerifierHistoricPort, times(5)).save(any());
+        verify(failureReconciliationMessagePort, times(0)).send(any());
+    }
 
-        //verify(reconciliationSyncUseCase).execute(any(), argThat(argument -> pixAdd.getKey().equals(argument.getKey())), any());
+    @Test
+    @DisplayName("Quando NOK deve enviar mensagem de falha para reconciliação")
+    void when_NOK_send_failure_reconciliation() {
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.empty());
 
-        //ArgumentCaptor<PixKey> vsyncArgumentCaptor = ArgumentCaptor.forClass(PixKey.class);
-        //verify(failureReconciliationSyncUseCase).execute(vsyncArgumentCaptor.capture());
-        //assertThat(vsyncArgumentCaptor.getValue().getKey()).isEqualTo(pixAdd.getKey());
+        when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
+            .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
+
+        when(contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(any(), any()))
+            .thenReturn(new ArrayList<>());
+
+        when(reconciliationBacenPort.syncVerification(any()))
+            .thenReturn(SyncVerifierResult.OK);
+
+        when(reconciliationBacenPort.syncVerification("1"))
+            .thenReturn(SyncVerifierResult.NOK);
+
+        reconciliationSyncUseCase.execute();
+
+        verify(syncVerifierPort, times(5)).update(any());
+        verify(syncVerifierHistoricPort, times(5)).save(any());
+        verify(failureReconciliationMessagePort, times(1))
+            .send(argThat(argument -> argument.getKeyType().equals(KeyType.CPF)));
     }
 
 }

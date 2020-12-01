@@ -1,11 +1,13 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifier;
+import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.Vsync;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenReconciliationPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseReconciliationPort;
-import com.picpay.banking.pix.core.ports.reconciliation.FailureMessagePort;
+import com.picpay.banking.pix.core.domain.SyncVerifier;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.ReconciliationBacenPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.FailureReconciliationMessagePort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,44 +20,49 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @AllArgsConstructor
 public class ReconciliationSyncUseCase {
 
-    private final DatabaseReconciliationPort databaseReconciliationPort;
-    private final BacenReconciliationPort bacenReconciliationPort;
-    private final FailureMessagePort failureMessagePort;
+    private final SyncVerifierPort syncVerifierPort;
+    private final SyncVerifierHistoricPort syncVerifierHistoricPort;
+    private final ContentIdentifierEventPort contentIdentifierEventPort;
+    private final ReconciliationBacenPort reconciliationBacenPort;
+    private final FailureReconciliationMessagePort failureReconciliationMessagePort;
 
     public void execute() {
         var startCurrentTimeMillis = System.currentTimeMillis();
-        log.info("ReconciliationSync_started", kv("startCurrentTimeMillis", startCurrentTimeMillis));
+        log.info("ReconciliationSync_started {}", kv("startCurrentTimeMillis", startCurrentTimeMillis));
 
         List.of(KeyType.values()).forEach(keyType -> {
-            var vsync = databaseReconciliationPort.getLastSuccessfulVsync(keyType)
-                .orElseGet(() -> Vsync.builder()
+            var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
+                .orElseGet(() -> SyncVerifier.builder()
                     .keyType(keyType)
                     .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
                     .build());
 
-            List<ContentIdentifier> contentIdentifiers = databaseReconciliationPort.listAfterLastSuccessfulVsync(vsync.getKeyType(),
-                vsync.getSynchronizedAt());
+            List<ContentIdentifierEvent> contentIdentifiers = contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(syncVerifier.getKeyType(),
+                syncVerifier.getSynchronizedAt());
 
-            vsync.calculateVsync(contentIdentifiers);
+            var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
 
-            var result = bacenReconciliationPort.syncVerification(vsync.getVsync());
+            var vsyncResult = reconciliationBacenPort.syncVerification(vsyncCurrent);
 
-            vsync.syncVerificationResult(result);
+            var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, vsyncResult);
 
-            databaseReconciliationPort.updateVerificationResult(vsync);
+            syncVerifierPort.update(syncVerifier);
+            syncVerifierHistoricPort.save(vsyncHistoric);
 
-            if (vsync.isNOk()) {
-                failureMessagePort.sendMessageForSincronization(vsync);
+            if (syncVerifier.isNOk()) {
+                failureReconciliationMessagePort.send(vsyncHistoric);
             }
 
-            log.info("ReconciliationSync_keytype_result",
+            log.info("ReconciliationSync_keyType_result {} {} {} {}",
                 kv("startCurrentTimeMillis", startCurrentTimeMillis),
-                kv("keyType", vsync.getKeyType()),
-                kv("synchronizedAt", vsync.getSynchronizedAt()),
-                kv("vsyncResult", vsync.getVsyncResult()));
+                kv("keyType", vsyncHistoric.getKeyType()),
+                kv("synchronizedAt", vsyncHistoric.getSynchronizedStart()),
+                kv("vsyncResult", vsyncHistoric.getSyncVerifierResult()));
         });
 
-        log.info("ReconciliationSync_done", kv("startCurrentTimeMillis", startCurrentTimeMillis));
+        log.info("ReconciliationSync_done {} {}",
+            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
 }
