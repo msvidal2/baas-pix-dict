@@ -69,7 +69,7 @@ class ClaimControllerTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .taxId("12345678902")
+                .cpfCnpj("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
     }
@@ -100,7 +100,8 @@ class ClaimControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo(404)))
                 .andExpect(jsonPath("$.error", equalTo("Not Found")))
-                .andExpect(jsonPath("$.message", equalTo("Resource not found")));
+                .andExpect(jsonPath("$.apiErrorCode", equalTo("NotFound")))
+                .andExpect(jsonPath("$.message", equalTo("Entidade não encontrada.")));
     }
 
     @Test

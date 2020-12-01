@@ -15,7 +15,7 @@ public class CreateClaimWebConverter implements DataConverter<CreateClaimRequest
             .accountType(from.getAccountType())
             .branchNumber(from.getBranchNumber())
             .claimType(from.getClaimType())
-            .taxId(from.getCpfCnpj())
+            .cpfCnpj(from.getCpfCnpj())
             .ispb(from.getIspb())
             .key(from.getKey())
             .keyType(from.getKeyType())
