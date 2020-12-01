@@ -3,7 +3,7 @@ package com.picpay.banking.reconciliation.dto.response;
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile;
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class CidSetFile {
     private Integer participant;
 
     @XmlElement(name = "KeyType")
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
     @XmlElement(name = "RequestTime")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)

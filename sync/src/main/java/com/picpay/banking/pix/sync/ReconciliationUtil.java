@@ -20,9 +20,9 @@ public class ReconciliationUtil {
 
     public static String calculateCid(String keyType, String key, String ownerTaxIdNumber,
         String ownerName, String ownerTradeName, String participant, String branch, String accountNumber, String accountType,
-        final String teste) {
+        final String requestId) {
 
-        byte[] requestIdBytes = uuidAsBytes(UUID.fromString(teste));
+        byte[] requestIdBytes = uuidAsBytes(UUID.fromString(requestId));
 
         return Hashing.hmacSha256(requestIdBytes).newHasher()
             .putString(keyType, UTF_8).putString(SEPARATOR, UTF_8)

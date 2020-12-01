@@ -59,7 +59,7 @@ class ClaimControllerTest {
                 .branchNumber("0001")
                 .claimType(ClaimType.POSSESSION_CLAIM)
                 .key("+5511998765499")
-                .keyType(KeyType.PHONE)
+                .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
                 .cpfCnpj("12345678902")

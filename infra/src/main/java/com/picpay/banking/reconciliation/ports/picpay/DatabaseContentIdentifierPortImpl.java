@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierEntity;
@@ -57,14 +58,14 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
 
     @Override
     public Optional<ContentIdentifierFile> findLastFileRequested(final KeyType keyType) {
-        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType), List.of(
+        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(KeyTypeBacen.resolve(keyType), List.of(
             ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED))
         .map(ContentIdentifierFileEntity::toDomain);
     }
 
     @Override
     public List<ContentIdentifier> listAll(KeyType keyType) {
-        return this.contentIdentifierRepository.findAllByKeyType(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType))
+        return this.contentIdentifierRepository.findAllByKeyType(KeyTypeBacen.resolve(keyType))
             .stream().map(ContentIdentifierEntity::toDomain).collect(Collectors.toList());
     }
 

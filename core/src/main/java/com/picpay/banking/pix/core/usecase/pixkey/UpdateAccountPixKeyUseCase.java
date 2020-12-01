@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -31,7 +30,7 @@ public class UpdateAccountPixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
         }
 
-        if (KeyType.EVP.equals(pixKey.getType()) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
+        if (KeyType.RANDOM.equals(pixKey.getType()) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 

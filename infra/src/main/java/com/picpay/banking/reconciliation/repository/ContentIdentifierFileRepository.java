@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.repository;
 
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierFileEntity;
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,6 +15,7 @@ import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusCon
  */
 public interface ContentIdentifierFileRepository extends CrudRepository<ContentIdentifierFileEntity, Integer> {
 
-    Optional<ContentIdentifierFileEntity> findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(KeyType keyType, List<StatusContentIdentifierFile> statusContentIdentifierFile);
+    Optional<ContentIdentifierFileEntity> findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(
+        KeyTypeBacen keyType, List<StatusContentIdentifierFile> statusContentIdentifierFile);
 
 }

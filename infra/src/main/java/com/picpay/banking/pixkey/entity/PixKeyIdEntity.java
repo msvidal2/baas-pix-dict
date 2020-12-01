@@ -1,6 +1,6 @@
 package com.picpay.banking.pixkey.entity;
 
-import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +21,6 @@ public class PixKeyIdEntity implements Serializable {
     private String key;
 
     @Enumerated(EnumType.STRING)
-    private KeyType type;
+    private KeyTypeBacen type;
 
 }

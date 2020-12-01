@@ -7,6 +7,7 @@
 package com.picpay.banking.pixkey.entity;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -81,7 +82,7 @@ public class PixKeyEntity {
         return PixKeyEntity.builder()
             .id(PixKeyIdEntity.builder()
                 .key(pixKey.getKey())
-                .type(pixKey.getType())
+                .type(KeyTypeBacen.resolve(pixKey.getType()))
                 .build())
             .requestId(pixKey.getRequestId().toString())
             .taxId(pixKey.getTaxId())
@@ -103,7 +104,7 @@ public class PixKeyEntity {
         return PixKeyEntity.builder()
             .id(PixKeyIdEntity.builder()
                 .key(pixKey.getKey())
-                .type(pixKey.getType())
+                .type(KeyTypeBacen.resolve(pixKey.getType()))
                 .build())
             .taxId(pixKey.getTaxId())
             .requestId(pixKey.getRequestId().toString())

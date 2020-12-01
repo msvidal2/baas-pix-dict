@@ -61,18 +61,15 @@ public class FailureReconciliationSyncByFileUseCase {
     private void synchronizeCids(final KeyType keyType, final Sync sync) {
         sync.getCidsNotSyncronized().stream()
             .forEach(cid -> {
-                final var pixKeyInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(cid);
+                this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
+                    this.createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
 
-                if(pixKeyInBacen == null){
+                    this.insertCID(keyType, cid, pixKey);
+
+                    this.insertAuditLog(keyType, sync, cid, pixKey);
+                },() -> {
                     this.remove(keyType, sync, cid);
-                    return;
-                }
-
-                this.createPixKeyPort.createPixKey(pixKeyInBacen, CreateReason.RECONCILIATION);
-
-                this.insertCID(keyType, cid, pixKeyInBacen);
-
-                this.insertAuditLog(keyType, sync, cid, pixKeyInBacen);
+                });
             });
     }
 
@@ -103,7 +100,7 @@ public class FailureReconciliationSyncByFileUseCase {
             this.databaseContentIdentifierPort.delete(cid);
             final var calculatedCid = contentIdentifier.getPixKey().calculateCid();
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
-            if(valueInBacen == null) {
+            if(!valueInBacen.isPresent()) {
                 this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);
                 this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid,REMOVED);
                 log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"

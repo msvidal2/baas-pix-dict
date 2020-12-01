@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
@@ -42,7 +43,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     public ContentIdentifierFile requestContentIdentifierFile(final KeyType keyType) {
 
         final var request = CidSetFileRequest.builder()
-            .keyType(com.picpay.banking.pixkey.dto.request.KeyType.resolve(keyType))
+            .keyType(KeyTypeBacen.resolve(keyType))
             .participant(participant)
             .build();
 

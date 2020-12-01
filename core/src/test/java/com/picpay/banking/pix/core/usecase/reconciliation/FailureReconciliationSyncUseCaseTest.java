@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -78,9 +79,9 @@ public class FailureReconciliationSyncUseCaseTest {
                     .build()));
 
         when(bacenPixKeyByContentIdentifierPort.getPixKey("1"))
-            .thenReturn(pixAdd);
+            .thenReturn(Optional.of(pixAdd));
         when(bacenPixKeyByContentIdentifierPort.getPixKey("2"))
-            .thenReturn(pixRemove);
+            .thenReturn(Optional.of(pixRemove));
 
         FailureReconciliationSyncUseCase failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(
             bacenContentIdentifierEventsPort,

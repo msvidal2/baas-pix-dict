@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +36,7 @@ public class ContentIdentifierEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
     @Column
     private String key;
@@ -52,7 +52,7 @@ public class ContentIdentifierEntity {
     public static ContentIdentifierEntity from(final ContentIdentifier contentIdentifier) {
         return ContentIdentifierEntity.builder()
             .cid(contentIdentifier.getCid())
-            .keyType(KeyType.resolve(contentIdentifier.getKeyType()))
+            .keyType(KeyTypeBacen.resolve(contentIdentifier.getKeyType()))
             .key(contentIdentifier.getKey())
             .build();
     }

@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.dto.request;
 
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +27,6 @@ public class CidSetFileRequest {
     private String participant;
 
     @XmlElement(name = "KeyType")
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
 }

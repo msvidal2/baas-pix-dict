@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,7 +37,7 @@ public class ContentIdentifierFileEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
     @Column(name = "request_date")
     private LocalDateTime requestTime;
@@ -54,7 +54,7 @@ public class ContentIdentifierFileEntity {
     public static ContentIdentifierFileEntity from(final ContentIdentifierFile contentIdentifierFile) {
         return ContentIdentifierFileEntity.builder()
             .id(contentIdentifierFile.getId())
-            .keyType(KeyType.resolve(contentIdentifierFile.getKeyType()))
+            .keyType(KeyTypeBacen.resolve(contentIdentifierFile.getKeyType()))
             .length(contentIdentifierFile.getLength())
             .requestTime(contentIdentifierFile.getRequestTime())
             .sha256(contentIdentifierFile.getSha256())

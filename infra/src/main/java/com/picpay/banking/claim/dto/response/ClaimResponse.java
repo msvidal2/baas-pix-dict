@@ -4,7 +4,7 @@ import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pixkey.dto.request.Account;
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.dto.request.Owner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class ClaimResponse {
     private String key;
 
     @XmlElement(name = "KeyType")
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
     @XmlElement(name = "ClaimerAccount")
     private Account claimerAccount;
@@ -64,7 +64,7 @@ public class ClaimResponse {
         return ClaimResponse.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
                 .key(claim.getKey())
-                .keyType(KeyType.resolve(claim.getKeyType()))
+                .keyType(KeyTypeBacen.resolve(claim.getKeyType()))
                 .claimerAccount(Account.from(claim))
                 .claimer(Owner.from(claim))
                 .build();

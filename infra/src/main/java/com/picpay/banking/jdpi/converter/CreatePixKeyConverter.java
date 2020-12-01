@@ -31,7 +31,7 @@ public class CreatePixKeyConverter {
                           final PixKey from) {
         return PixKey.builder()
                 .type(from.getType())
-                .key(KeyType.EVP.equals(from.getType()) ? createPixKeyResponseJDDTO.getChave() : from.getKey())
+                .key(KeyType.RANDOM.equals(from.getType()) ? createPixKeyResponseJDDTO.getChave() : from.getKey())
                 .ispb(from.getIspb())
                 .branchNumber(from.getBranchNumber())
                 .accountType(from.getAccountType())

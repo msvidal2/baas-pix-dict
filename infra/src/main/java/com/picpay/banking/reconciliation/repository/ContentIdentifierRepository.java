@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.repository;
 
-import com.picpay.banking.pixkey.dto.request.KeyType;
+import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ContentIdentifierRepository extends PagingAndSortingRepository<ContentIdentifierEntity, String> {
 
     @EntityGraph(attributePaths = "pixKey")
-    List<ContentIdentifierEntity> findAllByKeyType(KeyType keyType);
+    List<ContentIdentifierEntity> findAllByKeyType(KeyTypeBacen keyType);
 
     @EntityGraph(attributePaths = "pixKey")
     Optional<ContentIdentifierEntity> findByKey(String key);

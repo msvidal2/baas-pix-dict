@@ -17,8 +17,8 @@ public enum KeyType {
     CPF  (0, new CPFKeyValidator()),
     CNPJ (1, new CNPJKeyValidator()),
     EMAIL(2, new EmailKeyValidator()),
-    PHONE(3, new CellPhoneKeyValidator()),
-    EVP  (4, new RandomKeyValidator());
+    CELLPHONE(3, new CellPhoneKeyValidator()),
+    RANDOM  (4, new RandomKeyValidator());
 
     private int value;
 

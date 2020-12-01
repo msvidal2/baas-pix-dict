@@ -34,13 +34,13 @@ public class FailureReconciliationSyncUseCase {
         actions.stream().filter(action -> action.getActionType().equals(Vsync.ActionType.ADD))
             .forEach(action -> createPixKeyUseCase.execute(
                 UUID.randomUUID().toString(),
-                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()),
+                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()).get(),
                 CreateReason.CLIENT_REQUEST)); // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
 
         actions.stream().filter(action -> action.getActionType().equals(Vsync.ActionType.REMOVE))
             .forEach(action -> removePixKeyUseCase.execute(
                 UUID.randomUUID().toString(),
-                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()),
+                bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()).get(),
                 RemoveReason.CLIENT_REQUEST)); // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
     }
 

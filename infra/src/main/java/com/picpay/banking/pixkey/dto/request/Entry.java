@@ -24,7 +24,7 @@ public class Entry {
     private String key;
 
     @XmlElement(name = "KeyType")
-    private KeyType keyType;
+    private KeyTypeBacen keyType;
 
     @XmlElement(name = "Account")
     private Account account;
@@ -47,7 +47,7 @@ public class Entry {
     public static Entry from(PixKey pixKey) {
         return Entry.builder()
                 .key(pixKey.getKey())
-                .keyType(KeyType.resolve(pixKey.getType()))
+                .keyType(KeyTypeBacen.resolve(pixKey.getType()))
                 .account(Account.from(pixKey))
                 .owner(Owner.from(pixKey))
                 .build();

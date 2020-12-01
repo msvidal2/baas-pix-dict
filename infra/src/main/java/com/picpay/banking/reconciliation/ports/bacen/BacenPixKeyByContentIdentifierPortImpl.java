@@ -7,6 +7,8 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class BacenPixKeyByContentIdentifierPortImpl implements BacenPixKeyByContentIdentifierPort {
 
@@ -19,12 +21,12 @@ public class BacenPixKeyByContentIdentifierPortImpl implements BacenPixKeyByCont
     }
 
     @Override
-    public PixKey getPixKey(final String cid) {
+    public Optional<PixKey> getPixKey(final String cid) {
         try {
             final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
-            return response.toDomain();
+            return Optional.of(response.toDomain());
         }catch (FeignException.NotFound ex){
-            return null;
+            return Optional.empty();
         }
     }
 
