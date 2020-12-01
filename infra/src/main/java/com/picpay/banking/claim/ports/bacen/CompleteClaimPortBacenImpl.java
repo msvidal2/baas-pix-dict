@@ -24,10 +24,8 @@ public class CompleteClaimPortBacenImpl implements CompleteClaimBacenPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "completeClaimFallback")
     public Claim complete(Claim claim, String requestIdentifier) {
-        var request = CompleteClaimRequest.from(claim);
-
+        var request = CompleteClaimRequest.from(claim, requestIdentifier);
         var response = bacenClaimClient.completeClaim(claim.getClaimId(), request);
-
         return response.toClaim();
     }
 

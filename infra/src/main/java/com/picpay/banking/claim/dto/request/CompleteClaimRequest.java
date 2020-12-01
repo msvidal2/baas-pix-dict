@@ -28,10 +28,11 @@ public class CompleteClaimRequest {
     @XmlElement(name = "RequestId")
     private String requestId;
 
-    public static CompleteClaimRequest from(Claim claim) {
+    public static CompleteClaimRequest from(Claim claim, String requestIdentifier) {
         return CompleteClaimRequest.builder()
                 .claimId(claim.getClaimId())
                 .participant(String.valueOf(claim.getIspb()))
+                .requestId(requestIdentifier)
                 .build();
     }
 }

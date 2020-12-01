@@ -1,8 +1,8 @@
 package com.picpay.banking.claim.ports.picpay;
 
-import com.picpay.banking.claim.clients.BacenClaimClient;
-import com.picpay.banking.claim.dto.request.CompleteClaimRequest;
-import com.picpay.banking.fallbacks.BacenExceptionBuilder;
+import com.picpay.banking.claim.dto.response.ClaimStatus;
+import com.picpay.banking.claim.entity.ClaimEntity;
+import com.picpay.banking.claim.repository.ClaimRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -17,30 +17,26 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class CompleteClaimPortImpl implements CompleteClaimPort {
 
-    private static final String CIRCUIT_BREAKER_NAME = "complete-claim-bacen";
+    private static final String CIRCUIT_BREAKER_NAME = "complete-claim-db";
 
-    private final BacenClaimClient bacenClaimClient;
+    private final ClaimRepository claimRepository;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "completeClaimFallback")
     public Claim complete(Claim claim, String requestIdentifier) {
-        var request = CompleteClaimRequest.from(claim);
+        ClaimEntity entity = claimRepository.findClaimerClaimById(claim.getClaimId(), claim.getIspb());
+        entity.setStatus(ClaimStatus.COMPLETED);
+        claimRepository.save(entity);
 
-        var response = bacenClaimClient.completeClaim(claim.getClaimId(), request);
-
-        return response.toClaim();
+        return entity.toClaim();
     }
 
     public Claim completeClaimFallback(Claim claim, String requestIdentifier, Exception e) {
-        log.error("Claim_fallback_completingBacen",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimType", claim.getClaimType()),
-                kv("key", claim.getKey()),
-                kv("cpfCnpf", claim.getCpfCnpj()),
+        log.error("Claim_fallback_completeDB",
+                kv("claimId", claim.getClaimId()),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        //TODO: tratar essa exception
-        throw BacenExceptionBuilder.from(e).build();
+        throw new RuntimeException();
     }
 }

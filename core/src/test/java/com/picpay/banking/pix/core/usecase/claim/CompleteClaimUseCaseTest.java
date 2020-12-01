@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimIdItemValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
@@ -34,6 +35,9 @@ public class CompleteClaimUseCaseTest {
     @Mock
     private CompleteClaimPort completeClaimPort;
 
+    @Mock
+    private FindClaimPort findClaimPort;
+
     @BeforeEach
     public void setup() {
         var validator = new ClaimValidatorComposite(List.of(
@@ -41,7 +45,7 @@ public class CompleteClaimUseCaseTest {
                 new ClaimIspbItemValidator()
         ));
 
-        useCase = new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, validator);
+        useCase = new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, validator);
     }
 
     @Test

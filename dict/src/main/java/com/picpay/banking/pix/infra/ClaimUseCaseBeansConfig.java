@@ -52,8 +52,9 @@ public class ClaimUseCaseBeansConfig {
     @Bean
     public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
                                                      CompleteClaimPort completeClaimPort,
+                                                     FindClaimPort findClaimPort,
                                                      @Qualifier("completeClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, dictItemValidator);
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, dictItemValidator);
     }
 
     @Bean
