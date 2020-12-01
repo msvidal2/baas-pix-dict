@@ -12,6 +12,8 @@ import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @version 1.0 18/11/2020
  */
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement(name = "CreateInfractionReportResponse")
 @XmlAccessorType(XmlAccessType.FIELD)

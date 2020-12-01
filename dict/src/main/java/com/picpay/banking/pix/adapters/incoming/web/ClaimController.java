@@ -1,18 +1,37 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimCancelDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimConfirmationDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ListClaimRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -22,21 +41,16 @@ import static org.springframework.http.HttpStatus.CREATED;
 @Api(value = "Claim")
 @RestController
 @RequestMapping(value = "v1/claims", produces = "application/json")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ClaimController {
 
-    private CreateClaimUseCase createAddressKeyUseCase;
-
-    private ClaimConfirmationUseCase claimConfirmationUseCase;
-
-    private ClaimCancelUseCase claimCancelUseCase;
-
-    private ListClaimUseCase listClaimUseCase;
-
-    private CompleteClaimUseCase completeClaimUseCase;
-
-    private FindClaimUseCase findClaimUseCase;
+    private final CreateClaimUseCase createAddressKeyUseCase;
+    private final ClaimConfirmationUseCase claimConfirmationUseCase;
+    private final ClaimCancelUseCase claimCancelUseCase;
+    private final ListClaimUseCase listClaimUseCase;
+    private final CompleteClaimUseCase completeClaimUseCase;
+    private final FindClaimUseCase findClaimUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new Claim.")

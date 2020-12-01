@@ -6,13 +6,11 @@
 
 package com.picpay.banking.infraction.client;
 
-import com.picpay.banking.config.FeignXmlConfig;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.GetInfractionReportResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
