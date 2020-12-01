@@ -56,6 +56,10 @@ public class ErrorDTO {
         return from(status, message, fieldErrors, null);
     }
 
+    public static ErrorDTO from(final HttpStatus status, final String message, final String apiErrorCode) {
+        return from(status, message, null, apiErrorCode);
+    }
+
     public static ErrorDTO from(final HttpStatus status, final String message) {
         return from(status, message, null, null);
     }
