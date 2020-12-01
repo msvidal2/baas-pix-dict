@@ -28,7 +28,7 @@ public class ClaimController {
 
     private CreateClaimUseCase createAddressKeyUseCase;
 
-    private ClaimConfirmationUseCase claimConfirmationUseCase;
+    private ConfirmClaimUseCase confirmClaimUseCase;
 
     private ClaimCancelUseCase claimCancelUseCase;
 
@@ -73,7 +73,7 @@ public class ClaimController {
             .claimId(claimId)
             .ispb(dto.getIspb()).build();
 
-        return claimConfirmationUseCase.execute(claim,
+        return confirmClaimUseCase.execute(claim,
                 dto.getReason(),
                 requestIdentifier);
     }

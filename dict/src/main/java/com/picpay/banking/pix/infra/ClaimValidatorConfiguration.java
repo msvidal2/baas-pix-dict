@@ -58,12 +58,4 @@ public class ClaimValidatorConfiguration {
         ));
     }
 
-    @Bean
-    public DictItemValidator confirmationClaimItemValidator() {
-        return new ClaimValidatorComposite(
-            List.of(
-                new IspbClaimItemValidator()
-//                new ClaimIdValidator()
-           ));
-    }
 }

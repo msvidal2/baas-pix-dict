@@ -9,7 +9,7 @@ import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
 import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
 import com.picpay.banking.jdpi.ports.infraction.InfractionReportPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +26,9 @@ public class JDPIPortBeansConfig {
     }
 
     @Bean
-    public ConfirmationClaimPort claimConfirmationPort(ClaimJDClient claimJDClient,
-                                                       TimeLimiterExecutor timeLimiterExecutor) {
-        return new ClaimConfirmationPortImpl(claimJDClient, timeLimiterExecutor);
+    public ConfirmClaimPort claimConfirmationPort(ClaimJDClient claimJDClient,
+                                                  TimeLimiterExecutor timeLimiterExecutor) {
+        return new ClaimConfirmPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean

@@ -1,8 +1,10 @@
 package com.picpay.banking.claim.clients;
 
+import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
 import com.picpay.banking.claim.dto.request.CancelClaimRequest;
 import com.picpay.banking.claim.dto.request.CreateClaimRequest;
 import com.picpay.banking.claim.dto.request.ListClaimsRequest;
+import com.picpay.banking.claim.dto.response.ConfirmClaimResponse;
 import com.picpay.banking.claim.dto.response.CancelClaimResponse;
 import com.picpay.banking.claim.dto.response.CreateClaimResponse;
 import com.picpay.banking.claim.dto.response.ListClaimsResponse;
@@ -23,7 +25,13 @@ public interface BacenClaimClient {
     CreateClaimResponse createClaim(@RequestBody CreateClaimRequest createClaimRequest);
 
     @GetMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    ListClaimsResponse listClaims(@SpringQueryMap ListClaimsRequest params);
+    ListClaimsResponse listClaims(@SpringQueryMap ListClaimsRequest request);
+
+    @GetMapping(value = "/{claimId}/confirm",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
+    ConfirmClaimResponse confirmClaim(@PathVariable("claimId") String claimId,
+                                      @RequestBody ConfirmClaimRequest request);
 
     @PostMapping(value = "/{claimId}/cancel",
             consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)

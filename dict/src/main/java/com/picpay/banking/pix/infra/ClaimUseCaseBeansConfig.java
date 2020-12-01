@@ -5,7 +5,7 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
@@ -28,9 +28,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationUseCase claimConfirmationUseCase(ConfirmationClaimPort claimConfirmationPort,
-                                                             @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimConfirmationUseCase(claimConfirmationPort,dictItemValidator);
+    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort) {
+        return new ConfirmClaimUseCase(claimConfirmationPort);
     }
 
     @Bean
