@@ -19,18 +19,12 @@ class ClaimCancelValidatorTest {
         claim = Claim.builder()
                 .claimId("7b8d0484-b13c-496e-ba05-f7889c358132")
                 .ispb(24323434)
-                .donorIspb(24323434)
                 .build();
     }
 
     @Test
     void when_validateWithClaimantSuccess_expect_noExceptions() {
         assertDoesNotThrow(() -> validate(claim, true, CLIENT_REQUEST, randomUUID().toString()));
-    }
-
-    @Test
-    void when_validateWithDonorSuccess_expect_noExceptions() {
-        assertDoesNotThrow(() -> validate(claim, false, CLIENT_REQUEST, randomUUID().toString()));
     }
 
     @Test
@@ -72,7 +66,7 @@ class ClaimCancelValidatorTest {
     void when_validateWithInvalidDonorIspb_expect_illegalArgumentException() {
         var claim = Claim.builder()
                 .claimId("7b8d0484-b13c-496e-ba05-f7889c358132")
-                .donorIspb(0)
+                .ispb(0)
                 .build();
 
         assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, randomUUID().toString()));

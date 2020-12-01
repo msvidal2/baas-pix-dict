@@ -4,7 +4,8 @@ import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
-import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,11 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ClaimCancelUseCase {
 
-    private final CancelClaimPort claimCancelPort;
+    private final CancelClaimBacenPort cancelClaimBacenPort;
 
     private final FindByIdPort findByIdPort;
+
+    private final CancelClaimPort cancelClaimPort;
 
     private static final Map<ClaimType, List<ClaimSituation>> situationsAllowedByType = Map.of(
         ClaimType.POSSESSION_CLAIM, List.of(ClaimSituation.AWAITING_CLAIM, ClaimSituation.CONFIRMED),
@@ -53,13 +56,16 @@ public class ClaimCancelUseCase {
 
         validateAllowedSituation(claim, canceledClaimant);
         validateAllowedReason(canceledClaimant, reason, claim);
+        // TODO: validar regra quando o motivo dor DEFAULT_RESPONSE (DEFAULT_OPERATION), conforme informa no swagger
 
-        var claimCanceled = claimCancelPort.cancel(claimCancel, canceledClaimant, reason, requestIdentifier);
+        var claimCanceled = cancelClaimBacenPort.cancel(claim.getClaimId(), reason, claimCancel.getIspb(), requestIdentifier);
 
-//        if (claimCanceled != null)
-//            log.info("Claim_canceled"
-//                    , kv("requestIdentifier", requestIdentifier)
-//                    , kv("claimId", claimCanceled.getClaimId()));
+        cancelClaimPort.cancel(claimCanceled, reason, requestIdentifier);
+
+        if (claimCanceled != null)
+            log.info("Claim_canceled"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("claimId", claimCanceled.getClaimId()));
 
         return claimCanceled;
     }
@@ -81,12 +87,13 @@ public class ClaimCancelUseCase {
     }
 
     private void validateAllowedReason(final boolean canceledClaimant, final ClaimCancelReason reason, final Claim claim) {
-        var allowedReasons = Map.of(ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
+        var allowedReasons = Map.of(
+                ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
                 ClaimType.PORTABILITY, portabilityAllowedReasons)
                 .get(claim.getClaimType())
-                .get(ClaimantType.resolve(canceledClaimant));
+                .get(reason);
 
-        if (!allowedReasons.contains(reason)) {
+        if (!allowedReasons.contains(ClaimantType.resolve(canceledClaimant))) {
             if(canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }
