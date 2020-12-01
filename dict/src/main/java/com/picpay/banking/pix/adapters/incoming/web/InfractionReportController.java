@@ -10,7 +10,7 @@ import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Api(value = "InfractionReport")
 @RestController
 @RequestMapping(value = "/v1/infraction-report", produces = "application/json")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class InfractionReportController {
 
@@ -107,7 +107,7 @@ public class InfractionReportController {
 
     @Trace
     @ApiOperation(value = "List Infraction Report")
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public List<InfractionReportDTO> filter(@Valid FilterInfractionReportDTO filter) {
 
