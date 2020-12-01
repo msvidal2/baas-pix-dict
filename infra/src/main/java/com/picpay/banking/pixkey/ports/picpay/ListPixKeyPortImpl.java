@@ -5,15 +5,14 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
+import com.picpay.banking.pixkey.repository.specifications.ListKeys;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,23 +28,7 @@ public class ListPixKeyPortImpl implements ListPixKeyPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "listPixKeyFallback")
     public List<PixKey> listPixKey(String requestIdentifier, PixKey pixKey) {
-        List<PixKeyEntity> keys;
-
-        // TODO: melhorar
-        if(Objects.isNull(pixKey.getBranchNumber())) {
-            keys = repository.findKeys(pixKey.getTaxId(),
-                    pixKey.getPersonType(),
-                    pixKey.getAccountNumber(),
-                    pixKey.getAccountType(),
-                    pixKey.getIspb());
-        } else {
-            keys = repository.findKeys(pixKey.getTaxId(),
-                    pixKey.getPersonType(),
-                    pixKey.getBranchNumber(),
-                    pixKey.getAccountNumber(),
-                    pixKey.getAccountType(),
-                    pixKey.getIspb());
-        }
+        var keys = repository.findAll(new ListKeys(pixKey));
 
         return keys.stream()
                 .map(PixKeyEntity::toPixKey)

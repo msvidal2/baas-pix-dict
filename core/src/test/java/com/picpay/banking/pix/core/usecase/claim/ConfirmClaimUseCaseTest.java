@@ -21,9 +21,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ConfirmClaimUseCaseTest {
+class ClaimConfirmationUseCaseTest {
 
-    private ConfirmClaimUseCase useCase;
+    /*private ClaimConfirmationUseCaseTest useCase;
 
     @Mock
     private ConfirmClaimPort claimConfirmationPort;
@@ -102,5 +102,5 @@ class ConfirmClaimUseCaseTest {
                 .claimId(randomUUID().toString())
                 .ispb(23542432).build();
             useCase.execute(claim, CLIENT_REQUEST, null);});
-    }
+    }*/
 }

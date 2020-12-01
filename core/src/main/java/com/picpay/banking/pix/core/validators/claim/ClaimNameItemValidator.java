@@ -4,15 +4,14 @@ import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 
-public class ClaimNameItemValidator implements DictItemValidator<Claim> {
+public class ClaimNameItemValidator {
 
-    @Override
-    public void validate(Claim domain) {
-        if (Strings.isNullOrEmpty(domain.getName())) {
+    public static void validate(String name) {
+        if (Strings.isNullOrEmpty(name)) {
             throw new IllegalArgumentException("name can not be empty");
         }
 
-        if (domain.getName().length() > 100) {
+        if (name.length() > 100) {
             throw new IllegalArgumentException("The number of characters in the name must be less than 100");
         }
     }

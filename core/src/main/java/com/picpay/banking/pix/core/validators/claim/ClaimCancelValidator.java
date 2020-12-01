@@ -19,12 +19,7 @@ public class ClaimCancelValidator {
         }
 
         ClaimIdValidator.validate(claim.getClaimId());
-
-        if(canceledClaimant) {
-            IspbValidator.validate(claim.getIspb());
-        } else {
-            IspbValidator.validate(claim.getDonorIspb());
-        }
+        IspbValidator.validate(claim.getIspb());
 
         if(Objects.isNull(reason)) {
             throw new IllegalArgumentException("Reason cannot be null");

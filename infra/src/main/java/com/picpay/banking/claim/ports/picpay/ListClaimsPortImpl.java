@@ -7,13 +7,11 @@ import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.nonNull;
 
@@ -24,36 +22,24 @@ public class ListClaimsPortImpl implements ListClaimPort {
 
     private final ClaimRepository claimRepository;
 
-    @Value("${picpay.ispb}")
-    private String picPayParticipantNumber;
-
     @Override
     public ClaimIterable list(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate, String requestIdentifier) {
-        List<ClaimEntity> claimEntityList = new ArrayList<>();
-        long findSize = 0;
+        Page<ClaimEntity> claimEntityList = null;
 
         if(nonNull(isClaimer)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate, PageRequest.of(0, limit));
-            findSize = claimRepository.countAllClaimsWhereIsClaimer(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(claim.getIspb(), startDate, endDate, PageRequest.of(0, limit));
         } else if(nonNull(isDonor)) {
-            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate, PageRequest.of(0, limit));
-            findSize = claimRepository.countAllClaimsWhereIsDonor(Integer.valueOf(picPayParticipantNumber), startDate, endDate);
+            claimEntityList = claimRepository.findAllClaimsWhereIsDonor(claim.getIspb(), startDate, endDate, PageRequest.of(0, limit));
         }
 
-        return toClaimIterable(claimEntityList, limit, findSize);
+        return toClaimIterable(claimEntityList);
     }
 
-    private ClaimIterable toClaimIterable(List<ClaimEntity> claimEntityList, Integer limit, long findSize){
+    private ClaimIterable toClaimIterable(Page<ClaimEntity> claimEntityList){
         return ClaimIterable.builder()
-                .hasNext(findSize > limit)
-                .count(claimEntityList.size())
-                .claims(getClaims(claimEntityList))
+                .hasNext(claimEntityList.hasNext())
+                .count(claimEntityList.getNumberOfElements())
+                .claims(claimEntityList.map(ClaimEntity::toClaim).toList())
                 .build();
-    }
-
-    private List<Claim> getClaims(List<ClaimEntity> claimEntityList){
-        List<Claim> claims = new ArrayList<>();
-        claimEntityList.forEach(c -> claims.add(c.toClaim()));
-        return claims;
     }
 }
