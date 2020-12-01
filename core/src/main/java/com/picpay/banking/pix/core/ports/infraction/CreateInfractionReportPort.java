@@ -8,6 +8,8 @@
 package com.picpay.banking.pix.core.ports.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 
 /**
  * @author rafael.braga
@@ -15,6 +17,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
  */
 public interface CreateInfractionReportPort {
 
-    InfractionReport create(InfractionReport infractionReport, String requestIdentifier);
+    @ValidateIdempotency(InfractionReport.class)
+    InfractionReport create(InfractionReport infractionReport, @IdempotencyKey String requestIdentifier);
 
 }
