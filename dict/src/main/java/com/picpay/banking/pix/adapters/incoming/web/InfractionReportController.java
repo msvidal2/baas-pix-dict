@@ -3,8 +3,10 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -30,10 +33,7 @@ public class InfractionReportController {
 
     private final FindInfractionReportUseCase findInfractionReportUseCase;
     private final CreateInfractionReportUseCase createInfractionReportUseCase;
-    //    private final ListPendingInfractionReportUseCase listPendingInfractionReportUseCase;
-        private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
-    //    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
-    //    private final FilterInfractionReportUseCase filterInfractionReportUseCase;
+    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
     private final FilterInfractionReportUseCase filterInfractionReportUseCase;
     private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
 

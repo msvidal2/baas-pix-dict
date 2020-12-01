@@ -7,10 +7,12 @@
 package com.picpay.banking.infraction.client;
 
 import com.picpay.banking.config.FeignXmlConfig;
+import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
+import com.picpay.banking.infraction.dto.request.CloseInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CancelInfractionReportResponse;
+import com.picpay.banking.infraction.dto.response.CloseInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
-import com.picpay.banking.infraction.dto.response.GetInfractionReportResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +28,6 @@ public interface CreateInfractionBacenClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     CreateInfractionReportResponse create(@RequestBody CreateInfractionReportRequest request);
-
-    @GetMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    GetInfractionReportResponse find(@RequestParam String infractionReportId,
-                                     @RequestHeader(name = "PI-RequestingParticipant") String pIRequestingParticipant);
 
     @PostMapping(value = "/{InfractionReportId}/cancel",
             consumes = MediaType.APPLICATION_XML_VALUE,

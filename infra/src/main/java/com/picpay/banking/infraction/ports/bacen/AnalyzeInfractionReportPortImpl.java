@@ -9,11 +9,8 @@ package com.picpay.banking.infraction.ports.bacen;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
-import com.picpay.banking.infraction.client.InfractionBacenClient;
+import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CloseInfractionReportRequest;
-import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
-import com.picpay.banking.infraction.dto.response.CloseInfractionReportResponse;
-import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
@@ -31,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class AnalyzeInfractionReportPortImpl implements AnalyzeInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "analyze-infraction";
-    private final InfractionBacenClient bacenClient;
+    private final CreateInfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
 
