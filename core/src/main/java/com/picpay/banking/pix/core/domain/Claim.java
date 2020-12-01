@@ -39,6 +39,7 @@ public class Claim {
     private ClaimConfirmationReason confirmationReason;
     private LocalDateTime starDate;
     private LocalDateTime endDate;
+    private String correlationId;
 
     public String getOwnerName() {
         if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {

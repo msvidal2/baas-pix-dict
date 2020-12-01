@@ -1,10 +1,7 @@
 package com.picpay.banking.jdpi.ports.claim;
 
-import com.picpay.banking.jdpi.clients.ClaimJDClient;
-import com.picpay.banking.jdpi.dto.request.ClaimConfirmationRequestDTO;
 import com.picpay.banking.jdpi.dto.response.ClaimResponseDTO;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.claim.ClaimConfirmationPortImpl;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
@@ -24,10 +21,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClaimConfirmationPortImplTest {
+class ClaimConfirmPortImplTest {
 
     @InjectMocks
-    private ClaimConfirmationPortImpl port;
+    private ClaimConfirmPortImpl port;
 
     @Mock
     private TimeLimiterExecutor timeLimiterExecutor;

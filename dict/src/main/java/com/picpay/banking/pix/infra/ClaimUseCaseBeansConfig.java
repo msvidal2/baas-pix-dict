@@ -1,17 +1,11 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmationClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ClaimConfirmationUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
@@ -33,9 +27,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimConfirmationUseCase claimConfirmationUseCase(ConfirmationClaimPort claimConfirmationPort,
-                                                             @Qualifier("confirmationClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimConfirmationUseCase(claimConfirmationPort,dictItemValidator);
+    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort) {
+        return new ConfirmClaimUseCase(claimConfirmationPort);
     }
 
     @Bean
@@ -45,9 +38,10 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimCancelUseCase claimCancelUseCase(CancelClaimPort claimCancelPort,
-                                                 @Qualifier("claimCancelItemValidator") DictItemValidator dictItemValidator) {
-        return new ClaimCancelUseCase(claimCancelPort, dictItemValidator);
+    public ClaimCancelUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
+                                                 FindByIdPort findByIdPort,
+                                                 CancelClaimPort cancelClaimPort) {
+        return new ClaimCancelUseCase(claimCancelPort, findByIdPort, cancelClaimPort);
     }
 
     @Bean

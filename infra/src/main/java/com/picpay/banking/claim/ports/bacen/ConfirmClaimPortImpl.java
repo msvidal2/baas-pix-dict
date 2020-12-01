@@ -1,10 +1,12 @@
 package com.picpay.banking.claim.ports.bacen;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
-import com.picpay.banking.claim.dto.request.CreateClaimRequest;
+import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
+import com.picpay.banking.claim.dto.response.ConfirmClaimResponse;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
+import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,25 +17,25 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
+public class ConfirmClaimPortImpl implements ConfirmClaimPort {
 
-    private static final String CIRCUIT_BREAKER_NAME = "create-claim-bacen";
+    private static final String CIRCUIT_BREAKER_NAME = "confirm-claim-bacen";
 
     private final BacenClaimClient bacenClaimClient;
 
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "createClaimFallback")
-    public Claim createClaim(Claim claim, String requestIdentifier) {
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "confirmFallback")
+    public Claim confirm(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
 
-        var request = CreateClaimRequest.from(claim);
+        ConfirmClaimRequest request = ConfirmClaimRequest.from(claim);
 
-        var response = bacenClaimClient.createClaim(request);
+        ConfirmClaimResponse response = bacenClaimClient.confirmClaim(claim.getClaimId(), request);
 
         return response.toClaim();
     }
 
-    public Claim createClaimFallback(Claim claim, String requestIdentifier, Exception e) {
-        log.error("Claim_fallback_creatingBacen",
+    public Claim confirmFallback(Claim claim, ClaimConfirmationReason reason, String requestIdentifier, Exception e) {
+        log.error("Claim_fallback_confirmBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),
                 kv("key", claim.getKey()),
