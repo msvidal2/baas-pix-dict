@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifier;
 import com.picpay.banking.pix.core.domain.SyncVerifierResult;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.ReconciliationBacenPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.FailureReconciliationMessagePort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
@@ -35,7 +35,7 @@ class ReconciliationSyncUseCaseTest {
     @Mock
     private ContentIdentifierEventPort contentIdentifierEventPort;
     @Mock
-    private ReconciliationBacenPort reconciliationBacenPort;
+    private BacenSyncVerificationsPort bacenSyncVerificationsPort;
     @Mock
     private FailureReconciliationMessagePort failureReconciliationMessagePort;
 
@@ -47,7 +47,7 @@ class ReconciliationSyncUseCaseTest {
             syncVerifierPort,
             syncVerifierHistoricPort,
             contentIdentifierEventPort,
-            reconciliationBacenPort,
+            bacenSyncVerificationsPort,
             failureReconciliationMessagePort);
     }
 
@@ -63,7 +63,7 @@ class ReconciliationSyncUseCaseTest {
         when(contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(any(), any()))
             .thenReturn(new ArrayList<>());
 
-        when(reconciliationBacenPort.syncVerification(any()))
+        when(bacenSyncVerificationsPort.syncVerification(any()))
             .thenReturn(SyncVerifierResult.OK);
 
         reconciliationSyncUseCase.execute(KeyType.CPF);
@@ -85,10 +85,10 @@ class ReconciliationSyncUseCaseTest {
         when(contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(any(), any()))
             .thenReturn(new ArrayList<>());
 
-        when(reconciliationBacenPort.syncVerification(any()))
+        when(bacenSyncVerificationsPort.syncVerification(any()))
             .thenReturn(SyncVerifierResult.OK);
 
-        when(reconciliationBacenPort.syncVerification("1"))
+        when(bacenSyncVerificationsPort.syncVerification("1"))
             .thenReturn(SyncVerifierResult.NOK);
 
         reconciliationSyncUseCase.execute(KeyType.CPF);

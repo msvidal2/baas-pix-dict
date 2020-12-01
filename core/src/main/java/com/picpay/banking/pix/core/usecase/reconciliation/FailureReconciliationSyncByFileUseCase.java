@@ -8,30 +8,27 @@ import com.picpay.banking.pix.core.domain.Sync;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.picpay.banking.pix.core.domain.ContentIdentifierAction.ADDED;
-import static com.picpay.banking.pix.core.domain.ContentIdentifierAction.REMOVED;
-import static com.picpay.banking.pix.core.domain.ContentIdentifierAction.UPDATED;
+import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.ADDED;
+import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.REMOVED;
+import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.UPDATED;
 
 @AllArgsConstructor
 @Slf4j
 public class FailureReconciliationSyncByFileUseCase {
 
-    private Integer participant;
-
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
-
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
-
+    private Integer participant;
 
     public void execute(KeyType keyType) {
         this.databaseContentIdentifierPort.findLastFileRequested(keyType).ifPresent(this::processFile);
@@ -40,7 +37,7 @@ public class FailureReconciliationSyncByFileUseCase {
     private void processFile(final ContentIdentifierFile contentIdentifierFile) {
         final var availableFile = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFile.getId());
 
-        if(availableFile == null || availableFile.getStatus().isNotAvaliable()) {
+        if (availableFile == null || availableFile.getStatus().isNotAvaliable()) {
             return;
         }
 
@@ -55,7 +52,6 @@ public class FailureReconciliationSyncByFileUseCase {
         this.synchronizeCids(keyType, sync);
 
         this.databaseContentIdentifierPort.saveFile(availableFile);
-
     }
 
     private void synchronizeCids(final KeyType keyType, final Sync sync) {
@@ -67,7 +63,7 @@ public class FailureReconciliationSyncByFileUseCase {
                     this.insertCID(keyType, cid, pixKey);
 
                     this.insertAuditLog(keyType, sync, cid, pixKey);
-                },() -> {
+                }, () -> {
                     this.remove(keyType, sync, cid);
                 });
             });
@@ -100,11 +96,11 @@ public class FailureReconciliationSyncByFileUseCase {
             this.databaseContentIdentifierPort.delete(cid);
             final var calculatedCid = contentIdentifier.getPixKey().calculateCid();
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
-            if(!valueInBacen.isPresent()) {
+            if (!valueInBacen.isPresent()) {
                 this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);
-                this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid,REMOVED);
+                this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid, REMOVED);
                 log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"
-                    ,contentIdentifier.getCid(), contentIdentifier.getKey(),keyType);
+                    , contentIdentifier.getCid(), contentIdentifier.getKey(), keyType);
                 return;
             }
             log.info("Only Cid {} was removed from database because cid don't exists in bacen but key exists", cid);

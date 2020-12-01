@@ -3,10 +3,11 @@ package com.picpay.banking.reconciliation.ports.picpay;
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
@@ -70,7 +71,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     }
 
     @Override
-    public void saveAction(Integer idReference,PixKey key, String cid, ContentIdentifierAction action){
+    public void saveAction(Integer idReference,PixKey key, String cid, ContentIdentifierFileAction action){
         final var contentIdentifierActionEntity = ContentIdentifierActionEntity.builder()
             .action(action)
             .cid(cid)

@@ -3,7 +3,7 @@ package com.picpay.banking.reconciliation.ports.bacen;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
@@ -26,8 +26,8 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     private String participant;
     private String urlGateway;
 
-    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient
-        , @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway ) {
+    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient,
+        @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway) {
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
@@ -60,7 +60,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
     @Override
     public List<String> downloadFile(final String url) {
-        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );//CHANGE HOST TO GATEWAY
+        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway + "/arq/");//CHANGE HOST TO GATEWAY
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
         return Arrays.asList(file.split("\n"));

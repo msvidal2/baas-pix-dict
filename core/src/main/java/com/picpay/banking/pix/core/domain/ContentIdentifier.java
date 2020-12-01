@@ -3,6 +3,8 @@ package com.picpay.banking.pix.core.domain;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 public class ContentIdentifier {
@@ -12,4 +14,5 @@ public class ContentIdentifier {
     private KeyType keyType;
     private LocalDateTime keyOwnershipDate;
     private PixKey pixKey;
+
 }

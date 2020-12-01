@@ -8,7 +8,8 @@ import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.ReconciliationBacenPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
@@ -29,7 +30,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
-    private final ReconciliationBacenPort reconciliationBacenPort;
+    private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final ContentIdentifierActionPort contentIdentifierActionPort;
     private final ContentIdentifierEventPort contentIdentifierEventPort;
     private final CreatePixKeyUseCase createPixKeyUseCase;
@@ -47,7 +49,7 @@ public class FailureReconciliationSyncUseCase {
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
-        List<ContentIdentifierEvent> bacenEvents = reconciliationBacenPort
+        List<ContentIdentifierEvent> bacenEvents = bacenContentIdentifierEventsPort
             .list(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart(), LocalDateTime.now());
 
         List<ContentIdentifierEvent> databaseEvents = contentIdentifierEventPort
@@ -69,11 +71,10 @@ public class FailureReconciliationSyncUseCase {
 
         contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE))
             .forEach(this::hasInDatabaseAndNotHaveInBacen);
-
     }
 
     private void hasInBacenAndNotHaveInDatabase(ContentIdentifierAction action) {
-        var pixKeyInBacen = reconciliationBacenPort.getPixKey(action.getCid());
+        var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
 
         if (pixKeyInBacen.isEmpty()) {
             throw new ReconciliationsException(String.format(
@@ -98,7 +99,7 @@ public class FailureReconciliationSyncUseCase {
     }
 
     private void hasInDatabaseAndNotHaveInBacen(final ContentIdentifierAction action) {
-        var pixKeyInBacen = reconciliationBacenPort.getPixKey(action.getCid());
+        var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
 
         if (pixKeyInBacen.isPresent()) {
             throw new ReconciliationsException(String.format(

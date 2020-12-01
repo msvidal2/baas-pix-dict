@@ -1,8 +1,8 @@
-package com.picpay.banking.pix.core.ports.reconciliation;
+package com.picpay.banking.pix.core.ports.reconciliation.picpay;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 
@@ -26,7 +26,7 @@ public interface DatabaseContentIdentifierPort {
 
     void delete(String cid);
 
-    void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierAction action);
+    void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierFileAction action);
 
     Optional<ContentIdentifier> findByKey(String key);
 

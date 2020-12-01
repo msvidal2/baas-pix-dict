@@ -5,7 +5,8 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.ReconciliationBacenPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
@@ -33,8 +34,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FailureReconciliationSyncUseCaseTest {
 
+
     @Mock
-    private ReconciliationBacenPort reconciliationBacenPort;
+    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    @Mock
+    private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     @Mock
     private ContentIdentifierActionPort contentIdentifierActionPort;
     @Mock
@@ -53,7 +57,9 @@ class FailureReconciliationSyncUseCaseTest {
     @BeforeEach
     private void beforeEach() {
         failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(
-            reconciliationBacenPort, contentIdentifierActionPort, contentIdentifierEventPort, createPixKeyUseCase, updateAccountPixKeyUseCase,
+            bacenContentIdentifierEventsPort, bacenPixKeyByContentIdentifierPort,
+            contentIdentifierActionPort, contentIdentifierEventPort,
+            createPixKeyUseCase, updateAccountPixKeyUseCase,
             removePixKeyUseCase, findPixKeyPort);
     }
 
@@ -102,10 +108,10 @@ class FailureReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Criar Key quando ela existe no Bacen e não existe no database")
     void create_when_exists_in_bacen_and_not_exists_in_database() {
-        when(reconciliationBacenPort.list(any(), any(), any()))
+        when(bacenContentIdentifierEventsPort.list(any(), any(), any()))
             .thenReturn(List.of(createContentIdentifier("1")));
 
-        when(reconciliationBacenPort.getPixKey(any()))
+        when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder().build()));
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
@@ -131,10 +137,10 @@ class FailureReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Atualizar Key quando ela existe no Bacen e existe no database com outros valores")
     void update_when_exists_in_bacen_and_exists_diff_in_database() {
-        when(reconciliationBacenPort.list(any(), any(), any()))
+        when(bacenContentIdentifierEventsPort.list(any(), any(), any()))
             .thenReturn(List.of(createContentIdentifier("1")));
 
-        when(reconciliationBacenPort.getPixKey(any()))
+        when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder().build()));
 
         when(findPixKeyPort.findPixKey(any()))
