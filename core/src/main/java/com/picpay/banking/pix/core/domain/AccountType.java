@@ -7,11 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AccountType {
 
-    CHECKING(0),
-    SALARY(1),
-    SAVINGS(2);
+    CHECKING(0,"CACC"),
+    SALARY(1,""),
+    SAVINGS(2,"");
 
     private int value;
+    private String initials;
 
     public static AccountType resolve(int value) {
         for(AccountType accountType : values()) {

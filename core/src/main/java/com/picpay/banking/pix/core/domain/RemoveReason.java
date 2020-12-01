@@ -10,7 +10,7 @@ public enum RemoveReason {
     CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
     INACTIVITY(Reason.INACTIVITY.getValue()),
     FRAUD(Reason.FRAUD.getValue()),
-    RECONCILIATION(-1); // TODO: Implementar tipo para reconciliação
+    RECONCILIATION(-1);
 
     private int value;
 

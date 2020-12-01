@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum CreateReason {
 
     CLIENT_REQUEST(Reason.CLIENT_REQUEST),
-    RECONCILIATION(null); // TODO implementar tipo para reconciliação
+    RECONCILIATION(Reason.RECONCILIATION);
 
     private Reason value;
 

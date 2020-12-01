@@ -13,22 +13,23 @@ public class ReconciliationUtilTest {
     @Test
     @DisplayName("Calculo do CID")
     public void calculateCid_success() {
-        String keyType = "PHONE";
-        String key = "+5511987654321";
-        String ownerTaxIdNumber = "11122233300";
-        String ownerName = "João Silva";
+        String keyType = "EMAIL";
+        String key = "lricardolisboa@gmail.com";
+        String ownerTaxIdNumber = "04812331560";
+        String ownerName = "Luis Ricardo Lisboa da Silva";
         String ownerTradeName = "";
-        String participant = "12345678";
-        String branch = "00001";
-        String accountNumber = "0007654321";
+        String participant = "22896431";
+        String branch = "0001";
+        String accountNumber = "0007654";
         String accountType = "CACC";
 
         String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
-            ownerTradeName, participant, branch, accountNumber, accountType);
+            ownerTradeName, participant, branch, accountNumber, accountType, "a946d533-7f22-42a5-9a9b-e87cd55c0f4d");
 
-        String expectedCid = "28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88";
+        String expectedCid = "c0f77d0aba530237f7c2defa38713ebf862d01bbe7b443342a9cf5784992cff2";
         assertThat(cid).isEqualTo(expectedCid);
     }
+
 
     @Test
     @DisplayName("Calcula o Vsync")
@@ -76,7 +77,7 @@ public class ReconciliationUtilTest {
             String accountType = "CACC";
 
             String cid = ReconciliationUtil.calculateCid(keyType, key, ownerTaxIdNumber, ownerName,
-                ownerTradeName, participant, branch, accountNumber, accountType);
+                ownerTradeName, participant, branch, accountNumber, accountType, "a5992013c87d9a6706b9924442d8b29e");
             vsync = ReconciliationUtil.calculateVsync(vsync, Set.of(cid));
         }
         System.out.println("Tempo para processar cem milhões de chaves em segundos: " + (System.currentTimeMillis() - startTime) / 1000);

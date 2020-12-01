@@ -7,11 +7,13 @@ import com.picpay.banking.pix.core.domain.ClaimCancelReason;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class CancelClaimPortImpl implements CancelClaimPort  {
 
     private ClaimRepository repository;

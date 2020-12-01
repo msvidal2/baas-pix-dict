@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum KeyType {
+public enum KeyTypeBacen {
 
     CPF(com.picpay.banking.pix.core.domain.KeyType.CPF, 0),
     CNPJ(com.picpay.banking.pix.core.domain.KeyType.CNPJ, 1),
@@ -19,8 +19,8 @@ public enum KeyType {
     private com.picpay.banking.pix.core.domain.KeyType type;
     private int value;
 
-    public static KeyType resolve(com.picpay.banking.pix.core.domain.KeyType type) {
-        return Arrays.stream(KeyType.values())
+    public static KeyTypeBacen resolve(com.picpay.banking.pix.core.domain.KeyType type) {
+        return Arrays.stream(KeyTypeBacen.values())
                 .filter(keyType -> keyType.type.equals(type))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);

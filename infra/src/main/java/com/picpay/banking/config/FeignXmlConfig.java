@@ -15,6 +15,7 @@ import feign.jaxb.JAXBDecoder;
 import feign.jaxb.JAXBEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * @author rafael.braga
@@ -29,11 +30,13 @@ public class FeignXmlConfig {
     }
 
     @Bean
+    @Primary
     public Encoder encoder(JAXBContextFactory jaxbContextFactory) {
         return new JAXBEncoder(jaxbContextFactory);
     }
 
     @Bean
+    @Primary
     public Decoder decoder(JAXBContextFactory jaxbContextFactory) {
         return new JAXBDecoder(jaxbContextFactory);
     }

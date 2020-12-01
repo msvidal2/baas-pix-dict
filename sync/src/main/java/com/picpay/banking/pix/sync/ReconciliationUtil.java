@@ -1,49 +1,49 @@
 package com.picpay.banking.pix.sync;
 
+import com.google.common.hash.Hashing;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Hex;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
 import java.util.Set;
+import java.util.UUID;
+
+import static com.google.common.base.Charsets.UTF_8;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReconciliationUtil {
 
+    private static final String SEPARATOR = "&";
+
     public static String calculateCid(String keyType, String key, String ownerTaxIdNumber,
-        String ownerName, String ownerTradeName, String participant, String branch, String accountNumber, String accountType) {
+        String ownerName, String ownerTradeName, String participant, String branch, String accountNumber, String accountType,
+        final String requestId) {
 
-        StringBuilder entryAttributes = new StringBuilder();
-        entryAttributes
-            .append(keyType).append("&")
-            .append(key).append("&")
-            .append(ownerTaxIdNumber).append("&")
-            .append(ownerName).append("&")
-            .append(ownerTradeName).append("&")
-            .append(participant).append("&")
-            .append(branch).append("&")
-            .append(accountNumber).append("&")
-            .append(accountType);
+        byte[] requestIdBytes = uuidAsBytes(UUID.fromString(requestId));
 
-        byte[] requestIdBytes = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+        return Hashing.hmacSha256(requestIdBytes).newHasher()
+            .putString(keyType, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(key, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(ownerTaxIdNumber, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(ownerName, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(ownerTradeName == null ? "" : ownerTradeName, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(participant, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(branch == null ? "" : branch, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(accountNumber, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(accountType, UTF_8)
+            .hash().toString().toLowerCase();
 
-        try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(requestIdBytes, "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-            return Hex.encodeHexString(sha256_HMAC.doFinal(entryAttributes.toString().getBytes("UTF-8")));
-        } catch (InvalidKeyException | UnsupportedEncodingException | NoSuchAlgorithmException e) {
-            log.error("Não foi possível obter o algorítimo HmacSHA256 para realizar o calculo do Cid para as chaves do Pix.", e);
-        }
+    }
 
-        return null;
+    public static byte[] uuidAsBytes(UUID uuid) {
+        byte[] bytes = new byte[16];
+        ByteBuffer.wrap(bytes)
+            .putLong(uuid.getMostSignificantBits())
+            .putLong(uuid.getLeastSignificantBits());
+        return bytes;
     }
 
     public static String calculateVsync(final String lastSyncVerifier, final Set<String> cids) {
