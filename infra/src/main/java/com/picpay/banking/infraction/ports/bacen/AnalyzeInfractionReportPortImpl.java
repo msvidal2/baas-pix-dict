@@ -41,15 +41,14 @@ public class AnalyzeInfractionReportPortImpl implements AnalyzeInfractionReportP
     public InfractionReport analyze(final String infractionReportId, final Integer ispb,
         final InfractionAnalyze analyze, final String requestIdentifier) {
 
-        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-                                                         () -> bacenClient.close(CloseInfractionReportRequest.
-                                                             from(infractionReportId,ispb, analyze)),
-                                                         requestIdentifier);
+        final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
+            () -> bacenClient.close(CloseInfractionReportRequest.from(infractionReportId,ispb, analyze),infractionReportId),
+            requestIdentifier);
 
         return response.toInfractionReport();
     }
 
-    public InfractionReport createFallback(final String infractionReportId, final Integer ispb,
+    public InfractionReport analyzeFallback(final String infractionReportId, final Integer ispb,
         final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
         throw BacenExceptionBuilder.from(e).build();
     }

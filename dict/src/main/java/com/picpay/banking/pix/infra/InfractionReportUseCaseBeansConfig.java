@@ -46,8 +46,8 @@ public class InfractionReportUseCaseBeansConfig {
 
     @Bean
     public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(AnalyzeInfractionReportPort analyzeInfractionReportPort,
-        InfractionReportAnalyzePort infractionReportAnalyzePort) {
-        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportAnalyzePort);
+        InfractionReportAnalyzePort infractionReportAnalyzePort, InfractionReportFindPort infractionReportFindPort) {
+        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportAnalyzePort, infractionReportFindPort);
     }
 
 

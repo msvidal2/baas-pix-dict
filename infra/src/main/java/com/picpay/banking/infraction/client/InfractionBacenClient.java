@@ -14,6 +14,7 @@ import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,7 +32,7 @@ public interface InfractionBacenClient {
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     CreateInfractionReportResponse create(@RequestBody CreateInfractionReportRequest request);
 
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    CloseInfractionReportResponse close(@RequestBody CloseInfractionReportRequest request);
+    @PostMapping(value = "/{InfractionReportId}/close", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    CloseInfractionReportResponse close(@RequestBody CloseInfractionReportRequest request, @PathVariable("InfractionReportId") String infractionReportId);
 
 }

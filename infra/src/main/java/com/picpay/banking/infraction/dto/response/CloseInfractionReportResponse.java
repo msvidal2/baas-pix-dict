@@ -41,6 +41,7 @@ public class CloseInfractionReportResponse {
             .transactionId(this.getInfractionReportRequest().getTransactionId())
             .infractionType(InfractionType.resolve(this.getInfractionReportRequest().getInfractionType().getValue()))
             .reportedBy(ReportedBy.resolve(this.getInfractionReportRequest().getReportedBy().getValue()))
+            .endToEndId(this.getInfractionReportRequest().getTransactionId())
             .details(this.getInfractionReportRequest().getReportDetails())
             .infractionReportId(this.getInfractionReportRequest().getId())
             .situation(InfractionReportSituation.resolve(this.getInfractionReportRequest().getStatus().getValue()))
