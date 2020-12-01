@@ -2,13 +2,9 @@ package com.picpay.banking.pix.infra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picpay.banking.idempotency.IdempotencyValidatorImpl;
-import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
-import com.picpay.banking.infraction.ports.bacen.CreateInfractionReportPortImpl;
-import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.*;
+import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.validators.idempotency.IdempotencyValidator;
@@ -35,6 +31,12 @@ public class InfractionReportUseCaseBeansConfig {
     @Bean
     public IdempotencyValidator<InfractionReport> idempotencyValidator(final RedisTemplate<String, Object> redisTemplate, final ObjectMapper objectMapper) {
         return new IdempotencyValidatorImpl<>(redisTemplate, objectMapper, InfractionReport.class);
+    }
+
+    @Bean
+    public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
+                                                                       final InfractionReportCancelPort infractionReportCancelPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
     }
 
 }

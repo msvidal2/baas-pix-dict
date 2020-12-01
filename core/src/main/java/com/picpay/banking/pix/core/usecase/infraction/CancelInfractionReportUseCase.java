@@ -2,6 +2,8 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.ports.infraction.CancelInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -12,25 +14,25 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class CancelInfractionReportUseCase {
 
-//    private final InfractionReportPort infractionReportPort;
+    private final CancelInfractionReportPort cancelInfractionReportPort;
+
+    private final InfractionReportCancelPort infractionReportCancelPort;
 
     public InfractionReport execute(@NonNull final String infractionReportId
             , @NonNull final Integer ispb, @NonNull final String requestIdentifier) {
 
-        //TODO ajustar com nova porta
+        var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
 
-//        InfractionReport infractionReportCanceled = infractionReportPort
-//                .cancel(infractionReportId,ispb, requestIdentifier);
-//
-//        if (infractionReportCanceled != null)
-//            log.info("Infraction_canceled"
-//                    , kv("requestIdentifier", requestIdentifier)
-//                    , kv("endToEndId", infractionReportCanceled.getEndToEndId())
-//                    , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
-//
-//        return infractionReportCanceled;f
+        infractionReportCancelPort.cancel(infractionReportId);
 
-        return null;
+        if (infractionReportCanceled != null)
+            log.info("Infraction_canceled"
+                    , kv("requestIdentifier", requestIdentifier)
+                    , kv("endToEndId", infractionReportCanceled.getEndToEndId())
+                    , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
+
+        return infractionReportCanceled;
+
     }
 
 }
