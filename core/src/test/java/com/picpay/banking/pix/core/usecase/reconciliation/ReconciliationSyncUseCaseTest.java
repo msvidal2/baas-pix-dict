@@ -66,10 +66,10 @@ class ReconciliationSyncUseCaseTest {
         when(reconciliationBacenPort.syncVerification(any()))
             .thenReturn(SyncVerifierResult.OK);
 
-        reconciliationSyncUseCase.execute();
+        reconciliationSyncUseCase.execute(KeyType.CPF);
 
-        verify(syncVerifierPort, times(5)).update(any());
-        verify(syncVerifierHistoricPort, times(5)).save(any());
+        verify(syncVerifierPort, times(1)).update(any());
+        verify(syncVerifierHistoricPort, times(1)).save(any());
         verify(failureReconciliationMessagePort, times(0)).send(any());
     }
 
@@ -91,10 +91,10 @@ class ReconciliationSyncUseCaseTest {
         when(reconciliationBacenPort.syncVerification("1"))
             .thenReturn(SyncVerifierResult.NOK);
 
-        reconciliationSyncUseCase.execute();
+        reconciliationSyncUseCase.execute(KeyType.CPF);
 
-        verify(syncVerifierPort, times(5)).update(any());
-        verify(syncVerifierHistoricPort, times(5)).save(any());
+        verify(syncVerifierPort, times(1)).update(any());
+        verify(syncVerifierHistoricPort, times(1)).save(any());
         verify(failureReconciliationMessagePort, times(1))
             .send(argThat(argument -> argument.getKeyType().equals(KeyType.CPF)));
     }

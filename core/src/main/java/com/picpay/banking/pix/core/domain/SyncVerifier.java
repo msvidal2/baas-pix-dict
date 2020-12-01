@@ -29,13 +29,13 @@ public class SyncVerifier {
         return vsyncAsBigInteger.toString(16);
     }
 
-    public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult result) {
+    public SyncVerifierHistoric syncVerificationResult(final String vsyncEnd, final SyncVerifierResult result) {
         final LocalDateTime synchronizedEnd = LocalDateTime.now();
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .keyType(keyType)
             .vsyncStart(vsync)
-            .vsyncEnd(vsyncCurrent)
+            .vsyncEnd(vsyncEnd)
             .synchronizedStart(synchronizedAt)
             .synchronizedEnd(synchronizedEnd)
             .syncVerifierResult(result)
@@ -44,7 +44,7 @@ public class SyncVerifier {
         this.syncVerifierResult = result;
 
         if (syncVerifierResult.equals(SyncVerifierResult.OK)) {
-            this.vsync = vsyncCurrent;
+            this.vsync = vsyncEnd;
             this.synchronizedAt = synchronizedEnd;
         }
 

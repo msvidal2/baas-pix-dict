@@ -26,41 +26,43 @@ public class ReconciliationSyncUseCase {
     private final ReconciliationBacenPort reconciliationBacenPort;
     private final FailureReconciliationMessagePort failureReconciliationMessagePort;
 
-    public void execute() {
+    public void execute(KeyType keyType) {
         var startCurrentTimeMillis = System.currentTimeMillis();
-        log.info("ReconciliationSync_started {}", kv("startCurrentTimeMillis", startCurrentTimeMillis));
+        log.info("ReconciliationSync_started {} {}",
+            kv("keyType", keyType),
+            kv("startCurrentTimeMillis", startCurrentTimeMillis));
 
-        List.of(KeyType.values()).forEach(keyType -> {
-            var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
-                .orElseGet(() -> SyncVerifier.builder()
-                    .keyType(keyType)
-                    .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-                    .build());
+        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
+            .orElseGet(() -> SyncVerifier.builder()
+                .keyType(keyType)
+                .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+                .build());
 
-            List<ContentIdentifierEvent> contentIdentifiers = contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(syncVerifier.getKeyType(),
-                syncVerifier.getSynchronizedAt());
+        List<ContentIdentifierEvent> contentIdentifiers = contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(syncVerifier.getKeyType(),
+            syncVerifier.getSynchronizedAt());
 
-            var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
+        var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
 
-            var vsyncResult = reconciliationBacenPort.syncVerification(vsyncCurrent);
+        var vsyncResult = reconciliationBacenPort.syncVerification(vsyncCurrent);
 
-            var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, vsyncResult);
+        var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, vsyncResult);
 
-            syncVerifierPort.update(syncVerifier);
-            syncVerifierHistoricPort.save(vsyncHistoric);
+        syncVerifierPort.update(syncVerifier);
+        syncVerifierHistoricPort.save(vsyncHistoric);
 
-            if (syncVerifier.isNOk()) {
-                failureReconciliationMessagePort.send(vsyncHistoric);
-            }
+        if (syncVerifier.isNOk()) {
+            failureReconciliationMessagePort.send(vsyncHistoric);
+        }
 
-            log.info("ReconciliationSync_keyType_result {} {} {} {}",
-                kv("startCurrentTimeMillis", startCurrentTimeMillis),
-                kv("keyType", vsyncHistoric.getKeyType()),
-                kv("synchronizedAt", vsyncHistoric.getSynchronizedStart()),
-                kv("vsyncResult", vsyncHistoric.getSyncVerifierResult()));
-        });
+        log.info("ReconciliationSync_keyType_result {} {} {} {} {}",
+            kv("keyType", keyType),
+            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+            kv("keyType", vsyncHistoric.getKeyType()),
+            kv("synchronizedAt", vsyncHistoric.getSynchronizedStart()),
+            kv("vsyncResult", vsyncHistoric.getSyncVerifierResult()));
 
-        log.info("ReconciliationSync_done {} {}",
+        log.info("ReconciliationSync_done {} {} {}",
+            kv("keyType", keyType),
             kv("startCurrentTimeMillis", startCurrentTimeMillis),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }

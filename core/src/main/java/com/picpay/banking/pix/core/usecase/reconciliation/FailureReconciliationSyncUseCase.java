@@ -69,6 +69,7 @@ public class FailureReconciliationSyncUseCase {
 
         contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE))
             .forEach(this::hasInDatabaseAndNotHaveInBacen);
+
     }
 
     private void hasInBacenAndNotHaveInDatabase(ContentIdentifierAction action) {
@@ -84,17 +85,15 @@ public class FailureReconciliationSyncUseCase {
 
         var pixKeyInDataBase = findPixKeyPort.findPixKey(pixKeyInBacen.get().getKey());
         if (pixKeyInDataBase.isPresent()) {
-            updateAccountPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, UpdateReason.CLIENT_REQUEST);
+            updateAccountPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, UpdateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
                 kv("startCurrentTimeMillis", startCurrentTimeMillis),
                 kv("updateAccountPixKey", pixKey.getKey()));
-            // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
         } else {
-            createPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, CreateReason.CLIENT_REQUEST);
+            createPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, CreateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
                 kv("startCurrentTimeMillis", startCurrentTimeMillis),
                 kv("createPixKey", pixKey.getKey()));
-            // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
         }
     }
 
@@ -116,11 +115,10 @@ public class FailureReconciliationSyncUseCase {
 
         var pixKey = pixKeyInDatabase.get();
 
-        removePixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, RemoveReason.CLIENT_REQUEST);
+        removePixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, RemoveReason.RECONCILIATION);
         log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
             kv("startCurrentTimeMillis", startCurrentTimeMillis),
             kv("removePixKey", pixKey.getKey()));
-        // TODO: Aqui tem que passar o motivo da criação como RECONCILIATION
     }
 
 }
