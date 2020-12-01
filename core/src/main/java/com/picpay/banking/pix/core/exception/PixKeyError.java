@@ -15,7 +15,7 @@ public enum PixKeyError {
     KEY_EXISTS_INTO_PSP_TO_SAME_PERSON("CHV006", "Já existe vínculo para essa chave neste PSP com o mesmo dono e outra informação de conta. Indica-se que seja feita uma alteração de chave."),
     EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON("CHV007", "Já existe um registro da conta informada para outra pessoa.");
 
-    private String code;
-    private String message;
+    private final String code;
+    private final String message;
 
 }

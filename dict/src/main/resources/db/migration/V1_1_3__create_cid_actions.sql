@@ -1,4 +1,4 @@
-CREATE TABLE public.content_identifier_actions
+CREATE TABLE dict.content_identifier_actions
 (
     id serial NOT NULL,
     id_content_identifier_file integer NULL,

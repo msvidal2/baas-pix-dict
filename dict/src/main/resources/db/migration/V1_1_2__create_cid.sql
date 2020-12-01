@@ -1,4 +1,4 @@
-CREATE TABLE public.content_identifier
+CREATE TABLE dict.content_identifier
 (
     cid character varying(100) NOT NULL,
     key character varying(100) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE public.content_identifier
     FOREIGN KEY (key,key_type) REFERENCES pix_key(key,type)
 );
 
-CREATE TABLE public.content_identifier_file
+CREATE TABLE dict.content_identifier_file
 (
     id integer NOT NULL,
     status character varying(20) NOT NULL,

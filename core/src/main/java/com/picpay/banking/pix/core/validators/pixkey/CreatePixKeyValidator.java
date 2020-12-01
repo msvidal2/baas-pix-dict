@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.validators.pixkey;
 
 import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.validators.*;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
@@ -25,8 +26,10 @@ public class CreatePixKeyValidator {
             throw new IllegalArgumentException("Key type cannot be null");
         }
 
-        KeyValidator<String> keyValidator = pixKey.getType().getValidator();
-        keyValidator.validate(pixKey.getKey());
+        if(!KeyType.RANDOM.equals(pixKey.getType())) { // TODO: Alterar teste para essa regra
+            KeyValidator<String> keyValidator = pixKey.getType().getValidator();
+            keyValidator.validate(pixKey.getKey());
+        }
 
         AccountOpeningDateValidator.validate(pixKey.getAccountOpeningDate());
         AccountTypeValidator.validate(pixKey.getAccountType());

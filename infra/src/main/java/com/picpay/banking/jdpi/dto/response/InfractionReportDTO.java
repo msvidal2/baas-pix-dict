@@ -1,11 +1,11 @@
 package com.picpay.banking.jdpi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.picpay.banking.pix.core.domain.InfractionAnalyze;
-import com.picpay.banking.pix.core.domain.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +60,7 @@ public class InfractionReportDTO {
     public InfractionReport toInfraction() {
         return InfractionReport.builder()
             .endToEndId(endToEndId)
-            .type(InfractionType.resolve(type))
+            .infractionType(InfractionType.resolve(type))
             .details(details)
             .infractionReportId(infractionReportId)
             .reportedBy(ReportedBy.resolve(reportedBy))

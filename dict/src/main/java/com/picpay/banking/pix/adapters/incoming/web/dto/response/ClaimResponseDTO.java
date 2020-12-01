@@ -33,6 +33,9 @@ public class ClaimResponseDTO {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
+    private ClaimCancelReason cancelReason;
+    private ClaimConfirmationReason confirmationReason;
+    private String correlationId;
 
     public static ClaimResponseDTO from(final Claim claim) {
         return ClaimResponseDTO.builder()
@@ -57,6 +60,9 @@ public class ClaimResponseDTO {
                 .resolutionThresholdDate(claim.getResolutionThresholdDate())
                 .completionThresholdDate(claim.getCompletionThresholdDate())
                 .lastModifiedDate(claim.getLastModifiedDate())
+                .cancelReason(claim.getCancelReason())
+                .confirmationReason(claim.getConfirmationReason())
+                .correlationId(claim.getCorrelationId())
                 .build();
     }
 }
