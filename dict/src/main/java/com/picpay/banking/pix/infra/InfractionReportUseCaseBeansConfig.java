@@ -10,6 +10,8 @@ import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
+import com.picpay.banking.pix.core.ports.infraction.*;
+import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
@@ -50,6 +52,10 @@ public class InfractionReportUseCaseBeansConfig {
         return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportAnalyzePort, infractionReportFindPort);
     }
 
-
+    @Bean
+    public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
+        final InfractionReportCancelPort infractionReportCancelPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
+    }
 
 }

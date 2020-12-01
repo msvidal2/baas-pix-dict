@@ -9,7 +9,9 @@ package com.picpay.banking.infraction.ports.bacen;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
-import com.picpay.banking.infraction.client.InfractionBacenClient;
+import com.picpay.banking.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.idempotency.annotation.ValidateIdempotency;
+import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
@@ -28,13 +30,14 @@ import org.springframework.stereotype.Component;
 public class CreateInfractionReportPortImpl implements CreateInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
-    private final InfractionBacenClient bacenClient;
+    private final CreateInfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "createFallback")
-    public InfractionReport create(final InfractionReport infractionReport, final String requestIdentifier) {
+    @ValidateIdempotency(InfractionReport.class)
+    public InfractionReport create(final InfractionReport infractionReport, @IdempotencyKey final String requestIdentifier) {
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
                                                          () -> bacenClient.create(CreateInfractionReportRequest.from(infractionReport)),
                                                          requestIdentifier);

@@ -1,8 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.exceptions.BacenException;
-import com.picpay.banking.jdpi.exception.JDClientException;
-import com.picpay.banking.jdpi.exception.NotFoundJdClientException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
@@ -20,14 +18,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RestControllerAdvice
@@ -163,10 +162,14 @@ public class CustomExceptionHandler {
         return errorDTO;
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
-    public ErrorDTO handleNotFoundException(Exception ex, WebRequest webRequest){
-        ErrorDTO errorDTO = ErrorDTO.from(NOT_FOUND, ex.getMessage());
+    public ErrorDTO handleNotFoundException(ResourceNotFoundException ex) {
+
+        ErrorDTO errorDTO = ErrorDTO.from(
+                NOT_FOUND,
+                Optional.ofNullable(ex.getMessage()).orElse("Entidade não encontrada."),
+                "NotFound");
 
         log.error("error_resourceNotFoundException", errorDTO.toLogJson(ex));
 

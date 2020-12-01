@@ -21,16 +21,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author rafael.braga
  * @version 1.0 18/11/2020
  */
-@Builder
 @Getter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(name = "CreateInfractionReportRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CreateInfractionReportRequest {
 
     @XmlElement(name = "Participant")
     private int participant;
+
     @XmlElement(name = "InfractionReport")
     private InfractionReportRequest infractionReportRequest;
 

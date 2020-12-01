@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,7 +70,7 @@ class ClaimControllerTest {
                 .keyType(KeyType.CELLPHONE)
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
-                .taxId("12345678902")
+                .cpfCnpj("12345678902")
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .build();
     }
@@ -96,11 +97,14 @@ class ClaimControllerTest {
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(ResourceNotFoundException.class);
 
-        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
+        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true"))
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo(404)))
                 .andExpect(jsonPath("$.error", equalTo("Not Found")))
-                .andExpect(jsonPath("$.message", equalTo("Resource not found")));
+                .andExpect(jsonPath("$.apiErrorCode", equalTo("NotFound")))
+                .andExpect(jsonPath("$.message", equalTo("Entidade não encontrada.")));
     }
 
     @Test
@@ -115,6 +119,7 @@ class ClaimControllerTest {
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
                         .ispb(12345)
                         .build())))
+            .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.claimSituation", equalTo("COMPLETED")));
     }

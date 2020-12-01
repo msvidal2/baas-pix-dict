@@ -1,4 +1,4 @@
-CREATE TABLE public.claim
+CREATE TABLE dict.claim
 (
     id character varying(100) NOT NULL,
     type character varying(20) NOT NULL,
@@ -19,5 +19,9 @@ CREATE TABLE public.claim
     last_modified timestamp without time zone,
     creation_date timestamp without time zone,
     update_date timestamp without time zone,
+    cancel_reason character varying(20) NULL,
+    confirmation_reason character varying(20) NULL,
+    cancelled_by_claimant character varying(20) NULL,
+    correlation_id character varying(32) NULL,
     CONSTRAINT claim_pkey PRIMARY KEY (id)
 );

@@ -75,6 +75,14 @@ public class ClaimEntity {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    private ClaimConfirmationReason confirmReason;
+
+    private ClaimCancelReason cancelReason;
+
+    private boolean cancelledByClaimant;
+
+    private String correlationId;
+
     public static ClaimEntity from(Claim claim) {
         return ClaimEntity.builder()
                 .id(claim.getClaimId())
@@ -87,13 +95,17 @@ public class ClaimEntity {
                 .claimerBranch(claim.getBranchNumber())
                 .claimerName(claim.getOwnerName())
                 .claimerParticipant(claim.getDonorIspb())
-                .claimerTaxId(claim.getTaxId())
+                .claimerTaxId(claim.getCpfCnpj())
                 .claimerType(claim.getPersonType())
                 .donorParticipant(claim.getDonorIspb())
                 .status(ClaimStatus.resolve(claim.getClaimSituation()))
                 .completionPeriodEnd(claim.getCompletionThresholdDate())
                 .resolutionPeriodEnd(claim.getResolutionThresholdDate())
                 .lastModified(claim.getLastModifiedDate())
+                .confirmReason(claim.getConfirmationReason())
+                .cancelReason(claim.getCancelReason())
+                .cancelledByClaimant(claim.getIsClaim())
+                .correlationId(claim.getCorrelationId())
                 .build();
     }
 
@@ -103,19 +115,23 @@ public class ClaimEntity {
                 .claimType(type)
                 .key(key)
                 .keyType(keyType)
-                .donorIspb(claimerParticipant)
+                .donorIspb(donorParticipant)
                 .branchNumber(claimerBranch)
                 .accountNumber(claimerAccountNumber)
                 .accountType(claimerAccountType)
                 .accountOpeningDate(claimerAccountOpeningDate)
                 .personType(claimerType)
-                .taxId(claimerTaxId)
+                .cpfCnpj(claimerTaxId)
                 .name(claimerName)
-                .donorIspb(donorParticipant)
                 .claimSituation(status.getClaimSituation())
                 .completionThresholdDate(completionPeriodEnd)
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
+                .ispb(claimerParticipant)
+                .confirmationReason(confirmReason)
+                .cancelReason(cancelReason)
+                .isClaim(cancelledByClaimant)
+                .correlationId(correlationId)
                 .build();
     }
 
