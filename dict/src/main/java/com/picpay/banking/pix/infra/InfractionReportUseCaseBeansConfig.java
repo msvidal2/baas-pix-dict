@@ -1,11 +1,13 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.infraction.*;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
