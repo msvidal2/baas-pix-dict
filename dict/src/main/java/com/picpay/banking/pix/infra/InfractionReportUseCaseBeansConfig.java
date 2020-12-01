@@ -1,5 +1,7 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.ports.infraction.*;
+import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
@@ -21,6 +23,12 @@ public class InfractionReportUseCaseBeansConfig {
     @Bean
     public FindInfractionReportUseCase findInfractionReportUseCase(InfractionReportFindPort infractionReportPort) {
         return new FindInfractionReportUseCase(infractionReportPort);
+    }
+
+    @Bean
+    public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
+                                                                       final InfractionReportCancelPort infractionReportCancelPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
     }
 
 }

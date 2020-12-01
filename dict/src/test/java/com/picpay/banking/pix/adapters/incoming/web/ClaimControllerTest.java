@@ -80,7 +80,6 @@ class ClaimControllerTest {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenReturn(claim);
 
         mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountNumber", equalTo("123456")))
                 .andExpect(jsonPath("$.accountType", equalTo("CHECKING")))
@@ -94,11 +93,12 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
-//    @Test
+    @Test
     void when_findClaimWithNonExistentId_expect_statusNotFound() throws Exception {
         when(findClaimUseCase.execute(anyString(), anyString(), anyBoolean())).thenThrow(ResourceNotFoundException.class);
 
-        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true")))
+        mockMvc.perform(get(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d?ispb=22896431&reivindicador=true"))
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo(404)))
@@ -119,6 +119,7 @@ class ClaimControllerTest {
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
                         .ispb(12345)
                         .build())))
+            .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.claimSituation", equalTo("COMPLETED")));
     }

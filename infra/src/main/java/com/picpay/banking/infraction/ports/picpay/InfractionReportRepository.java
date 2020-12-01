@@ -31,4 +31,7 @@ public interface InfractionReportRepository extends JpaRepository<InfractionRepo
     List<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
         @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
 
+    @Query("UPDATE InfractionReportEntity ir SET ir.situation = :situation WHERE ir.infractionReportId = :infractionReportId")
+    Optional<InfractionReportEntity> changeSituation(String infractionReportId, int situation);
+
 }

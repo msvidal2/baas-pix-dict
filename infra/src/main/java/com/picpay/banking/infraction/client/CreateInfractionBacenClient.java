@@ -6,24 +6,22 @@
 
 package com.picpay.banking.infraction.client;
 
+import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
+import com.picpay.banking.infraction.dto.response.CancelInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.GetInfractionReportResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author rafael.braga
  * @version 1.0 18/11/2020
  */
 @FeignClient(name = "bacenInfractionClient",
-    url = "${pix.bacen.dict.url}",
-    path = "/v1/infraction-reports")
+        url = "${pix.bacen.dict.url}",
+        path = "/v1/infraction-reports")
 public interface CreateInfractionBacenClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
@@ -32,5 +30,13 @@ public interface CreateInfractionBacenClient {
     @GetMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     GetInfractionReportResponse find(@RequestParam String infractionReportId,
                                      @RequestHeader(name = "PI-RequestingParticipant") String pIRequestingParticipant);
+
+    @PostMapping(value = "/{InfractionReportId}/cancel",
+            consumes = MediaType.APPLICATION_XML_VALUE,
+            produces = MediaType.APPLICATION_XML_VALUE)
+    CancelInfractionReportResponse cancel(
+            @RequestBody CancelInfractionReportRequest cancelInfractionReportRequest,
+            @PathVariable("InfractionReportId") String InfractionReportId
+    );
 
 }
