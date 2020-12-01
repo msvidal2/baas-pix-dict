@@ -4,10 +4,8 @@ import com.picpay.banking.jdpi.clients.ClaimJDClient;
 import com.picpay.banking.jdpi.clients.TokenManagerClient;
 import com.picpay.banking.jdpi.interceptors.FeignClientInterceptor;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
-import com.picpay.banking.jdpi.ports.claim.ClaimConfirmPortImpl;
 import com.picpay.banking.jdpi.ports.claim.CompleteClaimPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,12 +18,6 @@ public class JDPIPortBeansConfig {
     public FeignClientInterceptor feignClientInterceptor(TokenManagerClient tokenManagerClient,
                                                          TimeLimiterExecutor timeLimiterExecutor) {
         return new FeignClientInterceptor(tokenManagerClient, timeLimiterExecutor);
-    }
-
-    @Bean
-    public ConfirmClaimPort claimConfirmationPort(ClaimJDClient claimJDClient,
-                                                  TimeLimiterExecutor timeLimiterExecutor) {
-        return new ClaimConfirmPortImpl(claimJDClient, timeLimiterExecutor);
     }
 
     @Bean

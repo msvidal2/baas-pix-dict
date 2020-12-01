@@ -72,6 +72,7 @@ public class ClaimController {
 
         var claim = Claim.builder()
                 .claimId(claimId)
+                .confirmationReason(dto.getReason())
                 .ispb(dto.getIspb())
                 .build();
 

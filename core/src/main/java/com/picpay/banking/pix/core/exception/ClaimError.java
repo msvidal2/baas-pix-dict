@@ -21,7 +21,8 @@ public enum ClaimError {
     JDPIRVN012("RVN012", "A Reivindicação não pode ser concluída pelo doador da chave."),
     KEY_ALREADY_BELONGS_TO_CUSTOMER("RVN013", "Reivindicação de posse de chave que tem como dona a mesma pessoa que reivindica."),
     OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY("RVN014", "Já existe uma Reivindicação aberta para a chave."),
-    INCONSISTENT_PORTABILITY("RVN015", "Reivindicação de portabilidade que tem como dono uma pessoa diferente da que reivindica.");
+    INCONSISTENT_PORTABILITY("RVN015", "Reivindicação de portabilidade que tem como dono uma pessoa diferente da que reivindica."),
+    OWNERSHIP_DEFAULT_OPERATION_RESOLUTION_DATE_NOT_PASSED("RVN016", "Para reivindicação de posse com motivo DEFAULT_RESPONSE, o prazo de resolução deve ter passado.");
 
     private String code;
     private String message;

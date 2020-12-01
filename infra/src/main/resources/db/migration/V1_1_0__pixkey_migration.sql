@@ -21,6 +21,6 @@ CREATE TABLE dict.pix_key
 );
 
 CREATE INDEX pix_key_key ON dict.pix_key (key);
-CREATE INDEX pix_key_key_type ON dict.pix_key (key, type);a
+CREATE INDEX pix_key_key_type ON dict.pix_key (key, type);
 CREATE INDEX pix_key_taxId ON dict.pix_key (tax_id);
 CREATE INDEX pix_key_account ON dict.pix_key (participant, branch, account_number, account_type);
