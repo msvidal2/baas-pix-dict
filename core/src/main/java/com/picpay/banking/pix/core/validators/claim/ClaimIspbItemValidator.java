@@ -4,11 +4,10 @@ package com.picpay.banking.pix.core.validators.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 
-public class ClaimIspbItemValidator implements DictItemValidator<Claim> {
+public class ClaimIspbItemValidator {
 
-    @Override
-    public void validate(Claim claim) {
-        if (claim.getIspb() <= 0) {
+    public static void validate(int ispb) {
+        if (ispb <= 0) {
             throw new IllegalArgumentException("Invalid ISPB");
         }
     }
