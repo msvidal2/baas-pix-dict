@@ -415,4 +415,84 @@ class ClaimCancelUseCaseTest {
         verify(findByIdPort, times(4)).find(anyString());
     }
 
+    @Test
+    void when_executeWithClaimantCancelWithDefaultResponseReasonBeforeCurrentDate_expect_claimException() {
+        var claimFindMock = Claim.builder()
+                .claimId("123e4567-e89b-12d3-a456-426655440000")
+                .claimType(ClaimType.POSSESSION_CLAIM)
+                .key("+5561988887777")
+                .keyType(KeyType.CELLPHONE)
+                .ispb(12345678)
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .name("João Silva")
+                .donorIspb(87654321)
+                .claimSituation(ClaimSituation.AWAITING_CLAIM)
+                .resolutionThresholdDate(LocalDateTime.now().plusDays(5))
+                .completionThresholdDate(LocalDateTime.now().plusDays(5))
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+
+        when(findByIdPort.find(anyString())).thenReturn(Optional.of(claimFindMock));
+
+        var claimCancel = Claim.builder()
+                .claimId("123e4567-e89b-12d3-a456-426655440000")
+                .ispb(12345678)
+                .build();
+
+        var requestIdentifier = randomUUID().toString();
+
+        var error = assertThrows(ClaimException.class,
+                () -> useCase.execute(claimCancel, true, DEFAULT_RESPONSE, requestIdentifier))
+                .getClaimError();
+
+        assertEquals(ClaimError.CLAIMANT_CANCEL_INVALID_REASON, error);
+
+        verify(findByIdPort).find(anyString());
+    }
+
+    @Test
+    void when_executeWithDonorCancelWithDefaultResponseReasonBeforeCurrentDate_expect_claimException() {
+        var claimFindMock = Claim.builder()
+                .claimId("123e4567-e89b-12d3-a456-426655440000")
+                .claimType(ClaimType.POSSESSION_CLAIM)
+                .key("+5561988887777")
+                .keyType(KeyType.CELLPHONE)
+                .ispb(12345678)
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .name("João Silva")
+                .donorIspb(87654321)
+                .claimSituation(ClaimSituation.AWAITING_CLAIM)
+                .resolutionThresholdDate(LocalDateTime.now().plusDays(5))
+                .completionThresholdDate(LocalDateTime.now().plusDays(5))
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+
+        when(findByIdPort.find(anyString())).thenReturn(Optional.of(claimFindMock));
+
+        var claimCancel = Claim.builder()
+                .claimId("123e4567-e89b-12d3-a456-426655440000")
+                .ispb(12345678)
+                .build();
+
+        var requestIdentifier = randomUUID().toString();
+
+        var error = assertThrows(ClaimException.class,
+                () -> useCase.execute(claimCancel, false, DEFAULT_RESPONSE, requestIdentifier))
+                .getClaimError();
+
+        assertEquals(ClaimError.DONOR_CANCEL_INVALID_REASON, error);
+
+        verify(findByIdPort).find(anyString());
+    }
+
 }

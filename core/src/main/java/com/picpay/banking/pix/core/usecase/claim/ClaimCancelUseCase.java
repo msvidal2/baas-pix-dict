@@ -11,6 +11,7 @@ import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -55,8 +56,8 @@ public class ClaimCancelUseCase {
                 .orElseThrow(ResourceNotFoundException::new);
 
         validateAllowedSituation(claim, canceledClaimant);
-        validateAllowedReason(canceledClaimant, reason, claim);
-        // TODO: validar regra quando o motivo dor DEFAULT_RESPONSE (DEFAULT_OPERATION), conforme informa no swagger
+        validateAllowedReason(claim, reason, canceledClaimant);
+        validateExpiredResolutionPeriod(claim, reason, canceledClaimant);
 
         var claimCanceled = cancelClaimBacenPort.cancel(claim.getClaimId(), reason, claimCancel.getIspb(), requestIdentifier);
 
@@ -86,7 +87,7 @@ public class ClaimCancelUseCase {
         }
     }
 
-    private void validateAllowedReason(final boolean canceledClaimant, final ClaimCancelReason reason, final Claim claim) {
+    private void validateAllowedReason(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
         var allowedReasons = Map.of(
                 ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
                 ClaimType.PORTABILITY, portabilityAllowedReasons)
@@ -100,6 +101,24 @@ public class ClaimCancelUseCase {
 
             throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
         }
+    }
+
+    private void validateExpiredResolutionPeriod(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
+        if(!ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)) {
+            return;
+        }
+
+        var currentDate = LocalDateTime.now();
+
+        if(currentDate.isAfter(claim.getResolutionThresholdDate())) {
+            return;
+        }
+
+        if(canceledClaimant) {
+            throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
+        }
+
+        throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
     }
 
 }
