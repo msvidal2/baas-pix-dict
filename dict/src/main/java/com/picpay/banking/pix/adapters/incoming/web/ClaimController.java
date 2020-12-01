@@ -31,7 +31,7 @@ public class ClaimController {
 
     private ConfirmClaimUseCase confirmClaimUseCase;
 
-//    private ClaimCancelUseCase claimCancelUseCase;
+    private ClaimCancelUseCase claimCancelUseCase;
 
     private ListClaimUseCase listClaimUseCase;
 
@@ -122,7 +122,7 @@ public class ClaimController {
                 .ispb(dto.getIspb())
                 .build();
 
-//        var claimCancelled = claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
+        var claimCancelled = claimCancelUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
 
         return ClaimResponse.from(claim);
     }

@@ -37,14 +37,14 @@ public class ClaimUseCaseBeansConfig {
         return new ListClaimUseCase(listPendingClaimPort,listClaimPort);
     }
 
-/*
+
     @Bean
     public ClaimCancelUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
                                                  FindByIdPort findByIdPort,
                                                  CancelClaimPort cancelClaimPort) {
         return new ClaimCancelUseCase(claimCancelPort, findByIdPort, cancelClaimPort);
     }
-*/
+
     @Bean
     public CompleteClaimUseCase completeClaimUseCase(CompleteClaimPort completeClaimPort,
                                                      @Qualifier("completeClaimItemValidator") DictItemValidator dictItemValidator) {
