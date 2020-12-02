@@ -3,6 +3,8 @@ package com.picpay.banking.pix.core.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public enum ClaimConfirmationReason {
@@ -21,6 +23,14 @@ public enum ClaimConfirmationReason {
         }
 
         return null;
+    }
+
+    public static List<ClaimConfirmationReason> portabilityConfirmReasons() {
+        return List.of(CLIENT_REQUEST, ACCOUNT_CLOSURE);
+    }
+
+    public static List<ClaimConfirmationReason> ownershipConfirmReasons() {
+        return List.of(CLIENT_REQUEST, DEFAULT_RESPONSE);
     }
 
 }

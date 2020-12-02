@@ -19,6 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConfirmClaimRequest {
 
+    @XmlElement(name = "ClaimId")
+    private String claimId;
+
     @XmlElement(name = "Participant")
     private String participant;
 
@@ -27,6 +30,7 @@ public class ConfirmClaimRequest {
 
     public static ConfirmClaimRequest from(Claim claim) {
         return ConfirmClaimRequest.builder()
+                .claimId(claim.getClaimId())
                 .participant(String.valueOf(claim.getIspb()))
                 .reason(ConfirmClaimReason.resolve(claim.getConfirmationReason()))
                 .build();
