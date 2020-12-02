@@ -6,7 +6,6 @@
 
 package com.picpay.banking.infraction.client;
 
-import com.picpay.banking.config.FeignXmlConfig;
 import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CloseInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
@@ -15,7 +14,9 @@ import com.picpay.banking.infraction.dto.response.CloseInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author rafael.braga

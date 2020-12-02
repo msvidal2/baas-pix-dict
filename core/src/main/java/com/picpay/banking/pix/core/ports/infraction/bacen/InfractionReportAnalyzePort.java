@@ -5,13 +5,15 @@
  */
 
 
-package com.picpay.banking.pix.core.ports.infraction;
+package com.picpay.banking.pix.core.ports.infraction.bacen;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
-public interface AnalyzeInfractionReportPort {
+import java.util.Optional;
 
-    InfractionReport analyze(String infractionReportId, Integer ispb, InfractionAnalyze analyze, String requestIdentifier);
+public interface InfractionReportAnalyzePort {
+
+    Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier);
 
 }

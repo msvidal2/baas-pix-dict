@@ -14,10 +14,12 @@ import com.picpay.banking.infraction.dto.request.CloseInfractionReportRequest;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.AnalyzeInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -25,7 +27,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class AnalyzeInfractionReportPortImpl implements AnalyzeInfractionReportPort {
+public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzePort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "analyze-infraction";
     private final CreateInfractionBacenClient bacenClient;
@@ -35,18 +37,15 @@ public class AnalyzeInfractionReportPortImpl implements AnalyzeInfractionReportP
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "analyzeFallback")
-    public InfractionReport analyze(final String infractionReportId, final Integer ispb,
-        final InfractionAnalyze analyze, final String requestIdentifier) {
-
+    public Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier) {
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-            () -> bacenClient.close(CloseInfractionReportRequest.from(infractionReportId,ispb, analyze),infractionReportId),
-            requestIdentifier);
-
-        return response.toInfractionReport();
+                                                         () -> bacenClient.close(CloseInfractionReportRequest.from(infractionReport), infractionReport.getInfractionReportId()),
+                                                         requestIdentifier);
+        return Optional.of(response.toInfractionReport());
     }
 
-    public InfractionReport analyzeFallback(final String infractionReportId, final Integer ispb,
-        final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
+    public Optional<InfractionReport> analyzeFallback(final String infractionReportId, final Integer ispb,
+                                                      final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
         throw BacenExceptionBuilder.from(e).build();
     }
 

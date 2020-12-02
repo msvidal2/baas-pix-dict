@@ -6,11 +6,9 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
-import com.picpay.banking.pix.core.ports.infraction.AnalyzeInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportAnalyzePort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,10 +34,10 @@ class AnalyzeInfractionReportUseCaseTest {
     private AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
 
     @Mock
-    private AnalyzeInfractionReportPort analyzeInfractionReportPort;
+    private InfractionReportAnalyzePort infractionReportAnalyzePort;
 
     @Mock
-    private InfractionReportAnalyzePort infractionReportAnalyzePort;
+    private com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportAnalyzePort infractionReportAnalyzePort;
 
     @Mock
     private InfractionReportFindPort infractionReportFindPort;
@@ -69,7 +67,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
         when(infractionReportFindPort.find(anyString())).thenReturn(Optional.ofNullable(infractionReport));
 
-        when(analyzeInfractionReportPort.analyze(anyString(), anyInt(),any(),anyString())).thenReturn(infractionReport);
+        when(infractionReportAnalyzePort.analyze(anyString(), anyInt(), any(), anyString())).thenReturn(infractionReport);
 
         when(infractionReportAnalyzePort.analyze(any())).thenReturn(infractionReport);
 
@@ -77,7 +75,7 @@ class AnalyzeInfractionReportUseCaseTest {
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
         assertThat(infractionReport.getEndToEndId()).isNotNull();
 
-       verify(analyzeInfractionReportPort).analyze(anyString(), anyInt(),any(),anyString());
+       verify(infractionReportAnalyzePort).analyze(anyString(), anyInt(), any(), anyString());
     }
 
 
