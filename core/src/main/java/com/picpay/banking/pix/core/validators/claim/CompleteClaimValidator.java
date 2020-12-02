@@ -19,7 +19,7 @@ public class CompleteClaimValidator {
 
     public static void validate(final String requestIdentifier, final Claim claim) {
         if (Strings.isNullOrEmpty(requestIdentifier) || requestIdentifier.isBlank()) {
-            throw new UseCaseException("You must inform a request identifier");
+            throw new IllegalArgumentException("You must inform a request identifier");
         }
 
         if(Objects.isNull(claim)) {

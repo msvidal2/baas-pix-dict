@@ -1,32 +1,33 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
+import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
+import static com.picpay.banking.pix.core.domain.ClaimSituation.OPEN;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CompleteClaimUseCaseTest {
 
+    @InjectMocks
     private CompleteClaimUseCase useCase;
 
     @Mock
@@ -44,46 +45,132 @@ public class CompleteClaimUseCaseTest {
     @Mock
     private CreatePixKeyPort createPixKeyPort;
 
+    private Claim claimRequest;
+
+    private Claim claimResponseConfirmed;
+
+    private Claim claimResponseCompleted;
+
+    private Claim claimResponseOpened;
+
+    private Claim possessionClaim;
+
+    private PixKey pixKeyCreated;
+
     @BeforeEach
     public void setup() {
-        var validator = new ClaimValidatorComposite(List.of(
-     //           new ClaimIdValidator(),
-     //           new ClaimIspbItemValidator()
-        ));
+        claimRequest = Claim.builder()
+                .ispb(22896431)
+                .claimId(randomUUID().toString())
+                .build();
+
+        claimResponseConfirmed = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .claimSituation(ClaimSituation.CONFIRMED)
+                .build();
+
+        claimResponseCompleted = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .claimSituation(ClaimSituation.CONFIRMED)
+                .build();
+
+        claimResponseOpened = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .claimSituation(OPEN)
+                .build();
+
+        possessionClaim = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .claimSituation(OPEN)
+                .claimType(ClaimType.POSSESSION_CLAIM)
+                .completionThresholdDate(LocalDateTime.of(2020, 12, 30, 19, 30))
+                .build();
+
+        pixKeyCreated = PixKey.builder()
+                .type(KeyType.EMAIL)
+                .key("joao@picpay.com")
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1234")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
+                .endToEndId("endToEndId").build();
 
         useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
     }
 
     @Test
-    void testComplete() {
-        var claimPortResponse = Claim.builder()
-                .claimId(randomUUID().toString())
-                .claimSituation(ClaimSituation.COMPLETED)
-                .resolutionThresholdDate(LocalDateTime.now())
-                .completionThresholdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
-                .build();
+    void when_completeClaimWithSuccess_expect_claim() {
+        when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claimResponseConfirmed));
+        when(completeClaimBacenPort.complete(any(), anyString())).thenReturn(claimResponseCompleted);
+        when(completeClaimPort.complete(any(), anyString())).thenReturn(claimResponseCompleted);
+        when(createPixKeyBacenPort.create(anyString(), any(), any())).thenReturn(pixKeyCreated);
+        when(createPixKeyPort.createPixKey(any(), any())).thenReturn(pixKeyCreated);
 
-        when(completeClaimBacenPort.complete(any(), anyString())).thenReturn(claimPortResponse);
+        Claim claimResult = useCase.execute(claimRequest, randomUUID().toString());
 
-        assertDoesNotThrow(() -> {
-            var completeClaimResponse = useCase.execute(
-                    Claim.builder()
-                            .claimId(randomUUID().toString())
-                            .ispb(23542432)
-                            .build(),
-                    randomUUID().toString());
+        assertEquals(claimResult.getClaimId(), claimResponseCompleted.getClaimId());
 
-            Assertions.assertEquals(claimPortResponse.getClaimId(), completeClaimResponse.getClaimId());
-            assertEquals(claimPortResponse.getClaimSituation(), completeClaimResponse.getClaimSituation());
-            Assertions.assertEquals(claimPortResponse.getResolutionThresholdDate(), completeClaimResponse.getResolutionThresholdDate());
-            Assertions.assertEquals(claimPortResponse.getCompletionThresholdDate(), completeClaimResponse.getCompletionThresholdDate());
-            Assertions.assertEquals(claimPortResponse.getLastModifiedDate(), completeClaimResponse.getLastModifiedDate());
-        });
+        verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
+        verify(completeClaimBacenPort, times(1)).complete(any(), anyString());
+        verify(completeClaimPort, times(1)).complete(any(), anyString());
+        verify(createPixKeyBacenPort, times(1)).create(anyString(), any(), any());
+        verify(createPixKeyPort, times(1)).createPixKey(any(), any());
     }
 
     @Test
-    void testCompletemNullClaimId() {
+    void when_completeClaimWithStatusNotConfirmed_expect_claimException() {
+        when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claimResponseOpened));
+
+        assertThrows(ClaimException.class, () -> useCase.execute(claimRequest, randomUUID().toString()));
+
+        verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
+        verify(completeClaimBacenPort, times(0)).complete(any(), anyString());
+        verify(completeClaimPort, times(0)).complete(any(), anyString());
+        verify(createPixKeyBacenPort, times(0)).create(anyString(), any(), any());
+        verify(createPixKeyPort, times(0)).createPixKey(any(), any());
+    }
+
+    @Test
+    void when_completeClaimPossessionWithInvalidCompletionThresholdDate_expect_claimException() {
+        when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(possessionClaim));
+
+        assertThrows(ClaimException.class, () -> useCase.execute(claimRequest, randomUUID().toString()));
+
+        verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
+        verify(completeClaimBacenPort, times(0)).complete(any(), anyString());
+        verify(completeClaimPort, times(0)).complete(any(), anyString());
+        verify(createPixKeyBacenPort, times(0)).create(anyString(), any(), any());
+        verify(createPixKeyPort, times(0)).createPixKey(any(), any());
+    }
+
+    @Test
+    void testCompleteNullClaimId() {
         assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
                                 .claimId(null)
@@ -112,14 +199,24 @@ public class CompleteClaimUseCaseTest {
                         randomUUID().toString()));
     }
 
-    //@Test
+    @Test
     void testCompleteNullRequestIdentifier() {
-        assertThrows(NullPointerException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 useCase.execute(Claim.builder()
                                 .claimId(randomUUID().toString())
                                 .ispb(23423)
                                 .build(),
                         null));
+    }
+
+    @Test
+    void testCompleteEmptyRequestIdentifier() {
+        assertThrows(IllegalArgumentException .class, () ->
+                useCase.execute(Claim.builder()
+                                .claimId(randomUUID().toString())
+                                .ispb(-42432)
+                                .build(),
+                        ""));
     }
 
     @Test
@@ -142,14 +239,6 @@ public class CompleteClaimUseCaseTest {
                         randomUUID().toString()));
     }
 
-    //@Test
-    void testCompleteEmptyRequestIdentifier() {
-        assertThrows(IllegalArgumentException.class, () ->
-                useCase.execute(Claim.builder()
-                                .claimId(randomUUID().toString())
-                                .ispb(-42432)
-                                .build(),
-                        ""));
-    }
+
 
 }
