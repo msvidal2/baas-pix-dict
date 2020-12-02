@@ -20,7 +20,7 @@ public class ListKeys implements Specification<PixKeyEntity> {
     @Override
     public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
         var predicates = new ArrayList<Predicate>();
-        predicates.add(criteriaBuilder.equal(root.get("id").get("taxId"), pixKey.getTaxId()));
+        predicates.add(criteriaBuilder.equal(root.get("taxId"), pixKey.getTaxId()));
         predicates.add(criteriaBuilder.equal(root.get("personType"), pixKey.getPersonType()));
         predicates.add(criteriaBuilder.equal(root.get("accountNumber"), pixKey.getAccountNumber()));
         predicates.add(criteriaBuilder.equal(root.get("accountType"), pixKey.getAccountType()));

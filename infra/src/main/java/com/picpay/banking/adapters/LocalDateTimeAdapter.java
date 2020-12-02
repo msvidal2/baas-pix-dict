@@ -10,12 +10,14 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
-    private final static String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
+    private final static String PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private final static String PATTERN_WITH_NANOSECOND = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private final DateTimeFormatter formatter;
+    private final DateTimeFormatter formatterNano;
 
     public LocalDateTimeAdapter() {
         formatter = DateTimeFormatter.ofPattern(PATTERN);
+        formatterNano = DateTimeFormatter.ofPattern(PATTERN_WITH_NANOSECOND);
     }
 
     @Override
@@ -23,8 +25,11 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
         if(Strings.isNullOrEmpty(value) || value.isBlank()) {
             return null;
         }
-        
-        return LocalDateTime.from(formatter.parse(value));
+        try {
+            return LocalDateTime.from(formatter.parse(value));
+        }catch (Exception e){
+            return LocalDateTime.from(formatterNano.parse(value));
+        }
     }
 
     @Override
@@ -33,7 +38,11 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
             return null;
         }
 
-        return formatter.format(value);
+        try {
+            return formatter.format(value);
+        }catch (Exception e){
+            return formatterNano.format(value);
+        }
     }
 
 }

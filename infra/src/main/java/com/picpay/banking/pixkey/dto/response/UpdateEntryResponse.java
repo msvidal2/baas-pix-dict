@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Class comments go here...
@@ -42,7 +43,7 @@ public class UpdateEntryResponse {
     @XmlElement(name = "Entry")
     private Entry entry;
 
-    public PixKey toDomain(PixKey pixKey) {
+    public PixKey toDomain(PixKey pixKey, String requestIdentifier) {
         return PixKey.builder()
                 .type(KeyType.resolve(entry.getKeyType().getValue()))
                 .key(entry.getKey())
@@ -58,6 +59,7 @@ public class UpdateEntryResponse {
                 .createdAt(entry.getCreationDate())
                 .startPossessionAt(entry.getKeyOwnershipDate())
                 .correlationId(correlationId)
+                .requestId(UUID.fromString(requestIdentifier))
                 .build();
     }
 }

@@ -1,11 +1,23 @@
 package com.picpay.banking.pix.core.domain;
 
 import com.google.common.base.Strings;
-import lombok.*;
+import com.google.common.hash.Hashing;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
+
+import static com.google.common.base.Charsets.UTF_8;
 
 @Builder
 @Setter
@@ -14,7 +26,10 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Slf4j
 public class PixKey {
+
+    private static final String SEPARATOR = "&";
 
     private KeyType type;
     private String key;
@@ -34,6 +49,8 @@ public class PixKey {
     private String correlationId;
     private ClaimType claim;
     private Statistic statistic;
+
+    private UUID requestId;
 
     public String getOwnerName() {
         if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
@@ -73,4 +90,26 @@ public class PixKey {
         return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
     }
 
+    public String calculateCid() {
+
+        byte[] requestIdBytes = new byte[16];
+
+        ByteBuffer.wrap(requestIdBytes)
+            .putLong(requestId.getMostSignificantBits())
+            .putLong(requestId.getLeastSignificantBits());
+
+        return Hashing.hmacSha256(requestIdBytes).newHasher()
+            .putString(type.name(), UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(key, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(taxId, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(name, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(fantasyName == null ? "" : fantasyName, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(String.valueOf(ispb), UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(branchNumber == null ? "" : branchNumber, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(accountNumber, UTF_8).putString(SEPARATOR, UTF_8)
+            .putString(accountType.getInitials(), UTF_8)
+            .hash().toString()
+        .toLowerCase();
+
+    }
 }
