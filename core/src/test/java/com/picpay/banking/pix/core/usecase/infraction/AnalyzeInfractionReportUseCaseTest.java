@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +38,16 @@ class AnalyzeInfractionReportUseCaseTest {
     private InfractionReportAnalyzePort infractionReportAnalyzePort;
 
     @Mock
-    private com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportAnalyzePort infractionReportAnalyzePort;
+    private InfractionReportFindPort infractionReportFindPort;
 
     @Mock
-    private InfractionReportFindPort infractionReportFindPort;
+    private InfractionReportSavePort infractionReportSavePort;
 
     private InfractionReport infractionReport;
 
     private InfractionAnalyze infractionReportAnalyze;
+
+    private Optional<InfractionReport> infractionReportOptional;
 
     @BeforeEach
     void setup() {
@@ -60,6 +63,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
         this.infractionReportAnalyze = InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build();
 
+        this.infractionReportOptional = Optional.of(infractionReport);
     }
 
     @Test
@@ -67,15 +71,15 @@ class AnalyzeInfractionReportUseCaseTest {
 
         when(infractionReportFindPort.find(anyString())).thenReturn(Optional.ofNullable(infractionReport));
 
-        when(infractionReportAnalyzePort.analyze(anyString(), anyInt(), any(), anyString())).thenReturn(infractionReport);
+        when(infractionReportAnalyzePort.analyze(any(), anyString())).thenReturn(infractionReportOptional);
 
-        when(infractionReportAnalyzePort.analyze(any())).thenReturn(infractionReport);
+        infractionReportSavePort.save(any(),anyString());
 
         var infractionReport = this.analyzeInfractionReportUseCase.execute("1", 1, infractionReportAnalyze , "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
         assertThat(infractionReport.getEndToEndId()).isNotNull();
 
-       verify(infractionReportAnalyzePort).analyze(anyString(), anyInt(), any(), anyString());
+       verify(infractionReportAnalyzePort).analyze(any(), anyString());
     }
 
 
