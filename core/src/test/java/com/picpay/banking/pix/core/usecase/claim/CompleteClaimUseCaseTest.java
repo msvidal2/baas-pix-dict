@@ -5,6 +5,8 @@ import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +38,12 @@ public class CompleteClaimUseCaseTest {
     @Mock
     private FindClaimPort findClaimPort;
 
+    @Mock
+    private CreatePixKeyBacenPort createPixKeyBacenPort;
+
+    @Mock
+    private CreatePixKeyPort createPixKeyPort;
+
     @BeforeEach
     public void setup() {
         var validator = new ClaimValidatorComposite(List.of(
@@ -43,7 +51,7 @@ public class CompleteClaimUseCaseTest {
      //           new ClaimIspbItemValidator()
         ));
 
-        useCase = new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, validator);
+        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
     }
 
     @Test

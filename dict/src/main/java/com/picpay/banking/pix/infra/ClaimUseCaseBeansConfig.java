@@ -6,6 +6,8 @@ import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.*;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
@@ -13,8 +15,6 @@ import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,8 +51,9 @@ public class ClaimUseCaseBeansConfig {
     public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
                                                      CompleteClaimPort completeClaimPort,
                                                      FindClaimPort findClaimPort,
-                                                     @Qualifier("completeClaimItemValidator") DictItemValidator dictItemValidator) {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, dictItemValidator);
+                                                     CreatePixKeyBacenPort createPixKeyBacenPort,
+                                                     CreatePixKeyPort createPixKeyPort) {
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
     }
 
     @Bean
