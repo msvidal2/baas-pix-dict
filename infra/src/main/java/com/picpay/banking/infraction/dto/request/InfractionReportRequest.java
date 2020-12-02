@@ -62,5 +62,8 @@ public class InfractionReportRequest {
     @XmlElement(name = "LastModified")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime lastModified;
-
+    @XmlElement(name = "AnalysisResult")
+    private AnalysisResult analysisResult;
+    @XmlElement(name = "AnalysisDetails")
+    private String analysisDetails;
 }

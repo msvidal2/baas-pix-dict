@@ -4,12 +4,11 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-
 package com.picpay.banking.idempotency.aspect;
 
-import com.picpay.banking.idempotency.annotation.IdempotencyKey;
-import com.picpay.banking.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.exception.IdempotencyException;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -42,7 +41,7 @@ public class IdempotencyAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Around(value = "execution(* *(..)) && @annotation(com.picpay.banking.idempotency.annotation.ValidateIdempotency)")
+    @Around(value = "execution(* *(..)) && @annotation(com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency)")
     public Object validate(final ProceedingJoinPoint point) throws Throwable {
         final ValidateIdempotency validateIdempotency = ((MethodSignature) point.getSignature()).getMethod().getAnnotation(ValidateIdempotency.class);
         Optional<?> comparisonTarget = comparisonTarget(validateIdempotency, point.getArgs());
@@ -60,7 +59,7 @@ public class IdempotencyAspect {
 
     private boolean match(final Optional<?> comparisonTarget, final Object target) {
         return comparisonTarget.map(ct -> ct.getClass().cast(target))
-            .map(t -> t.equals(comparisonTarget))
+            .map(t -> t.equals(comparisonTarget.get()))
             .orElse(Boolean.FALSE);
     }
 

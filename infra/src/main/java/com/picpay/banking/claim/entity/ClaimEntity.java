@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @Builder
@@ -79,7 +80,7 @@ public class ClaimEntity {
 
     private ClaimCancelReason cancelReason;
 
-    private boolean cancelledByClaimant;
+    private Boolean cancelledByClaimant;
 
     private String correlationId;
 
@@ -101,7 +102,7 @@ public class ClaimEntity {
                 .status(ClaimStatus.resolve(claim.getClaimSituation()))
                 .completionPeriodEnd(claim.getCompletionThresholdDate())
                 .resolutionPeriodEnd(claim.getResolutionThresholdDate())
-                .lastModified(claim.getLastModifiedDate())
+                .lastModified(Optional.ofNullable(claim.getLastModifiedDate()).orElse(null))
                 .confirmReason(claim.getConfirmationReason())
                 .cancelReason(claim.getCancelReason())
                 .cancelledByClaimant(claim.getIsClaim())
