@@ -36,7 +36,7 @@ public class ClaimUseCaseBeansConfig {
                                              ListClaimPort listClaimPort) {
         return new ListClaimUseCase(listPendingClaimPort,listClaimPort);
     }
-
+    
     @Bean
     public ClaimCancelUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
                                                  FindByIdPort findByIdPort,

@@ -111,7 +111,7 @@
                     <user>postgres</user>
                     <password>123456</password>
                     <schemas>
-                        <schema>public</schema>
+                        <schema>dict</schema>
                     </schemas>
                 </configuration>
                 <dependencies>
