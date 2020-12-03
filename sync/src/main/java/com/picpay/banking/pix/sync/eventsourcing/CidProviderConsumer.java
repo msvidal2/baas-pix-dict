@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class CidProviderConsumer {
 
-    private final CidProviderUseCase cidProviderUserCase;
+    private CidProviderUseCase cidProviderUseCase;
 
     @StreamListener("sync-input")
     @Trace(dispatcher = true, metricName = "SendToFinancialInstitutionUseCase")
-    public void onTransferRequest(Object event) {
-        cidProviderUserCase.execute();
+    public void onTransferRequest(String event) {
+        System.out.println(event);
+        //cidProviderUseCase.execute();
     }
 
 }

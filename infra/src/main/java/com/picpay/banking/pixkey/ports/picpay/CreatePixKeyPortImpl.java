@@ -4,13 +4,11 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,20 +20,16 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
     private final PixKeyRepository repository;
 
     @Override
-    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "createPixKeyFallback")
     public PixKey createPixKey(PixKey pixKey, CreateReason reason) {
         repository.save(PixKeyEntity.from(pixKey, reason));
 
         return pixKey;
     }
 
-    public PixKey createPixKeyFallback(PixKey pixKey, CreateReason reason, Exception e) {
-        log.error("PixKey_fallback_creatingDB",
-                kv("key", pixKey.getKey()),
-                kv("exceptionMessage", e.getMessage()),
-                kv("exception", e));
-
-        return pixKey;
+    @Override
+    public boolean exists(final String key, final String taxId) {
+        final var id = PixKeyIdEntity.builder().key(key).build();
+        return this.repository.existsById(id);
     }
 
 }

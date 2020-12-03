@@ -37,7 +37,7 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
         var updateEntryResponse = bacenKeyClient.updateAccountPixKey(updateEntryRequest, pixKey.getKey());
 
-        return updateEntryResponse.toDomain(pixKey);
+        return updateEntryResponse.toDomain(pixKey, requestIdentifier);
 
     }
 

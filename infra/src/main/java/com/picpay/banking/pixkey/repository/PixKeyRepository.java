@@ -6,13 +6,11 @@ package com.picpay.banking.pixkey.repository;
  */
 
 import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

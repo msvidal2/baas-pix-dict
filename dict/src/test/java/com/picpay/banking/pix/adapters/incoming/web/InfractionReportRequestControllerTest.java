@@ -16,7 +16,6 @@ import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +37,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,9 +77,11 @@ class InfractionReportRequestControllerTest {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders
-            .standaloneSetup(controller)
-            .setControllerAdvice(new CustomExceptionHandler())
+        mockMvc = MockMvcBuilders.
+            standaloneSetup(controller)
+            .setControllerAdvice(
+                new CustomExceptionHandler(),
+                new JDExceptionHandler())
             .build();
 
         findInfractionReport = InfractionReport.builder()
@@ -251,12 +251,9 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
             .andExpect(jsonPath("$.infractionAnalyze.details", equalTo("details")));
 
-        verify(findInfractionReportUseCase).execute(anyString());
-
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestCancelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionCanceled = infractionReport.toBuilder().situation(CANCELED).build();
 
@@ -279,14 +276,14 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestCancelInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = CancelInfractionDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/cancel", 1)
                             .header("requestIdentifier", UUID.randomUUID().toString())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .content(OBJECT_MAPPER.asJsonString(request))
+                            .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))
@@ -295,7 +292,6 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionAnalyzed = infractionReport.toBuilder().situation(ANALYZED).build();
 
@@ -318,14 +314,14 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestAnalyzeInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         var request = AnalyzeInfractionReportDTO.builder().build();
 
         mockMvc.perform(post("/v1/infraction-report/{infractionReportId}/analyze", 1)
                             .header("requestIdentifier", UUID.randomUUID().toString())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(OBJECT_MAPPER.asJsonString(request)))
+                            .content(OBJECT_MAPPER.asJsonString(request))
+                            .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))
@@ -334,15 +330,15 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
         when(filterInfractionReportUseCase.execute(anyInt(),nullable(InfractionReportSituation.class),nullable(LocalDateTime.class),
-                                                   nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
+            nullable(LocalDateTime.class))).thenReturn(List.of(findInfractionReport));
 
         mockMvc.perform(get("/v1/infraction-report")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .queryParam("ispb", "1"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .queryParam("ispb", "1")
+            .queryParam("startDate", "2020-09-01T10:09:49.922138"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].endToEndId").exists());
@@ -353,15 +349,13 @@ class InfractionReportRequestControllerTest {
     }
 
     @Test
-    @Disabled("Não implementado ainda na nova versão (direto com bacen)")
     void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         mockMvc.perform(get("/v1/infraction-report")
-                            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code",equalTo(400)))
             .andExpect(jsonPath("$.fieldErrors").exists());
-
     }
-
 }

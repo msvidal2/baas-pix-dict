@@ -23,9 +23,8 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public RemovePixKeyUseCase removePixKeyUseCase(RemovePixKeyPort removePixKeyPort,
-                                                   RemovePixKeyBacenPort removePixKeyBacenPort,
-                                                   @Qualifier("removePixKeyItemValidator") DictItemValidator dictItemValidator) {
-        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort, dictItemValidator);
+                                                   RemovePixKeyBacenPort removePixKeyBacenPort) {
+        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort);
     }
 
     @Bean

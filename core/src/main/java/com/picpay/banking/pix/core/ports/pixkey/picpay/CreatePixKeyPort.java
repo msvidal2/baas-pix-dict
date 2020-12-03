@@ -7,4 +7,7 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 public interface CreatePixKeyPort {
 
     PixKey createPixKey(PixKey pixKey, CreateReason reason);
+
+    boolean exists(String key, String taxId);
+
 }

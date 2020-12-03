@@ -27,11 +27,15 @@ public class ConfirmClaimPortImpl implements ConfirmClaimPort {
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "confirmFallback")
     public Claim confirm(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
 
-        ConfirmClaimRequest request = ConfirmClaimRequest.from(claim);
+        var request = ConfirmClaimRequest.from(claim);
 
-        ConfirmClaimResponse response = bacenClaimClient.confirmClaim(claim.getClaimId(), request);
+        var response = bacenClaimClient.confirmClaim(claim.getClaimId(), request);
 
-        return response.toClaim();
+        var claimResponse = response.toClaim();
+
+        claimResponse.setClaimId(claim.getClaimId());
+
+        return claimResponse;
     }
 
     public Claim confirmFallback(Claim claim, ClaimConfirmationReason reason, String requestIdentifier, Exception e) {
