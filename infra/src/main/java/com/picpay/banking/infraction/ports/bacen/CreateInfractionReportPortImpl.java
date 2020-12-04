@@ -14,7 +14,7 @@ import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

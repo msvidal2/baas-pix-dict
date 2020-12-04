@@ -10,6 +10,8 @@ import com.picpay.banking.claim.dto.response.ConfirmClaimResponse;
 import com.picpay.banking.claim.dto.response.CancelClaimResponse;
 import com.picpay.banking.claim.dto.response.CreateClaimResponse;
 import com.picpay.banking.claim.dto.response.ListClaimsResponse;
+import com.picpay.banking.claim.dto.request.*;
+import com.picpay.banking.claim.dto.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
@@ -43,5 +45,9 @@ public interface BacenClaimClient {
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     CompleteClaimResponse completeClaim(@PathVariable("claimId") String claimId, @RequestBody CompleteClaimRequest completeClaimRequest);
+
+    @PostMapping(value = "/{claimId}/acknowledge",
+            consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    AcknowledgeClaimResponse acknowledge(@PathVariable String claimId, @RequestBody AcknowledgeClaimRequest request);
 
 }

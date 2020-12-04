@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -40,12 +41,14 @@ public class InfractionReport {
     private int ispbDebited;
     private int ispbCredited;
     private LocalDateTime dateCreate;
+    @Setter
     private LocalDateTime dateLastUpdate;
     @EqualsAndHashCode.Include
     private int ispbRequester;
     @EqualsAndHashCode.Include
     private String details;
     private String requestIdentifier;
+    @Setter
     private InfractionAnalyze analyze;
 
     public void validateSituation() {

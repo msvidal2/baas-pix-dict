@@ -6,7 +6,7 @@ import com.picpay.banking.infraction.client.CreateInfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
 import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.CancelInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
