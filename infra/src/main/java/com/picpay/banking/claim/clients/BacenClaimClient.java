@@ -39,7 +39,7 @@ public interface BacenClaimClient {
             consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     CancelClaimResponse cancel(@PathVariable String claimId, @RequestBody CancelClaimRequest request);
 
-    @PostMapping(value = "/claims/{claimId}/complete",
+    @PostMapping(value = "/{claimId}/complete",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     CompleteClaimResponse completeClaim(@PathVariable("claimId") String claimId, @RequestBody CompleteClaimRequest completeClaimRequest);
