@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -18,7 +16,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class FilterInfractionReportUseCase {
 
-    private InfractionReportListPort infractionReportListPort;
+    private final InfractionReportListPort infractionReportListPort;
 
     public InfractionPage execute(@NonNull Integer ispb, InfractionReportSituation situation,
         LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size) {
