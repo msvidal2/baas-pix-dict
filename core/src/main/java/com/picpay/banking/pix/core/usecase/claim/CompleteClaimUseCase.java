@@ -12,6 +12,7 @@ import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static java.util.UUID.randomUUID;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
@@ -32,7 +33,7 @@ public class CompleteClaimUseCase {
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
 
         var claimCompleted = executeClaim(claim, requestIdentifier);
-        var createdPixKey = createPixKeyForClaimer(claimCompleted, requestIdentifier);
+        var createdPixKey = createPixKeyForClaimer(claimCompleted, randomUUID().toString());
 
         if (claimCompleted != null)
             log.info("Claim_completed",
