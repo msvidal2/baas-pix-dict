@@ -4,6 +4,6 @@ import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 
 public interface SyncVerifierHistoricPort {
 
-    void save(SyncVerifierHistoric syncVerifierHistoric);
+    SyncVerifierHistoric save(SyncVerifierHistoric syncVerifierHistoric);
 
 }

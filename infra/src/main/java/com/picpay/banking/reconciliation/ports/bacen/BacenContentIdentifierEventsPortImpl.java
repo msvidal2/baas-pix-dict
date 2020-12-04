@@ -8,13 +8,17 @@ import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
+import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
@@ -35,8 +39,24 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public List<ContentIdentifierEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
-        return null;
+    public Set<ContentIdentifierEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
+        Set<ContentIdentifierEvent> result = new HashSet<>();
+
+        boolean hasNext = true;
+        LocalDateTime nextDate = startTime;
+        while (hasNext) {
+            var bacenEvents = bacenReconciliationClient
+                .getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate, 200);
+
+            result.addAll(bacenEvents.getCidSetEvents().getEvents().stream()
+                .map(CidSetEvent::toContentIdentifierEvent)
+                .collect(Collectors.toSet()));
+
+            nextDate = bacenEvents.getEndTime();
+            hasNext = bacenEvents.isHasMoreElements();
+        }
+
+        return result;
     }
 
     @Override

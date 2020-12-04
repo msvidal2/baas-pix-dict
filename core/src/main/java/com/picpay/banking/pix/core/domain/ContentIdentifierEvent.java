@@ -5,23 +5,35 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Builder
 @Getter
 public class ContentIdentifierEvent {
 
     @NonNull
-    private String cid;
-    private String key;
-    private KeyType keyType;
+    private final String cid;
     @NonNull
-    private ContentIdentifierEventType contentIdentifierType;
+    private final ContentIdentifierEventType contentIdentifierType;
     @NonNull
-    private LocalDateTime keyOwnershipDate;
+    private final LocalDateTime keyOwnershipDate;
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ContentIdentifierEvent that = (ContentIdentifierEvent) o;
+        return cid.equals(that.cid) && contentIdentifierType == that.contentIdentifierType && keyOwnershipDate.equals(that.keyOwnershipDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cid, contentIdentifierType, keyOwnershipDate);
+    }
 
     public enum ContentIdentifierEventType {
-        ADD,
-        REMOVE
+        ADDED,
+        REMOVED
     }
 
 }

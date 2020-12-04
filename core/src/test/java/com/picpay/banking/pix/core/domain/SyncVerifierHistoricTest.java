@@ -1,11 +1,9 @@
 package com.picpay.banking.pix.core.domain;
 
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric.ActionType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.createContentIdentifier;
@@ -18,23 +16,25 @@ class SyncVerifierHistoricTest {
     void should_generate_4_actions_add_and_2_remove() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final List<ContentIdentifierEvent> bacenEvents = List.of(
+        final Set<ContentIdentifierEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE));
+            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
 
-        final Set<ContentIdentifierAction> contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenEvents, new ArrayList<>());
+        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, new HashSet<>());
 
-        assertThat(contentIdentifierActions.size()).isEqualTo(6);
-        assertThat(contentIdentifierActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.ADD)).count()).isEqualTo(4);
-        assertThat(contentIdentifierActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE)).count()).isEqualTo(2);
+        assertThat(syncVerifierHistoricActions.size()).isEqualTo(6);
+        assertThat(syncVerifierHistoricActions.stream().filter(
+            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
+                SyncVerifierHistoricAction.ActionType.ADD)).count()).isEqualTo(4);
+        assertThat(syncVerifierHistoricActions.stream().filter(
+            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
+                SyncVerifierHistoricAction.ActionType.REMOVE)).count()).isEqualTo(2);
     }
 
     @Test
@@ -42,18 +42,19 @@ class SyncVerifierHistoricTest {
     void should_generate_5_actions_remove() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final List<ContentIdentifierEvent> databaseEvents = List.of(
+        final Set<ContentIdentifierEvent> databaseEvents = Set.of(
             createContentIdentifier("1"),
             createContentIdentifier("2"),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"));
 
-        final Set<ContentIdentifierAction> contentIdentifierActions = syncVerifierHistoric.identifyActions(new ArrayList<>(), databaseEvents);
+        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(new HashSet<>(), databaseEvents);
 
-        assertThat(contentIdentifierActions.size()).isEqualTo(5);
-        assertThat(contentIdentifierActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE)).count()).isEqualTo(5);
+        assertThat(syncVerifierHistoricActions.size()).isEqualTo(5);
+        assertThat(syncVerifierHistoricActions.stream().filter(
+            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
+                SyncVerifierHistoricAction.ActionType.REMOVE)).count()).isEqualTo(5);
     }
 
     @Test
@@ -61,17 +62,17 @@ class SyncVerifierHistoricTest {
     void should_generate_action_to_remove_for_2_and_6() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final List<ContentIdentifierEvent> bacenEvents = List.of(
+        final Set<ContentIdentifierEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE));
+            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
 
-        final List<ContentIdentifierEvent> databaseEvents = List.of(
+        final Set<ContentIdentifierEvent> databaseEvents = Set.of(
             createContentIdentifier("1"),
             createContentIdentifier("2"),
             createContentIdentifier("3"),
@@ -79,15 +80,15 @@ class SyncVerifierHistoricTest {
             createContentIdentifier("5"),
             createContentIdentifier("6"));
 
-        final Set<ContentIdentifierAction> contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);
+        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);
 
-        assertThat(contentIdentifierActions.size()).isEqualTo(2);
-        assertThat(contentIdentifierActions.stream().filter(
+        assertThat(syncVerifierHistoricActions.size()).isEqualTo(2);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("2")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
-        assertThat(contentIdentifierActions.stream().filter(
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("6")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
     }
 
     @Test
@@ -95,63 +96,63 @@ class SyncVerifierHistoricTest {
     void should_generate_7_actions() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final List<ContentIdentifierEvent> bacenCids = List.of(
+        final Set<ContentIdentifierEvent> bacenCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
-            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("7"),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("8"),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE));
+            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
 
-        final List<ContentIdentifierEvent> databaseCids = List.of(
+        final Set<ContentIdentifierEvent> databaseCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("2"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
             createContentIdentifier("6"),
-            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
-            createContentIdentifier("9", ContentIdentifierEvent.ContentIdentifierEventType.REMOVE),
+            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("9", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
             createContentIdentifier("10"));
 
-        final Set<ContentIdentifierAction> contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenCids, databaseCids);
+        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenCids, databaseCids);
 
-        assertThat(contentIdentifierActions.size()).isEqualTo(7);
-        assertThat(contentIdentifierActions.stream().filter(
+        assertThat(syncVerifierHistoricActions.size()).isEqualTo(7);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("1")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.ADD);
-        assertThat(contentIdentifierActions.stream().filter(
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("2")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
-        assertThat(contentIdentifierActions.stream().filter(
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("3")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.ADD);
-        assertThat(contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("4")).count())
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
+        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("4")).count())
             .isZero();
-        assertThat(contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("5")).count())
+        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("5")).count())
             .isZero();
-        assertThat(contentIdentifierActions.stream().filter(
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("6")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
-        assertThat(contentIdentifierActions.stream().filter(
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("7")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.ADD);
-        assertThat(contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("8")).count())
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
+        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("8")).count())
             .isZero();
-        assertThat(contentIdentifierActions.stream().filter(
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("9")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
-        assertThat(contentIdentifierActions.stream().filter(
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        assertThat(syncVerifierHistoricActions.stream().filter(
             contentIdentifierAction -> contentIdentifierAction.getCid().equals("10")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(ActionType.REMOVE);
+            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
     }
 
 }

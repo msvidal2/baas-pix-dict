@@ -6,10 +6,11 @@ import com.picpay.banking.pix.core.domain.KeyType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface BacenContentIdentifierEventsPort {
 
-    List<ContentIdentifierEvent> list(KeyType keyType, LocalDateTime startTime, LocalDateTime endTime);
+    Set<ContentIdentifierEvent> list(KeyType keyType, LocalDateTime startTime, LocalDateTime endTime);
 
     ContentIdentifierFile requestContentIdentifierFile(KeyType keyType);
 

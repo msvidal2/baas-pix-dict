@@ -5,13 +5,13 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ContentIdentifierEventPort {
 
-    List<ContentIdentifierEvent> findAllAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedStart);
+    Set<ContentIdentifierEvent> findAllAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedStart);
 
-    Optional<PixKey> findPixKeyByContentIntentifier(String cid);
+    Optional<PixKey> findPixKeyByContentIdentifier(String cid);
 
 }

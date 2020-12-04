@@ -10,7 +10,7 @@ public class ContentIdentifierUtil {
     public static ContentIdentifierEvent createContentIdentifier(String cid) {
         return ContentIdentifierEvent.builder()
             .cid(cid)
-            .contentIdentifierType(ContentIdentifierEventType.ADD)
+            .contentIdentifierType(ContentIdentifierEventType.ADDED)
             .keyOwnershipDate(LocalDateTime.now())
             .build();
     }

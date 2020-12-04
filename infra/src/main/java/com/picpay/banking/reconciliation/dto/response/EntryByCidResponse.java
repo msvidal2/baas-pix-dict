@@ -63,6 +63,7 @@ public class EntryByCidResponse {
             .startPossessionAt(entry.getKeyOwnershipDate())
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
+            .cid(cid)
         .build();
     }
 

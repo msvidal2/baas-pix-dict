@@ -6,7 +6,12 @@
 
 package com.picpay.banking.pixkey.entity;
 
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +19,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -78,6 +87,9 @@ public class PixKeyEntity {
     @Column
     private String requestId;
 
+    @Column
+    private String cid;
+
     public static PixKeyEntity from(final PixKey pixKey, final CreateReason reason) {
         return PixKeyEntity.builder()
             .id(PixKeyIdEntity.builder()
@@ -98,6 +110,7 @@ public class PixKeyEntity {
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
             .requestId(pixKey.getRequestId().toString())
+            .cid(pixKey.getCid())
             .build();
     }
 
@@ -121,6 +134,7 @@ public class PixKeyEntity {
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
             .requestId(pixKey.getRequestId().toString())
+            .cid(pixKey.getCid())
             .build();
     }
 
@@ -140,6 +154,7 @@ public class PixKeyEntity {
             .startPossessionAt(ownershipDate)
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
+            .cid(cid)
             //TODO incluir claim?
             //                .claim()
             .build();

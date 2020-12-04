@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
-import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.createContentIdentifier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SyncVerifierTest {
@@ -18,10 +17,10 @@ class SyncVerifierTest {
     @Test
     @DisplayName("Calcula o Vsync com sucesso seguindo exemplo do BACEN")
     void calculateVsync_success() {
-        final List<ContentIdentifierEvent> contentIdentifiers = List.of(
-            createContentIdentifier("28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88"),
-            createContentIdentifier("4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f"),
-            createContentIdentifier("fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058"));
+        final Set<String> contentIdentifiers = Set.of(
+            "28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88",
+            "4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f",
+            "fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058");
 
         SyncVerifier syncVerifier = SyncVerifier.builder().build();
 
@@ -35,13 +34,13 @@ class SyncVerifierTest {
     @DisplayName("Calcula o Vsync de forma cumulativa")
     void calculateVsyncCumulative_success() {
         var vsync = SyncVerifier.builder().build()
-            .calculateVsync(List.of(createContentIdentifier("28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88")));
+            .calculateVsync(Set.of("28c06eb41c4dc9c3ae114831efcac7446c8747777fca8b145ecd31ff8480ae88"));
 
         vsync = SyncVerifier.builder().vsync(vsync).build()
-            .calculateVsync(List.of(createContentIdentifier("fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058")));
+            .calculateVsync(Set.of("fce514f84f37934bc8aa0f861e4f7392273d71b9d18e8209d21e4192a7842058"));
 
         vsync = SyncVerifier.builder().vsync(vsync).build()
-            .calculateVsync(List.of(createContentIdentifier("4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f")));
+            .calculateVsync(Set.of("4d4abb9168114e349672b934d16ed201a919cb49e28b7f66a240e62c92ee007f"));
 
         String expectedVsync = "996fc1dd3b6b14bcf0c9fe8320eb66d7e2a3fd874ccf767b2e939641b1ea8eaf";
         assertThat(vsync).isEqualTo(expectedVsync);
@@ -53,9 +52,9 @@ class SyncVerifierTest {
         FileReader evpTxt = new FileReader("src/test/java/com/picpay/banking/pix/core/domain/evp.txt");
         Scanner fileReaderScan = new Scanner(evpTxt);
 
-        List<ContentIdentifierEvent> contentIdentifiers = new ArrayList<>();
+        Set<String> contentIdentifiers = new HashSet<>();
         while (fileReaderScan.hasNextLine()) {
-            contentIdentifiers.add(createContentIdentifier(fileReaderScan.next()));
+            contentIdentifiers.add(fileReaderScan.next());
         }
 
         SyncVerifier syncVerifier = SyncVerifier.builder().build();

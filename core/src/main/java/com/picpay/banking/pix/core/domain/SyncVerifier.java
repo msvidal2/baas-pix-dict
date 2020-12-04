@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -16,26 +16,26 @@ public class SyncVerifier {
     private LocalDateTime synchronizedAt;
     private SyncVerifierResult syncVerifierResult;
 
-    public String calculateVsync(final List<ContentIdentifierEvent> contentIdentifierEvents) {
+    public String calculateVsync(final Set<String> contentIdentifiers) {
         if (vsync == null) vsync = "0000000000000000000000000000000000000000000000000000000000000000";
 
         BigInteger vsyncAsBigInteger = new BigInteger(vsync, 16);
 
-        for (ContentIdentifierEvent event : contentIdentifierEvents) {
-            BigInteger cidAsBigInteger = new BigInteger(event.getCid(), 16);
+        for (String contentIdentifier : contentIdentifiers) {
+            BigInteger cidAsBigInteger = new BigInteger(contentIdentifier, 16);
             vsyncAsBigInteger = vsyncAsBigInteger.xor(cidAsBigInteger);
         }
 
         return vsyncAsBigInteger.toString(16);
     }
 
-    public SyncVerifierHistoric syncVerificationResult(final String vsyncEnd, final SyncVerifierResult result) {
+    public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult result) {
         final LocalDateTime synchronizedEnd = LocalDateTime.now();
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .keyType(keyType)
             .vsyncStart(vsync)
-            .vsyncEnd(vsyncEnd)
+            .vsyncEnd(vsyncCurrent)
             .synchronizedStart(synchronizedAt)
             .synchronizedEnd(synchronizedEnd)
             .syncVerifierResult(result)
@@ -44,7 +44,7 @@ public class SyncVerifier {
         this.syncVerifierResult = result;
 
         if (syncVerifierResult.equals(SyncVerifierResult.OK)) {
-            this.vsync = vsyncEnd;
+            this.vsync = vsyncCurrent;
             this.synchronizedAt = synchronizedEnd;
         }
 

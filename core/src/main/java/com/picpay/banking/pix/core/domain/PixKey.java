@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +24,6 @@ import static com.google.common.base.Charsets.UTF_8;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Slf4j
 public class PixKey {
 
@@ -49,6 +47,7 @@ public class PixKey {
     private String correlationId;
     private ClaimType claim;
     private Statistic statistic;
+    private String cid;
 
     private UUID requestId;
 
@@ -63,7 +62,7 @@ public class PixKey {
     public String getTaxIdWithLeftZeros() {
         int size = 11;
 
-        if(PersonType.LEGAL_ENTITY.equals(personType)) {
+        if (PersonType.LEGAL_ENTITY.equals(personType)) {
             size = 14;
         }
 
@@ -76,13 +75,13 @@ public class PixKey {
         if (o == null || getClass() != o.getClass()) return false;
         PixKey pixKey = (PixKey) o;
         return type == pixKey.type &&
-                key.equals(pixKey.key) &&
-                ispb.equals(pixKey.ispb) &&
-                branchNumber.equals(pixKey.branchNumber) &&
-                accountType == pixKey.accountType &&
-                accountNumber.equals(pixKey.accountNumber) &&
-                personType == pixKey.personType &&
-                taxId.equals(pixKey.taxId);
+            key.equals(pixKey.key) &&
+            ispb.equals(pixKey.ispb) &&
+            branchNumber.equals(pixKey.branchNumber) &&
+            accountType == pixKey.accountType &&
+            accountNumber.equals(pixKey.accountNumber) &&
+            personType == pixKey.personType &&
+            taxId.equals(pixKey.taxId);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class PixKey {
             .putString(accountNumber, UTF_8).putString(SEPARATOR, UTF_8)
             .putString(accountType.getInitials(), UTF_8)
             .hash().toString()
-        .toLowerCase();
-
+            .toLowerCase();
     }
+
 }

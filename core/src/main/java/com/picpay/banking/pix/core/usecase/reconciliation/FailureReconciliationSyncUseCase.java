@@ -1,29 +1,27 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
-import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.UpdateAccountPixKeyUseCase;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
 import com.picpay.banking.pix.core.validators.reconciliation.VsyncHistoricValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
-import static com.picpay.banking.pix.core.domain.SyncVerifierHistoric.ActionType;
+import static com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -32,11 +30,11 @@ public class FailureReconciliationSyncUseCase {
 
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
-    private final ContentIdentifierActionPort contentIdentifierActionPort;
+    private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
     private final ContentIdentifierEventPort contentIdentifierEventPort;
-    private final CreatePixKeyUseCase createPixKeyUseCase;
-    private final UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase;
-    private final RemovePixKeyUseCase removePixKeyUseCase;
+    private final CreatePixKeyPort createPixKeyPort;
+    private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private final RemovePixKeyPort removePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
 
     private long startCurrentTimeMillis;
@@ -49,10 +47,10 @@ public class FailureReconciliationSyncUseCase {
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
-        List<ContentIdentifierEvent> bacenEvents = bacenContentIdentifierEventsPort
+        Set<ContentIdentifierEvent> bacenEvents = bacenContentIdentifierEventsPort
             .list(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart(), LocalDateTime.now());
 
-        List<ContentIdentifierEvent> databaseEvents = contentIdentifierEventPort
+        Set<ContentIdentifierEvent> databaseEvents = contentIdentifierEventPort
             .findAllAfterLastSuccessfulVsync(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart());
 
         var contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);
@@ -61,19 +59,20 @@ public class FailureReconciliationSyncUseCase {
                 String.format("No action found for %s type reconciliation", syncVerifierHistoric.getKeyType().name()));
         }
 
-        contentIdentifierActionPort.saveAll(contentIdentifierActions);
-        log.info("FailureReconciliationSync_contentIdentifierActions {} {}",
-            kv("startCurrentTimeMillis", startCurrentTimeMillis),
-            kv("contentIdentifierActions", contentIdentifierActions.size()));
-
         contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.ADD))
             .forEach(this::hasInBacenAndNotHaveInDatabase);
 
         contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE))
             .forEach(this::hasInDatabaseAndNotHaveInBacen);
+
+        syncVerifierHistoricActionPort.saveAll(contentIdentifierActions);
+        log.info("FailureReconciliationSync_contentIdentifierActions {} {} {}",
+            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+            kv("contentIdentifierActions", contentIdentifierActions.size()),
+            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
-    private void hasInBacenAndNotHaveInDatabase(ContentIdentifierAction action) {
+    private void hasInBacenAndNotHaveInDatabase(SyncVerifierHistoricAction action) {
         var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
 
         if (pixKeyInBacen.isEmpty()) {
@@ -86,19 +85,19 @@ public class FailureReconciliationSyncUseCase {
 
         var pixKeyInDataBase = findPixKeyPort.findPixKey(pixKeyInBacen.get().getKey());
         if (pixKeyInDataBase.isPresent()) {
-            updateAccountPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, UpdateReason.RECONCILIATION);
+            updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
                 kv("startCurrentTimeMillis", startCurrentTimeMillis),
                 kv("updateAccountPixKey", pixKey.getKey()));
         } else {
-            createPixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, CreateReason.RECONCILIATION);
+            createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
                 kv("startCurrentTimeMillis", startCurrentTimeMillis),
                 kv("createPixKey", pixKey.getKey()));
         }
     }
 
-    private void hasInDatabaseAndNotHaveInBacen(final ContentIdentifierAction action) {
+    private void hasInDatabaseAndNotHaveInBacen(final SyncVerifierHistoricAction action) {
         var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
 
         if (pixKeyInBacen.isPresent()) {
@@ -107,19 +106,13 @@ public class FailureReconciliationSyncUseCase {
                 action.getCid()));
         }
 
-        var pixKeyInDatabase = contentIdentifierEventPort.findPixKeyByContentIntentifier(action.getCid());
-        if (pixKeyInDatabase.isEmpty()) {
-            throw new ReconciliationsException(String.format(
-                "The CID %s was identified as REMOVE in the reconciliation process, but is not present in the local database",
-                action.getCid()));
-        }
-
-        var pixKey = pixKeyInDatabase.get();
-
-        removePixKeyUseCase.execute(UUID.randomUUID().toString(), pixKey, RemoveReason.RECONCILIATION);
-        log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
-            kv("startCurrentTimeMillis", startCurrentTimeMillis),
-            kv("removePixKey", pixKey.getKey()));
+        var pixKeyInDatabase = contentIdentifierEventPort.findPixKeyByContentIdentifier(action.getCid());
+        pixKeyInDatabase.ifPresent(pixKey -> {
+            removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
+            log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
+                kv("startCurrentTimeMillis", startCurrentTimeMillis),
+                kv("removePixKey", pixKey.getKey()));
+        });
     }
 
 }

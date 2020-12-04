@@ -1,7 +1,6 @@
 package com.picpay.banking.reconciliation.ports.picpay;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.CreateReason;

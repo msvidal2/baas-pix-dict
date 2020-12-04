@@ -9,6 +9,6 @@ public interface SyncVerifierPort {
 
     Optional<SyncVerifier> getLastSuccessfulVsync(KeyType keyType);
 
-    void update(SyncVerifier syncVerifier);
+    void save(SyncVerifier syncVerifier);
 
 }
