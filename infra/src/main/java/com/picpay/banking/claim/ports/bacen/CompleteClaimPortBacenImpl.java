@@ -3,6 +3,7 @@ package com.picpay.banking.claim.ports.bacen;
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.dto.request.CompleteClaimRequest;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -21,11 +22,17 @@ public class CompleteClaimPortBacenImpl implements CompleteClaimBacenPort {
 
     private final BacenClaimClient bacenClaimClient;
 
+    private final TimeLimiterExecutor timeLimiterExecutor;
+
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "completeClaimFallback")
     public Claim complete(Claim claim, String requestIdentifier) {
         var request = CompleteClaimRequest.from(claim, requestIdentifier);
-        var response = bacenClaimClient.completeClaim(claim.getClaimId(), request);
+
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
+                () -> bacenClaimClient.completeClaim(claim.getClaimId(), request),
+                requestIdentifier);
+
         return response.toClaim();
     }
 

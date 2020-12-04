@@ -70,6 +70,7 @@ public class CompleteClaimUseCase {
                 .fantasyName(claim.getFantasyName())
                 .build();
 
+        // TODO - RECONCILIATION?
         var createdPixKey = createPixKeyBacenPort.create(requestIdentifier, pixKey, CreateReason.CLIENT_REQUEST);
         createPixKeyPort.createPixKey(createdPixKey, CreateReason.CLIENT_REQUEST);
 
