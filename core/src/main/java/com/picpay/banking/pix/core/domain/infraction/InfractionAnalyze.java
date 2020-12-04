@@ -14,5 +14,4 @@ public class InfractionAnalyze {
     private InfractionAnalyzeResult analyzeResult;
     private String details;
 
-
 }

@@ -9,7 +9,7 @@ public enum InfractionReportSituation {
 
     OPEN (0),
     RECEIVED (1),
-    CANCELED (2),
+    CANCELLED(2),
     ANALYZED (3);
 
     private Integer value;
