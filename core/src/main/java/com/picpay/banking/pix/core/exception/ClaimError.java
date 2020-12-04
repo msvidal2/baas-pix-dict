@@ -17,7 +17,7 @@ public enum ClaimError {
     INVALID_CLAIM_SITUATION("RVN008", "A situação da Reivindicação que você recebeu, não permite confirmação."),
     INVALID_CLAIM_REASON("RVN009", "O motivo para confirmar a Reivindicação que você recebeu não é válido."),
     JDPIRVN010("RVN010", "A Reivindicação já estava concluída."),
-    JDPIRVN011("RVN011", "A situação da sua Reivindicação não permite a sua conclusão."),
+    INVALID_CLAIM_COMPLETED_SITUATION("RVN011", "A situação da sua Reivindicação não permite a sua conclusão."),
     JDPIRVN012("RVN012", "A Reivindicação não pode ser concluída pelo doador da chave."),
     KEY_ALREADY_BELONGS_TO_CUSTOMER("RVN013", "Reivindicação de posse de chave que tem como dona a mesma pessoa que reivindica."),
     OPEN_CLAIM_ALREADY_EXISTS_FOR_KEY("RVN014", "Já existe uma Reivindicação aberta para a chave."),

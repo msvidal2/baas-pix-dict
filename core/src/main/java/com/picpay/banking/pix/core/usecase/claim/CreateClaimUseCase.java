@@ -12,6 +12,8 @@ import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
@@ -24,10 +26,6 @@ public class CreateClaimUseCase {
     private final FindPixKeyPort findPixKeyPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
-        if (requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier cannot be empty");
-        }
-
         CreateClaimValidator.validate(requestIdentifier, claim);
 
         validateClaimAlreadyExistsForKey(claim.getKey());
@@ -60,5 +58,4 @@ public class CreateClaimUseCase {
             }
         });
     }
-
 }
