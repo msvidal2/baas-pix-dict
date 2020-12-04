@@ -8,12 +8,14 @@ create table dict.sync_verifier
 (
     key_type        character varying(20)       not null primary key,
     vsync           character varying(64)       not null,
-    synchronized_at timestamp without time zone not null
+    synchronized_at timestamp without time zone not null,
+    updated_at      timestamp without time zone not null
 );
 comment on table dict.sync_verifier is 'Responsável por armazenar apenas os últimos sincronismos que tiveram sucesso. Essa tabela nunca tera mais de 5 linhas, uma para cada tipo de chave.';
 comment on column dict.sync_verifier.key_type is 'O keyType é o tipo da chave utilizada no Pix. Novos tipos poderão surgir. Os valores atuais são: "CPF", "CNPJ", "PHONE", "EMAIL", "EVP"';
 comment on column dict.sync_verifier.vsync is 'O VSync é resultado da aplicação de bitwise-XOR de todos os CIDs deste tipo de chave';
 comment on column dict.sync_verifier.synchronized_at is 'Esta é a data que foi feita o sincronismo com o Banco Central';
+comment on column dict.sync_verifier.updated_at is 'Esta é a data local que o sincronismo rodou pela ultima vez';
 
 create table dict.sync_verifier_historic
 (

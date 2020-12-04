@@ -14,7 +14,7 @@ public class SyncVerifier {
     private final KeyType keyType;
     private String vsync;
     private LocalDateTime synchronizedAt;
-    private SyncVerifierResult syncVerifierResult;
+    private SyncVerifierResultType syncVerifierResultType;
 
     public String calculateVsync(final Set<String> contentIdentifiers) {
         if (vsync == null) vsync = "0000000000000000000000000000000000000000000000000000000000000000";
@@ -29,34 +29,32 @@ public class SyncVerifier {
         return vsyncAsBigInteger.toString(16);
     }
 
-    public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult result) {
-        final LocalDateTime synchronizedEnd = LocalDateTime.now();
-
+    public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult syncVerifierResult) {
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .keyType(keyType)
             .vsyncStart(vsync)
             .vsyncEnd(vsyncCurrent)
             .synchronizedStart(synchronizedAt)
-            .synchronizedEnd(synchronizedEnd)
-            .syncVerifierResult(result)
+            .synchronizedEnd(syncVerifierResult.getSyncVerifierLastModified())
+            .syncVerifierResultType(syncVerifierResult.getSyncVerifierResultType())
             .build();
 
-        this.syncVerifierResult = result;
+        this.syncVerifierResultType = syncVerifierResult.getSyncVerifierResultType();
 
-        if (syncVerifierResult.equals(SyncVerifierResult.OK)) {
+        if (syncVerifierResultType.equals(SyncVerifierResultType.OK)) {
             this.vsync = vsyncCurrent;
-            this.synchronizedAt = synchronizedEnd;
+            this.synchronizedAt = syncVerifierResult.getSyncVerifierLastModified();
         }
 
         return syncVerifierHistoric;
     }
 
     public boolean isNOk() {
-        return syncVerifierResult.equals(SyncVerifierResult.NOK);
+        return syncVerifierResultType.equals(SyncVerifierResultType.NOK);
     }
 
     public boolean isOK() {
-        return syncVerifierResult.equals(SyncVerifierResult.OK);
+        return syncVerifierResultType.equals(SyncVerifierResultType.OK);
     }
 
 }

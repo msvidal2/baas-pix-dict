@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifier;
 import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
@@ -60,7 +61,13 @@ class ReconciliationSyncUseCaseTest {
             .thenReturn(new HashSet<>());
 
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
-            .thenReturn(SyncVerifierResult.OK);
+            .thenReturn(SyncVerifierResult.builder()
+                .syncVerifierLastModified(LocalDateTime.now())
+                .syncVerifierResultType(SyncVerifierResultType.OK)
+                .build());
+
+        when(syncVerifierHistoricPort.save(any()))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
 
@@ -72,20 +79,20 @@ class ReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Quando NOK deve enviar mensagem de falha para reconciliação")
     void when_NOK_send_failure_reconciliation() {
-        when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.empty());
-
         when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
             .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
 
         when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
             .thenReturn(new HashSet<>());
 
-        when(bacenSyncVerificationsPort.syncVerification(any(), any()))
-            .thenReturn(SyncVerifierResult.OK);
-
         when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "1"))
-            .thenReturn(SyncVerifierResult.NOK);
+            .thenReturn(SyncVerifierResult.builder()
+                .syncVerifierLastModified(LocalDateTime.now())
+                .syncVerifierResultType(SyncVerifierResultType.NOK)
+                .build());
+
+        when(syncVerifierHistoricPort.save(any()))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
 

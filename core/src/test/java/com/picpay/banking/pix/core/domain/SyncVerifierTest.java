@@ -77,14 +77,18 @@ class SyncVerifierTest {
             .synchronizedAt(lastSyncDone)
             .build();
 
-        var syncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncEnd, SyncVerifierResult.OK);
+        var resultOK = SyncVerifierResult.builder()
+            .syncVerifierLastModified(LocalDateTime.now())
+            .syncVerifierResultType(SyncVerifierResultType.OK)
+            .build();
+        var syncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncEnd, resultOK);
 
-        assertThat(syncVerifier.getSyncVerifierResult()).isEqualTo(SyncVerifierResult.OK);
+        assertThat(syncVerifier.getSyncVerifierResultType()).isEqualTo(SyncVerifierResultType.OK);
         assertThat(syncVerifier.getSynchronizedAt()).isNotEqualTo(lastSyncDone);
         assertThat(syncVerifier.isOK()).isTrue();
         assertThat(syncVerifier.getVsync()).isEqualTo(vsyncEnd);
 
-        assertThat(syncVerifierHistoric.getSyncVerifierResult()).isEqualTo(SyncVerifierResult.OK);
+        assertThat(syncVerifierHistoric.getSyncVerifierResultType()).isEqualTo(SyncVerifierResultType.OK);
         assertThat(syncVerifierHistoric.getSynchronizedStart()).isEqualTo(lastSyncDone);
         assertThat(syncVerifierHistoric.getSynchronizedEnd()).isEqualTo(syncVerifier.getSynchronizedAt());
         assertThat(syncVerifierHistoric.getVsyncStart()).isEqualTo(vsyncStart);
@@ -104,14 +108,18 @@ class SyncVerifierTest {
             .synchronizedAt(lastSyncDone)
             .build();
 
-        var syncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncEnd, SyncVerifierResult.NOK);
+        var resultNOK = SyncVerifierResult.builder()
+            .syncVerifierLastModified(LocalDateTime.now())
+            .syncVerifierResultType(SyncVerifierResultType.NOK)
+            .build();
+        var syncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncEnd, resultNOK);
 
-        assertThat(syncVerifier.getSyncVerifierResult()).isEqualTo(SyncVerifierResult.NOK);
+        assertThat(syncVerifier.getSyncVerifierResultType()).isEqualTo(SyncVerifierResultType.NOK);
         assertThat(syncVerifier.getSynchronizedAt()).isEqualTo(lastSyncDone);
         assertThat(syncVerifier.isNOk()).isTrue();
         assertThat(syncVerifier.getVsync()).isEqualTo(vsyncStart);
 
-        assertThat(syncVerifierHistoric.getSyncVerifierResult()).isEqualTo(SyncVerifierResult.NOK);
+        assertThat(syncVerifierHistoric.getSyncVerifierResultType()).isEqualTo(SyncVerifierResultType.NOK);
         assertThat(syncVerifierHistoric.getSynchronizedStart()).isEqualTo(lastSyncDone);
         assertThat(syncVerifierHistoric.getSynchronizedEnd()).isAfter(lastSyncDone);
         assertThat(syncVerifierHistoric.getVsyncStart()).isEqualTo(vsyncStart);

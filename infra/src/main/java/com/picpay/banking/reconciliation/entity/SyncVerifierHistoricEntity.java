@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,7 +46,7 @@ public class SyncVerifierHistoricEntity {
 
     @Column(name = "result", nullable = false)
     @Enumerated(EnumType.STRING)
-    private SyncVerifierResult result;
+    private SyncVerifierResultType result;
 
     public static SyncVerifierHistoricEntity from(final SyncVerifierHistoric syncVerifierHistoric) {
         return SyncVerifierHistoricEntity.builder()
@@ -56,7 +56,7 @@ public class SyncVerifierHistoricEntity {
             .vsyncEnd(syncVerifierHistoric.getVsyncEnd())
             .synchronizedStart(syncVerifierHistoric.getSynchronizedStart())
             .synchronizedEnd(syncVerifierHistoric.getSynchronizedEnd())
-            .result(syncVerifierHistoric.getSyncVerifierResult())
+            .result(syncVerifierHistoric.getSyncVerifierResultType())
             .build();
     }
 
@@ -68,7 +68,7 @@ public class SyncVerifierHistoricEntity {
             .vsyncEnd(vsyncEnd)
             .synchronizedStart(synchronizedStart)
             .synchronizedEnd(synchronizedEnd)
-            .syncVerifierResult(result)
+            .syncVerifierResultType(result)
             .build();
     }
 

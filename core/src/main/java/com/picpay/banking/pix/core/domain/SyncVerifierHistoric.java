@@ -21,7 +21,7 @@ public class SyncVerifierHistoric {
     private final String vsyncEnd;
     private final LocalDateTime synchronizedStart;
     private final LocalDateTime synchronizedEnd;
-    private final SyncVerifierResult syncVerifierResult;
+    private final SyncVerifierResultType syncVerifierResultType;
 
     public Set<SyncVerifierHistoricAction> identifyActions(final Set<ContentIdentifierEvent> bacenEvents,
         final Set<ContentIdentifierEvent> databaseEvents) {
@@ -74,11 +74,11 @@ public class SyncVerifierHistoric {
     }
 
     public boolean isNOK() {
-        return syncVerifierResult.equals(SyncVerifierResult.NOK);
+        return syncVerifierResultType.equals(SyncVerifierResultType.NOK);
     }
 
     public boolean isOK() {
-        return syncVerifierResult.equals(SyncVerifierResult.OK);
+        return syncVerifierResultType.equals(SyncVerifierResultType.OK);
     }
 
 }

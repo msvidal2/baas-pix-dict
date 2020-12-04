@@ -42,9 +42,9 @@ public class ReconciliationSyncUseCase {
 
         var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
 
-        var vsyncResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
+        var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
 
-        var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, vsyncResult);
+        var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
 
         syncVerifierPort.save(syncVerifier);
         vsyncHistoric = syncVerifierHistoricPort.save(vsyncHistoric);

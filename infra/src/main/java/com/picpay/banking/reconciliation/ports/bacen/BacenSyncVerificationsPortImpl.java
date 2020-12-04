@@ -2,6 +2,7 @@ package com.picpay.banking.reconciliation.ports.bacen;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
@@ -30,7 +31,11 @@ public class BacenSyncVerificationsPortImpl implements BacenSyncVerificationsPor
             .build();
 
         var response = bacenReconciliationClient.syncVerifications(request);
-        return SyncVerifierResult.valueOf(response.getSyncVerification().getResult().name());
+
+        return SyncVerifierResult.builder()
+            .syncVerifierLastModified(response.getSyncVerification().getSyncVerifierLastModified())
+            .syncVerifierResultType(SyncVerifierResultType.valueOf(response.getSyncVerification().getResult().name()))
+            .build();
     }
 
 }
