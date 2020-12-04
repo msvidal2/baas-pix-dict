@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class PullingClaimsScheduler {
 
     @Value("${picpay.ispb}")
-    private final Integer ispb;
+    private Integer ispb;
 
     @Value("${picpay.pulling.claim.limit}")
     private Integer limit;

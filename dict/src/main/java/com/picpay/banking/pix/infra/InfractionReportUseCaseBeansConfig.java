@@ -43,8 +43,9 @@ public class InfractionReportUseCaseBeansConfig {
 
     @Bean
     public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(InfractionReportAnalyzePort analyzeInfractionReportPort,
-                                                                         com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportAnalyzePort infractionReportAnalyzePort, InfractionReportFindPort infractionReportFindPort) {
-        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportAnalyzePort, infractionReportFindPort);
+                                                                         InfractionReportSavePort infractionReportSavePort,
+                                                                         InfractionReportFindPort infractionReportFindPort) {
+        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportFindPort, infractionReportSavePort);
     }
 
 }
