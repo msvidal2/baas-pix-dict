@@ -29,6 +29,7 @@ public class CompleteClaimPortImplTest {
     @Mock
     private TimeLimiterExecutor timeLimiterExecutor;
 
+    // TODO - corrigir teste
     //@Test
     void testComplete() {
         var claimId = randomUUID().toString();
