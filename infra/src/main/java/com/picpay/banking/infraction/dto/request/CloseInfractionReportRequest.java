@@ -6,7 +6,7 @@
 
 package com.picpay.banking.infraction.dto.request;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,13 +41,12 @@ public class CloseInfractionReportRequest {
     @XmlElement(name = "AnalysisDetails")
     private String analysisDetails;
 
-    public static CloseInfractionReportRequest from(String infractionReportId, Integer ispb, InfractionAnalyze analyze) {
-        return CloseInfractionReportRequest
-            .builder()
-            .infractionReportId(infractionReportId)
-            .participant(String.valueOf(ispb))
-            .analysisResult(AnalysisResult.from(analyze.getAnalyzeResult()))
-            .analysisDetails(analyze.getDetails())
+    public static CloseInfractionReportRequest from(InfractionReport infractionReport) {
+        return CloseInfractionReportRequest.builder()
+            .infractionReportId(infractionReport.getInfractionReportId())
+            .participant(String.valueOf(infractionReport.getIspbRequester()))
+            .analysisResult(AnalysisResult.from(infractionReport.getAnalyze().getAnalyzeResult()))
+            .analysisDetails(infractionReport.getAnalyze().getDetails())
             .build();
     }
 
