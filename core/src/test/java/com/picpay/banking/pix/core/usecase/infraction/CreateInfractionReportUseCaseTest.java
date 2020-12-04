@@ -4,7 +4,7 @@ import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
-import com.picpay.banking.pix.core.ports.infraction.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import org.junit.jupiter.api.Test;
