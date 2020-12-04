@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
@@ -19,15 +20,15 @@ public class FilterInfractionReportUseCase {
 
     private InfractionReportListPort infractionReportListPort;
 
-    public List<InfractionReport> execute(@NonNull Integer ispb, InfractionReportSituation situation,
-        LocalDateTime dateStart, LocalDateTime dateEnd) {
+    public InfractionPage execute(@NonNull Integer ispb, InfractionReportSituation situation,
+        LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size) {
 
-        List<InfractionReport> infractions = infractionReportListPort.list(ispb, situation, dateStart, dateEnd);
+        InfractionPage infractionPage = infractionReportListPort.list(ispb, situation, dateStart, dateEnd, page, size);
 
-        if (infractions != null)
-            log.info("Infraction_filtered", kv("size", infractions.size()));
+        if (infractionPage != null)
+            log.info("Infraction_filtered", kv("size", infractionPage.getSize()));
 
-        return infractions;
+        return infractionPage;
     }
 
 }

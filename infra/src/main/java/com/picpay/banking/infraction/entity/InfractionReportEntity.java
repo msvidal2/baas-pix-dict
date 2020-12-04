@@ -73,22 +73,22 @@ public class InfractionReportEntity {
             .build();
     }
 
-    public InfractionReport toDomain() {
+    public static InfractionReport toDomain(InfractionReportEntity infractionReportEntity) {
         return InfractionReport.builder()
-            .infractionReportId(this.getInfractionReportId())
-            .endToEndId(this.getEndToEndId())
-            .reportedBy(this.getReportedBy())
-            .situation(this.getSituation())
-            .ispbDebited(this.getIspbDebited())
-            .ispbCredited(this.getIspbCredited())
-            .dateCreate(this.getCreatedDate())
-            .dateLastUpdate(this.getLastUpdatedDate())
-            .ispbRequester(this.getIspbRequester())
-            .infractionType(this.getInfractionType())
-            .details(this.getDetails())
-            .requestIdentifier(this.getRequestIdentifier())
-            .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
-                .details(this.getAnalyzeDetails()).build()).orElse(null)).build();
+            .infractionReportId(infractionReportEntity.getInfractionReportId())
+            .endToEndId(infractionReportEntity.getEndToEndId())
+            .reportedBy(infractionReportEntity.getReportedBy())
+            .situation(infractionReportEntity.getSituation())
+            .ispbDebited(infractionReportEntity.getIspbDebited())
+            .ispbCredited(infractionReportEntity.getIspbCredited())
+            .dateCreate(infractionReportEntity.getCreatedDate())
+            .dateLastUpdate(infractionReportEntity.getLastUpdatedDate())
+            .ispbRequester(infractionReportEntity.getIspbRequester())
+            .infractionType(infractionReportEntity.getInfractionType())
+            .details(infractionReportEntity.getDetails())
+            .requestIdentifier(infractionReportEntity.getRequestIdentifier())
+            .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(infractionReportEntity.getAnalyzeResult())
+                .details(infractionReportEntity.getAnalyzeDetails()).build()).orElse(null)).build();
     }
 
 }
