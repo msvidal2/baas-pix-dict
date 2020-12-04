@@ -8,7 +8,6 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRe
 import com.picpay.banking.pix.adapters.incoming.web.dto.FilterInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
@@ -33,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -127,13 +124,13 @@ public class InfractionReportController {
     @GetMapping
     @ResponseStatus(OK)
     public InfractionPage filter(@Valid FilterInfractionReportDTO filter,
-        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-        @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                 @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
 
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
 
         return this.filterInfractionReportUseCase.execute(
-            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime(),page,size);
-
+            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime(), page, size);
     }
+
 }
