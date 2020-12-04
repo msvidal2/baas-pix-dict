@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
 
-	<artifactId>bacen-pulling</artifactId>
+	<artifactId>bacen-polling</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<dependencies>
@@ -22,20 +22,16 @@
 		</dependency>
 		<dependency>
 			<groupId>com.picpay.banking.pix.dict</groupId>
-			<artifactId>infra</artifactId>
+			<artifactId>infra-messaging</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
 
 		<dependency>
@@ -57,18 +53,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream</artifactId>
-			<scope>test</scope>
-			<classifier>test-binder</classifier>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -1,20 +1,31 @@
 package com.picpay.banking.claim.dto.response;
 
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@XmlRootElement(name = "ListClaimsResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ListClaimsResponse {
 
-    private final Boolean hasMoreElements;
-    private final List<ClaimResponse> claims;
+    @XmlElement(name = "HasMoreElements")
+    private Boolean hasMoreElements;
+
+    @XmlElement(name = "Claims")
+    private List<ClaimResponse> claims;
 
     public ClaimIterable toClaimIterable() {
         return ClaimIterable.builder()
@@ -24,9 +35,10 @@ public class ListClaimsResponse {
                 .build();
     }
 
-    private List<com.picpay.banking.pix.core.domain.Claim> getClaims(){
-        List<com.picpay.banking.pix.core.domain.Claim> claims = new ArrayList<>();
-        this.claims.forEach(c -> claims.add(c.toClaim()));
-        return claims;
+    private List<Claim> getClaims() {
+        return claims.stream()
+                .map(ClaimResponse::toClaim)
+                .collect(Collectors.toList());
     }
+
 }
