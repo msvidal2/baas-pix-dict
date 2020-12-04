@@ -18,8 +18,12 @@ public class FilterInfractionReportUseCase {
 
     private final InfractionReportListPort infractionReportListPort;
 
-    public InfractionPage execute(@NonNull Integer ispb, InfractionReportSituation situation,
-        LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size) {
+    public InfractionPage execute(@NonNull Integer ispb,
+                                  InfractionReportSituation situation,
+                                  LocalDateTime dateStart,
+                                  LocalDateTime dateEnd,
+                                  int page,
+                                  int size) {
 
         InfractionPage infractionPage = infractionReportListPort.list(ispb, situation, dateStart, dateEnd, page, size);
 
