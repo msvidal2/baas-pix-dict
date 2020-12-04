@@ -2,6 +2,7 @@ package com.picpay.banking.pixkey.ports.bacen;
 
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
+import com.picpay.banking.jdpi.ports.TimeLimiterExecutor;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
@@ -24,12 +25,16 @@ public class CreatePixKeyBacenPortImpl implements CreatePixKeyBacenPort {
 
     private final BacenKeyClient bacenKeyClient;
 
+    private final TimeLimiterExecutor timeLimiterExecutor;
+
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
     public PixKey create(String requestIdentifier, PixKey pixKey, CreateReason reason) {
         var createEntryRequest = CreateEntryRequest.from(pixKey, reason, requestIdentifier);
 
-        var response = bacenKeyClient.createPixKey(createEntryRequest);
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
+                () -> bacenKeyClient.createPixKey(createEntryRequest),
+                requestIdentifier);
 
         return response.toDomain(requestIdentifier, Reason.resolve(reason));
     }
