@@ -7,7 +7,6 @@
 package com.picpay.banking.infraction.ports.picpay;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
-import com.picpay.banking.infraction.ports.picpay.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,19 +35,15 @@ public class InfractionReportListPortImpl implements InfractionReportListPort {
         final LocalDateTime dateEnd, final int page, final int size) {
 
         PageRequest pageRequest = PageRequest.of(page,size);
+        Page<InfractionReportEntity> pageInfraction = infractionReportRepository.list(ispb,situation, dateStart, dateEnd,pageRequest);
+        List<InfractionReport> content = pageInfraction.getContent().stream().map(InfractionReportEntity::toDomain).collect(Collectors.toList());
 
-        Page pageInfraction = infractionReportRepository.list(ispb,situation, dateStart, dateEnd,pageRequest);
-
-        List content = ((List<InfractionReportEntity>) pageInfraction.getContent()).stream().map(InfractionReportEntity::toDomain).collect(Collectors.toList());
-
-        var infractionPage = InfractionPage.builder()
+        return InfractionPage.builder()
             .content(content)
             .size(pageInfraction.getTotalElements())
             .offset(pageInfraction.getPageable().getOffset())
             .pageSize(pageInfraction.getPageable().getPageSize())
             .build();
-
-        return infractionPage;
     }
 
 }
