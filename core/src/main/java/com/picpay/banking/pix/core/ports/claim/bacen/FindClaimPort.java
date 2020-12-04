@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface FindClaimPort {
 
-    Optional<Claim> findClaim(final String claimId, final Integer ispb, final boolean reivindicador);
+    Optional<Claim> findClaim(final String claimId, final Integer ispb, final boolean claimant);
 
 }
