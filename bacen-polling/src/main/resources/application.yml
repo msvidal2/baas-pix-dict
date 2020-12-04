@@ -1,0 +1,61 @@
+server:
+  port: ${LOCAL_PORT:8080}
+  compression:
+    enabled: true
+
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_HOSTS}
+      bindings:
+        claim-notifications:
+          destination: ${CLAIM_NOTIFICATIONS_TOPIC}
+          binder: kafka
+
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+      useGzipDecoder: true
+  client:
+    config:
+      default:
+        connect-timeout: 105000
+        read-timeout: 105000
+
+picpay:
+  ispb: ${ISPB_CLIENT_ID}
+  pulling:
+    claim:
+      initial-delay: ${PULLING_SCHEDULER_CLAIM_INITIAL_DELAY}
+      fixed-delay: ${PULLING_SCHEDULER_CLAIM_FIXED_DELAY}
+      limit: ${PULLING_SCHEDULER_CLAIM_LIMIT}
+
+
+pix:
+  bacen:
+    dict:
+      entries:
+        url: ${BACEN_AWS_URL}/dict/api
+      infraction:
+        url: ${BACEN_AWS_URL}
+    url: ${BACEN_AWS_URL}
+
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: prometheus, health
+      path-mapping:
+        prometheus: 'metrics'

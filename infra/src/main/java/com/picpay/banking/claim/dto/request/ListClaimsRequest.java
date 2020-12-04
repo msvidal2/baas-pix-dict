@@ -26,11 +26,11 @@ public class ListClaimsRequest {
     private final LocalDateTime modifiedBefore;
     private final Integer limit;
 
-    public static ListClaimsRequest from(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate) {
+    public static ListClaimsRequest from(Claim claim, Integer limit, LocalDateTime startDate, LocalDateTime endDate) {
         return ListClaimsRequest.builder()
                 .limit(limit)
-                .isClaimer(isClaimer)
-                .isDonor(isDonor)
+                .isClaimer(claim.getIsClaim())
+                .isDonor(!claim.getIsClaim())
                 .modifiedBefore(startDate)
                 .modifiedAfter(endDate)
                 .participant(String.valueOf(claim.getIspb()))
