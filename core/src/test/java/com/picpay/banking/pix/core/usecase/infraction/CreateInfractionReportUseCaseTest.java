@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELLED;
@@ -43,7 +44,7 @@ class CreateInfractionReportUseCaseTest {
     void when_createInfractionReportWithSuccess_expect_OkWithValidResult() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
         when(infractionReportPort.create(any(), anyString())).thenReturn(infractionReport);
-        when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Optional.empty());
+        when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Collections.emptyList());
 
         var created = createInfractionReportUseCase.execute(infractionReport, "id");
         assertThat(created.getInfractionReportId()).isEqualTo("996196e5-c469-4069-b231-34a93ff7b89b");
@@ -62,7 +63,7 @@ class CreateInfractionReportUseCaseTest {
     @Test
     void when_infraction_was_already_created_throw_exception() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
-        when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Optional.of(infractionReport));
+        when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Collections.singletonList(infractionReport));
 
         assertThatThrownBy(() -> createInfractionReportUseCase.execute(infractionReport, "id"))
             .isInstanceOf(InfractionReportException.class)
