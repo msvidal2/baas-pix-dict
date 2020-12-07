@@ -3,9 +3,11 @@ package com.picpay.banking.pix.core.domain.infraction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
 @AllArgsConstructor
-public enum InfractionReportSituation {
+public enum InfractionReportSituation implements Serializable {
 
     OPEN (0),
     RECEIVED (1),

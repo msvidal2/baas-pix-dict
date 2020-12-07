@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 
@@ -24,7 +25,7 @@ import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRAC
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class InfractionReport {
+public class InfractionReport implements Serializable {
 
     private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, RECEIVED);
 

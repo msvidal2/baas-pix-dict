@@ -9,11 +9,12 @@ package com.picpay.banking.pix.core.ports.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface InfractionReportFindPort {
 
    Optional<InfractionReport> find(String infractionReportId);
-   Optional<InfractionReport> findByEndToEndId(String endToEndId);
+   List<InfractionReport> findByEndToEndId(String endToEndId);
 
 }

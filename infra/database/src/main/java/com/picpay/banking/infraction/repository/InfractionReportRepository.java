@@ -14,7 +14,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ import java.util.Optional;
 @Repository
 public interface InfractionReportRepository extends JpaRepository<InfractionReportEntity, String> {
 
-    Optional<InfractionReportEntity> findByEndToEndId(String endToEndId);
+    List<InfractionReportEntity> findByEndToEndId(String endToEndId);
 
     @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND (:situation is null or ir.situation = :situation)" +
         " AND (ir.lastUpdatedDate is null or ir.lastUpdatedDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdatedDate <= :dateEnd)")
