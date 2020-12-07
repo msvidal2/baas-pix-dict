@@ -9,7 +9,6 @@ import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,8 +45,7 @@ class CancelInfractionReportPortUseCaseTest {
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
             .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
-            .requestIdentifier("IDENTIFIER")
-            .situation(InfractionReportSituation.CANCELED)
+            .situation(InfractionReportSituation.CANCELLED)
             .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
@@ -59,7 +57,7 @@ class CancelInfractionReportPortUseCaseTest {
         when(cancelInfractionReportPort.cancel(anyString(), anyInt(),anyString())).thenReturn(infractionReport);
 
         var infractionReport = this.cancelInfractionReportUseCase.execute("1", 1, "1");
-        assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.CANCELED);
+        assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.CANCELLED);
         assertThat(infractionReport.getEndToEndId()).isNotNull();
 
         verify(cancelInfractionReportPort).cancel(anyString(), anyInt(),anyString());
