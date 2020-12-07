@@ -2,6 +2,7 @@ package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
+import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
@@ -22,13 +23,17 @@ public class ConfirmClaimPortImpl implements ConfirmClaimPort {
 
     private final BacenClaimClient bacenClaimClient;
 
+    private final TimeLimiterExecutor timeLimiterExecutor;
+
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "confirmFallback")
     public Claim confirm(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
 
         var request = ConfirmClaimRequest.from(claim);
 
-        var response = bacenClaimClient.confirmClaim(claim.getClaimId(), request);
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
+                () -> bacenClaimClient.confirmClaim(claim.getClaimId(), request),
+                requestIdentifier);
 
         var claimResponse = response.toClaim();
 

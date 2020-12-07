@@ -2,6 +2,7 @@ package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.claim.clients.BacenClaimClient;
 import com.picpay.banking.claim.dto.request.CreateClaimRequest;
+import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
@@ -21,13 +22,17 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
 
     private final BacenClaimClient bacenClaimClient;
 
+    private final TimeLimiterExecutor timeLimiterExecutor;
+
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "createClaimFallback")
     public Claim createClaim(Claim claim, String requestIdentifier) {
 
         var request = CreateClaimRequest.from(claim);
 
-        var response = bacenClaimClient.createClaim(request);
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
+                () -> bacenClaimClient.createClaim(request),
+                requestIdentifier);
 
         return response.toClaim();
     }
