@@ -9,7 +9,7 @@ package com.picpay.banking.infraction.ports;
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +32,16 @@ public class InfractionReportSavePortImpl implements InfractionReportSavePort {
 
     @Override
     public void save(@NonNull final InfractionReport infractionReport, final @NonNull String requestIdentifier) {
+        redisTemplate.opsForHash().put(requestIdentifier, InfractionReport.class.getName(), infractionReport);
+        save(infractionReport);
+    }
+
+    @Override
+    public void save(final @NonNull InfractionReport infractionReport) {
         infractionReportRepository.save(InfractionReportEntity.fromDomain(infractionReport));
         log.info("Infraction_analysis_saved"
-            , kv("requestIdentifier", requestIdentifier)
             , kv("endToEndId", infractionReport.getEndToEndId())
             , kv("infractionReportId", infractionReport.getInfractionReportId()));
-        redisTemplate.opsForHash().put(requestIdentifier, InfractionReport.class.getName(), infractionReport);
     }
 
 }

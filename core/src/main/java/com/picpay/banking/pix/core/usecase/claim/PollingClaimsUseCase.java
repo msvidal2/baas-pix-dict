@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PullingClaimUseCase {
+public class PollingClaimsUseCase {
 
     private final ListClaimsBacenPort listClaimsBacenPort;
 

@@ -1,0 +1,29 @@
+/*
+ *  baas-pix-dict 1.0 12/7/20
+ *  Copyright (c) 2020, PicPay S.A. All rights reserved.
+ *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
+ */
+
+
+package com.picpay.banking.pix.dict.config.infraction;
+
+import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationSenderPort;
+import com.picpay.banking.pix.core.usecase.infraction.InfractionPollingUseCase;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author rafael.braga
+ * @version 1.0 07/12/2020
+ */
+@Configuration
+public class InfractionPollingConfig {
+
+    @Bean
+    public InfractionPollingUseCase infractionPollingUseCase(final InfractionNotificationSenderPort senderPort,
+                                                             final ListInfractionPort bacenClient) {
+        return new InfractionPollingUseCase(senderPort, bacenClient);
+    }
+
+}

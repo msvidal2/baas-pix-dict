@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

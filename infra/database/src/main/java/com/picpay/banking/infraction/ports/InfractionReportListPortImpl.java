@@ -10,7 +10,7 @@ import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

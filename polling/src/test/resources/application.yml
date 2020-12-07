@@ -31,12 +31,14 @@ feign:
 
 picpay:
   ispb: 22896431
-  pulling:
+  polling:
+    limit: 25
     claim:
       initial-delay: 10s
       fixed-delay: 5m
-      limit: 25
-
+    infraction:
+      initial-delay: 60s
+      fixed-delay: 10m
 
 pix:
   bacen:

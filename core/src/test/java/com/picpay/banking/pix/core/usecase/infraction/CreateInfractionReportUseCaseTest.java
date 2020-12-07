@@ -5,8 +5,8 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,9 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELLED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;

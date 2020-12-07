@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class PortsConfig {
+public class ClaimPortConfig {
 
     @Bean
     public SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort(ClaimTopicBinding claimTopicBinding) {
