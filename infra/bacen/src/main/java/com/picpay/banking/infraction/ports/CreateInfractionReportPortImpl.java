@@ -41,7 +41,7 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
                                                          () -> bacenClient.create(CreateInfractionReportRequest.from(infractionReport)),
                                                          requestIdentifier);
-        return CreateInfractionReportResponse.toInfractionReport(response);
+        return CreateInfractionReportResponse.toInfractionReport(response, infractionReport.getIspbRequester());
     }
 
     public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {

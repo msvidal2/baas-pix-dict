@@ -105,7 +105,7 @@ class IdempotencyAspectTest {
             .infractionReportRequest(InfractionReportRequest.builder()
                                          .infractionType(com.picpay.banking.infraction.dto.request.InfractionType.FRAUD)
                                          .reportDetails(infractionReport.getDetails())
-                                         .transactionId(infractionReport.getTransactionId())
+                                         .transactionId(infractionReport.getEndToEndId())
                                          .creationTime(LocalDateTime.now())
                                          .creditedParticipant(String.valueOf(infractionReport.getIspbCredited()))
                                          .debitedParticipant(String.valueOf(infractionReport.getIspbDebited()))

@@ -16,10 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELED;
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELLED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
-import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_CLOSED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,20 +67,6 @@ class CreateInfractionReportUseCaseTest {
         assertThatThrownBy(() -> createInfractionReportUseCase.execute(infractionReport, "id"))
             .isInstanceOf(InfractionReportException.class)
             .hasMessageContaining(INFRACTION_REPORT_ALREADY_OPEN.getMessage());
-
-        verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportPort, times(0)).create(any(), anyString());
-        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class), anyString());
-    }
-
-    @Test
-    void when_an_canceled_infraction_exists_throw_exception() {
-        InfractionReport infractionReport = getInfractionReport(CANCELED);
-        when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Optional.of(infractionReport));
-
-        assertThatThrownBy(() -> createInfractionReportUseCase.execute(infractionReport, "id"))
-            .isInstanceOf(InfractionReportException.class)
-            .hasMessageContaining(INFRACTION_REPORT_CLOSED.getMessage());
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportPort, times(0)).create(any(), anyString());
