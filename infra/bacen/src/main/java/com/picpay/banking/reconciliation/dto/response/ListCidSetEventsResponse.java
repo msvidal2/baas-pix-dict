@@ -1,6 +1,7 @@
 package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
+import com.picpay.banking.adapters.ZoneDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
@@ -35,12 +37,12 @@ public class ListCidSetEventsResponse {
     private KeyTypeBacen keyType;
 
     @XmlElement(name = "StartTime")
-    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
-    private LocalDateTime startTime;
+    @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
+    private ZonedDateTime startTime;
 
     @XmlElement(name = "EndTime")
-    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
-    private LocalDateTime endTime;
+    @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
+    private ZonedDateTime endTime;
 
     @XmlElement(name = "SyncVerifierStart")
     private String syncVerifierStart;
@@ -84,14 +86,14 @@ public class ListCidSetEventsResponse {
         private String cid;
 
         @XmlElement(name = "Timestamp")
-        @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
-        private LocalDateTime timestamp;
+        @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
+        private ZonedDateTime timestamp;
 
         public static ContentIdentifierEvent toContentIdentifierEvent(final ListCidSetEventsResponse.CidSetEvent cidSetEvent) {
             return ContentIdentifierEvent.builder()
                 .cid(cidSetEvent.getCid())
                 .contentIdentifierType(ContentIdentifierEventType.valueOf(cidSetEvent.getType().name()))
-                .keyOwnershipDate(cidSetEvent.getTimestamp())
+                .keyOwnershipDate(cidSetEvent.getTimestamp().toLocalDateTime())
                 .build();
         }
 

@@ -1,28 +1,29 @@
-package com.picpay.banking.mockserver.dict.reconciliation;
+package com.picpay.banking.mockserver.dict.reconciliation.sync;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.picpay.banking.mockserver.util.MockServerSteps;
+import lombok.SneakyThrows;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.HttpStatusCode;
 import org.mockserver.model.MediaType;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 import static org.mockserver.model.HttpResponse.response;
 
 @Component
-public class SyncVerificationsOK implements SyncVerifications {
+public class SyncVerificationsOK implements MockServerSteps {
 
-    private SyncVerifications nextChain;
+    private MockServerSteps nextChain;
 
     @Override
-    public void setNextChain(final SyncVerifications nextChain) {
+    public void setNextChain(final MockServerSteps nextChain) {
         this.nextChain = nextChain;
     }
 
     @Override
-    public HttpResponse run(final HttpRequest httpRequest) throws IOException {
+    @SneakyThrows
+    public HttpResponse run(final HttpRequest httpRequest) {
         final String result = "OK";
 
         var xml = new XmlMapper().readTree(httpRequest.getBody().getRawBytes());

@@ -15,7 +15,7 @@ public class SyncVerifierScheduler {
     private final SyncVerifierService syncVerifierService;
 
     public void run() {
-        var keyType = KeyType.RANDOM;
+        var keyType = KeyType.CNPJ;
 
         SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
         if (syncVerifierHistoric.isNOK()) {

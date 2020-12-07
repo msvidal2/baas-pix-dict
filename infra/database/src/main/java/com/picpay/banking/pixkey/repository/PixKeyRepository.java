@@ -32,7 +32,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     List<PixKeyEntity> findByAccount(Integer participant, String branch, String accountNumber, AccountType accountType);
 
     @Query("select k.cid from pix_key k " +
-        "where k.id.type = :keyTypeBacen " +
+        "where k.id.type = :keyType " +
         "and k.ownershipDate > :synchronizedAt")
     Set<String> findAllCidsAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedAt);
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -44,10 +45,10 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
         Set<ContentIdentifierEvent> result = new HashSet<>();
 
         boolean hasNext = true;
-        LocalDateTime nextDate = startTime;
+        ZonedDateTime nextDate = startTime.atZone(ZoneId.of("UTC"));
         while (hasNext) {
             var bacenEvents = bacenReconciliationClient
-                .getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate.atZone(ZoneId.of("UTC")), 200);
+                .getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate, 200);
 
             result.addAll(bacenEvents.getCidSetEvents().getEvents().stream()
                 .map(CidSetEvent::toContentIdentifierEvent)

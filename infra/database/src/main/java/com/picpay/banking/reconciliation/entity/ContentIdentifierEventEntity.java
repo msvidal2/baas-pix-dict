@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Builder

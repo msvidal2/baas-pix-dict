@@ -1,4 +1,4 @@
-package com.picpay.banking.mockserver.dict.reconciliation;
+package com.picpay.banking.mockserver.dict.reconciliation.sync;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
