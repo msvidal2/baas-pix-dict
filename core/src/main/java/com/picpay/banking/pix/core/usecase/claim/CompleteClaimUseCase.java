@@ -3,10 +3,12 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ public class CompleteClaimUseCase {
 
     private final CreatePixKeyBacenPort createPixKeyBacenPort;
     private final CreatePixKeyPort createPixKeyPort;
+    private final RemovePixKeyBacenPort removePixKeyBacenPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
 
@@ -33,7 +36,7 @@ public class CompleteClaimUseCase {
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
 
         var claimCompleted = executeClaim(claim, requestIdentifier);
-        var createdPixKey = createPixKeyForClaimer(claimCompleted, randomUUID().toString());
+        var createdPixKey = completePixKeyForClaimer(claimCompleted, randomUUID().toString());
 
         if (claimCompleted != null)
             log.info("Claim_completed",
@@ -55,7 +58,7 @@ public class CompleteClaimUseCase {
         return claimCompleted;
     }
 
-    private PixKey createPixKeyForClaimer(final Claim claim, final String requestIdentifier){
+    private PixKey completePixKeyForClaimer(final Claim claim, final String requestIdentifier){
         PixKey pixKey = PixKey.builder()
                 .type(claim.getKeyType())
                 .key(claim.getKey())
@@ -70,7 +73,7 @@ public class CompleteClaimUseCase {
                 .fantasyName(claim.getFantasyName())
                 .build();
 
-        // TODO - RECONCILIATION?
+        removePixKeyBacenPort.remove(pixKey, RemoveReason.CLIENT_REQUEST);
         var createdPixKey = createPixKeyBacenPort.create(requestIdentifier, pixKey, CreateReason.CLIENT_REQUEST);
         createPixKeyPort.createPixKey(createdPixKey, CreateReason.CLIENT_REQUEST);
 

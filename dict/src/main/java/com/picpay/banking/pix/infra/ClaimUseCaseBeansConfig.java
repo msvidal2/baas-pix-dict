@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -56,8 +57,9 @@ public class ClaimUseCaseBeansConfig {
                                                      CompleteClaimPort completeClaimPort,
                                                      FindClaimPort findClaimPort,
                                                      CreatePixKeyBacenPort createPixKeyBacenPort,
-                                                     CreatePixKeyPort createPixKeyPort) {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
+                                                     CreatePixKeyPort createPixKeyPort,
+                                                     RemovePixKeyBacenPort removePixKeyBacenPort) {
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort, removePixKeyBacenPort);
     }
 
     @Bean
