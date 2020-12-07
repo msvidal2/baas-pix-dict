@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "CreateClaimResponse")
+@XmlRootElement(name = "CompleteClaimResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CompleteClaimResponse {
 
