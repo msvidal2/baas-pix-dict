@@ -327,7 +327,7 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.fieldErrors").exists());
 
     }
-
+/*
     @Test
     void when_RequestFilterInfractionsWithRequest_expect_statusOk() throws Exception {
 
@@ -346,7 +346,7 @@ class InfractionReportRequestControllerTest {
             InfractionReportSituation.class),nullable(LocalDateTime.class),nullable(LocalDateTime.class));
 
     }
-
+*/
     @Test
     void when_RequestFilterInfractionsWithInvalidRequest_expect_statusBadRequest() throws Exception {
         mockMvc.perform(get("/v1/infraction-report")
