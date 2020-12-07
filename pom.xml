@@ -31,8 +31,7 @@
         <module>sync</module>
         <module>notifier</module>
         <module>mockserver</module>
-        <module>bacen-polling</module>
-        <module>infra-messaging</module>
+        <module>polling</module>
     </modules>
 
     <distributionManagement>
