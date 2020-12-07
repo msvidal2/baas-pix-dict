@@ -3,9 +3,16 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.exception.InfractionReportError;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -13,25 +20,33 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class AnalyzeInfractionReportUseCase {
 
-//    private final InfractionReportPort infractionReportPort;
+    private final InfractionReportAnalyzePort infractionReportAnalyzePort;
+    private final InfractionReportFindPort infractionReportFindPort;
+    private final InfractionReportSavePort infractionReportSavePort;
 
-    public InfractionReport execute(@NonNull final String infractionReportId, @NonNull final Integer ispb
-            , @NonNull InfractionAnalyze analyze, @NonNull final String requestIdentifier) {
+    public InfractionReport execute(@NonNull final String infractionReportId, @NonNull final Integer ispb,
+                                    @NonNull InfractionAnalyze analyze, @NonNull final String requestIdentifier) {
 
-        //TODO ajustar com nova porta
+        InfractionReport infractionReport = infractionReportFindPort.find(infractionReportId)
+            .orElseThrow(() -> new InfractionReportException(InfractionReportError.REPORTED_TRANSACTION_NOT_FOUND));
 
-//        InfractionReport InfractionReportAnalysed = infractionReportPort
-//                .analyze(infractionReportId,ispb, analyze, requestIdentifier);
-//
-//        if (InfractionReportAnalysed != null)
-//            log.info("Infraction_analysed"
-//                    , kv("requestIdentifier", requestIdentifier)
-//                    , kv("endToEndId", InfractionReportAnalysed.getEndToEndId())
-//                    , kv("infractionReportId", InfractionReportAnalysed.getInfractionReportId()));
-//
-//        return InfractionReportAnalysed;
+        infractionReport.setAnalyze(analyze);
 
-        return null;
+        Optional<InfractionReport> analyzed = infractionReportAnalyzePort.analyze(infractionReport, requestIdentifier);
+
+        return analyzed.map(analysis -> {
+            log.info("Infraction_analysed"
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("endToEndId", infractionReport.getEndToEndId())
+                , kv("infractionReportId", infractionReport.getInfractionReportId()));
+
+            infractionReport.setDateLastUpdate(analysis.getDateLastUpdate());
+
+            infractionReportSavePort.save(infractionReport, requestIdentifier);
+
+            return analysis;
+        })
+            .orElse(infractionReport);
     }
 
 }

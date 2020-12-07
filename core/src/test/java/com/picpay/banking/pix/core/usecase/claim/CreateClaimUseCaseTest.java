@@ -49,7 +49,6 @@ public class CreateClaimUseCaseTest {
 
     @BeforeEach
     public void setup() {
-
         claimRequest = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
                 .key("+5561988887777")
