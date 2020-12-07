@@ -48,7 +48,6 @@ public class PixKey {
     private ClaimType claim;
     private Statistic statistic;
     private String cid;
-
     private UUID requestId;
 
     public String getOwnerName() {
@@ -87,6 +86,12 @@ public class PixKey {
     @Override
     public int hashCode() {
         return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
+    }
+
+    // TODO: Corrigir este ponto. Fiz isso somente para testar o fluxo todo.
+    public String getCid() {
+        if (cid == null) this.cid = calculateCid();
+        return cid;
     }
 
     public String calculateCid() {

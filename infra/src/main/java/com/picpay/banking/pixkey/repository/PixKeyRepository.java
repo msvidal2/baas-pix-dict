@@ -38,4 +38,6 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     void deleteByIdKeyAndParticipant(String key, Integer participant);
 
+    Optional<PixKeyEntity> findByCid(String cid);
+
 }

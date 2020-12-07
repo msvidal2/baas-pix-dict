@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author rafael.braga
@@ -64,6 +65,7 @@ public class CreateEntryResponse {
                 .startPossessionAt(entry.getKeyOwnershipDate())
                 .endToEndId(requestIdentifier)
                 .correlationId(correlationId)
+                .requestId(UUID.fromString(requestIdentifier)) // TODO: Confirmar se esta correto este ajuste
                 .build();
     }
 

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @FeignClient(value = "Reconcilliation",
     url = "${pix.bacen.url}",
@@ -50,7 +50,7 @@ public interface BacenReconciliationClient {
     ListCidSetEventsResponse getEvents(
         @RequestParam(value = "Participant") String participant,
         @RequestParam(value = "KeyType") String keyType,
-        @RequestParam(value = "StartTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") LocalDateTime startTime,
+        @RequestParam(value = "StartTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") ZonedDateTime startTime,
         @RequestParam(value = "Limit", defaultValue = "200") Integer limit);
 
     @PostMapping(value = "/sync-verifications",
