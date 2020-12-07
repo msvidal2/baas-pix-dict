@@ -31,8 +31,9 @@ public class InfractionReportUseCaseBeansConfig {
 
     @Bean
     public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
-                                                                       final InfractionReportCancelPort infractionReportCancelPort) {
-        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
+                                                                       final InfractionReportCancelPort infractionReportCancelPort,
+                                                                       final InfractionReportFindPort infractionReportFindPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort, infractionReportFindPort);
     }
 
 
