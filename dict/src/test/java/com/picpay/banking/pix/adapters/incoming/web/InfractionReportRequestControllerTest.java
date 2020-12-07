@@ -80,8 +80,7 @@ class InfractionReportRequestControllerTest {
         mockMvc = MockMvcBuilders.
             standaloneSetup(controller)
             .setControllerAdvice(
-                new CustomExceptionHandler(),
-                new JDExceptionHandler())
+                new CustomExceptionHandler())
             .build();
 
         findInfractionReport = InfractionReport.builder()
