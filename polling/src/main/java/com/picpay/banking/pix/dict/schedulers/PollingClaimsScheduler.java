@@ -1,14 +1,18 @@
 package com.picpay.banking.pix.dict.schedulers;
 
-import com.picpay.banking.pix.core.usecase.claim.PullingClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class PullingClaimsScheduler {
+@Profile("!test")
+public class PollingClaimsScheduler {
 
     @Value("${picpay.ispb}")
     private Integer ispb;
@@ -16,12 +20,13 @@ public class PullingClaimsScheduler {
     @Value("${picpay.pulling.claim.limit}")
     private Integer limit;
 
-    private final PullingClaimUseCase pullingClaimUseCase;
+    private final PollingClaimUseCase pollingClaimUseCase;
 
     @Scheduled(initialDelayString = "${picpay.pulling.claim.initial-delay}",
             fixedDelayString = "${picpay.pulling.claim.fixed-delay}")
     public void run() {
-        pullingClaimUseCase.execute(ispb, limit);
+        //pollingClaimUseCase.execute(ispb, limit);
+        log.info("EXECUTADO");
     }
 
 }

@@ -41,6 +41,7 @@ picpay:
 pix:
   bacen:
     dict:
+      url: localhost:1080
       entries:
         url: localhost:1080/dict/api
       infraction:

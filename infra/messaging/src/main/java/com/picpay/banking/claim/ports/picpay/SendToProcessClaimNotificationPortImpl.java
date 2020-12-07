@@ -7,11 +7,13 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Component;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
+//@Component
 public class SendToProcessClaimNotificationPortImpl implements SendToProcessClaimNotificationPort {
 
     private static final String CIRCUIT_BREAKER = "send-to-process-claim-notification";
