@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
-import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierEntity;
@@ -43,7 +42,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
 
     @Override
     public void saveFile(final ContentIdentifierFile contentIdentifierFile) {
-       this.contentIdentifierFileRepository.save(ContentIdentifierFileEntity.from(contentIdentifierFile));
+        this.contentIdentifierFileRepository.save(ContentIdentifierFileEntity.from(contentIdentifierFile));
     }
 
     @Override
@@ -58,19 +57,19 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
 
     @Override
     public Optional<ContentIdentifierFile> findLastFileRequested(final KeyType keyType) {
-        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(KeyTypeBacen.resolve(keyType), List.of(
+        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(keyType, List.of(
             ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED))
-        .map(ContentIdentifierFileEntity::toDomain);
+            .map(ContentIdentifierFileEntity::toDomain);
     }
 
     @Override
     public List<ContentIdentifier> listAll(KeyType keyType) {
-        return this.contentIdentifierRepository.findAllByKeyType(KeyTypeBacen.resolve(keyType))
+        return this.contentIdentifierRepository.findAllByKeyType(keyType)
             .stream().map(ContentIdentifierEntity::toDomain).collect(Collectors.toList());
     }
 
     @Override
-    public void saveAction(Integer idReference,PixKey key, String cid, ContentIdentifierFileAction action){
+    public void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierFileAction action) {
         final var contentIdentifierActionEntity = ContentIdentifierActionEntity.builder()
             .action(action)
             .cid(cid)

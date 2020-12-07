@@ -8,7 +8,7 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRe
 import com.picpay.banking.pix.adapters.incoming.web.dto.FilterInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportDTO;
+import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -124,14 +123,14 @@ public class InfractionReportController {
     @ApiOperation(value = "List Infraction Report")
     @GetMapping
     @ResponseStatus(OK)
-    public List<InfractionReportDTO> filter(@Valid FilterInfractionReportDTO filter) {
+    public InfractionPage filter(@Valid FilterInfractionReportDTO filter,
+                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                 @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
 
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
 
-        var listInfractionReport = this.filterInfractionReportUseCase.execute(
-            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime());
-
-        return listInfractionReport.stream().map(InfractionReportDTO::from).collect(Collectors.toList());
+        return this.filterInfractionReportUseCase.execute(
+            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime(), page, size);
     }
 
 }

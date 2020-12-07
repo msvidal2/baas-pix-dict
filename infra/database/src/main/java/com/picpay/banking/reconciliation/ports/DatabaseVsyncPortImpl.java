@@ -3,7 +3,6 @@ package com.picpay.banking.reconciliation.ports;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifier;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
-import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.entity.SyncVerifierEntity;
 import com.picpay.banking.reconciliation.repository.SyncVerifierRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class DatabaseVsyncPortImpl implements SyncVerifierPort {
 
     @Override
     public Optional<SyncVerifier> getLastSuccessfulVsync(final KeyType keyType) {
-        return syncVerifierRepository.findById(KeyTypeBacen.resolve(keyType))
+        return syncVerifierRepository.findById(keyType)
             .map(SyncVerifierEntity::toSyncVerifier);
     }
 

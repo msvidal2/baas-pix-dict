@@ -2,7 +2,7 @@ package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
-import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
+import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public class ContentIdentifierEventEntity {
 
     @Column(name = "key_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private KeyTypeBacen keyType;
+    private KeyType keyType;
 
     @JoinColumns({
         @JoinColumn(name = "pix_key", insertable = false, updatable = false),

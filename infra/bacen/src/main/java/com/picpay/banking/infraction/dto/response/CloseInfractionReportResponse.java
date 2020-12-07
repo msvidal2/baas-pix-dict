@@ -7,7 +7,6 @@
 
 package com.picpay.banking.infraction.dto.response;
 
-import com.picpay.banking.infraction.dto.request.AnalysisResult;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
@@ -38,7 +37,6 @@ public class CloseInfractionReportResponse {
 
     public InfractionReport toInfractionReport() {
         return InfractionReport.builder()
-            .transactionId(this.getInfractionReportRequest().getTransactionId())
             .infractionType(InfractionType.resolve(this.getInfractionReportRequest().getInfractionType().getValue()))
             .reportedBy(ReportedBy.resolve(this.getInfractionReportRequest().getReportedBy().getValue()))
             .endToEndId(this.getInfractionReportRequest().getTransactionId())

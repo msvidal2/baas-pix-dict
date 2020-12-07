@@ -7,6 +7,7 @@
 package com.picpay.banking.pix.core.ports.infraction;
 
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 
@@ -19,6 +20,6 @@ import java.util.List;
  */
 public interface InfractionReportListPort {
 
-   List<InfractionReport> list(Integer ispb, InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd);
+   InfractionPage list(Integer ispb, InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size);
 
 }

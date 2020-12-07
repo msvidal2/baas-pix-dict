@@ -10,15 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.ANALYZED;
-import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.RECEIVED;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
-import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_CLOSED;
 
 @Getter
 @Builder(toBuilder = true)
@@ -26,12 +25,11 @@ import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRAC
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class InfractionReport {
+public class InfractionReport implements Serializable {
 
     private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, RECEIVED);
 
     private String infractionReportId;
-    private String transactionId;
     @EqualsAndHashCode.Include
     private InfractionType infractionType;
     @EqualsAndHashCode.Include
@@ -47,17 +45,12 @@ public class InfractionReport {
     private int ispbRequester;
     @EqualsAndHashCode.Include
     private String details;
-    private String requestIdentifier;
     @Setter
     private InfractionAnalyze analyze;
 
     public void validateSituation() {
         if (OPEN_STATES.contains(this.getSituation()))
             throw new InfractionReportException(INFRACTION_REPORT_ALREADY_OPEN);
-
-        if (this.getSituation().equals(CANCELED)) {
-            throw new InfractionReportException(INFRACTION_REPORT_CLOSED);
-        }
     }
 
 }

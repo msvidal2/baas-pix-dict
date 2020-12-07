@@ -37,7 +37,7 @@ public class InfractionReportSavePortImpl implements InfractionReportSavePort {
             , kv("requestIdentifier", requestIdentifier)
             , kv("endToEndId", infractionReport.getEndToEndId())
             , kv("infractionReportId", infractionReport.getInfractionReportId()));
-        redisTemplate.opsForHash().put(InfractionReport.class.getName(), requestIdentifier, infractionReport);
+        redisTemplate.opsForHash().put(requestIdentifier, InfractionReport.class.getName(), infractionReport);
     }
 
 }
