@@ -37,9 +37,10 @@ public class CreateInfractionReportResponse {
     @XmlElement(name = "InfractionReport")
     private InfractionReportRequest infractionReportRequest;
 
-    public static InfractionReport toInfractionReport(CreateInfractionReportResponse response) {
+    public static InfractionReport toInfractionReport(CreateInfractionReportResponse response, final int ispbRequester) {
         return InfractionReport.builder()
-            .transactionId(response.getInfractionReportRequest().getTransactionId())
+            .ispbRequester(ispbRequester)
+            .endToEndId(response.getInfractionReportRequest().getTransactionId())
             .infractionType(InfractionType.resolve(response.getInfractionReportRequest().getInfractionType().getValue()))
             .reportedBy(ReportedBy.resolve(response.getInfractionReportRequest().getReportedBy().getValue()))
             .details(response.getInfractionReportRequest().getReportDetails())

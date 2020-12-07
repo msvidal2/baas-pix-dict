@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -43,8 +44,8 @@ public class CreateInfractionReportUseCase {
     }
 
     private void validateSituation(final InfractionReport infractionReport) {
-        Optional<InfractionReport> report = infractionReportFindPort.findByEndToEndId(infractionReport.getEndToEndId());
-        report.ifPresent(InfractionReport::validateSituation);
+        List<InfractionReport> reports = infractionReportFindPort.findByEndToEndId(infractionReport.getEndToEndId());
+        reports.forEach(InfractionReport::validateSituation);
     }
 
 }

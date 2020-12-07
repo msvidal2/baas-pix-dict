@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 /**
  * Class comments go here...
  *
@@ -21,8 +23,9 @@ public class InfractionReportCancelPortImpl implements InfractionReportCancelPor
     private final InfractionReportRepository infractionReportRepository;
 
     @Override
+    @Transactional
     public void cancel(String infractionReportId) {
-        infractionReportRepository.changeSituation(infractionReportId, InfractionReportSituation.CANCELED.getValue());
+        infractionReportRepository.changeSituation(infractionReportId, InfractionReportSituation.CANCELLED);
     }
 
 }
