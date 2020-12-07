@@ -3,10 +3,10 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
-package com.picpay.banking.infraction.ports.picpay;
+package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
+import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;

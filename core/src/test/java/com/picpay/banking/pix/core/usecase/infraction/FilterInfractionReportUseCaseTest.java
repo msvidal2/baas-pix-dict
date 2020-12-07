@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
@@ -16,11 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +35,8 @@ class FilterInfractionReportUseCaseTest {
     private InfractionReportListPort infractionReportPort;
 
     private InfractionReport infractionReport;
+
+    private InfractionPage infractionPage;
 
     @BeforeEach
     void setup() {
@@ -51,23 +53,27 @@ class FilterInfractionReportUseCaseTest {
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
+
+        infractionPage = InfractionPage.builder()
+            .content(Arrays.asList(infractionReport))
+            .size(1)
+            .offset(0)
+            .pageSize(1)
+            .build();
     }
 
-    /*
+
     @Test
     void when_filterInfractionsWithSuccess_expect_OkWithValidResult() {
-       when(infractionReportPort.list(anyInt(), any(), any(), any())).thenReturn(List.of(infractionReport));
+        when(infractionReportPort.list(anyInt(), any(), any(), any(),anyInt(),anyInt())).thenReturn(infractionPage);
 
-        var infractionReports = this.filterInfractionReportUseCase.execute(1, InfractionReportSituation.ANALYZED, null, null);
-        assertThat(infractionReports).isNotEmpty();
+        var infractionPage = this.filterInfractionReportUseCase.execute(1, InfractionReportSituation.ANALYZED, LocalDateTime.parse("2020-09-01T10:09:49.922138"), null,1,1);
+        assertThat(infractionPage.getContent()).isNotEmpty();
 
-       verify(infractionReportPort).list(anyInt(), any(), any(), any());
+        verify(infractionReportPort).list(anyInt(), any(), any(), any(),anyInt(),anyInt());
     }
     @Test
     void when_filterInfractionsWithNullIsbpWithSuccess_expect_throwException() {
-        Assertions.assertThrows(NullPointerException.class,() -> this.filterInfractionReportUseCase.execute(null, InfractionReportSituation.ANALYZED, null, null));
+        Assertions.assertThrows(NullPointerException.class,() -> this.filterInfractionReportUseCase.execute(null, InfractionReportSituation.ANALYZED, LocalDateTime.parse("2020-09-01T10:09:49.922138"), null,1,1));
     }
-*/
-
-
 }
