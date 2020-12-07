@@ -26,21 +26,24 @@ public class CancelInfractionReportUseCase {
             , @NonNull final Integer ispb, @NonNull final String requestIdentifier) {
 
         var infractionReport = infractionReportFindPort.find(infractionReportId);
-        if (infractionReport.isPresent() && InfractionReportSituation.OPEN.equals(infractionReport.get().getSituation()))
-            return infractionReport.get();
 
+        return infractionReport.stream()
+                .filter(inf -> inf.getSituation().equals(InfractionReportSituation.OPEN))
+                .findFirst()
+                .orElseGet(() -> cancel(infractionReportId, ispb, requestIdentifier));
+
+    }
+
+    private InfractionReport cancel(final @NonNull String infractionReportId, final @NonNull Integer ispb, final @NonNull String requestIdentifier) {
         var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
-
-        infractionReportCancelPort.cancel(infractionReportId);
-
-        if (infractionReportCanceled != null)
+        if (infractionReportCanceled != null) {
             log.info("Infraction_canceled"
                     , kv("requestIdentifier", requestIdentifier)
                     , kv("endToEndId", infractionReportCanceled.getEndToEndId())
                     , kv("infractionReportId", infractionReportCanceled.getInfractionReportId()));
-
+            infractionReportCancelPort.cancel(infractionReportId);
+        }
         return infractionReportCanceled;
-
     }
 
 }
