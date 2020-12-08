@@ -15,6 +15,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,7 @@ import java.util.Optional;
 @Aspect
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
 public class IdempotencyAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;

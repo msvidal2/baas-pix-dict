@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,9 @@ class CancelInfractionReportPortUseCaseTest {
     @Mock
     private InfractionReportCancelPort infractionReportCancelPort;
 
+    @Mock
+    private InfractionReportFindPort infractionReportFindPort;
+
     private InfractionReport infractionReport;
 
     @BeforeEach
@@ -62,6 +66,7 @@ class CancelInfractionReportPortUseCaseTest {
 
         verify(cancelInfractionReportPort).cancel(anyString(), anyInt(),anyString());
         verify(infractionReportCancelPort).cancel(anyString());
+        verify(infractionReportFindPort).find("1");
     }
 
 

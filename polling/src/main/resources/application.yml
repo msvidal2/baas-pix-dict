@@ -18,6 +18,16 @@ spring:
           binder: kafka
   redis:
     enabled: false
+  datasource:
+    driver-class-name: ${DB_DRIVE_CLASS_NAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+  jpa:
+    database: ${DB_TYPE}
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 
 feign:
   compression:

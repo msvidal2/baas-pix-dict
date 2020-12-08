@@ -42,7 +42,7 @@ public class AnalyzeInfractionReportUseCase {
 
             infractionReport.setDateLastUpdate(analysis.getDateLastUpdate());
 
-            infractionReportSavePort.save(infractionReport, requestIdentifier);
+            infractionReportSavePort.save(infractionReport);
 
             return analysis;
         })

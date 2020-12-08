@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ public class CreateInfractionReportUseCase {
     private final CreateInfractionReportPort infractionReportPort;
     private final InfractionReportSavePort infractionReportSavePort;
     private final InfractionReportFindPort infractionReportFindPort;
+    private final InfractionReportCacheSavePort infractionReportCacheSavePort;
 
     public InfractionReport execute(final InfractionReport infractionReport, final String requestIdentifier) {
         if (StringUtils.isBlank(requestIdentifier)) {
@@ -36,7 +38,8 @@ public class CreateInfractionReportUseCase {
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("endToEndId", infractionReportCreated.getEndToEndId())
                 , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
-            infractionReportSavePort.save(infractionReportCreated, requestIdentifier);
+            infractionReportSavePort.save(infractionReportCreated);
+            infractionReportCacheSavePort.save(infractionReportCreated, requestIdentifier);
         }
 
         return infractionReportCreated;
