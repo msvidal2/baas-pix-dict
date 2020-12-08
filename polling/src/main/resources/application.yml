@@ -4,6 +4,8 @@ server:
     enabled: true
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     stream:
       kafka:
@@ -13,6 +15,11 @@ spring:
         claim-notifications:
           destination: ${CLAIM_NOTIFICATIONS_TOPIC}
           binder: kafka
+  redis:
+    host: ${PICPAY_REDIS_HOST}
+    port: ${PICPAY_REDIS_PORT}
+    timeout: ${PICPAY_REDIS_TIMEOUT}
+    keyTtl: ${PICPAY_REDIS_KEY_TTL}
 
 feign:
   compression:
@@ -28,6 +35,11 @@ feign:
       default:
         connect-timeout: 105000
         read-timeout: 105000
+        logger-level: FULL
+
+logging:
+  level:
+    com.picpay.banking: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}
 
 picpay:
   ispb: ${ISPB_CLIENT_ID}
@@ -41,6 +53,7 @@ picpay:
 pix:
   bacen:
     dict:
+      url: ${BACEN_AWS_URL}/dict/api
       entries:
         url: ${BACEN_AWS_URL}/dict/api
       infraction:

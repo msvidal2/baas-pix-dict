@@ -5,6 +5,8 @@ import org.springframework.messaging.MessageChannel;
 
 public interface ClaimTopicBinding {
 
-    @Output("claim-notifications")
+    String OUTPUT = "claim-notifications";
+
+    @Output(OUTPUT)
     MessageChannel getClaimNotificationsOutput();
 }

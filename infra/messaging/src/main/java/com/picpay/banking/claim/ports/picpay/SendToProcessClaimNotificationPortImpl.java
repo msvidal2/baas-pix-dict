@@ -13,7 +13,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
-//@Component
+@Component
 public class SendToProcessClaimNotificationPortImpl implements SendToProcessClaimNotificationPort {
 
     private static final String CIRCUIT_BREAKER = "send-to-process-claim-notification";

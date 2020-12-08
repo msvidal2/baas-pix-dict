@@ -4,6 +4,8 @@ server:
     enabled: true
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     stream:
       kafka:
@@ -13,6 +15,11 @@ spring:
         claim-notifications:
           destination: claim-notifications
           binder: kafka
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 5000
+    keyTtl: 24
 
 feign:
   compression:
@@ -33,8 +40,8 @@ picpay:
   ispb: 22896431
   pulling:
     claim:
-      initial-delay: 10s
-      fixed-delay: 5m
+      initial-delay: 10000
+      fixed-delay: 300000
       limit: 25
 
 
