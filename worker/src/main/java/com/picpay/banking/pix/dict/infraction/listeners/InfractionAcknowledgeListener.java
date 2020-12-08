@@ -21,7 +21,6 @@ public class InfractionAcknowledgeListener {
 
     private final InfractionAcknowledgeUseCase infractionAcknowledgeUseCase;
 
-    //TODO configurar para escutar tópico new-infraction-reports
     @Input("new-infraction-reports")
     public void listen(final InfractionReport infractionReport) {
         infractionAcknowledgeUseCase.execute(infractionReport);

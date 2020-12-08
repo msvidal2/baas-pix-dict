@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class InfractionNotificationPortImpl implements InfractionNotificationPort {
+
     @Override
     public void notify(InfractionReport infractionReport) {
 
