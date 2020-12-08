@@ -2,7 +2,9 @@ package com.picpay.banking.config;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface ClaimTopicBinding {
 
     @Output("claim-notifications")

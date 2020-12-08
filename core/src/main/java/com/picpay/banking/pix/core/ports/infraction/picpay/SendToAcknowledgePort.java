@@ -5,17 +5,16 @@
  */
 
 
-package com.picpay.banking.pix.dict.config.infraction;
+package com.picpay.banking.pix.core.ports.infraction.picpay;
 
-import org.springframework.context.annotation.Configuration;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
 /**
  * @author rafael.braga
  * @version 1.0 07/12/2020
  */
-@Configuration
-public class InfractionPortsConfig {
+public interface SendToAcknowledgePort {
 
-    //TODO criar configurações das portas
+    void send(InfractionReport infractionReport);
 
 }

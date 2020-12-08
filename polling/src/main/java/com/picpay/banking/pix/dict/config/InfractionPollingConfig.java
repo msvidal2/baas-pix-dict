@@ -5,10 +5,10 @@
  */
 
 
-package com.picpay.banking.pix.dict.config.infraction;
+package com.picpay.banking.pix.dict.config;
 
 import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationSenderPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionPollingUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class InfractionPollingConfig {
 
     @Bean
-    public InfractionPollingUseCase infractionPollingUseCase(final InfractionNotificationSenderPort senderPort,
+    public InfractionPollingUseCase infractionPollingUseCase(final SendToAcknowledgePort senderPort,
                                                              final ListInfractionPort bacenClient) {
         return new InfractionPollingUseCase(senderPort, bacenClient);
     }
