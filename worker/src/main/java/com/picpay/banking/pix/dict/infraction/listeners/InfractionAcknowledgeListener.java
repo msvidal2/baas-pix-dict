@@ -8,17 +8,21 @@ package com.picpay.banking.pix.dict.infraction.listeners;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionAcknowledgeUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.stream.annotation.Input;
+import org.springframework.stereotype.Component;
 
 /**
  * @author rafael.braga
  * @version 1.0 07/12/2020
  */
+@Component
 @RequiredArgsConstructor
 public class InfractionAcknowledgeListener {
 
     private final InfractionAcknowledgeUseCase infractionAcknowledgeUseCase;
 
     //TODO configurar para escutar tópico new-infraction-reports
+    @Input("new-infraction-reports")
     public void listen(final InfractionReport infractionReport) {
         infractionAcknowledgeUseCase.execute(infractionReport);
     }
