@@ -19,6 +19,19 @@ feign:
     response:
       enabled: true
       useGzipDecoder: true
+redis:
+  enabled: false
+
+picpay:
+  ispb: 22896431
+
+pix:
+    bacen:
+      dict:
+        url: ${BACEN_AWS_URL}
+        entries:
+          url: ${BACEN_AWS_URL}/dict/api
+      url: ${BACEN_AWS_URL}
 
 spring:
   main:

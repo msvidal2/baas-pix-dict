@@ -3,7 +3,7 @@ package com.picpay.banking.pix.dict;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
 public class WorkerApplication {
 
     public static void main(String[] args) {

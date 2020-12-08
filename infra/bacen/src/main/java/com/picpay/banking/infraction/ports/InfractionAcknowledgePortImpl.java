@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.dict.infraction.ports;
+package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionAcknowledgePort;
 import org.springframework.stereotype.Component;
