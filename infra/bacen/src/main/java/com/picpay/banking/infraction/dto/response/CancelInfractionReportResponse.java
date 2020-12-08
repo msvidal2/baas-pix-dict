@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "GetEntryResponse")
+@XmlRootElement(name = "CancelInfractionReportResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CancelInfractionReportResponse {
 
@@ -44,17 +44,17 @@ public class CancelInfractionReportResponse {
 
     public InfractionReport toDomain() {
         return InfractionReport.builder()
-                .transactionId(infractionReport.getTransactionId())
-                .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
-                .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))
-                .details(infractionReport.getReportDetails())
-                .infractionReportId(infractionReport.getId())
-                .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
-                .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
-                .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
-                .dateCreate(infractionReport.getCreationTime())
-                .dateLastUpdate(infractionReport.getLastModified())
-                .build();
+            .endToEndId(infractionReport.getTransactionId())
+            .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
+            .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))
+            .details(infractionReport.getReportDetails())
+            .infractionReportId(infractionReport.getId())
+            .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
+            .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
+            .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
+            .dateCreate(infractionReport.getCreationTime())
+            .dateLastUpdate(infractionReport.getLastModified())
+            .build();
     }
 
 }

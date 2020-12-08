@@ -13,7 +13,9 @@ import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author rafael.braga
@@ -31,8 +33,11 @@ public class InfractionReportFindPortImpl implements InfractionReportFindPort {
     }
 
     @Override
-    public Optional<InfractionReport> findByEndToEndId(final String endToEndId) {
-        return infractionReportRepository.findByEndToEndId(endToEndId).map(InfractionReportEntity::toDomain);
+    public List<InfractionReport> findByEndToEndId(final String endToEndId) {
+        return infractionReportRepository.findByEndToEndId(endToEndId)
+            .stream()
+            .map(InfractionReportEntity::toDomain)
+            .collect(Collectors.toList());
     }
 
 }

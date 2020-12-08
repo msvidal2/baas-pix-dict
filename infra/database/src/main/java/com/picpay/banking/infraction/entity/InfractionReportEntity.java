@@ -6,12 +6,12 @@
 
 package com.picpay.banking.infraction.entity;
 
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -40,16 +42,19 @@ public class InfractionReportEntity {
     @Column(name = "infraction_report_id")
     private String infractionReportId;
     private String endToEndId;
+    @Enumerated(EnumType.STRING)
     private ReportedBy reportedBy;
+    @Enumerated(EnumType.STRING)
     private InfractionReportSituation situation;
     private int ispbDebited;
     private int ispbCredited;
     private LocalDateTime createdDate;
     private LocalDateTime lastUpdatedDate;
     private int ispbRequester;
+    @Enumerated(EnumType.STRING)
     private InfractionType infractionType;
     private String details;
-    private String requestIdentifier;
+    @Enumerated(EnumType.STRING)
     private InfractionAnalyzeResult analyzeResult;
     private String analyzeDetails;
 
@@ -67,28 +72,42 @@ public class InfractionReportEntity {
             .ispbRequester(infractionReport.getIspbRequester())
             .infractionType(infractionReport.getInfractionType())
             .details(infractionReport.getDetails())
-            .requestIdentifier(infractionReport.getRequestIdentifier())
-            .analyzeResult(Optional.ofNullable(infractionReport.getAnalyze().getAnalyzeResult()).orElse(null))
-            .analyzeDetails(Optional.ofNullable(infractionReport.getAnalyze().getDetails()).orElse(null))
+            .analyzeResult(getAnalyzeResult(infractionReport))
+            .analyzeDetails(getAnalyzeDetails(infractionReport))
             .build();
     }
 
-    public InfractionReport toDomain() {
+    private static String getAnalyzeDetails(final InfractionReport infractionReport) {
+        InfractionAnalyze analyze = infractionReport.getAnalyze();
+        if (analyze != null) {
+            return Optional.ofNullable(analyze.getDetails()).orElse(null);
+        }
+        return null;
+    }
+
+    private static InfractionAnalyzeResult getAnalyzeResult(final InfractionReport infractionReport) {
+        InfractionAnalyze analyze = infractionReport.getAnalyze();
+        if (analyze != null) {
+            return Optional.ofNullable(analyze.getAnalyzeResult()).orElse(null);
+        }
+        return null;
+    }
+
+    public static InfractionReport toDomain(InfractionReportEntity infractionReportEntity) {
         return InfractionReport.builder()
-            .infractionReportId(this.getInfractionReportId())
-            .endToEndId(this.getEndToEndId())
-            .reportedBy(this.getReportedBy())
-            .situation(this.getSituation())
-            .ispbDebited(this.getIspbDebited())
-            .ispbCredited(this.getIspbCredited())
-            .dateCreate(this.getCreatedDate())
-            .dateLastUpdate(this.getLastUpdatedDate())
-            .ispbRequester(this.getIspbRequester())
-            .infractionType(this.getInfractionType())
-            .details(this.getDetails())
-            .requestIdentifier(this.getRequestIdentifier())
-            .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(this.getAnalyzeResult())
-                .details(this.getAnalyzeDetails()).build()).orElse(null)).build();
+            .infractionReportId(infractionReportEntity.getInfractionReportId())
+            .endToEndId(infractionReportEntity.getEndToEndId())
+            .reportedBy(infractionReportEntity.getReportedBy())
+            .situation(infractionReportEntity.getSituation())
+            .ispbDebited(infractionReportEntity.getIspbDebited())
+            .ispbCredited(infractionReportEntity.getIspbCredited())
+            .dateCreate(infractionReportEntity.getCreatedDate())
+            .dateLastUpdate(infractionReportEntity.getLastUpdatedDate())
+            .ispbRequester(infractionReportEntity.getIspbRequester())
+            .infractionType(infractionReportEntity.getInfractionType())
+            .details(infractionReportEntity.getDetails())
+            .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(infractionReportEntity.getAnalyzeResult())
+                                             .details(infractionReportEntity.getAnalyzeDetails()).build()).orElse(null)).build();
     }
 
 }
