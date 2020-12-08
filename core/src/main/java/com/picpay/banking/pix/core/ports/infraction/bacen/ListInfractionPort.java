@@ -12,6 +12,6 @@ import java.util.List;
 
 public interface ListInfractionPort {
 
-    List<InfractionReport> list();
+    List<InfractionReport> list(Integer ispb, Integer limit);
 
 }

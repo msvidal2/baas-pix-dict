@@ -13,6 +13,11 @@ spring:
         claim-notifications:
           destination: ${CLAIM_NOTIFICATIONS_TOPIC}
           binder: kafka
+        new-infractions:
+          destination: ${INFRACTION_ACKNOWLEDGMENT_TOPIC}
+          binder: kafka
+  redis:
+    enabled: false
 
 feign:
   compression:
@@ -31,22 +36,26 @@ feign:
 
 picpay:
   ispb: ${ISPB_CLIENT_ID}
-  pulling:
+  polling:
     claim:
-      initial-delay: ${PULLING_SCHEDULER_CLAIM_INITIAL_DELAY}
-      fixed-delay: ${PULLING_SCHEDULER_CLAIM_FIXED_DELAY}
-      limit: ${PULLING_SCHEDULER_CLAIM_LIMIT}
+      initial-delay: ${POLLING_SCHEDULER_CLAIM_INITIAL_DELAY}
+      fixed-delay: ${POLLING_SCHEDULER_CLAIM_FIXED_DELAY}
+      limit: ${POLLING_SCHEDULER_CLAIM_LIMIT}
+    infraction:
+      initial-delay: ${POLLING_SCHEDULER_INFRACTION_INITIAL_DELAY}
+      fixed-delay: ${POLLING_SCHEDULER_INFRACTION_FIXED_DELAY}
+      limit: ${POLLING_SCHEDULER_INFRACTION_LIMIT}
+      lock:
+        duration: PT10M
 
 
 pix:
   bacen:
-    dict:
-      entries:
-        url: ${BACEN_AWS_URL}/dict/api
-      infraction:
-        url: ${BACEN_AWS_URL}
     url: ${BACEN_AWS_URL}
-
+    dict:
+      url: ${BACEN_AWS_URL}/dict/api
+      entries:
+        url: localhost:1080/dict/api
 
 management:
   endpoint:

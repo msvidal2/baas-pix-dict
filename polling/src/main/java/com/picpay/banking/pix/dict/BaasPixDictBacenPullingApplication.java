@@ -2,12 +2,8 @@ package com.picpay.banking.pix.dict;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableScheduling
-@EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
 public class BaasPixDictBacenPullingApplication {
 
 	public static void main(String[] args) {
