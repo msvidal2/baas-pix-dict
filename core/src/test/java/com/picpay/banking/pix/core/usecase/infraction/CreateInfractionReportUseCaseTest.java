@@ -5,6 +5,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,8 @@ class CreateInfractionReportUseCaseTest {
     private InfractionReportFindPort infractionReportFindPort;
     @Mock
     private CreateInfractionReportPort infractionReportPort;
+    @Mock
+    private InfractionReportCacheSavePort infractionReportCacheSavePort;
 
     @Test
     void when_createInfractionReportWithSuccess_expect_OkWithValidResult() {
@@ -55,7 +58,8 @@ class CreateInfractionReportUseCaseTest {
 
         verify(infractionReportPort).create(any(), anyString());
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportSavePort).save(any(InfractionReport.class), anyString());
+        verify(infractionReportSavePort).save(any(InfractionReport.class));
+        verify(infractionReportCacheSavePort).save(any(InfractionReport.class), anyString());
     }
 
     @Test
@@ -69,7 +73,8 @@ class CreateInfractionReportUseCaseTest {
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportPort, times(0)).create(any(), anyString());
-        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class), anyString());
+        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
+        verify(infractionReportCacheSavePort, times(0)).save(any(InfractionReport.class), anyString());
     }
 
     @Test

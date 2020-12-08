@@ -71,7 +71,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
         when(infractionReportAnalyzePort.analyze(any(), anyString())).thenReturn(infractionReportOptional);
 
-        infractionReportSavePort.save(any(),anyString());
+        infractionReportSavePort.save(any());
 
         var infractionReport = this.analyzeInfractionReportUseCase.execute("1", 1, infractionReportAnalyze , "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);

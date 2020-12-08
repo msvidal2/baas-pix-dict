@@ -31,6 +31,11 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.picpay.banking.pix.dict.infra</groupId>
+			<artifactId>database</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -40,8 +45,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.javacrumbs.shedlock</groupId>
-			<artifactId>shedlock-provider-mongo</artifactId>
-			<version>4.12.0</version>
+			<artifactId>shedlock-provider-jdbc-template</artifactId>
+			<version>4.17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.javacrumbs.shedlock</groupId>

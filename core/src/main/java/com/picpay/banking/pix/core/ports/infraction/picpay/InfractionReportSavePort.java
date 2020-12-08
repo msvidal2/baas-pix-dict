@@ -15,9 +15,6 @@ import lombok.NonNull;
  */
 public interface InfractionReportSavePort {
 
-   void save(final @NonNull InfractionReport infractionReport,
-             final @NonNull String requestIdentifier);
-
    void save(final @NonNull InfractionReport infractionReport);
 
 }
