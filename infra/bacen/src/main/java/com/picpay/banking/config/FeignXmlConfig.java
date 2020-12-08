@@ -6,8 +6,6 @@
 
 package com.picpay.banking.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jaxb.JAXBContextFactory;
@@ -23,11 +21,6 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 public class FeignXmlConfig {
-
-    @Bean
-    public ObjectMapper xmlMapper() {
-        return new XmlMapper();
-    }
 
     @Bean
     @Primary

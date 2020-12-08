@@ -8,13 +8,15 @@ import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
@@ -63,7 +65,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
         final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );//CHANGE HOST TO GATEWAY
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
-        return Arrays.asList(file.split("\n"));
+        return Stream.of(file.split("\n")).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
     }
 
 }
