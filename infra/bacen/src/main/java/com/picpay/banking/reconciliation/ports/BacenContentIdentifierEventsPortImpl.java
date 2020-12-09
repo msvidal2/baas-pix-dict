@@ -56,16 +56,15 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
     @Override
     public ContentIdentifierFile getContentIdentifierFileInBacen(final Integer id) {
-        final var cidFile = this.bacenReconciliationClient.getCidFile(id, participant);
-        return cidFile.toDomain();
+        return this.bacenReconciliationClient.getCidFile(id, participant).toDomain();
     }
 
     @Override
-    public List<String> downloadFile(final String url) {
+    public List<String> downloadCidsFromBacen(final String url) {
         final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );//CHANGE HOST TO GATEWAY
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
-        return Stream.of(file.split("\n")).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+        return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toList());
     }
 
 }
