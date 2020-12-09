@@ -19,8 +19,6 @@ feign:
     response:
       enabled: true
       useGzipDecoder: true
-redis:
-  enabled: false
 
 picpay:
   ispb: 22896431
@@ -38,6 +36,8 @@ spring:
     banner-mode: off
   application:
     name: dict-infraction-worker
+  redis:
+    enabled: false
   datasource:
     driver-class-name: ${DB_DRIVE_CLASS_NAME}
     password: ${DB_PASSWORD}

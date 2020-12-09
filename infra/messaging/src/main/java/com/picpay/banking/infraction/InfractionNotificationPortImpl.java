@@ -35,7 +35,7 @@ public class InfractionNotificationPortImpl implements InfractionNotificationPor
 
     public void fallback(final InfractionReport infractionReport, Exception e) {
         log.error("InfractionNotification_fallback",
-                kv("claimId", infractionReport.getInfractionReportId()),
+                kv("infractionReportId", infractionReport.getInfractionReportId()),
                 kv("error", e));
     }
 }
