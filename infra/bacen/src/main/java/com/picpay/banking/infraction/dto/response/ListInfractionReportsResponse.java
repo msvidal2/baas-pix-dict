@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.dto.response;
 
+import com.picpay.banking.infraction.dto.request.AnalysisResult;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -64,10 +66,7 @@ public class ListInfractionReportsResponse {
                      .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
                      .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
                      .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
-                     .analyze(InfractionAnalyze.builder()
-                                  .details(infractionReport.getAnalysisDetails())
-                                  .analyzeResult(InfractionAnalyzeResult.resolve(infractionReport.getAnalysisResult().getValue()))
-                                  .build())
+                     .analyze(getAnalyzeResult(infractionReport))
                      .build()
                 )
             .collect(Collectors.toList());
@@ -77,6 +76,15 @@ public class ListInfractionReportsResponse {
         return infractionReport.getReportedBy().equals(ReportedBy.CREDITED_PARTICIPANT)
             ? Integer.parseInt(infractionReport.getCreditedParticipant())
             : Integer.parseInt(infractionReport.getDebitedParticipant());
+    }
+
+    private static InfractionAnalyze getAnalyzeResult(final InfractionReportRequest infractionReport) {
+        var analysisResult = Optional.ofNullable(infractionReport.getAnalysisResult());
+
+        return InfractionAnalyze.builder()
+            .details(infractionReport.getAnalysisDetails())
+            .analyzeResult(analysisResult.map(AnalysisResult::getValue).map(InfractionAnalyzeResult::resolve).orElse(null))
+            .build();
     }
 
 }

@@ -105,4 +105,8 @@
 		</plugins>
 	</build>
 
+	<modules>
+		<module>infraction</module>
+	</modules>
+
 </project>

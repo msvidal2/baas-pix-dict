@@ -29,6 +29,7 @@ public class InfractionPollingUseCase {
     private final ListInfractionPort listInfractionPort;
 
     public void execute(final Integer ispb, final Integer limit) {
+        log.info("Polling BACEN for infractions");
         List<InfractionReport> infractions = listInfractionPort.list(ispb, limit);
 
         if (CollectionUtils.isEmpty(infractions)) {
