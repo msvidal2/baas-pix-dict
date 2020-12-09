@@ -117,4 +117,9 @@ class FindPixKeyUseCaseTest {
                 useCase.execute(randomUUID, "59375566072", ""));
     }
 
+    @Test
+    void when_executeWithInvalidKey_expect_illegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, "123", "12345678901"));
+    }
+
 }

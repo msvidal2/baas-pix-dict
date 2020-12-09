@@ -2,6 +2,8 @@ package com.picpay.banking.pix.core.domain;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public enum ClaimSituation {
@@ -23,4 +25,9 @@ public enum ClaimSituation {
 
         return null;
     }
+
+    public static List<ClaimSituation> getPending() {
+        return List.of(OPEN, AWAITING_CLAIM, CONFIRMED);
+    }
+
 }

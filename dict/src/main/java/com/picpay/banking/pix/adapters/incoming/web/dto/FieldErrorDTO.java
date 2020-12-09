@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.jdpi.dto.response.JDFieldErroDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,13 +20,6 @@ public class FieldErrorDTO {
 
     public static FieldErrorDTO from(FieldError fieldError) {
         return new FieldErrorDTO(fieldError.getField(), fieldError.getDefaultMessage());
-    }
-
-    public static FieldErrorDTO from(final JDFieldErroDTO fieldErro) {
-        return FieldErrorDTO.builder()
-                .field(fieldErro.getField())
-                .message(String.join(",", fieldErro.getMessages()))
-                .build();
     }
 
 }
