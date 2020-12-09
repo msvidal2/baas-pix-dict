@@ -21,6 +21,19 @@ spring:
     timeout: ${PICPAY_REDIS_TIMEOUT}
     keyTtl: ${PICPAY_REDIS_KEY_TTL}
 
+  datasource:
+    driver-class-name: ${DB_DRIVE_CLASS_NAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+  jpa:
+    database: ${DB_TYPE}
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  flyway:
+    baselineOnMigrate: true
+
 feign:
   compression:
     request:

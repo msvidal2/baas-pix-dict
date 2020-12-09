@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.*;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -25,9 +20,6 @@ public class PollingClaimsScheduler {
     @Value("${picpay.pulling.claim.limit}")
     private Integer limit;
 
-    @Value("${picpay.pulling.claim.fixed-delay}")
-    private Integer delay;
-
     private final PollingClaimUseCase pollingClaimUseCase;
 
     @Scheduled(initialDelayString = "${picpay.pulling.claim.initial-delay}",
@@ -35,12 +27,9 @@ public class PollingClaimsScheduler {
     public void run() {
         log.info("List claims polling started");
 
-        delay += 1000;
+        pollingClaimUseCase.execute(ispb, limit);
 
-        var startDate = LocalDateTime.now(ZoneId.of("UTC"));
-        startDate = startDate.minus(delay, ChronoUnit.MILLIS);
-
-        pollingClaimUseCase.execute(ispb, limit, startDate);
+        log.info("List claims polling finished");
     }
 
 }
