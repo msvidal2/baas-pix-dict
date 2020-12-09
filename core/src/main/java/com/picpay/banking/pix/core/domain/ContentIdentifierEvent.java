@@ -16,19 +16,19 @@ public class ContentIdentifierEvent {
     @NonNull
     private final ContentIdentifierEventType contentIdentifierType;
     @NonNull
-    private final LocalDateTime keyOwnershipDate;
+    private final LocalDateTime eventOnBacenAt;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final ContentIdentifierEvent that = (ContentIdentifierEvent) o;
-        return cid.equals(that.cid) && contentIdentifierType == that.contentIdentifierType && keyOwnershipDate.equals(that.keyOwnershipDate);
+        return cid.equals(that.cid) && contentIdentifierType == that.contentIdentifierType && eventOnBacenAt.equals(that.eventOnBacenAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cid, contentIdentifierType, keyOwnershipDate);
+        return Objects.hash(cid, contentIdentifierType, eventOnBacenAt);
     }
 
     public enum ContentIdentifierEventType {

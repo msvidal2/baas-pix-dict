@@ -30,13 +30,13 @@ public class ReconciliationMockServer {
         clientAndServer.when(
             request()
                 .withMethod("POST")
-                .withPath("/api/v1/sync-verifications/"))
+                .withPath("/dict/api/v1/sync-verifications/"))
             .respond(this::syncVerifications);
 
         clientAndServer.when(
             request()
                 .withMethod("GET")
-                .withPath("/api/v1/cids/events"))
+                .withPath("/dict/api/v1/cids/events"))
             .respond(this::events);
     }
 

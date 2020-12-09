@@ -1,4 +1,4 @@
-package com.picpay.banking.reconciliation.ports.picpay;
+package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
@@ -25,7 +25,7 @@ public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPor
 
     @Override
     public Set<ContentIdentifierEvent> findAllAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedStart) {
-        return contentIdentifierEventRepository.findByKeyTypeAndKeyOwnershipDateGreaterThanEqual(keyType, synchronizedStart)
+        return contentIdentifierEventRepository.findByKeyTypeAndEventOnBacenAtGreaterThanEqual(keyType, synchronizedStart)
             .stream().map(ContentIdentifierEventEntity::toContentIdentifierEvent).collect(Collectors.toSet());
     }
 

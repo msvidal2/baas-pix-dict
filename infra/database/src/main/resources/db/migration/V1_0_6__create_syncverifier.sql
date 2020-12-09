@@ -38,13 +38,13 @@ comment on column dict.sync_verifier_historic.result is 'Enum com o tipo de resu
 
 create table dict.content_identifier_event
 (
-    id                 serial                      not null primary key,
-    pix_key            character varying(100)      not null,
-    key_type           character varying(20)       not null,
-    cid                character varying(64)       not null,
-    created_at         timestamp without time zone not null,
-    key_ownership_date timestamp without time zone not null,
-    type               character varying(20)       not null
+    id                serial                      not null primary key,
+    pix_key           character varying(100)      not null,
+    key_type          character varying(20)       not null,
+    cid               character varying(64)       not null,
+    created_at        timestamp without time zone not null,
+    event_on_bacen_at timestamp without time zone not null,
+    type              character varying(20)       not null
 );
 comment on table dict.content_identifier_event is 'Armazena todos os eventos de manipulação do cadastro de chaves, gerando um cid para ser utilizado na sincronização de base';
 comment on column dict.content_identifier_event.id is 'Chave primária sequencial';
@@ -52,7 +52,7 @@ comment on column dict.content_identifier_event.pix_key is 'Key da chave em ques
 comment on column dict.content_identifier_event.key_type is 'O keyType é o tipo da chave utilizada no Pix. Novos tipos poderão surgir. Os valores atuais são: "CPF", "CNPJ", "PHONE", "EMAIL", "EVP"';
 comment on column dict.content_identifier_event.cid is 'O CID é o content identifier. É a representação hexadecimal, em lowercase, do resultado da função hmacSha256 de determinados campos da chave para manter o sincronismo.';
 comment on column dict.content_identifier_event.created_at is 'Data em que o evento foi persistido. Não é a data exata de alteração no Banco Central';
-comment on column dict.content_identifier_event.key_ownership_date is 'Data em que o dono da chave tem posse do vinculo. Essa data é controlada no Banco Central e é a data utilizada para o sincronismo por eventos.';
+comment on column dict.content_identifier_event.event_on_bacen_at is 'É a data em que o evento aconteceu no Bacen. Essa data é controlada no Banco Central e é a data utilizada para o sincronismo por eventos.';
 comment on column dict.content_identifier_event.type is 'Enum com o tipo de operação realizada: ADDED, REMOVED';
 
 create table dict.sync_verifier_historic_action

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,7 +17,7 @@ public class SyncVerifier {
     private LocalDateTime synchronizedAt;
     private SyncVerifierResultType syncVerifierResultType;
 
-    public String calculateVsync(final Set<String> contentIdentifiers) {
+    public String calculateVsync(final List<String> contentIdentifiers) {
         if (vsync == null) vsync = "0000000000000000000000000000000000000000000000000000000000000000";
 
         BigInteger vsyncAsBigInteger = new BigInteger(vsync, 16);

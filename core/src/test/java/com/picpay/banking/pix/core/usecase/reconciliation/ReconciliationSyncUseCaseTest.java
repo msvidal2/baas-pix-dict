@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +58,7 @@ class ReconciliationSyncUseCaseTest {
             .thenReturn(Optional.empty());
 
         when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(new HashSet<>());
+            .thenReturn(new ArrayList<>());
 
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder()
@@ -83,7 +83,7 @@ class ReconciliationSyncUseCaseTest {
             .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
 
         when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(new HashSet<>());
+            .thenReturn(new ArrayList<>());
 
         when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "1"))
             .thenReturn(SyncVerifierResult.builder()

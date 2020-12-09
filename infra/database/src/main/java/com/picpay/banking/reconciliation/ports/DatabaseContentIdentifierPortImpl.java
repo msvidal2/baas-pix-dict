@@ -1,4 +1,4 @@
-package com.picpay.banking.reconciliation.ports.picpay;
+package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;

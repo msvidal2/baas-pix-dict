@@ -21,7 +21,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Getter
 @Builder
@@ -53,8 +52,8 @@ public class ContentIdentifierEventEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "key_ownership_date", nullable = false)
-    private LocalDateTime keyOwnershipDate;
+    @Column(name = "event_on_bacen_at", nullable = false)
+    private LocalDateTime eventOnBacenAt;
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -64,7 +63,7 @@ public class ContentIdentifierEventEntity {
         return ContentIdentifierEvent.builder()
             .cid(contentIdentifierEventEntity.getCid())
             .contentIdentifierType(contentIdentifierEventEntity.getType())
-            .keyOwnershipDate(contentIdentifierEventEntity.getKeyOwnershipDate())
+            .eventOnBacenAt(contentIdentifierEventEntity.getEventOnBacenAt())
             .build();
     }
 

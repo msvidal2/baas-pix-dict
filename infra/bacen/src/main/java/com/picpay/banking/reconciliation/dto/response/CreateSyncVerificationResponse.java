@@ -1,7 +1,6 @@
 package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.adapters.ZoneDateTimeAdapter;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Getter
 @Builder
@@ -28,8 +26,8 @@ public class CreateSyncVerificationResponse {
     private SyncVerification syncVerification;
 
     @XmlElement(name = "ResponseTime")
-    @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
-    private ZonedDateTime responseTime;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime responseTime;
 
     @XmlElement(name = "CorrelationId")
     private String correlationId;
@@ -57,8 +55,8 @@ public class CreateSyncVerificationResponse {
         private String participantSyncVerifier;
 
         @XmlElement(name = "SyncVerifierLastModified")
-        @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
-        private ZonedDateTime syncVerifierLastModified;
+        @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+        private LocalDateTime syncVerifierLastModified;
 
         @XmlElement(name = "Id")
         private Integer id;

@@ -1,7 +1,6 @@
 package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.adapters.ZoneDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
@@ -37,12 +36,12 @@ public class ListCidSetEventsResponse {
     private KeyTypeBacen keyType;
 
     @XmlElement(name = "StartTime")
-    @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
-    private ZonedDateTime startTime;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime startTime;
 
     @XmlElement(name = "EndTime")
-    @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
-    private ZonedDateTime endTime;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime endTime;
 
     @XmlElement(name = "SyncVerifierStart")
     private String syncVerifierStart;
@@ -86,14 +85,14 @@ public class ListCidSetEventsResponse {
         private String cid;
 
         @XmlElement(name = "Timestamp")
-        @XmlJavaTypeAdapter(ZoneDateTimeAdapter.class)
-        private ZonedDateTime timestamp;
+        @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+        private LocalDateTime timestamp;
 
         public static ContentIdentifierEvent toContentIdentifierEvent(final ListCidSetEventsResponse.CidSetEvent cidSetEvent) {
             return ContentIdentifierEvent.builder()
                 .cid(cidSetEvent.getCid())
                 .contentIdentifierType(ContentIdentifierEventType.valueOf(cidSetEvent.getType().name()))
-                .keyOwnershipDate(cidSetEvent.getTimestamp().toLocalDateTime())
+                .eventOnBacenAt(cidSetEvent.getTimestamp())
                 .build();
         }
 

@@ -94,7 +94,8 @@ public class FailureReconciliationSyncByFileUseCase {
         final var cidInDatabase = this.databaseContentIdentifierPort.findByCid(cid);
         cidInDatabase.ifPresent(contentIdentifier -> {
             this.databaseContentIdentifierPort.delete(cid);
-            final var calculatedCid = contentIdentifier.getPixKey().calculateCid();
+            contentIdentifier.getPixKey().calculateCid(); // TODO: Melhorar este ponto
+            final var calculatedCid = contentIdentifier.getPixKey().getCid();
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
             if (!valueInBacen.isPresent()) {
                 this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);

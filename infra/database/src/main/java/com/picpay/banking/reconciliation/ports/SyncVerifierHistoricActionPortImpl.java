@@ -1,4 +1,4 @@
-package com.picpay.banking.reconciliation.ports.picpay;
+package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;

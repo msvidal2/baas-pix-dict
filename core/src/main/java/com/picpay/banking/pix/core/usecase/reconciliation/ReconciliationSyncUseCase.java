@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -36,14 +36,12 @@ public class ReconciliationSyncUseCase {
                 .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
                 .build());
 
-        Set<String> contentIdentifiers = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
+        List<String> contentIdentifiers = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
             syncVerifier.getKeyType(),
             syncVerifier.getSynchronizedAt());
 
         var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
-
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
-
         var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
 
         syncVerifierPort.save(syncVerifier);

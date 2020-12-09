@@ -11,7 +11,7 @@ public class ContentIdentifierUtil {
         return ContentIdentifierEvent.builder()
             .cid(cid)
             .contentIdentifierType(ContentIdentifierEventType.ADDED)
-            .keyOwnershipDate(LocalDateTime.now())
+            .eventOnBacenAt(LocalDateTime.now())
             .build();
     }
 
@@ -19,7 +19,7 @@ public class ContentIdentifierUtil {
         return ContentIdentifierEvent.builder()
             .cid(cid)
             .contentIdentifierType(eventType)
-            .keyOwnershipDate(LocalDateTime.now())
+            .eventOnBacenAt(LocalDateTime.now())
             .build();
     }
 

@@ -33,8 +33,7 @@ public class BacenSyncVerificationsPortImpl implements BacenSyncVerificationsPor
         var response = bacenReconciliationClient.syncVerifications(request);
 
         return SyncVerifierResult.builder()
-            //.syncVerifierLastModified(response.getSyncVerification().getSyncVerifierLastModified().toLocalDateTime())
-            .syncVerifierLastModified(response.getResponseTime().toLocalDateTime())
+            .syncVerifierLastModified(response.getResponseTime())
             .syncVerifierResultType(SyncVerifierResultType.valueOf(response.getSyncVerification().getResult().name()))
             .build();
     }

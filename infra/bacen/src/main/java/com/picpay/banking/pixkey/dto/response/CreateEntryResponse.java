@@ -8,9 +8,6 @@
 package com.picpay.banking.pixkey.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Entry;
 import com.picpay.banking.pixkey.dto.request.Reason;
@@ -51,22 +48,22 @@ public class CreateEntryResponse {
 
     public PixKey toDomain(String requestIdentifier, Reason resolve) {
         return PixKey.builder()
-                .key(entry.getKey())
-                .type(entry.getKeyType().getType())
-                .ispb(Integer.parseInt(entry.getAccount().getParticipant()))
-                .branchNumber(entry.getAccount().getBranch())
-                .accountType(entry.getAccount().getAccountType().getType())
-                .accountNumber(entry.getAccount().getAccountNumber())
-                .accountOpeningDate(entry.getAccount().getOpeningDate())
-                .personType(entry.getOwner().getType().getPersonType())
-                .taxId(entry.getOwner().getTaxIdNumber())
-                .name(entry.getOwner().getName())
-                .createdAt(entry.getCreationDate())
-                .startPossessionAt(entry.getKeyOwnershipDate())
-                .endToEndId(requestIdentifier)
-                .correlationId(correlationId)
-                .requestId(UUID.fromString(requestIdentifier)) // TODO: Confirmar se esta correto este ajuste
-                .build();
+            .key(entry.getKey())
+            .type(entry.getKeyType().getType())
+            .ispb(Integer.parseInt(entry.getAccount().getParticipant()))
+            .branchNumber(entry.getAccount().getBranch())
+            .accountType(entry.getAccount().getAccountType().getType())
+            .accountNumber(entry.getAccount().getAccountNumber())
+            .accountOpeningDate(entry.getAccount().getOpeningDate())
+            .personType(entry.getOwner().getType().getPersonType())
+            .taxId(entry.getOwner().getTaxIdNumber())
+            .name(entry.getOwner().getName())
+            .createdAt(entry.getCreationDate())
+            .startPossessionAt(entry.getKeyOwnershipDate())
+            .endToEndId(requestIdentifier)
+            .correlationId(correlationId)
+            .requestId(UUID.fromString(requestIdentifier))
+            .build();
     }
 
 }

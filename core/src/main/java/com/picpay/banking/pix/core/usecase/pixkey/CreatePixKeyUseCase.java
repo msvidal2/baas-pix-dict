@@ -25,8 +25,8 @@ public class CreatePixKeyUseCase {
     private final FindPixKeyPort findPixKeyPort;
 
     public PixKey execute(final String requestIdentifier,
-                          final PixKey pixKey,
-                          final CreateReason reason) {
+        final PixKey pixKey,
+        final CreateReason reason) {
 
         CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -37,9 +37,11 @@ public class CreatePixKeyUseCase {
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
 
+        createdPixKey.calculateCid();
+
         log.info("PixKey_created"
-                , kv("requestIdentifier", requestIdentifier)
-                , kv("key", createdPixKey.getKey()));
+            , kv("requestIdentifier", requestIdentifier)
+            , kv("key", createdPixKey.getKey()));
 
         createPixKeyPort.createPixKey(createdPixKey, reason);
 
@@ -54,10 +56,10 @@ public class CreatePixKeyUseCase {
         }
 
         var pixKeysExisting = findPixKeyPort.findByAccount(
-                pixKey.getIspb(),
-                pixKey.getBranchNumber(),
-                pixKey.getAccountNumber(),
-                pixKey.getAccountType());
+            pixKey.getIspb(),
+            pixKey.getBranchNumber(),
+            pixKey.getAccountNumber(),
+            pixKey.getAccountType());
 
         if (pixKeysExisting.size() >= maxKeysPerAccount) {
             throw new PixKeyException("The maximum number of keys cannot be greater than " + maxKeysPerAccount);
@@ -68,11 +70,11 @@ public class CreatePixKeyUseCase {
 
     private void validateRegisteredAccountForDifferentPerson(PixKey pixKey, List<PixKey> pixKeysExisting) {
         pixKeysExisting.stream().findAny()
-                .ifPresent(pk -> {
-                    if (!pixKey.getTaxIdWithLeftZeros().equals(pk.getTaxIdWithLeftZeros())) {
-                        throw new PixKeyException(PixKeyError.EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON);
-                    }
-                });
+            .ifPresent(pk -> {
+                if (!pixKey.getTaxIdWithLeftZeros().equals(pk.getTaxIdWithLeftZeros())) {
+                    throw new PixKeyException(PixKeyError.EXISTING_ACCOUNT_REGISTRATION_FOR_ANOTHER_PERSON);
+                }
+            });
     }
 
     private void validateKeyExists(final PixKey pixKey) {
@@ -88,7 +90,6 @@ public class CreatePixKeyUseCase {
             }
 
             throw new PixKeyException(PixKeyError.KEY_EXISTS_INTO_PSP_TO_ANOTHER_PERSON);
-
         });
     }
 

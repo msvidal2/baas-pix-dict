@@ -36,7 +36,8 @@ public class SyncVerifierHistoric {
         return resultActions;
     }
 
-    private Set<SyncVerifierHistoricAction> hasInDatabaseAndNotHaveInBacen(final Set<SyncVerifierHistoricAction> databaseLatestSyncVerifierHistoricActions,
+    private Set<SyncVerifierHistoricAction> hasInDatabaseAndNotHaveInBacen(
+        final Set<SyncVerifierHistoricAction> databaseLatestSyncVerifierHistoricActions,
         final Set<SyncVerifierHistoricAction> bacenLatestSyncVerifierHistoricActions) {
         var resultActions = new HashSet<SyncVerifierHistoricAction>();
         for (final SyncVerifierHistoricAction databaseSyncVerifierHistoricAction : databaseLatestSyncVerifierHistoricActions) {
@@ -44,14 +45,16 @@ public class SyncVerifierHistoric {
                 .anyMatch(contentIdentifier -> contentIdentifier.getCid().equals(databaseSyncVerifierHistoricAction.getCid()));
 
             if (!databaseCidExistsInBacenCid) {
-                resultActions.add(new SyncVerifierHistoricAction(this, databaseSyncVerifierHistoricAction.getCid(), SyncVerifierHistoricAction.ActionType.REMOVE));
+                resultActions.add(
+                    new SyncVerifierHistoricAction(this, databaseSyncVerifierHistoricAction.getCid(), SyncVerifierHistoricAction.ActionType.REMOVE));
             }
         }
 
         return resultActions;
     }
 
-    private Set<SyncVerifierHistoricAction> hasInBacenAndNotHaveInDatabase(final Set<SyncVerifierHistoricAction> bacenLatestSyncVerifierHistoricActions,
+    private Set<SyncVerifierHistoricAction> hasInBacenAndNotHaveInDatabase(
+        final Set<SyncVerifierHistoricAction> bacenLatestSyncVerifierHistoricActions,
         final Set<SyncVerifierHistoricAction> databaseLatestSyncVerifierHistoricActions) {
 
         var resultActions = new HashSet<SyncVerifierHistoricAction>();
@@ -67,9 +70,10 @@ public class SyncVerifierHistoric {
     private Set<SyncVerifierHistoricAction> groupByCidMaxByDateAndMapToActions(final Set<ContentIdentifierEvent> bacenEvents) {
         return new HashSet<>(bacenEvents.stream().collect(
             Collectors.groupingBy(ContentIdentifierEvent::getCid,
-                Collectors.maxBy(Comparator.comparing(ContentIdentifierEvent::getKeyOwnershipDate))))
+                Collectors.maxBy(Comparator.comparing(ContentIdentifierEvent::getEventOnBacenAt))))
             .values()).stream().map(
-            event -> new SyncVerifierHistoricAction(this, event.orElseThrow().getCid(), SyncVerifierHistoricAction.ActionType.resolve(event.get().getContentIdentifierType())))
+            event -> new SyncVerifierHistoricAction(this, event.orElseThrow().getCid(),
+                SyncVerifierHistoricAction.ActionType.resolve(event.get().getContentIdentifierType())))
             .collect(Collectors.toSet());
     }
 

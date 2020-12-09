@@ -26,9 +26,9 @@ spring:
                         partitionCount: 1
                         concurrency: 1
     datasource:
+        url: ${DB_URL}
         driver-class-name: ${DB_DRIVE_CLASS_NAME}
         password: ${DB_PASSWORD}
-        url: ${DB_URL}
         username: ${DB_USERNAME}
     jpa:
         database: ${DB_TYPE}

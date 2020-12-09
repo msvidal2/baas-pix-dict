@@ -60,6 +60,7 @@ public class EntryByCidResponse {
             .taxId(entry.getOwner().getTaxIdNumber())
             .name(entry.getOwner().getName())
             .createdAt(entry.getCreationDate())
+            .updatedAt(responseTime)
             .startPossessionAt(entry.getKeyOwnershipDate())
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))

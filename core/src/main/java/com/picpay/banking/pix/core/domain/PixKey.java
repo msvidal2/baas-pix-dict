@@ -42,6 +42,7 @@ public class PixKey {
     private String name;
     private String fantasyName;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private LocalDateTime startPossessionAt;
     private String endToEndId;
     private String correlationId;
@@ -88,21 +89,15 @@ public class PixKey {
         return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
     }
 
-    // TODO: Corrigir este ponto. Fiz isso somente para testar o fluxo todo.
-    public String getCid() {
-        if (cid == null) this.cid = calculateCid();
-        return cid;
-    }
-
-    public String calculateCid() {
-
+    // TODO: Melhorar este ponto. Fiz isso somente para testar o fluxo todo.
+    public void calculateCid() {
         byte[] requestIdBytes = new byte[16];
 
         ByteBuffer.wrap(requestIdBytes)
             .putLong(requestId.getMostSignificantBits())
             .putLong(requestId.getLeastSignificantBits());
 
-        return Hashing.hmacSha256(requestIdBytes).newHasher()
+        this.cid = Hashing.hmacSha256(requestIdBytes).newHasher()
             .putString(type.name(), UTF_8).putString(SEPARATOR, UTF_8)
             .putString(key, UTF_8).putString(SEPARATOR, UTF_8)
             .putString(taxId, UTF_8).putString(SEPARATOR, UTF_8)

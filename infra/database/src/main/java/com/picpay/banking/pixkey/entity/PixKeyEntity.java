@@ -131,6 +131,7 @@ public class PixKeyEntity {
             .reason(Reason.resolve(reason.getValue()))
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
+            .updateDate(pixKey.getUpdatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
             .requestId(pixKey.getRequestId().toString())
             .cid(pixKey.getCid())

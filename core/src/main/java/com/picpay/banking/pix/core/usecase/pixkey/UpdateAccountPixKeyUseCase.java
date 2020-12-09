@@ -21,8 +21,8 @@ public class UpdateAccountPixKeyUseCase {
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
-                          @NonNull final PixKey pixKey,
-                          @NonNull final UpdateReason reason) {
+        @NonNull final PixKey pixKey,
+        @NonNull final UpdateReason reason) {
 
         UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -36,12 +36,14 @@ public class UpdateAccountPixKeyUseCase {
 
         var pixKeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
 
+        pixKeyResponse.calculateCid();
+
         var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixKeyResponse, reason);
 
         if (pixKeyUpdated != null)
             log.info("PixKey_updated"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("key", pixKeyUpdated.getKey()));
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", pixKeyUpdated.getKey()));
 
         return pixKeyUpdated;
     }
