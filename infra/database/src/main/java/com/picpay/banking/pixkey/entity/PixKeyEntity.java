@@ -83,7 +83,7 @@ public class PixKeyEntity {
                 .key(pixKey.getKey())
                 .type(pixKey.getType())
                 .build())
-            .requestId(pixKey.getRequestId().toString())
+            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
             .taxId(pixKey.getTaxId())
             .participant(pixKey.getIspb())
             .branch(pixKey.getBranchNumber())
@@ -96,7 +96,7 @@ public class PixKeyEntity {
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
-            .requestId(pixKey.getRequestId().toString())
+            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
             .build();
     }
 
@@ -107,7 +107,7 @@ public class PixKeyEntity {
                 .type(pixKey.getType())
                 .build())
             .taxId(pixKey.getTaxId())
-            .requestId(pixKey.getRequestId().toString())
+            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
             .participant(pixKey.getIspb())
             .branch(pixKey.getBranchNumber())
             .accountNumber(pixKey.getAccountNumber())
@@ -119,7 +119,7 @@ public class PixKeyEntity {
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
-            .requestId(pixKey.getRequestId().toString())
+            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
             .build();
     }
 
