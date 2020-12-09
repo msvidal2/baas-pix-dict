@@ -70,17 +70,17 @@ spring:
             partitionCount: 1
             concurrency: 1
 
-#management:
-#  health:
-#    diskspace:
-#      enabled: false
-#  endpoint:
-#    health:
-#      show-details: always
-#  endpoints:
-#    web:
-#      exposure:
-#        include: prometheus, health
-#      base-path: '/'
-#      path-mapping:
-#        prometheus: 'metrics'
+management:
+  health:
+    diskspace:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      base-path: '/'
+      path-mapping:
+        prometheus: 'metrics'
