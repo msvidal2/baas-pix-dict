@@ -22,6 +22,13 @@ import java.time.LocalDateTime;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CompleteClaimResponse {
 
+    @XmlElement(name = "ResponseTime")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime responseTime;
+
+    @XmlElement(name = "CorrelationId")
+    private String correlationId;
+
     @XmlElement(name = "Claim")
     private ClaimResponse claim;
 
@@ -34,6 +41,6 @@ public class CompleteClaimResponse {
     private LocalDateTime keyOwnershipDate;
 
     public Claim toClaim() {
-        return claim.toClaim();
+        return claim.toClaim(correlationId);
     }
 }

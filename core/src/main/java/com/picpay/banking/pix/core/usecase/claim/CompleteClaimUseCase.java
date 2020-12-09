@@ -3,16 +3,16 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -26,9 +26,7 @@ public class CompleteClaimUseCase {
 
     private final FindClaimPort findClaimPort;
 
-    private final CreatePixKeyBacenPort createPixKeyBacenPort;
     private final CreatePixKeyPort createPixKeyPort;
-    private final RemovePixKeyBacenPort removePixKeyBacenPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
 
@@ -36,17 +34,7 @@ public class CompleteClaimUseCase {
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
 
         var claimCompleted = executeClaim(claim, requestIdentifier);
-        var createdPixKey = completePixKeyForClaimer(claimCompleted, randomUUID().toString());
-
-        if (claimCompleted != null)
-            log.info("Claim_completed",
-                    kv("requestIdentifier", requestIdentifier),
-                    kv("claimId", claimCompleted.getClaimId()));
-
-        if (createdPixKey != null)
-            log.info("PixKey_created"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("key", createdPixKey.getKey()));
+        createPixKeyForClaimer(claimCompleted, randomUUID());
 
         return claimCompleted;
     }
@@ -55,28 +43,34 @@ public class CompleteClaimUseCase {
         Claim claimCompleted = completeClaimBacenPort.complete(claim, requestIdentifier);
         completeClaimPort.complete(claim, requestIdentifier);
 
+        if (claimCompleted != null)
+            log.info("Claim_completed",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("claimId", claimCompleted.getClaimId()));
+
         return claimCompleted;
     }
 
-    private PixKey completePixKeyForClaimer(final Claim claim, final String requestIdentifier){
+    private PixKey createPixKeyForClaimer(final Claim claim, final UUID requestIdentifier){
         PixKey pixKey = PixKey.builder()
                 .type(claim.getKeyType())
                 .key(claim.getKey())
-                .accountOpeningDate(claim.getAccountOpeningDate())
+                .ispb(claim.getIspb())
+                .branchNumber(claim.getBranchNumber())
                 .accountType(claim.getAccountType())
                 .accountNumber(claim.getAccountNumber())
-                .branchNumber(claim.getBranchNumber())
-                .taxId(claim.getCpfCnpj())
-                .ispb(claim.getIspb())
+                .accountOpeningDate(claim.getAccountOpeningDate())
                 .personType(claim.getPersonType())
+                .taxId(claim.getCpfCnpj())
                 .name(claim.getName())
                 .fantasyName(claim.getFantasyName())
+                .correlationId(claim.getCorrelationId())
+                .createdAt(LocalDateTime.now())
+                .accountOpeningDate(claim.getAccountOpeningDate())
+                .startPossessionAt(LocalDateTime.now())
+                .requestId(requestIdentifier)
                 .build();
 
-        removePixKeyBacenPort.remove(pixKey, RemoveReason.CLIENT_REQUEST);
-        var createdPixKey = createPixKeyBacenPort.create(requestIdentifier, pixKey, CreateReason.CLIENT_REQUEST);
-        createPixKeyPort.createPixKey(createdPixKey, CreateReason.CLIENT_REQUEST);
-
-        return createdPixKey;
+        return createPixKeyPort.createPixKey(pixKey, CreateReason.CLIENT_REQUEST);
     }
 }
