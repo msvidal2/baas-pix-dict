@@ -25,14 +25,14 @@ public class InfractionAcknowledgeUseCase {
 
     //TODO verificar possibilidade de falhas e fluxo de estado
     public void execute(InfractionReport infractionReport) {
-        infractionReportSavePort.save(infractionReport); //salva no banco
-        infractionNotificationPort.notify(infractionReport); //notifica produtos
 
-        //TODO so envia para o pacen se for OPEN
-        // somente OPEN ou Open && ispb != picpay
+        infractionReportSavePort.save(infractionReport);
+        infractionNotificationPort.notify(infractionReport);
+
         if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN))
             infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId()
-                    , Integer.toString(infractionReport.getIspbRequester())); //ack para bacen
+                    , Integer.toString(infractionReport.getIspbRequester()));
+
     }
 
 }
