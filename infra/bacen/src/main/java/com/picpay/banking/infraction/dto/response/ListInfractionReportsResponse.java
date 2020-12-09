@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -46,6 +47,9 @@ public class ListInfractionReportsResponse {
     private List<InfractionReportRequest> infractionReportRequest;
 
     public static List<InfractionReport> toInfractionReportList(final ListInfractionReportsResponse response) {
+        if (Objects.isNull(response))
+            return Collections.emptyList();
+
         return response.infractionReportRequest
             .stream()
             .filter(infraction -> Objects.nonNull(infraction.getTransactionId()))
