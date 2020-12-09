@@ -4,10 +4,8 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-
 package com.picpay.banking.infraction.dto.response;
 
-import com.picpay.banking.infraction.dto.request.AnalysisResult;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
@@ -23,8 +21,10 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -41,12 +41,14 @@ public class ListInfractionReportsResponse {
 
     @XmlElement(name = "HasMoreElements")
     private Boolean hasMoreElements;
-    @XmlElement(name = "InfractionReports")
+    @XmlElementWrapper(name = "InfractionReports")
+    @XmlElement(name = "InfractionReport")
     private List<InfractionReportRequest> infractionReportRequest;
 
     public static List<InfractionReport> toInfractionReportList(final ListInfractionReportsResponse response) {
         return response.infractionReportRequest
             .stream()
+            .filter(infraction -> Objects.nonNull(infraction.getTransactionId()))
             .map(infractionReport -> InfractionReport.builder()
                      .ispbRequester(ispbRequester(infractionReport))
                      .endToEndId(infractionReport.getTransactionId())
@@ -68,10 +70,9 @@ public class ListInfractionReportsResponse {
     }
 
     private static int ispbRequester(final InfractionReportRequest infractionReport) {
-        if (infractionReport.getReportedBy().equals(ReportedBy.CREDITED_PARTICIPANT))
-            return Integer.parseInt(infractionReport.getCreditedParticipant());
-
-        return Integer.parseInt(infractionReport.getDebitedParticipant());
+        return infractionReport.getReportedBy().equals(ReportedBy.CREDITED_PARTICIPANT)
+            ? Integer.parseInt(infractionReport.getCreditedParticipant())
+            : Integer.parseInt(infractionReport.getDebitedParticipant());
     }
 
 }

@@ -4,6 +4,8 @@ server:
     enabled: true
 
 spring:
+  main:
+    banner-mode: off
   cloud:
     stream:
       kafka:
@@ -43,7 +45,13 @@ feign:
       default:
         connect-timeout: 105000
         read-timeout: 105000
+        logger-level: FULL
 
+logging:
+  level:
+    com:
+      picpay:
+        banking: ${FEIGN_CLIENTS_LOG_LEVEL:DEBUG}
 picpay:
   ispb: ${ISPB_CLIENT_ID}
   polling:
@@ -56,7 +64,8 @@ picpay:
       fixed-delay: ${POLLING_SCHEDULER_INFRACTION_FIXED_DELAY}
       limit: ${POLLING_SCHEDULER_INFRACTION_LIMIT}
       lock:
-        duration: PT10M
+        min-duration: ${POLLING_INFRACTION_LOCK_MIN_DURATION}
+        max-duration: ${POLLING_INFRACTION_LOCK_MAX_DURATION}
 
 
 pix:
@@ -65,7 +74,7 @@ pix:
     dict:
       url: ${BACEN_AWS_URL}/dict/api
       entries:
-        url: localhost:1080/dict/api
+        url: ${BACEN_AWS_URL}/dict/api
 
 management:
   endpoint:
@@ -78,3 +87,5 @@ management:
         include: prometheus, health
       path-mapping:
         prometheus: 'metrics'
+
+logging.level.org.apache.kafka.clients: OFF

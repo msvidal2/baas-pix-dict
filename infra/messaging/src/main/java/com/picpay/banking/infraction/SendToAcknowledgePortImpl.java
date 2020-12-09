@@ -10,6 +10,7 @@ import com.picpay.banking.config.AcknowledgeOutputStream;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.GenericMessage;
@@ -31,7 +32,7 @@ public class SendToAcknowledgePortImpl implements SendToAcknowledgePort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void send(final InfractionReport infractionReport) {
+    public void send(@NonNull final InfractionReport infractionReport) {
         acknowledgeOutputStream.sendInfractionForAcknowledgment().send(new GenericMessage<>(infractionReport));
         log.debug("Dispatched {} to acknowledgeOutputStream", infractionReport);
     }

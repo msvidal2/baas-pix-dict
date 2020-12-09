@@ -11,6 +11,7 @@ import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -30,11 +31,14 @@ public class InfractionPollingUseCase {
     public void execute(final Integer ispb, final Integer limit) {
         List<InfractionReport> infractions = listInfractionPort.list(ispb, limit);
 
-        if (infractions != null) {
-            log.info("Infraction_list_received -> size: {}"
-                , kv("infraction_list_size", infractions.size()));
-            infractions.forEach(acknowledgePort::send);
+        if (CollectionUtils.isEmpty(infractions)) {
+            log.info("No infractions reports were found at this time");
+            return;
         }
+
+        log.info("Infraction_list_received -> size: {}"
+            , kv("infraction_list_size", infractions.size()));
+        infractions.forEach(acknowledgePort::send);
     }
 
 }

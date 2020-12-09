@@ -35,9 +35,9 @@ public class InfractionPollingScheduler {
     @Scheduled(initialDelayString = "${picpay.polling.infraction.initial-delay}",
                fixedDelayString = "${picpay.polling.infraction.fixed-delay}")
     @SchedulerLock(name = "infraction-list-polling-lock",
-        lockAtLeastFor = "${picpay.polling.infraction.lock.duration}",
-        lockAtMostFor = "${picpay.polling.infraction.lock.duration}")
-    @Trace(dispatcher = true, metricName = "InfractionListPolling")
+        lockAtLeastFor = "${picpay.polling.infraction.lock.min-duration}",
+        lockAtMostFor = "${picpay.polling.infraction.lock.max-duration}")
+    @Trace(dispatcher = true, metricName = "InfractionReportListPolling")
     public void run() {
         infractionPollingUseCase.execute(ispb, limit);
     }

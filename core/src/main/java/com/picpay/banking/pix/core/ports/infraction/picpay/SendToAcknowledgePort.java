@@ -8,6 +8,7 @@
 package com.picpay.banking.pix.core.ports.infraction.picpay;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import lombok.NonNull;
 
 /**
  * @author rafael.braga
@@ -15,6 +16,6 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
  */
 public interface SendToAcknowledgePort {
 
-    void send(InfractionReport infractionReport);
+    void send(@NonNull final InfractionReport infractionReport);
 
 }
