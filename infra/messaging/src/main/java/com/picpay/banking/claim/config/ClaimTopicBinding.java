@@ -1,4 +1,4 @@
-package com.picpay.banking.config;
+package com.picpay.banking.claim.config;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;

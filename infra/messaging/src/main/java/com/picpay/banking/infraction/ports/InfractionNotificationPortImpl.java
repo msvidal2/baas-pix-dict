@@ -1,6 +1,6 @@
 package com.picpay.banking.infraction.ports;
 
-import com.picpay.banking.config.InfractionAlertNotificationOutputStream;
+import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

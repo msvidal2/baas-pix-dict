@@ -5,7 +5,6 @@
  */
 package com.picpay.banking.claim.config;
 
-import com.picpay.banking.config.ClaimTopicBinding;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Configuration;
 

@@ -3,10 +3,8 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-package com.picpay.banking.config;
+package com.picpay.banking.infraction.config;
 
-import com.picpay.banking.config.AcknowledgeOutputStream;
-import com.picpay.banking.config.ClaimTopicBinding;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
  * @author rafael.braga
  * @version 1.0 08/12/2020
  */
-@EnableBinding(value = {AcknowledgeOutputStream.class, ClaimTopicBinding.class})
+@EnableBinding(value = {AcknowledgeOutputStream.class, InfractionAlertNotificationOutputStream.class, AcknowledgeInputStream.class})
 @Configuration
-public class StreamBindingConfig {
+public class InfractionStreamBindingConfig {
 
 }

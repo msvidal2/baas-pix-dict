@@ -4,7 +4,7 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.task;
+package com.picpay.banking.infraction.task;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionPollingUseCase;

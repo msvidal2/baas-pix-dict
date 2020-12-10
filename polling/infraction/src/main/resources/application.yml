@@ -7,6 +7,7 @@ server:
 spring:
   main:
     banner-mode: off
+    allow-bean-definition-overriding: true
   cloud:
     stream:
       kafka:
