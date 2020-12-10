@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface InfractionAlertNotificationOutputStream {
 
-    @Output("alert-notification-topic")
+    @Output("alert-notifications")
     MessageChannel sendAlertNotification();
 
 }
