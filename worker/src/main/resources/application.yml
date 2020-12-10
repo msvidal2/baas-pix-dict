@@ -69,6 +69,11 @@ spring:
               max.poll.interval.ms: ${SYNC_MAX_POLL_INTERVAL}
             partitionCount: 1
             concurrency: 1
+        alert-notifications:
+          destination: ${ALERT_NOTIFICATION_TOPIC}
+          contentType: application/json
+          producer:
+            partitionCount: 1
 
 management:
   health:

@@ -5,7 +5,7 @@
  */
 
 
-package com.picpay.banking.config;
+package com.picpay.banking.infraction.config;
 
 import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;

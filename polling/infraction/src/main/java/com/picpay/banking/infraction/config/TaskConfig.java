@@ -3,10 +3,10 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-package com.picpay.banking.config;
+package com.picpay.banking.infraction.config;
 
 import com.newrelic.api.agent.NewRelic;
-import com.picpay.banking.task.InfractionPollingTask;
+import com.picpay.banking.infraction.task.InfractionPollingTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.cloud.task.configuration.EnableTask;

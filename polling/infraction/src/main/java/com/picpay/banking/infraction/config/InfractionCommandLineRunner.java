@@ -4,9 +4,9 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.config;
+package com.picpay.banking.infraction.config;
 
-import com.picpay.banking.task.InfractionPollingTask;
+import com.picpay.banking.infraction.task.InfractionPollingTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 

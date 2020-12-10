@@ -6,7 +6,7 @@
 
 package com.picpay.banking.infraction.ports;
 
-import com.picpay.banking.config.AcknowledgeOutputStream;
+import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
