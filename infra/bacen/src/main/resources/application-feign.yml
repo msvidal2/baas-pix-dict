@@ -1,0 +1,52 @@
+feign:
+    client:
+        config:
+            default:
+                connect-timeout: 105000
+                logger-level: ${HTTP_LOG_LEVEL:BASIC}
+                read-timeout: 105000
+    compression:
+        request:
+            enabled: true
+            mime-types: text/xml,application/xml,application/json
+            min-request-size: 2048
+        response:
+            enabled: true
+            useGzipDecoder: true
+logging:
+    level:
+        com:
+            picpay:
+                banking: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}
+pix:
+    bacen:
+        dict:
+            entries:
+                url: ${BACEN_AWS_URL}/dict/api
+            infraction:
+                url: ${BACEN_AWS_URL}
+            url: ${BACEN_AWS_URL}
+        url: ${BACEN_AWS_URL}
+    partner: ${PARTNER}
+    services:
+        baas:
+            token-manager:
+                url: ${BAAS_TOKEN_MANAGER_URL}
+        jdpi:
+            claim:
+                url: ${JDPI_CLAIM_URL}
+            dict:
+                url: ${JDPI_DICT_URL}
+            headers:
+                host: JDPI${ISPB_CLIENT_ID}${JDPI_ENVIRONMENT}.jdPSTI.rtm
+            infraction:
+                url: ${JDPI_INFRACTION_URL}
+resilience4j:
+    timelimiter:
+        configs:
+            default:
+                cancel-running-future: true
+                timeout-duration: 100s
+server:
+    compression:
+        enabled: true

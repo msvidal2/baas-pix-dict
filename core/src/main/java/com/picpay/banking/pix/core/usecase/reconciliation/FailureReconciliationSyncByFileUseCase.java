@@ -34,13 +34,16 @@ public class FailureReconciliationSyncByFileUseCase {
 
 
     public void execute(KeyType keyType) {
-        this.databaseContentIdentifierPort.findLastFileRequested(keyType).ifPresent(this::processFile);
+        this.databaseContentIdentifierPort.findLastFileRequested(keyType)
+            .ifPresentOrElse(this::processFile, () ->  log.info("Not found file requested of key type {}", keyType));
     }
 
     private void processFile(final ContentIdentifierFile contentIdentifierFile) {
+        log.info("Founded file requested of key type {}", contentIdentifierFile.getKeyType());
         final var availableFile = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFile.getId());
 
         if (availableFile == null || availableFile.getStatus().isNotAvaliable()) {
+            log.info("Founded file requested of key type {} not available yet at Bacen", contentIdentifierFile.getKeyType());
             return;
         }
 
