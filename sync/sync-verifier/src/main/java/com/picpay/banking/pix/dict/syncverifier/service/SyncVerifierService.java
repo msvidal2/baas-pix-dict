@@ -1,5 +1,6 @@
-package com.picpay.banking.pix.sync.service;
+package com.picpay.banking.pix.dict.syncverifier.service;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncUseCase;
@@ -16,12 +17,14 @@ public class SyncVerifierService {
     private final ReconciliationSyncUseCase reconciliationSyncUseCase;
     private final FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Trace(dispatcher = true, metricName = "syncVerifier")
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, value = "springCloudTaskTransactionManager")
     public SyncVerifierHistoric syncVerifier(final KeyType keyType) {
         return reconciliationSyncUseCase.execute(keyType);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Trace(dispatcher = true, metricName = "failureReconciliationSync")
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, value = "springCloudTaskTransactionManager")
     public void failureReconciliationSync(final SyncVerifierHistoric syncVerifierHistoric) {
         failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
     }

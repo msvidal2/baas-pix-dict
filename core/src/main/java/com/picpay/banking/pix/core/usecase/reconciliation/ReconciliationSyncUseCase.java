@@ -47,7 +47,7 @@ public class ReconciliationSyncUseCase {
         syncVerifierPort.save(syncVerifier);
         vsyncHistoric = syncVerifierHistoricPort.save(vsyncHistoric);
 
-        log.info("ReconciliationSync_done {} {} {}",
+        log.info("ReconciliationSync_ended {} {} {}",
             kv("keyType", keyType),
             kv("startCurrentTimeMillis", startCurrentTimeMillis),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));

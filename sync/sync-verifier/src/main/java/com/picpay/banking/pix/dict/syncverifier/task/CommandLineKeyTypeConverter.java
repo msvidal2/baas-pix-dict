@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.sync.task;
+package com.picpay.banking.pix.dict.syncverifier.task;
 
 import com.beust.jcommander.IStringConverter;
 import com.google.common.base.Strings;

@@ -1,20 +1,20 @@
-package com.picpay.banking.pix.sync.task;
+package com.picpay.banking.pix.dict.syncverifier.task;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.sync.service.SyncVerifierService;
+import com.picpay.banking.pix.dict.syncverifier.service.SyncVerifierService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Service;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class SyncVerificationTask implements ApplicationRunner {
+public class SyncVerificationTask implements CommandLineRunner {
 
     private final SyncVerifierService syncVerifierService;
 
@@ -26,11 +26,11 @@ public class SyncVerificationTask implements ApplicationRunner {
     private KeyType keyType;
 
     @Override
-    public void run(final ApplicationArguments args) throws Exception {
+    public void run(final String... args) {
         JCommander.newBuilder()
             .addObject(this)
             .build()
-            .parse(args.getSourceArgs());
+            .parse(args);
 
         log.info("SyncApplication start: {}", keyType.name());
         SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);

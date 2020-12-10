@@ -28,6 +28,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
+    private static final String LOG_START_TIME = "startCurrentTimeMillis";
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
@@ -36,13 +37,12 @@ public class FailureReconciliationSyncUseCase {
     private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
-
     private long startCurrentTimeMillis;
 
     public void execute(SyncVerifierHistoric syncVerifierHistoric) {
         this.startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started {} {}",
-            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+            kv(LOG_START_TIME, startCurrentTimeMillis),
             kv("vsyncHistoric", syncVerifierHistoric));
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
@@ -66,8 +66,9 @@ public class FailureReconciliationSyncUseCase {
             .forEach(this::hasInDatabaseAndNotHaveInBacen);
 
         syncVerifierHistoricActionPort.saveAll(contentIdentifierActions);
-        log.info("FailureReconciliationSync_contentIdentifierActions {} {} {}",
-            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+
+        log.info("FailureReconciliationSync_ended {} {} {}",
+            kv(LOG_START_TIME, startCurrentTimeMillis),
             kv("contentIdentifierActions", contentIdentifierActions.size()),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
@@ -87,12 +88,12 @@ public class FailureReconciliationSyncUseCase {
         if (pixKeyInDataBase.isPresent()) {
             updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
-                kv("startCurrentTimeMillis", startCurrentTimeMillis),
+                kv(LOG_START_TIME, startCurrentTimeMillis),
                 kv("updateAccountPixKey", pixKey.getKey()));
         } else {
             createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
             log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
-                kv("startCurrentTimeMillis", startCurrentTimeMillis),
+                kv(LOG_START_TIME, startCurrentTimeMillis),
                 kv("createPixKey", pixKey.getKey()));
         }
     }
@@ -110,7 +111,7 @@ public class FailureReconciliationSyncUseCase {
         pixKeyInDatabase.ifPresent(pixKey -> {
             removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
             log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
-                kv("startCurrentTimeMillis", startCurrentTimeMillis),
+                kv(LOG_START_TIME, startCurrentTimeMillis),
                 kv("removePixKey", pixKey.getKey()));
         });
     }

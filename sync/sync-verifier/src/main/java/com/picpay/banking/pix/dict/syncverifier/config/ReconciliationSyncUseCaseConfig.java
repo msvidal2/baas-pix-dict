@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.sync.config;
+package com.picpay.banking.pix.dict.syncverifier.config;
 
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
