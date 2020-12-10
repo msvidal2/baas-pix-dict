@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.sync.eventsourcing;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.core.usecase.reconciliation.CidProviderUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.ContentIdentifierEventRecordUseCase;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class CidProviderConsumer {
 
-    private CidProviderUseCase cidProviderUseCase;
+    private ContentIdentifierEventRecordUseCase cidProviderUseCase;
 
     @StreamListener("sync-input")
     @Trace(dispatcher = true, metricName = "SendToFinancialInstitutionUseCase")
