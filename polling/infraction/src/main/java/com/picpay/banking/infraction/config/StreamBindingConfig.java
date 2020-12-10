@@ -5,8 +5,6 @@
  */
 package com.picpay.banking.infraction.config;
 
-import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
-import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Configuration;
 

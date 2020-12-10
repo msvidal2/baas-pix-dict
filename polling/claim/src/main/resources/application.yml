@@ -4,6 +4,11 @@ server:
     enabled: true
 
 spring:
+  profiles:
+    active:
+      - database
+      - bacen
+      - messaging
   main:
     allow-bean-definition-overriding: true
     banner-mode: off

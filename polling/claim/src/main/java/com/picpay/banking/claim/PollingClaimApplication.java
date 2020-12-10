@@ -17,9 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class PollingClaimApplication {
 
 	public static void main(String[] args) {
-		SpringApplication springApp = new SpringApplication(PollingClaimApplication.class);
-		springApp.setAdditionalProfiles("database", "bacen");
-		springApp.run(args);
+		SpringApplication.run(PollingClaimApplication.class, args);
 	}
 
 }
