@@ -6,6 +6,7 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionAcknowledgePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
@@ -24,9 +25,14 @@ public class InfractionAcknowledgeUseCase {
 
     //TODO verificar possibilidade de falhas e fluxo de estado
     public void execute(InfractionReport infractionReport) {
-        infractionReportSavePort.save(infractionReport); //salva no banco
-        infractionNotificationPort.notify(infractionReport); //notifica produtos
-        infractionAcknowledgePort.acknowledge(); //ack para bacen
+
+        infractionReportSavePort.save(infractionReport);
+        infractionNotificationPort.notify(infractionReport);
+
+        if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN))
+            infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId()
+                    , Integer.toString(infractionReport.getIspbRequester()));
+
     }
 
 }

@@ -29,6 +29,7 @@ public class InfractionPollingUseCase {
     private final ListInfractionPort listInfractionPort;
 
     public void execute(final Integer ispb, final Integer limit) {
+        log.info("Polling BACEN for infractions");
         List<InfractionReport> infractions = listInfractionPort.list(ispb, limit);
 
         if (CollectionUtils.isEmpty(infractions)) {
@@ -39,6 +40,7 @@ public class InfractionPollingUseCase {
         log.info("Infraction_list_received -> size: {}"
             , kv("infraction_list_size", infractions.size()));
         infractions.forEach(acknowledgePort::send);
+        throw new IllegalArgumentException("Terste");
     }
 
 }
