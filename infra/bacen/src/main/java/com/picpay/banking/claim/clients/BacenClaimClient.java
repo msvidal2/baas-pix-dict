@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "Claim",
-        url = "${pix.bacen.dict.entries.url}",
-        path = "/v1/claims")
+        url = "${pix.bacen.dict.url}",
+        path = "/dict/api/v1/claims")
 public interface BacenClaimClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)

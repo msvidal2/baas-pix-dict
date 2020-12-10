@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(name = "bacenInfractionClient",
     url = "${pix.bacen.dict.url}",
-    path = "/v1/infraction-reports")
+    path = "/dict/api/v1/infraction-reports")
 public interface InfractionBacenClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
