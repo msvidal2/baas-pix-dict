@@ -3,7 +3,6 @@ package com.picpay.banking.claim.clients;
 import com.picpay.banking.claim.dto.request.CompleteClaimRequest;
 import com.picpay.banking.claim.dto.request.CreateClaimRequest;
 import com.picpay.banking.claim.dto.request.ListClaimsRequest;
-import com.picpay.banking.claim.dto.response.CompleteClaimResponse;
 import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
 import com.picpay.banking.claim.dto.request.CancelClaimRequest;
 import com.picpay.banking.claim.dto.response.ConfirmClaimResponse;
