@@ -10,13 +10,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class BaasPixDictBacenInfractionTaskApplication {
 
     public static void main(String[] args) {
-        SpringApplication springApp = new SpringApplication(BaasPixDictBacenInfractionTaskApplication.class);
-        springApp.setAdditionalProfiles("database", "bacen");
-        springApp.run(args);
-
-//        ConfigurableApplicationContext applicationContext =
-//            SpringApplication.run(BaasPixDictBacenInfractionTaskApplication.class, args);
-//        System.exit(SpringApplication.exit(applicationContext));
+        ConfigurableApplicationContext applicationContext =
+            SpringApplication.run(BaasPixDictBacenInfractionTaskApplication.class, args);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 
 }

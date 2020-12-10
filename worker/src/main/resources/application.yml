@@ -10,6 +10,11 @@ picpay:
   ispb: 22896431
 
 spring:
+  profiles:
+    active:
+      - database
+      - messaging
+      - bacen
   main:
     banner-mode: off
   application:

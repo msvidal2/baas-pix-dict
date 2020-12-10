@@ -5,6 +5,11 @@ server:
   shutdown: graceful
 
 spring:
+  profiles:
+    active:
+      - database
+      - bacen
+      - messaging
   main:
     banner-mode: off
     allow-bean-definition-overriding: true
