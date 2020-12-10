@@ -6,9 +6,9 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,6 @@ import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,7 +71,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
         when(infractionReportAnalyzePort.analyze(any(), anyString())).thenReturn(infractionReportOptional);
 
-        infractionReportSavePort.save(any(),anyString());
+        infractionReportSavePort.save(any());
 
         var infractionReport = this.analyzeInfractionReportUseCase.execute("1", 1, infractionReportAnalyze , "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);

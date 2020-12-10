@@ -3,7 +3,7 @@ package com.picpay.banking.infraction.ports;
 import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
-import com.picpay.banking.infraction.clients.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.clients.InfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
@@ -26,7 +26,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CancelInfractionReportPortImpl implements CancelInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "cancel-infraction-bacen";
-    private final CreateInfractionBacenClient bacenClient;
+    private final InfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
     @Override

@@ -5,9 +5,9 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.exception.InfractionReportError;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class AnalyzeInfractionReportUseCase {
 
             infractionReport.setDateLastUpdate(analysis.getDateLastUpdate());
 
-            infractionReportSavePort.save(infractionReport, requestIdentifier);
+            infractionReportSavePort.save(infractionReport);
 
             return analysis;
         })

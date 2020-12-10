@@ -2,14 +2,16 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.ports.claim.SendToProcessClaimNotificationPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimLastPollingDatePort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.UpdateClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -20,22 +22,32 @@ public class PollingClaimUseCase {
 
     private final SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;
 
-    public void execute(final Integer ispb, final Integer limit, LocalDateTime startDate) {
+    private final FindClaimLastPollingDatePort findClaimLastPollingDatePort;
+
+    private final UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort;
+
+    public void execute(final Integer ispb, final Integer limit) {
         var claim = Claim.builder()
                 .ispb(ispb)
                 .build();
 
-        var endDate = LocalDateTime.from(startDate).plusMinutes(5);
+        var endDate = LocalDateTime.now(ZoneId.of("UTC"));
+
+        var startDate = findClaimLastPollingDatePort.getDate()
+                .orElse(endDate.minusHours(24));
+
+        log.info("Start: {}, End: {}", startDate, endDate);
 
         List<Claim> claims = new ArrayList<>();
         ClaimIterable claimIterable;
-
         int countIteration = 1;
 
         do {
             claimIterable = listClaimsBacenPort.list(claim, limit, null, startDate, endDate);
 
-            claims.addAll(claimIterable.getClaims());
+            if(claimIterable.getClaims() != null && !claimIterable.getClaims().isEmpty()) {
+                claims.addAll(claimIterable.getClaims());
+            }
 
             if (claimIterable.getHasNext()) {
                 startDate = claimIterable.getClaims().get(claimIterable.getCount() - 1).getLastModifiedDate().plusSeconds(1);
@@ -46,7 +58,9 @@ public class PollingClaimUseCase {
 
         log.info("Claims found: {}", claims.size());
 
-        claimIterable.getClaims().forEach(sendToProcessClaimNotificationPort::send);
+        claims.forEach(sendToProcessClaimNotificationPort::send);
+
+        updateClaimLastPollingDatePort.update(endDate);
     }
 
 }

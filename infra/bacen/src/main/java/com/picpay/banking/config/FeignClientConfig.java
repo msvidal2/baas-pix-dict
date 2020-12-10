@@ -19,7 +19,8 @@ import org.springframework.context.annotation.Import;
     "com.picpay.banking.pixkey.clients",
     "com.picpay.banking.claim.clients",
     "com.picpay.banking.infraction.clients",
-    "com.picpay.banking.reconciliation.clients"
+    "com.picpay.banking.reconciliation.clients",
+
 })
 public class FeignClientConfig {
 
