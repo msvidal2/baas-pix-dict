@@ -1,4 +1,4 @@
-package com.picpay.banking.claim.ports.picpay;
+package com.picpay.banking.claim;
 
 import com.picpay.banking.config.ClaimTopicBinding;
 import com.picpay.banking.pix.core.domain.Claim;

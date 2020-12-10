@@ -16,4 +16,5 @@ public class InfractionAnalyze implements Serializable {
     private InfractionAnalyzeResult analyzeResult;
     private String details;
 
+
 }

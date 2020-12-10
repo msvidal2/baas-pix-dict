@@ -4,7 +4,7 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.pix.core.ports.infraction;
+package com.picpay.banking.pix.core.ports.infraction.picpay;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import lombok.NonNull;
@@ -15,7 +15,6 @@ import lombok.NonNull;
  */
 public interface InfractionReportSavePort {
 
-   void save(final @NonNull InfractionReport infractionReport,
-             final @NonNull String requestIdentifier);
+   void save(final @NonNull InfractionReport infractionReport);
 
 }

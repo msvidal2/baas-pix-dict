@@ -6,6 +6,7 @@ server:
 spring:
   main:
     allow-bean-definition-overriding: true
+    banner-mode: off
   cloud:
     stream:
       kafka:
@@ -15,11 +16,11 @@ spring:
         claim-notifications:
           destination: ${CLAIM_NOTIFICATIONS_TOPIC}
           binder: kafka
+        new-infractions:
+          destination: ${INFRACTION_ACKNOWLEDGMENT_TOPIC}
+          binder: kafka
   redis:
-    host: ${PICPAY_REDIS_HOST}
-    port: ${PICPAY_REDIS_PORT}
-    timeout: ${PICPAY_REDIS_TIMEOUT}
-    keyTtl: ${PICPAY_REDIS_KEY_TTL}
+    enabled: false
 
   datasource:
     driver-class-name: ${DB_DRIVE_CLASS_NAME}
@@ -31,8 +32,6 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
-  flyway:
-    baselineOnMigrate: true
 
 feign:
   compression:
@@ -56,23 +55,27 @@ logging:
 
 picpay:
   ispb: ${ISPB_CLIENT_ID}
-  pulling:
+  polling:
     claim:
-      initial-delay: ${PULLING_SCHEDULER_CLAIM_INITIAL_DELAY}
-      fixed-delay: ${PULLING_SCHEDULER_CLAIM_FIXED_DELAY}
-      limit: ${PULLING_SCHEDULER_CLAIM_LIMIT}
+      initial-delay: ${POLLING_SCHEDULER_CLAIM_INITIAL_DELAY}
+      fixed-delay: ${POLLING_SCHEDULER_CLAIM_FIXED_DELAY}
+      limit: ${POLLING_SCHEDULER_CLAIM_LIMIT}
+    infraction:
+      initial-delay: ${POLLING_SCHEDULER_INFRACTION_INITIAL_DELAY}
+      fixed-delay: ${POLLING_SCHEDULER_INFRACTION_FIXED_DELAY}
+      limit: ${POLLING_SCHEDULER_INFRACTION_LIMIT}
+      lock:
+        min-duration: ${POLLING_INFRACTION_LOCK_MIN_DURATION}
+        max-duration: ${POLLING_INFRACTION_LOCK_MAX_DURATION}
 
 
 pix:
   bacen:
+    url: ${BACEN_AWS_URL}
     dict:
       url: ${BACEN_AWS_URL}/dict/api
       entries:
         url: ${BACEN_AWS_URL}/dict/api
-      infraction:
-        url: ${BACEN_AWS_URL}
-    url: ${BACEN_AWS_URL}
-
 
 management:
   endpoint:
@@ -85,3 +88,5 @@ management:
         include: prometheus, health
       path-mapping:
         prometheus: 'metrics'
+
+logging.level.org.apache.kafka.clients: OFF

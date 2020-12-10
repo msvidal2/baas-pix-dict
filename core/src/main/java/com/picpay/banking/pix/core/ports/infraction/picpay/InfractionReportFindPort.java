@@ -4,7 +4,7 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-package com.picpay.banking.pix.core.ports.infraction;
+package com.picpay.banking.pix.core.ports.infraction.picpay;
 
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;

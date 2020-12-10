@@ -17,13 +17,13 @@ public class PollingClaimsScheduler {
     @Value("${picpay.ispb}")
     private Integer ispb;
 
-    @Value("${picpay.pulling.claim.limit}")
+    @Value("${picpay.polling.claim.limit}")
     private Integer limit;
 
     private final PollingClaimUseCase pollingClaimUseCase;
 
-    @Scheduled(initialDelayString = "${picpay.pulling.claim.initial-delay}",
-            fixedDelayString = "${picpay.pulling.claim.fixed-delay}")
+    @Scheduled(initialDelayString = "${picpay.polling.claim.initial-delay}",
+            fixedDelayString = "${picpay.polling.claim.fixed-delay}")
     public void run() {
         log.info("List claims polling started");
 
