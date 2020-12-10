@@ -8,7 +8,7 @@ spring:
     database: ${DB_TYPE}
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: ${DB_SHOW_SQL}
   main:
     allow-bean-definition-overriding: true
   redis:
