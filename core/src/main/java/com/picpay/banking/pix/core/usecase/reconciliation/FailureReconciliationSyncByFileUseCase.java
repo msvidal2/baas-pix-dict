@@ -103,15 +103,18 @@ public class FailureReconciliationSyncByFileUseCase {
             final var calculatedCid = contentIdentifier.getPixKey().calculateCid();
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
             if (valueInBacen.isEmpty()) {
-                this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);
-                this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid, REMOVED);
-                log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"
-                    , contentIdentifier.getCid(), contentIdentifier.getKey(), keyType);
-                return;
+                this.removePixKey(keyType, sync, cid, contentIdentifier);
             }
             log.info("Only Cid {} was removed from database because cid don't exists in bacen but key exists", cid);
         });
         return;
+    }
+
+    private void removePixKey(final KeyType keyType, final Sync sync, final String cid, final ContentIdentifier contentIdentifier) {
+        this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);
+        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid, REMOVED);
+        log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"
+            , contentIdentifier.getCid(), contentIdentifier.getKey(), keyType);
     }
 
 }
