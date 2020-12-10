@@ -14,6 +14,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @EnableBinding(value = {ClaimTopicBinding.class})
 @Configuration
-public class StreamBindingConfig {
+public class ClaimBindingConfig {
 
 }
