@@ -21,7 +21,7 @@ spring:
           binder: kafka
     task:
       name: infraction-polling
-      closecontext-enabled: true
+#      closecontext-enabled: true
   redis:
     enabled: false
   datasource:

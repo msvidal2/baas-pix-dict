@@ -40,6 +40,7 @@ public class InfractionPollingUseCase {
         log.info("Infraction_list_received -> size: {}"
             , kv("infraction_list_size", infractions.size()));
         infractions.forEach(acknowledgePort::send);
+        throw new IllegalArgumentException("Terste");
     }
 
 }
