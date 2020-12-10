@@ -2,8 +2,8 @@ package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.config.entity.ConfigEntity;
 import com.picpay.banking.config.repository.ConfigRepository;
-import com.picpay.banking.pix.core.ports.claim.FindClaimLastPollingDatePort;
-import com.picpay.banking.pix.core.ports.claim.UpdateClaimLastPollingDatePort;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimLastPollingDatePort;
+import com.picpay.banking.pix.core.ports.claim.picpay.UpdateClaimLastPollingDatePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

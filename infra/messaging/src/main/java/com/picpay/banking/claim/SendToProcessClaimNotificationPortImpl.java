@@ -2,7 +2,7 @@ package com.picpay.banking.claim;
 
 import com.picpay.banking.config.ClaimTopicBinding;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.SendToProcessClaimNotificationPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

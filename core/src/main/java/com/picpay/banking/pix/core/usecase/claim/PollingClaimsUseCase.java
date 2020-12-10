@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.ports.claim.SendToProcessClaimNotificationPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
