@@ -7,6 +7,7 @@
         <artifactId>baas-pix-dict</artifactId>
         <groupId>com.picpay.banking.pix.dict</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <name>mockserver</name>

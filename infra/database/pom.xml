@@ -6,6 +6,7 @@
         <artifactId>infra</artifactId>
         <groupId>com.picpay.banking.pix.dict.infra</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
