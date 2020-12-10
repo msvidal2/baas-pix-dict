@@ -1,15 +1,5 @@
 package com.picpay.banking.claim.clients;
 
-import com.picpay.banking.claim.dto.request.CompleteClaimRequest;
-import com.picpay.banking.claim.dto.request.CreateClaimRequest;
-import com.picpay.banking.claim.dto.request.ListClaimsRequest;
-import com.picpay.banking.claim.dto.response.CompleteClaimResponse;
-import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
-import com.picpay.banking.claim.dto.request.CancelClaimRequest;
-import com.picpay.banking.claim.dto.response.ConfirmClaimResponse;
-import com.picpay.banking.claim.dto.response.CancelClaimResponse;
-import com.picpay.banking.claim.dto.response.CreateClaimResponse;
-import com.picpay.banking.claim.dto.response.ListClaimsResponse;
 import com.picpay.banking.claim.dto.request.*;
 import com.picpay.banking.claim.dto.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -21,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "Claim",
-        url = "${pix.bacen.dict.entries.url}",
-        path = "/v1/claims")
+        url = "${pix.bacen.dict.url}",
+        path = "/dict/api/v1/claims")
 public interface BacenClaimClient {
 
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)

@@ -1,9 +1,8 @@
 /*
- *  baas-pix-dict 1.0 11/24/20
+ *  baas-pix-dict 1.0 12/9/20
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
 package com.picpay.banking.config;
 
 import feign.codec.Decoder;
@@ -17,7 +16,7 @@ import org.springframework.context.annotation.Primary;
 
 /**
  * @author rafael.braga
- * @version 1.0 24/11/2020
+ * @version 1.0 09/12/2020
  */
 @Configuration
 public class FeignXmlConfig {

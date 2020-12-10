@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportListPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

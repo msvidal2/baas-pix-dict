@@ -1,13 +1,15 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.infraction.*;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportListPort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
@@ -20,8 +22,9 @@ public class InfractionReportUseCaseBeansConfig {
     @Bean
     public CreateInfractionReportUseCase createInfractionReportUseCase(CreateInfractionReportPort infractionReportPort,
                                                                        InfractionReportSavePort infractionReportSavePort,
-                                                                       InfractionReportFindPort infractionReportFindPort) {
-        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, infractionReportFindPort);
+                                                                       InfractionReportFindPort infractionReportFindPort,
+                                                                       InfractionReportCacheSavePort infractionReportCacheSavePort) {
+        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, infractionReportFindPort, infractionReportCacheSavePort);
     }
 
     @Bean
@@ -31,8 +34,9 @@ public class InfractionReportUseCaseBeansConfig {
 
     @Bean
     public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
-                                                                       final InfractionReportCancelPort infractionReportCancelPort) {
-        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
+                                                                       final InfractionReportCancelPort infractionReportCancelPort,
+                                                                       final InfractionReportFindPort infractionReportFindPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort, infractionReportFindPort);
     }
 
 

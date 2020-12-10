@@ -6,16 +6,11 @@ import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.*;
-import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.usecase.claim.ClaimCancelUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -55,14 +50,20 @@ public class ClaimUseCaseBeansConfig {
     public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
                                                      CompleteClaimPort completeClaimPort,
                                                      FindClaimPort findClaimPort,
-                                                     CreatePixKeyBacenPort createPixKeyBacenPort,
                                                      CreatePixKeyPort createPixKeyPort) {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
     }
 
     @Bean
     public FindClaimUseCase findClaimUseCase(FindClaimPort findClaimPort) {
         return new FindClaimUseCase(findClaimPort);
+    }
+
+    @Bean
+    public PollingClaimListenerUseCase pollingClaimListenerUseCase(@Value("${pix.participant}") Integer participant,
+                                                        AcknowledgeClaimPort acknowledgeClaimPort,
+                                                        CreateClaimPort saveClaimPort) {
+        return new PollingClaimListenerUseCase(participant, acknowledgeClaimPort, saveClaimPort);
     }
 
 }

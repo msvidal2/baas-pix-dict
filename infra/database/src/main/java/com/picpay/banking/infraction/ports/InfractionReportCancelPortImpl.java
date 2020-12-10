@@ -2,7 +2,7 @@ package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -10,7 +10,7 @@ package com.picpay.banking.infraction.ports;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
-import com.picpay.banking.infraction.clients.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.clients.InfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 public class CreateInfractionReportPortImpl implements CreateInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
-    private final CreateInfractionBacenClient bacenClient;
+    private final InfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
     @Trace

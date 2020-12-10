@@ -7,7 +7,7 @@
 package com.picpay.banking.idempotency.aspect;
 
 import com.picpay.banking.config.TimeLimiterExecutor;
-import com.picpay.banking.infraction.clients.CreateInfractionBacenClient;
+import com.picpay.banking.infraction.clients.InfractionBacenClient;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
 import com.picpay.banking.infraction.dto.response.CreateInfractionReportResponse;
 import com.picpay.banking.infraction.dto.response.Status;
@@ -42,7 +42,7 @@ class IdempotencyAspectTest {
     @Mock
     private RedisTemplate<String, Object> redisTemplate;
     @Mock
-    private CreateInfractionBacenClient bacenClient;
+    private InfractionBacenClient bacenClient;
     @Mock
     private TimeLimiterExecutor timeLimiterExecutor;
     @Mock

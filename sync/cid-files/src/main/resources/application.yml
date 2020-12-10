@@ -6,8 +6,7 @@ spring:
             name: sync-cid-file
     profiles:
         active:
-            - feign
+            - bacen
             - database
-            - redis
 picpay:
     ispb: 22896431

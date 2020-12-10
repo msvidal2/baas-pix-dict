@@ -49,6 +49,8 @@ public class ConfirmClaimUseCase {
         validateResolutionPeriod(claim);
 
         Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
+        if(ClaimConfirmationReason.CLIENT_REQUEST.equals(reason))
+            claimConfirmed.setCompletionThresholdDate(LocalDateTime.now());
 
         log.info("Claim_confirmed",
                 kv("requestIdentifier", requestIdentifier),

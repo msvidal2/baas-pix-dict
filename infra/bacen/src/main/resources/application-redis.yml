@@ -1,8 +1,0 @@
-spring:
-    flyway:
-        baselineOnMigrate: true
-    redis:
-        host: ${PICPAY_REDIS_HOST}
-        keyTtl: ${PICPAY_REDIS_KEY_TTL}
-        port: ${PICPAY_REDIS_PORT}
-        timeout: ${PICPAY_REDIS_TIMEOUT}

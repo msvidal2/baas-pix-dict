@@ -5,7 +5,6 @@ import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +37,6 @@ public class CompleteClaimUseCaseTest {
 
     @Mock
     private FindClaimPort findClaimPort;
-
-    @Mock
-    private CreatePixKeyBacenPort createPixKeyBacenPort;
 
     @Mock
     private CreatePixKeyPort createPixKeyPort;
@@ -121,7 +117,7 @@ public class CompleteClaimUseCaseTest {
                 .fantasyName("Nome Fantasia")
                 .endToEndId("endToEndId").build();
 
-        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyBacenPort, createPixKeyPort);
+        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
     }
 
     @Test
@@ -129,7 +125,6 @@ public class CompleteClaimUseCaseTest {
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claimResponseConfirmed));
         when(completeClaimBacenPort.complete(any(), anyString())).thenReturn(claimResponseCompleted);
         when(completeClaimPort.complete(any(), anyString())).thenReturn(claimResponseCompleted);
-        when(createPixKeyBacenPort.create(anyString(), any(), any())).thenReturn(pixKeyCreated);
         when(createPixKeyPort.createPixKey(any(), any())).thenReturn(pixKeyCreated);
 
         Claim claimResult = useCase.execute(claimRequest, randomUUID().toString());
@@ -139,7 +134,6 @@ public class CompleteClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(completeClaimBacenPort, times(1)).complete(any(), anyString());
         verify(completeClaimPort, times(1)).complete(any(), anyString());
-        verify(createPixKeyBacenPort, times(1)).create(anyString(), any(), any());
         verify(createPixKeyPort, times(1)).createPixKey(any(), any());
     }
 
@@ -152,7 +146,6 @@ public class CompleteClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(completeClaimBacenPort, times(0)).complete(any(), anyString());
         verify(completeClaimPort, times(0)).complete(any(), anyString());
-        verify(createPixKeyBacenPort, times(0)).create(anyString(), any(), any());
         verify(createPixKeyPort, times(0)).createPixKey(any(), any());
     }
 
@@ -165,7 +158,6 @@ public class CompleteClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(completeClaimBacenPort, times(0)).complete(any(), anyString());
         verify(completeClaimPort, times(0)).complete(any(), anyString());
-        verify(createPixKeyBacenPort, times(0)).create(anyString(), any(), any());
         verify(createPixKeyPort, times(0)).createPixKey(any(), any());
     }
 
@@ -238,7 +230,4 @@ public class CompleteClaimUseCaseTest {
                                 .build(),
                         randomUUID().toString()));
     }
-
-
-
 }

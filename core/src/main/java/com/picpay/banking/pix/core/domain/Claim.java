@@ -58,4 +58,8 @@ public class Claim {
         return Strings.padStart(cpfCnpj, size, '0');
     }
 
+    public boolean isOpen(Integer participant) {
+        return participant == donorIspb && ClaimSituation.OPEN.equals(claimSituation);
+    }
+
 }
