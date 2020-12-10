@@ -23,7 +23,6 @@ public class InfractionAcknowledgeUseCase {
     private final InfractionNotificationPort infractionNotificationPort;
     private final InfractionAcknowledgePort infractionAcknowledgePort;
 
-    //TODO verificar possibilidade de falhas e fluxo de estado
     public void execute(InfractionReport infractionReport) {
 
         infractionReportSavePort.save(infractionReport);

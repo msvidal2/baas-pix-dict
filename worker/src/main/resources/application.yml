@@ -6,8 +6,30 @@ logging:
   level:
     com.picpay.banking.jdpi.clients: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}
 
+feign:
+  client:
+    config:
+      default:
+        logger-level: FULL
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+      useGzipDecoder: true
+
 picpay:
   ispb: 22896431
+
+pix:
+    bacen:
+      dict:
+        url: ${BACEN_AWS_URL}
+        entries:
+          url: ${BACEN_AWS_URL}/dict/api
+      url: ${BACEN_AWS_URL}
 
 spring:
   profiles:
@@ -21,6 +43,16 @@ spring:
     name: dict-infraction-worker
   redis:
     enabled: false
+  datasource:
+    driver-class-name: ${DB_DRIVE_CLASS_NAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+  jpa:
+    database: ${DB_TYPE}
+    hibernate:
+      ddl-auto: none
+    show-sql: true
   kafka:
     bootstrap-servers: ${KAFKA_SERVERS}
     consumer:
@@ -29,7 +61,7 @@ spring:
     stream:
       bindings:
         new-infraction-reports:
-          destination: ${TOPIC_NEW_INFRACTION_REPORT}
+          destination: ${INFRACTION_ACKNOWLEDGMENT_TOPIC}
           group: dict
           contentType: application/json
           consumer:
