@@ -10,7 +10,6 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -57,13 +56,6 @@ public class ClaimUseCaseBeansConfig {
     @Bean
     public FindClaimUseCase findClaimUseCase(FindClaimPort findClaimPort) {
         return new FindClaimUseCase(findClaimPort);
-    }
-
-    @Bean
-    public PollingClaimListenerUseCase pollingClaimListenerUseCase(@Value("${pix.participant}") Integer participant,
-                                                        AcknowledgeClaimPort acknowledgeClaimPort,
-                                                        CreateClaimPort saveClaimPort) {
-        return new PollingClaimListenerUseCase(participant, acknowledgeClaimPort, saveClaimPort);
     }
 
 }
