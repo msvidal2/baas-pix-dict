@@ -17,7 +17,6 @@ public class UseCaseConfig {
                                                    final FindClaimLastPollingDatePort findClaimLastPollingDatePort,
                                                    final UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort) {
         return new PollingClaimUseCase(listClaimsBacenPort, sendToProcessClaimNotificationPort, findClaimLastPollingDatePort, updateClaimLastPollingDatePort);
-
     }
 
 }
