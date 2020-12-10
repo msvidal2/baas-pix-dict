@@ -1,15 +1,14 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -17,18 +16,21 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class FilterInfractionReportUseCase {
 
-    private InfractionReportPort infractionReportPort;
+    private final InfractionReportListPort infractionReportListPort;
 
-    public List<InfractionReport> execute(@NonNull Integer ispb, Boolean isDebited, Boolean isCredited
-            , InfractionReportSituation situation, LocalDateTime dateStart, LocalDateTime dateEnd, Integer limit) {
+    public InfractionPage execute(@NonNull Integer ispb,
+                                  InfractionReportSituation situation,
+                                  LocalDateTime dateStart,
+                                  LocalDateTime dateEnd,
+                                  int page,
+                                  int size) {
 
-        List<InfractionReport> infractions = infractionReportPort
-                .filter(ispb, isDebited, isCredited, situation, dateStart, dateEnd, limit);
+        InfractionPage infractionPage = infractionReportListPort.list(ispb, situation, dateStart, dateEnd, page, size);
 
-        if (infractions != null)
-            log.info("Infraction_filtered", kv("size", infractions.size()));
+        if (infractionPage != null)
+            log.info("Infraction_filtered", kv("size", infractionPage.getSize()));
 
-        return infractions;
+        return infractionPage;
     }
 
 }

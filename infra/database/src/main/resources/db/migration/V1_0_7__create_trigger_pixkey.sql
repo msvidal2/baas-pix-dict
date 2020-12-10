@@ -1,0 +1,46 @@
+create or replace function log_content_identifier_event()
+    returns trigger
+    language plpgsql
+as
+$$
+declare
+    type_added   constant character varying(20)       := 'ADDED';
+    type_removed constant character varying(20)       := 'REMOVED';
+    now_in_utc   constant timestamp without time zone := now() at time zone 'utc';
+BEGIN
+
+    if (tg_op = 'INSERT') then
+        -- TODO: A data key_ownership_date não esta sendo o suficiente para o sincronismo
+        -- vou testar usando a data de criação
+        insert into dict.content_identifier_event(pix_key, key_type, cid, created_at, event_on_bacen_at, type)
+        values (new.key, new.type, new.cid, now_in_utc, new.creation_date, type_added);
+    end if;
+
+    if (tg_op = 'DELETE') then
+        -- TODO: Ponto negativo da trigger:
+        -- Quando ocorre o delete, o mais correto seria utilizar o ResponseTime que é retornado do bacen para
+        -- gerar o evento de delete na tabela de eventos e não instanciar por aqui, pois pode ter alguma diferença
+        -- de nanosegundos que pode impactar no calculo do vsync
+        insert into dict.content_identifier_event(pix_key, key_type, cid, created_at, event_on_bacen_at, type)
+        values (old.key, old.type, old.cid, now_in_utc, now_in_utc, type_removed);
+    end if;
+
+    if (tg_op = 'UPDATE') then
+        insert into dict.content_identifier_event(pix_key, key_type, cid, created_at, event_on_bacen_at, type)
+        values (new.key, new.type, new.cid, now_in_utc, new.update_date, type_added);
+
+        insert into dict.content_identifier_event(pix_key, key_type, cid, created_at, event_on_bacen_at, type)
+        values (old.key, old.type, old.cid, now_in_utc, new.update_date, type_removed);
+    end if;
+
+    return new;
+END;
+$$;
+
+create trigger log_content_identifier_event
+    after insert
+        or update of type, key, creation_date, name, participant, branch, account_number, account_type, request_id
+        or delete
+    on dict.pix_key
+    for each row
+execute procedure log_content_identifier_event();

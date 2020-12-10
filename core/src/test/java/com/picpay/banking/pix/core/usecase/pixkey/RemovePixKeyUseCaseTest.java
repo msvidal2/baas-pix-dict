@@ -3,100 +3,61 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
-import com.picpay.banking.pix.core.ports.pixkey.RemovePixKeyPort;
-import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
-import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
-import com.picpay.banking.pix.core.validators.pixkey.KeyItemValidator;
-import com.picpay.banking.pix.core.validators.pixkey.KeyTypeItemValidator;
-import com.picpay.banking.pix.core.validators.pixkey.PixKeyValidatorComposite;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.UUID;
 
+import static com.picpay.banking.pix.core.domain.RemoveReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class RemovePixKeyUseCaseTest {
 
-    private static final String randomUUID = randomUUID().toString();
-
     @Mock
     private RemovePixKeyPort removePixKeyPort;
 
-    private DictItemValidator dictItemValidator = new PixKeyValidatorComposite(
-            List.of(
-                    new KeyTypeItemValidator(),
-                    new KeyItemValidator()
-            ));
+    @Mock
+    private RemovePixKeyBacenPort removePixKeyBacenPort;
 
     @InjectMocks
-    private RemovePixKeyUseCase useCase = new RemovePixKeyUseCase(
-            removePixKeyPort, dictItemValidator);
+    private RemovePixKeyUseCase useCase;
 
     @Test
-    public void testRemove() {
+    void when_executeWithSuccess_expect_noExceptions() {
         var pixKey = PixKey.builder()
-                .key("43129115099")
-                .type(KeyType.CPF)
+                .key("email@email.com")
+                .type(KeyType.EMAIL)
+                .ispb(12345678)
                 .build();
 
-        assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, RemoveReason.CLIENT_REQUEST));
+        assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
+
+        verify(removePixKeyBacenPort).remove(any(), any());
+        verify(removePixKeyPort).remove(anyString(), anyInt());
     }
 
     @Test
-    public void testRemoveInvalidKey() {
+    void when_executeWithValidationError_expect_illegalArgumentException() {
         var pixKey = PixKey.builder()
-                .key("43129115000")
-                .type(KeyType.CPF)
+                .key("email@email.com")
+                .type(KeyType.EMAIL)
+                .ispb(0)
                 .build();
 
-        assertThrows(KeyValidatorException.class, () -> useCase.execute(randomUUID, pixKey, RemoveReason.CLIENT_REQUEST));
-    }
-
-    @Test
-    public void testRemoveTypeNull() {
-        var pixKey = PixKey.builder()
-                .key("43129115099")
-                .build();
-
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, RemoveReason.CLIENT_REQUEST));
-    }
-
-    @Test
-    public void testRemoveReasonNull() {
-        var pixKey = PixKey.builder()
-                .key("43129115099")
-                .type(KeyType.CPF)
-                .build();
-
-        assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, pixKey, null));
-    }
-
-    @Test
-    public void testRemoveRequestIdentifierNull() {
-        var pixKey = PixKey.builder()
-                .key("43129115099")
-                .type(KeyType.CPF)
-                .build();
-
-        assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, RemoveReason.CLIENT_REQUEST));
-    }
-
-    @Test
-    public void testRemoveRequestIdentifierEmpty() {
-        var pixKey = PixKey.builder()
-                .key("43129115099")
-                .type(KeyType.CPF)
-                .build();
-
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute("", pixKey, RemoveReason.CLIENT_REQUEST));
+        assertThrows(IllegalArgumentException.class,
+                () -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
     }
 
 }

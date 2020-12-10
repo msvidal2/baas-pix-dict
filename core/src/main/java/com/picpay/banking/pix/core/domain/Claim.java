@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.google.common.base.Strings;
 import lombok.*;
+import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;
 
@@ -37,5 +39,23 @@ public class Claim {
     private ClaimConfirmationReason confirmationReason;
     private LocalDateTime starDate;
     private LocalDateTime endDate;
+    private String correlationId;
+
+    public String getOwnerName() {
+        if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
+            return name;
+        }
+        return ObjectUtils.firstNonNull(fantasyName, name);
+    }
+
+    public String getTaxIdWithLeftZeros() {
+        int size = 11;
+
+        if(PersonType.LEGAL_ENTITY.equals(personType)) {
+            size = 14;
+        }
+
+        return Strings.padStart(cpfCnpj, size, '0');
+    }
 
 }

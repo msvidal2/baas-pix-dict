@@ -1,32 +1,50 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
+import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.pixkey.FindPixKeyPort;
-import lombok.AllArgsConstructor;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.validators.key.KeyValidator;
+import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class FindPixKeyUseCase {
 
-    private FindPixKeyPort findPixKeyPort;
+    private final FindPixKeyPort findPixKeyPort;
+
+    private final FindPixKeyBacenPort findPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
                           @NonNull final String pixKey,
-                          @NonNull final String userId)  {
+                          @NonNull final String userId) {
 
         if (requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier can not be empty");
+            throw new IllegalArgumentException("The [requestIdentifier] can not be empty");
         }
 
-        if(userId.isBlank()) {
-            throw new IllegalArgumentException("The userId can not be null");
+        if (userId.isBlank()) {
+            throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
-        PixKey pixKeyFound =  findPixKeyPort.findPixKey(requestIdentifier, pixKey, userId);
+        Stream.of(KeyType.values())
+                .filter(type -> validateKey(pixKey, type.getValidator()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid key"));
+
+        Optional<PixKey> optionalPixKey = findPixKeyPort.findPixKey(pixKey);
+
+        PixKey pixKeyFound = optionalPixKey.orElseGet(() -> findPixKeyBacenPort.findPixKey(requestIdentifier, pixKey, userId));
 
         if (pixKeyFound != null)
             log.info("PixKey_foundAccount"
@@ -34,6 +52,15 @@ public class FindPixKeyUseCase {
                     , kv("key", pixKeyFound.getKey()));
 
         return pixKeyFound;
+    }
+
+    private Boolean validateKey(String pixKey, KeyValidator validator) {
+        try {
+            validator.validate(pixKey);
+            return true;
+        } catch (KeyValidatorException e) {}
+
+        return false;
     }
 
 }

@@ -5,10 +5,9 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
-import com.picpay.banking.pix.core.ports.pixkey.UpdateAccountPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
-import com.picpay.banking.pix.core.validators.pixkey.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,19 +29,11 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Mock
     private UpdateAccountPixKeyPort updateAccountPort;
 
-    private DictItemValidator dictItemValidator = new PixKeyValidatorComposite(
-            List.of(
-                    new KeyTypeItemValidator(),
-                    new KeyItemValidator(),
-                    new IspbItemValidator(),
-                    new BranchNumberItemValidator(),
-                    new AccountTypeItemValidator(),
-                    new AccountNumberItemValidator(),
-                    new AccountOpeningDateItemValidator()
-            ));
+    @Mock
+    private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, dictItemValidator);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort);
 
     @Test
     public void testUpdate() {
@@ -63,14 +51,14 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(anyString(), any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
     }
 
     @Test
     public void testUpdateNullpixKey() {
-        assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null, UpdateReason.CLIENT_REQUEST));
     }
 
     @Test
@@ -84,7 +72,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, pixKey, null));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, pixKey, null));
     }
 
     @Test
@@ -98,7 +86,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, UpdateReason.CLIENT_REQUEST));
     }
 
     @Test
@@ -119,7 +107,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(anyString(), any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
     }
@@ -136,7 +124,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
     }
 
     @Test
@@ -166,7 +154,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertDoesNotThrow(() ->
+        Assertions.assertThrows(KeyValidatorException.class, () ->
                 useCase.execute(
                         randomUUID,
                         pixKey,
@@ -185,7 +173,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(
+        Assertions.assertThrows(KeyValidatorException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.BRANCH_TRANSFER));
@@ -202,7 +190,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -219,7 +207,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -248,13 +236,13 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .key(randomUUID().toString())
                 .type(KeyType.RANDOM)
                 .ispb(22896431)
-                .branchNumber("1")
+                .branchNumber("12345")
                 .accountNumber("12345")
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -271,7 +259,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -280,16 +268,16 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Test
     public void testValidatePixKeyLessThan4() {
         var pixKey = PixKey.builder()
-                .key(randomUUID().toString())
+                .key("1234")
                 .type(KeyType.RANDOM)
                 .ispb(22896431)
                 .branchNumber("0001")
-                .accountNumber("123")
+                .accountNumber("1234")
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(KeyValidatorException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -307,7 +295,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));
@@ -324,7 +312,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
                 UpdateReason.CLIENT_REQUEST));

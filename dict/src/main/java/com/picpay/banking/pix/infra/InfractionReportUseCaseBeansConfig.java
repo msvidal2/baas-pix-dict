@@ -1,12 +1,16 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.*;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.ListPendingInfractionReportUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,33 +18,34 @@ import org.springframework.context.annotation.Configuration;
 public class InfractionReportUseCaseBeansConfig {
 
     @Bean
-    public CreateInfractionReportUseCase createInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new CreateInfractionReportUseCase(infractionReportPort);
+    public CreateInfractionReportUseCase createInfractionReportUseCase(CreateInfractionReportPort infractionReportPort,
+                                                                       InfractionReportSavePort infractionReportSavePort,
+                                                                       InfractionReportFindPort infractionReportFindPort) {
+        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, infractionReportFindPort);
     }
 
     @Bean
-    public ListPendingInfractionReportUseCase listPendingInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new ListPendingInfractionReportUseCase(infractionReportPort);
-    }
-
-    @Bean
-    public FindInfractionReportUseCase findInfractionReportUseCase(InfractionReportPort infractionReportPort) {
+    public FindInfractionReportUseCase findInfractionReportUseCase(InfractionReportFindPort infractionReportPort) {
         return new FindInfractionReportUseCase(infractionReportPort);
     }
 
     @Bean
-    public CancelInfractionReportUseCase cancelInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new CancelInfractionReportUseCase(infractionReportPort);
+    public CancelInfractionReportUseCase cancelInfractionReportUseCase(final CancelInfractionReportPort cancelInfractionReportPort,
+                                                                       final InfractionReportCancelPort infractionReportCancelPort) {
+        return new CancelInfractionReportUseCase(cancelInfractionReportPort, infractionReportCancelPort);
+    }
+
+
+    @Bean
+    public FilterInfractionReportUseCase filterInfractionReportUseCase(InfractionReportListPort infractionReportListPort) {
+        return new FilterInfractionReportUseCase(infractionReportListPort);
     }
 
     @Bean
-    public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new AnalyzeInfractionReportUseCase(infractionReportPort);
-    }
-
-    @Bean
-    public FilterInfractionReportUseCase filterInfractionReportUseCase(InfractionReportPort infractionReportPort) {
-        return new FilterInfractionReportUseCase(infractionReportPort);
+    public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(InfractionReportAnalyzePort analyzeInfractionReportPort,
+                                                                         InfractionReportSavePort infractionReportSavePort,
+                                                                         InfractionReportFindPort infractionReportFindPort) {
+        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportFindPort, infractionReportSavePort);
     }
 
 }

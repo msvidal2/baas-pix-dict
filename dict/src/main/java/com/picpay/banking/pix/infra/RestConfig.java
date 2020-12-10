@@ -6,7 +6,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,13 +15,11 @@ import java.time.format.DateTimeFormatter;
 public class RestConfig {
 
 	@Bean
-	public RestTemplate restTemplate(ClientHttpRequestInterceptor jdpiTokenInterceptor) {
+	public RestTemplate restTemplate() {
 		var httpClient = HttpClientBuilder.create().build();
 		var clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 
 		var restTemplate = new RestTemplate(clientHttpRequestFactory);
-
-		restTemplate.getInterceptors().add(jdpiTokenInterceptor);
 
 		return restTemplate;
 	}
