@@ -6,6 +6,7 @@ package com.picpay.banking.repository;/*
 
 import com.picpay.banking.entity.ClaimEntity;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
+import com.picpay.banking.pix.core.domain.ClaimType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,5 +36,8 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
 
     @Query("SELECT c FROM claim c WHERE (c.claimerParticipant = :ispb OR c.donorParticipant = :ispb) AND c.status in :openStatus")
     Page<ClaimEntity> findAllPendingClaims(int ispb, List<ClaimSituation> openStatus, Pageable pageable);
+
+    @Query("SELECT c FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
+    Page<ClaimEntity> findClaimToCancel(ClaimType type, List<ClaimSituation> status, Integer donorParticipant, LocalDateTime resolutionPeriodEnd, Pageable pageable);
 
 }
