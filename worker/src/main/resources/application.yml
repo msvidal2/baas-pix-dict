@@ -29,7 +29,7 @@ spring:
     stream:
       bindings:
         new-infraction-reports:
-          destination: ${TOPIC_NEW_INFRACTION_REPORT}
+          destination: ${INFRACTION_ACKNOWLEDGMENT_TOPIC}
           group: dict
           contentType: application/json
           consumer:
