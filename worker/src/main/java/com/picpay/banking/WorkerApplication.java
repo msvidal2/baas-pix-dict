@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WorkerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WorkerApplication.class, args);
+        SpringApplication springApp = new SpringApplication(WorkerApplication.class);
+        springApp.setAdditionalProfiles("database", "messaging", "bacen");
+        springApp.run(args);
     }
 
 }

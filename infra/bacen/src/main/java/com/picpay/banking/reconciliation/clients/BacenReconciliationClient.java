@@ -18,21 +18,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(value = "Reconcilliation",
-        url = "${pix.bacen.url}",
-        path = "/dict/api/v1/")
+        url = "${pix.bacen.dict.url}",
+        path = "/dict/api/v1/cids")
 public interface BacenReconciliationClient {
 
-    @PostMapping(value = "/cids/files",
+    @PostMapping(value = "/files",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
     CidSetFileResponse requestCidFile(CidSetFileRequest cidSetFileRequest);
 
-    @GetMapping(value = "/cids/files/{id}",
+    @GetMapping(value = "/files/{id}",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
     GetCidSetFileResponse getCidFile(@PathVariable("id") Integer id, @RequestHeader("PI-RequestingParticipant") String participant);
 
-    @GetMapping(value = "/cids/entries/{cid}",
+    @GetMapping(value = "/entries/{cid}",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
     EntryByCidResponse getEntryByCid(@PathVariable("cid") String cid, @RequestHeader("PI-RequestingParticipant") String participant);

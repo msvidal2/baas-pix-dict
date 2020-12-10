@@ -10,24 +10,29 @@ import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
 import com.picpay.banking.pixkey.dto.request.RemoveEntryRequest;
 import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
 import com.picpay.banking.pixkey.dto.response.CreateEntryResponse;
-import com.picpay.banking.pixkey.dto.response.RemoveEntryResponse;
 import com.picpay.banking.pixkey.dto.response.GetEntryResponse;
+import com.picpay.banking.pixkey.dto.response.RemoveEntryResponse;
 import com.picpay.banking.pixkey.dto.response.UpdateEntryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(value = "PixKey",
         url = "${pix.bacen.dict.url}",
-        path = "/v1")
+        path = "/dict/api/v1/entries")
 public interface BacenKeyClient {
 
-    @PostMapping(value = "/entries",
+    @PostMapping(value = "",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     CreateEntryResponse createPixKey(@RequestBody CreateEntryRequest createEntryRequest);
 
-    @GetMapping(value = "/entries/{key}",
+    @GetMapping(value = "/{key}",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     GetEntryResponse findPixKey(
@@ -37,7 +42,7 @@ public interface BacenKeyClient {
             @PathVariable("key") String pixKey
     );
 
-    @PutMapping(value = "/entries/{key}",
+    @PutMapping(value = "/{key}",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     UpdateEntryResponse updateAccountPixKey(
@@ -45,7 +50,7 @@ public interface BacenKeyClient {
             @PathVariable("key") String pixKey
     );
 
-    @PostMapping(value = "/entries/{key}/delete",
+    @PostMapping(value = "/{key}/delete",
             consumes = MediaType.APPLICATION_XML_VALUE,
             produces = MediaType.APPLICATION_XML_VALUE)
     RemoveEntryResponse removeAccountPixKey(

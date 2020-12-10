@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DictApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DictApiApplication.class, args);
+        SpringApplication springApp = new SpringApplication(DictApiApplication.class);
+        springApp.setAdditionalProfiles("database", "bacen");
+        springApp.run(args);
     }
 }
