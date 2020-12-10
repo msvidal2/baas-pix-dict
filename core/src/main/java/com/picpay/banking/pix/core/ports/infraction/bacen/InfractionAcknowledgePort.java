@@ -8,6 +8,6 @@ package com.picpay.banking.pix.core.ports.infraction.bacen;
 
 public interface InfractionAcknowledgePort {
 
-    void acknowledge();
+    void acknowledge(String infractionReportId, String ispb);
 
 }

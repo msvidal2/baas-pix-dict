@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.clients;
 
+import com.picpay.banking.infraction.dto.request.AcknowledgeInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CancelInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CloseInfractionReportRequest;
 import com.picpay.banking.infraction.dto.request.CreateInfractionReportRequest;
@@ -53,6 +54,7 @@ public interface InfractionBacenClient {
     @PostMapping(value = "{InfractionReportId}/acknowledge",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
-    AcknowledgeInfractionReportResponse acknowledge(@PathVariable("InfractionReportId") String infractionReportId);
+    AcknowledgeInfractionReportResponse acknowledge(@PathVariable("InfractionReportId") String infractionReportId,
+                                                    @RequestBody AcknowledgeInfractionReportRequest acknowledgeInfractionReportRequest);
 
 }
