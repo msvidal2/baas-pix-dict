@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.dto.response.ClaimResponse;
+import com.picpay.banking.claim.dto.response.ClaimResponse;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;

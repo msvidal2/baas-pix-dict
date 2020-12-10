@@ -60,7 +60,7 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public PollingClaimListenerUseCase findClaimUseCase(@Value("pix.participant") Integer participant,
+    public PollingClaimListenerUseCase pollingClaimListenerUseCase(@Value("${pix.participant}") Integer participant,
                                                         AcknowledgeClaimPort acknowledgeClaimPort,
                                                         CreateClaimPort saveClaimPort) {
         return new PollingClaimListenerUseCase(participant, acknowledgeClaimPort, saveClaimPort);
