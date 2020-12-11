@@ -9,8 +9,6 @@ import com.picpay.banking.dto.response.ConfirmClaimResponse;
 import com.picpay.banking.dto.response.CancelClaimResponse;
 import com.picpay.banking.dto.response.CreateClaimResponse;
 import com.picpay.banking.dto.response.ListClaimsResponse;
-import com.picpay.banking.claim.dto.request.*;
-import com.picpay.banking.claim.dto.response.*;
 import com.picpay.banking.dto.request.*;
 import com.picpay.banking.dto.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
