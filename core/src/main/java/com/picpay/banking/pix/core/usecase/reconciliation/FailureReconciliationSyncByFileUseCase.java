@@ -62,17 +62,17 @@ public class FailureReconciliationSyncByFileUseCase {
 
     private void synchronizeCids(final KeyType keyType, final Sync sync) {
         sync.getCidsNotSyncronized().stream()
-            .forEach(cid -> {
+            .forEach(cid ->
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
                     this.createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
 
                     this.insertCID(keyType, cid, pixKey);
 
                     this.insertAuditLog(keyType, sync, cid, pixKey);
-                }, () -> {
-                    this.remove(keyType, sync, cid);
-                });
-            });
+                }, () ->
+                    this.remove(keyType, sync, cid)
+                )
+            );
     }
 
     private void insertCID(final KeyType keyType, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKeyInBacen) {
@@ -107,7 +107,6 @@ public class FailureReconciliationSyncByFileUseCase {
             }
             log.info("Only Cid {} was removed from database because cid don't exists in bacen but key exists", cid);
         });
-        return;
     }
 
     private void removePixKey(final KeyType keyType, final Sync sync, final String cid, final ContentIdentifier contentIdentifier) {

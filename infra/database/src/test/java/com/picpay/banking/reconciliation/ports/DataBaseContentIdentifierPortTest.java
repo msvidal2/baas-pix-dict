@@ -35,23 +35,23 @@ import static org.mockito.Mockito.when;
  * @version 1.0 09/12/2020
  */
 @ExtendWith(MockitoExtension.class)
-public class DataBaseContentIdentifierPortTest {
+class DataBaseContentIdentifierPortTest {
 
     @Mock
-    private ContentIdentifierFileRepository contentIdentifierFileRepository;
+    ContentIdentifierFileRepository contentIdentifierFileRepository;
     @Mock
-    private ContentIdentifierRepository contentIdentifierRepository;
+    ContentIdentifierRepository contentIdentifierRepository;
     @Mock
-    private ContentIdentifierActionRepository contentIdentifierActionRepository;
+    ContentIdentifierActionRepository contentIdentifierActionRepository;
 
     @InjectMocks
-    private DatabaseContentIdentifierPortImpl databaseContentIdentifierPort;
+    DatabaseContentIdentifierPortImpl databaseContentIdentifierPort;
 
-    private ContentIdentifier cid;
-    private ContentIdentifierFile cidFile;
+    ContentIdentifier cid;
+    ContentIdentifierFile cidFile;
 
     @BeforeEach
-    public void init(){
+    void init(){
         this.cid = ContentIdentifier.builder()
             .cid("ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a")
             .key("teste@gmail.com")
@@ -68,7 +68,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldSaveCid(){
+    void shouldSaveCid(){
         when(this.contentIdentifierRepository.save(any()))
             .thenReturn(ContentIdentifierEntity.from(cid));
 
@@ -78,7 +78,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldSaveCidFile(){
+    void shouldSaveCidFile(){
         when(this.contentIdentifierFileRepository.save(any()))
             .thenReturn(ContentIdentifierFileEntity.from(cidFile));
 
@@ -88,7 +88,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldFindCid(){
+    void shouldFindCid(){
         when(this.contentIdentifierRepository.findById(any()))
             .thenReturn(Optional.of(ContentIdentifierEntity.from(cid)));
 
@@ -101,7 +101,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
      @Test
-    public void notShouldFindCid(){
+    void notShouldFindCid(){
         when(this.contentIdentifierRepository.findById(any()))
             .thenReturn(Optional.empty());
 
@@ -123,7 +123,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldFindLastFileRequestedToProcess(){
+    void shouldFindLastFileRequestedToProcess(){
        when(this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList()))
            .thenReturn(Optional.of(ContentIdentifierFileEntity.from(cidFile)));
 
@@ -134,7 +134,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void notShouldFindLastFileRequestedToProcess(){
+    void notShouldFindLastFileRequestedToProcess(){
        when(this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList()))
            .thenReturn(Optional.empty());
 
@@ -145,19 +145,18 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldListAllCids(){
+    void shouldListAllCids(){
        when(this.contentIdentifierRepository.findAllByKeyType(any()))
             .thenReturn(List.of(ContentIdentifierEntity.from(cid)));
 
         final var cids = this.databaseContentIdentifierPort.listAll(KeyType.CPF);
-        assertThat(cids).isNotNull();
-        assertThat(cids).isNotEmpty();
+        assertThat(cids).isNotNull().isNotEmpty();
 
         verify(this.contentIdentifierRepository).findAllByKeyType(any());
     }
 
     @Test
-    public void shouldSaveAction(){
+    void shouldSaveAction(){
         when(this.contentIdentifierActionRepository.save(any())).thenReturn(ContentIdentifierActionEntity.builder()
                                                                            .build());
 
@@ -176,7 +175,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void shouldFindByKey(){
+    void shouldFindByKey(){
         when(this.contentIdentifierRepository.findByKey(any()))
             .thenReturn(Optional.of(ContentIdentifierEntity.from(cid)));
 
@@ -187,7 +186,7 @@ public class DataBaseContentIdentifierPortTest {
     }
 
     @Test
-    public void notShouldFindByKey(){
+    void notShouldFindByKey(){
         when(this.contentIdentifierRepository.findByKey(any()))
             .thenReturn(Optional.empty());
 

@@ -27,18 +27,18 @@ import static org.mockito.Mockito.when;
  * @version 1.0 08/12/2020
  */
 @ExtendWith(MockitoExtension.class)
-public class BacenContentIdentifierEventsPortTest {
+class BacenContentIdentifierEventsPortTest {
 
     @Mock
-    private BacenArqClient bacenArqClient;
+    BacenArqClient bacenArqClient;
     @Mock
-    private BacenReconciliationClient bacenReconciliationClient;
+    BacenReconciliationClient bacenReconciliationClient;
 
-    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    private CidSetFile cidSetFile;
+    BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    CidSetFile cidSetFile;
 
     @BeforeEach
-    public void init(){
+    void init(){
         this.bacenContentIdentifierEventsPort =
             new BacenContentIdentifierEventsPortImpl(bacenArqClient,bacenReconciliationClient,"22896431", "http://urlGateway.com");
 
@@ -53,7 +53,7 @@ public class BacenContentIdentifierEventsPortTest {
     }
 
     @Test
-    public void shouldRequestCIDFileInBacen(){
+    void shouldRequestCIDFileInBacen(){
 
         final var cidSetFileResponse = CidSetFileResponse.builder().cidSetFile(cidSetFile).build();
         when(this.bacenReconciliationClient.requestCidFile(any())).thenReturn(cidSetFileResponse);
@@ -65,7 +65,7 @@ public class BacenContentIdentifierEventsPortTest {
     }
 
     @Test
-    public void shouldGetCidFileInBacen(){
+    void shouldGetCidFileInBacen(){
 
         when(this.bacenReconciliationClient.getCidFile(any(),anyString()))
             .thenReturn(GetCidSetFileResponse.builder().cidSetFile(cidSetFile).build());
@@ -77,7 +77,7 @@ public class BacenContentIdentifierEventsPortTest {
     }
 
     @Test
-    public void shouldDownloadFileInBacenIgnoringEmptyLines(){
+    void shouldDownloadFileInBacenIgnoringEmptyLines(){
 
         var cids = "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a\n" +
             "b42a52ec1ce47529d9cade36c9a4b6d89c512ab0660662b4b9a0949055d7c935\n" +

@@ -40,29 +40,29 @@ import static org.mockito.Mockito.when;
  * @version 1.0 25/11/2020
  */
 @ExtendWith(MockitoExtension.class)
-public class FailureReconciliationSyncByFileUseCaseTest {
+class FailureReconciliationSyncByFileUseCaseTest {
 
     @Mock
-    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     @Mock
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    DatabaseContentIdentifierPort databaseContentIdentifierPort;
     @Mock
-    private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
+    BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     @Mock
-    private CreatePixKeyPort createPixKeyPort;
+    CreatePixKeyPort createPixKeyPort;
     @Mock
-    private RemovePixKeyPort removePixKeyPort;
+    RemovePixKeyPort removePixKeyPort;
     @Mock
-    private FindPixKeyPort findPixKeyPort;
+    FindPixKeyPort findPixKeyPort;
 
-    private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
+    FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
-    private ContentIdentifierFile cidFile;
-    private List<String> cids;
-    private PixKey pixKey;
+    ContentIdentifierFile cidFile;
+    List<String> cids;
+    PixKey pixKey;
 
     @BeforeEach
-    public void init(){
+    void init(){
 
         this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
             22896431,bacenContentIdentifierEventsPort,databaseContentIdentifierPort,bacenPixKeyByContentIdentifierPort,
@@ -141,7 +141,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void dontProcessWhenNotExistFilesRequestedInBacen(){
+    void dontProcessWhenNotExistFilesRequestedInBacen(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.empty());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
@@ -154,7 +154,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void dontInsertKeysFromBacenWhenFileNotAvailable(){
+    void dontInsertKeysFromBacenWhenFileNotAvailable(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(cidFile);
 
@@ -168,7 +168,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void dontInsertKeysFromBacenWhenFileIsNull(){
+    void dontInsertKeysFromBacenWhenFileIsNull(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(null);
 
@@ -182,7 +182,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void insertKeysFromBacen(){
+    void insertKeysFromBacen(){
         final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
@@ -207,7 +207,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void updateKeysFromBacen(){
+    void updateKeysFromBacen(){
         final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
@@ -234,7 +234,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void removeKeysFromBacen(){
+    void removeKeysFromBacen(){
         final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
         final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
         final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
@@ -269,7 +269,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    public void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan(){
+    void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan(){
         final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
         final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
         final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
@@ -302,7 +302,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     }
 
 
-    private Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var cid = (String) invocationOnMock.getArgument(0);
         final var pixKey = PixKey.builder().accountNumber("0").accountOpeningDate(LocalDateTime.now())
             .branchNumber("1").accountType(AccountType.CHECKING).createdAt(LocalDateTime.now())
@@ -312,11 +312,11 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         return Optional.of(pixKey);
     }
 
-    private PixKey generatePixKeyFromDomain(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    PixKey generatePixKeyFromDomain(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         return invocationOnMock.getArgument(0);
     }
 
-    private List<ContentIdentifier > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    List<ContentIdentifier > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
         return cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> ContentIdentifier.builder()
                 .cid(s).pixKey(PixKey.builder().build())

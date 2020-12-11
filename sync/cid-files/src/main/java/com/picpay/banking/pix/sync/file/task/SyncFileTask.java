@@ -21,9 +21,7 @@ public class SyncFileTask implements ApplicationRunner {
 
     @Override
     public void run(final ApplicationArguments args) throws Exception {
-        Arrays.stream(KeyType.values()).forEach(keyType -> {
-            this.failureReconciliationSyncByFileUseCase.execute(keyType);
-        });
+        Arrays.stream(KeyType.values()).forEach(keyType -> this.failureReconciliationSyncByFileUseCase.execute(keyType));
     }
 
 }
