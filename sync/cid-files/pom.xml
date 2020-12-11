@@ -5,8 +5,8 @@
     <parent>
         <artifactId>sync</artifactId>
         <groupId>com.picpay.banking.pix.dict</groupId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath/>
+        <version>1.0-SNAPSHOT</version>  <relativePath/>
+
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
