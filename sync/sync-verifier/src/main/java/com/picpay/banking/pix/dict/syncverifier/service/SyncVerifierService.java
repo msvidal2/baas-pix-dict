@@ -18,13 +18,13 @@ public class SyncVerifierService {
     private final FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
 
     @Trace(dispatcher = true, metricName = "syncVerifier")
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, value = "springCloudTaskTransactionManager")
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SyncVerifierHistoric syncVerifier(final KeyType keyType) {
         return reconciliationSyncUseCase.execute(keyType);
     }
 
     @Trace(dispatcher = true, metricName = "failureReconciliationSync")
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, value = "springCloudTaskTransactionManager")
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void failureReconciliationSync(final SyncVerifierHistoric syncVerifierHistoric) {
         failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
     }

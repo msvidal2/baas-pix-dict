@@ -16,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 
 @Getter
@@ -40,7 +39,7 @@ public class SyncVerifierHistoricActionEntity {
     @Enumerated(EnumType.STRING)
     private ActionType action;
 
-    @JoinColumns({@JoinColumn(name = "id_sync_verifier_historic", insertable = false, updatable = false)})
+    @JoinColumn(name = "id_sync_verifier_historic", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private SyncVerifierHistoricEntity syncVerifierHistoric;
 

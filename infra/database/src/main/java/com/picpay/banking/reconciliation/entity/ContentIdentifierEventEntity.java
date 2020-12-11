@@ -18,7 +18,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
@@ -40,9 +39,8 @@ public class ContentIdentifierEventEntity {
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
 
-    @JoinColumns({
-        @JoinColumn(name = "pix_key", insertable = false, updatable = false),
-        @JoinColumn(name = "key_type", insertable = false, updatable = false)})
+    @JoinColumn(name = "pix_key", insertable = false, updatable = false)
+    @JoinColumn(name = "key_type", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private PixKeyEntity pixKey;
 

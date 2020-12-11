@@ -17,7 +17,6 @@ import com.picpay.banking.reconciliation.repository.ContentIdentifierRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,11 +28,6 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     private ContentIdentifierFileRepository contentIdentifierFileRepository;
     private ContentIdentifierRepository contentIdentifierRepository;
     private ContentIdentifierActionRepository contentIdentifierActionRepository;
-
-    @Override
-    public List<ContentIdentifier> listAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedAt) {
-        return null;
-    }
 
     @Override
     public void save(final ContentIdentifier contentIdentifier) {

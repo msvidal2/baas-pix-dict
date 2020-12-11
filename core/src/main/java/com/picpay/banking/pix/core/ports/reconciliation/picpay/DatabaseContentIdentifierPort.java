@@ -6,13 +6,10 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface DatabaseContentIdentifierPort {
-
-    List<ContentIdentifier> listAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedAt);
 
     void save(ContentIdentifier contentIdentifier);
 
