@@ -107,14 +107,12 @@ public class InfractionReportController {
     public CancelResponseInfractionDTO analyze(@RequestHeader String requestIdentifier,
                                                @PathVariable("infractionReportId") String infractionReportId,
                                                @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
-
         log.info("Infraction_analyzing"
             , kv("requestIdentifier", requestIdentifier)
             , kv("infractionReportId", infractionReportId)
             , kv("infractionType", dto.getIspb()));
 
         var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.toInfractionAnalyze(), requestIdentifier);
-
         return CancelResponseInfractionDTO.from(infractionReport);
     }
 
@@ -125,11 +123,12 @@ public class InfractionReportController {
     public InfractionPage filter(@Valid FilterInfractionReportDTO filter,
                                  @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                  @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
-
         log.info("Infraction_filtering", kv("requestIdentifier", filter.getIspb()));
-
-        return this.filterInfractionReportUseCase.execute(
-            filter.getIspb(), filter.getSituation(), filter.getStartDateAsLocalDateTime(), filter.getEndDateAsLocalDateTime(), page, size);
+        return this.filterInfractionReportUseCase.execute(filter.getSituation(),
+                                                          filter.getStartDateAsLocalDateTime(),
+                                                          filter.getEndDateAsLocalDateTime(),
+                                                          page,
+                                                          size);
     }
 
 }
