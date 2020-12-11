@@ -36,9 +36,10 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public List<InfractionReport> list(final String ispb, final Integer limit) {
-        ListInfractionReportsResponse response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
-                                                                            () -> infractionBacenClient.listInfractions(ispb, limit),
-                                                                            UUID.randomUUID().toString());
+//        ListInfractionReportsResponse response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
+//                                                                            () -> infractionBacenClient.listInfractions(ispb, limit),
+//                                                                            UUID.randomUUID().toString());
+        ListInfractionReportsResponse response = infractionBacenClient.listInfractions(ispb, limit);
         return ListInfractionReportsResponse.toInfractionReportList(response, ispb);
     }
 
