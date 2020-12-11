@@ -43,10 +43,6 @@ spring:
     name: dict-infraction-worker
   redis:
     enabled: false
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVERS}
-    consumer:
-      auto-offset-reset: latest
   cloud:
     stream:
       bindings:
