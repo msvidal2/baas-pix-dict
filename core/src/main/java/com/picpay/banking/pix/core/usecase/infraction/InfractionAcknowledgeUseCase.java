@@ -11,6 +11,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionAcknowledgePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
+import com.picpay.banking.pix.core.validators.infraction.WorkInfractionValidator;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -25,6 +26,8 @@ public class InfractionAcknowledgeUseCase {
     private final InfractionAcknowledgePort infractionAcknowledgePort;
 
     public void execute(InfractionReport infractionReport) {
+
+        WorkInfractionValidator.validate(infractionReport);
 
         infractionReportSavePort.save(infractionReport);
         infractionNotificationPort.notify(infractionReport);
