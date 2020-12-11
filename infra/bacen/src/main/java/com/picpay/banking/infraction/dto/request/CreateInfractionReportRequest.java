@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CreateInfractionReportRequest {
 
     @XmlElement(name = "Participant")
-    private int participant;
+    private String participant;
 
     @XmlElement(name = "InfractionReport")
     private InfractionReportRequest infractionReportRequest;

@@ -3,6 +3,7 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
@@ -29,9 +30,7 @@ public class InfractionAcknowledgeUseCase {
         infractionNotificationPort.notify(infractionReport);
 
         if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN))
-            infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId()
-                    , Integer.toString(infractionReport.getIspbRequester()));
-
+            infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId(), infractionReport.getIspbRequester());
     }
 
 }

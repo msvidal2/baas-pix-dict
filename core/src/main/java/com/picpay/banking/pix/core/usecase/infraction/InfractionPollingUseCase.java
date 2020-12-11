@@ -28,7 +28,7 @@ public class InfractionPollingUseCase {
     private final SendToAcknowledgePort acknowledgePort;
     private final ListInfractionPort listInfractionPort;
 
-    public void execute(final Integer ispb, final Integer limit) {
+    public void execute(final String ispb, final Integer limit) {
         log.info("Polling BACEN for infractions");
         List<InfractionReport> infractions = listInfractionPort.list(ispb, limit);
 

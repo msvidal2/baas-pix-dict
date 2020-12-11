@@ -36,13 +36,13 @@ public class InfractionReport implements Serializable {
     private String endToEndId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private int ispbDebited;
-    private int ispbCredited;
+    private String ispbDebited;
+    private String ispbCredited;
     private LocalDateTime dateCreate;
     @Setter
     private LocalDateTime dateLastUpdate;
     @EqualsAndHashCode.Include
-    private int ispbRequester;
+    private String ispbRequester;
     @EqualsAndHashCode.Include
     private String details;
     @Setter

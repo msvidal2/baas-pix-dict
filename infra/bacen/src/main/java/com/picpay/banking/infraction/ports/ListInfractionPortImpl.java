@@ -35,14 +35,14 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public List<InfractionReport> list(final Integer ispb, final Integer limit) {
+    public List<InfractionReport> list(final String ispb, final Integer limit) {
         ListInfractionReportsResponse response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
                                                                             () -> infractionBacenClient.listInfractions(ispb, limit),
                                                                             UUID.randomUUID().toString());
-        return ListInfractionReportsResponse.toInfractionReportList(response);
+        return ListInfractionReportsResponse.toInfractionReportList(response, ispb);
     }
 
-    public List<InfractionReport> fallback(final Integer ispb, final Integer limit, final Exception e) {
+    public List<InfractionReport> fallback(final String ispb, final Integer limit, final Exception e) {
         throw BacenExceptionBuilder.from(e).build();
     }
 

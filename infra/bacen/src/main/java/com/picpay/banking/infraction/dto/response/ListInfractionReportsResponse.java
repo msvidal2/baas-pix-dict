@@ -48,7 +48,7 @@ public class ListInfractionReportsResponse {
     @XmlElement(name = "InfractionReport")
     private List<InfractionReportRequest> infractionReportRequest;
 
-    public static List<InfractionReport> toInfractionReportList(final ListInfractionReportsResponse response) {
+    public static List<InfractionReport> toInfractionReportList(final ListInfractionReportsResponse response, String ispbPicpay) {
         if (Objects.isNull(response))
             return Collections.emptyList();
 
@@ -56,26 +56,21 @@ public class ListInfractionReportsResponse {
             .stream()
             .filter(infraction -> Objects.nonNull(infraction.getTransactionId()))
             .map(infractionReport -> InfractionReport.builder()
-                     .ispbRequester(ispbRequester(infractionReport))
+                     .infractionReportId(infractionReport.getId())
+                     .ispbRequester(ispbPicpay)
                      .endToEndId(infractionReport.getTransactionId())
                      .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
                      .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))
                      .details(infractionReport.getReportDetails())
                      .dateLastUpdate(infractionReport.getLastModified())
                      .dateCreate(infractionReport.getCreationTime())
-                     .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
-                     .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
+                     .ispbCredited(infractionReport.getCreditedParticipant())
+                     .ispbDebited(infractionReport.getDebitedParticipant())
                      .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
                      .analyze(getAnalyzeResult(infractionReport))
                      .build()
                 )
             .collect(Collectors.toList());
-    }
-
-    private static int ispbRequester(final InfractionReportRequest infractionReport) {
-        return infractionReport.getReportedBy().equals(ReportedBy.CREDITED_PARTICIPANT)
-            ? Integer.parseInt(infractionReport.getCreditedParticipant())
-            : Integer.parseInt(infractionReport.getDebitedParticipant());
     }
 
     private static InfractionAnalyze getAnalyzeResult(final InfractionReportRequest infractionReport) {

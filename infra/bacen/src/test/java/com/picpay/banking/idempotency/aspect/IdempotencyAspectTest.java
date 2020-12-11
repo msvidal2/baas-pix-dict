@@ -125,8 +125,8 @@ class IdempotencyAspectTest {
             .situation(InfractionReportSituation.OPEN)
             .infractionType(InfractionType.FRAUD)
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
-            .ispbDebited(1234)
-            .ispbCredited(56789)
+            .ispbDebited("1234")
+            .ispbCredited("56789")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();

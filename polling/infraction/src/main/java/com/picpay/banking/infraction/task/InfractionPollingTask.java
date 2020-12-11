@@ -18,11 +18,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class InfractionPollingTask {
 
-    private final Integer ispb;
+    private final String ispb;
     private final Integer limit;
     private final InfractionPollingUseCase infractionPollingUseCase;
 
-    public InfractionPollingTask(@Value("${picpay.ispb}") final Integer ispb,
+    public InfractionPollingTask(@Value("${picpay.ispb}") final String ispb,
                                  @Value("${picpay.polling.infraction.limit}") final Integer limit,
                                  final InfractionPollingUseCase infractionPollingUseCase) {
         this.ispb = ispb;
