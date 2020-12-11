@@ -1,5 +1,6 @@
 package com.picpay.banking.claim.listeners;
 
+import com.picpay.banking.claim.config.ClaimNotificationInputBinding;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimListenerUseCase;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class PollingClaimListener {
 
     private final PollingClaimListenerUseCase pollingClaimListenerUseCase;
 
-    @StreamListener("open-claim-topic")
+    @StreamListener(ClaimNotificationInputBinding.INPUT)
     public void claimListener(Message<Claim> message) {
 
         var claim = message.getPayload();

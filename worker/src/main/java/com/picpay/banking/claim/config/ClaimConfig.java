@@ -1,5 +1,6 @@
 package com.picpay.banking.claim.config;
 
+import com.picpay.banking.claim.ports.SendClaimNotificationPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.AcknowledgeClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimListenerUseCase;
@@ -13,8 +14,13 @@ public class ClaimConfig {
     @Bean
     public PollingClaimListenerUseCase pollingClaimListenerUseCase(@Value("${picpay.ispb}") Integer participant,
                                                                    AcknowledgeClaimPort acknowledgeClaimPort,
-                                                                   CreateClaimPort saveClaimPort) {
-        return new PollingClaimListenerUseCase(participant, acknowledgeClaimPort, saveClaimPort);
+                                                                   CreateClaimPort saveClaimPort,
+                                                                   SendClaimNotificationPortImpl sendClaimNotificationPortImpl) {
+        return new PollingClaimListenerUseCase(
+                participant,
+                acknowledgeClaimPort,
+                saveClaimPort,
+                sendClaimNotificationPortImpl);
     }
 
 }
