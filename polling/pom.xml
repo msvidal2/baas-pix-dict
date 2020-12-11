@@ -6,7 +6,6 @@
 		<groupId>com.picpay.banking.pix.dict</groupId>
 		<artifactId>baas-pix-dict</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath/>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
