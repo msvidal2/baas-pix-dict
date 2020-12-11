@@ -8,6 +8,7 @@ package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.NonNull;
@@ -41,6 +42,7 @@ public class SendToAcknowledgePortImpl implements SendToAcknowledgePort {
         log.error("SendToAckNotification_fallback",
                   kv("claimId", infractionReport.getInfractionReportId()),
                   kv("error", e));
+        throw new PortException(e);
     }
 
 }

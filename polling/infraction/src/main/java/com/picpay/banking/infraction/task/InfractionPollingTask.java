@@ -9,6 +9,8 @@ package com.picpay.banking.infraction.task;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionPollingUseCase;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0 07/12/2020
  */
 @Component
-public class InfractionPollingTask {
+public class InfractionPollingTask implements ApplicationRunner {
 
     private final String ispb;
     private final Integer limit;
@@ -31,7 +33,8 @@ public class InfractionPollingTask {
     }
 
     @Trace(dispatcher = true, metricName = "InfractionReportListPolling")
-    public void run() {
+    @Override
+    public void run(final ApplicationArguments args) throws Exception {
         infractionPollingUseCase.execute(ispb, limit);
     }
 
