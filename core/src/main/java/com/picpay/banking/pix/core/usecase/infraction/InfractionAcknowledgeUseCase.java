@@ -33,8 +33,22 @@ public class InfractionAcknowledgeUseCase {
         infractionReportSavePort.save(infractionReport);
         infractionNotificationPort.notify(infractionReport);
 
-        if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN))
+        if (makeAcknowledge(infractionReport))
             infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId(), ispbPicpay);
+    }
+
+    private boolean makeAcknowledge(InfractionReport infractionReport) {
+        if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN)) {
+            switch (infractionReport.getReportedBy()) {
+                case DEBITED_PARTICIPANT:
+                    if (!infractionReport.getIspbDebited().equalsIgnoreCase("22896431")) return true;
+                    break;
+                case CREDITED_PARTICIPANT:
+                    if (!infractionReport.getIspbCredited().equalsIgnoreCase("22896431")) return true;
+                    break;
+            }
+        }
+        return false;
     }
 
 }
