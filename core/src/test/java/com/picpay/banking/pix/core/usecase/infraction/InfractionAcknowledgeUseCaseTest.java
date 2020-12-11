@@ -47,6 +47,7 @@ public class InfractionAcknowledgeUseCaseTest {
                 .situation(InfractionReportSituation.OPEN)
                 .ispbDebited(2)
                 .ispbCredited(1)
+                .ispbRequester(12345678)
                 .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
                 .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
                 .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
@@ -55,13 +56,13 @@ public class InfractionAcknowledgeUseCaseTest {
     }
 
     @Test
-    void when_infraction_report_is_null_when_NullPointerException() {
+    void when_infraction_report_is_null_then_throw_IllegalArgumentException() {
         assertThatThrownBy(() -> infractionAcknowledgeUseCase.execute(infractionReport))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void when_infraction_report_not_have_situation_when_NullpointerException() {
+    void when_infraction_report_not_have_situation_then_throw_IllegalArgumentException() {
         infractionReport = InfractionReport.builder()
                 .endToEndId("ID_END_TO_END")
                 .infractionType(InfractionType.FRAUD)
@@ -70,12 +71,54 @@ public class InfractionAcknowledgeUseCaseTest {
                 .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
                 .ispbDebited(2)
                 .ispbCredited(1)
+                .ispbRequester(12345678)
                 .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
                 .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
                 .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
                 .build();
         assertThatThrownBy(() -> infractionAcknowledgeUseCase.execute(infractionReport))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Situation cannot be empty or null");
+    }
+
+    @Test
+    void when_infraction_report_id_is_null_throw_IllegalArgumentException() {
+        infractionReport = InfractionReport.builder()
+                .endToEndId("ID_END_TO_END")
+                .infractionType(InfractionType.FRAUD)
+                .details("details")
+                .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+                .situation(InfractionReportSituation.OPEN)
+                .ispbDebited(2)
+                .ispbCredited(1)
+                .ispbRequester(12345678)
+                .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
+                .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
+                .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
+                .build();
+        assertThatThrownBy(() -> infractionAcknowledgeUseCase.execute(infractionReport))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("InfractionReportId cannot be empty or null");
+    }
+
+    @Test
+    void when_infraction_report_ispb_is_null_throw_IllegalArgumentException() {
+        infractionReport = InfractionReport.builder()
+                .endToEndId("ID_END_TO_END")
+                .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
+                .infractionType(InfractionType.FRAUD)
+                .details("details")
+                .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+                .situation(InfractionReportSituation.OPEN)
+                .ispbDebited(2)
+                .ispbCredited(1)
+                .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
+                .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
+                .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
+                .build();
+        assertThatThrownBy(() -> infractionAcknowledgeUseCase.execute(infractionReport))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("The ISPB must contain 8 digits");
     }
 
 }
