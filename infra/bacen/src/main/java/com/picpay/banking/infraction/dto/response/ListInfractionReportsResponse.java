@@ -57,7 +57,6 @@ public class ListInfractionReportsResponse {
             .filter(infraction -> Objects.nonNull(infraction.getTransactionId()))
             .map(infractionReport -> InfractionReport.builder()
                      .infractionReportId(infractionReport.getId())
-                     .ispbRequester(ispbPicpay)
                      .endToEndId(infractionReport.getTransactionId())
                      .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
                      .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))

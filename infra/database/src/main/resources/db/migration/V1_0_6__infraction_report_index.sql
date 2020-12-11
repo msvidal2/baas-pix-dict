@@ -1,1 +1,1 @@
-CREATE INDEX infraction_report_filter ON dict.infraction_report (ispb_requester, created_date);
+CREATE INDEX infraction_report_filter ON dict.infraction_report (ispb_debited, ispb_credited, created_date);

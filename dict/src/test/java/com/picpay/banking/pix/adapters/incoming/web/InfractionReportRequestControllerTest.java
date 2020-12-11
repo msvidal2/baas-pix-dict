@@ -4,12 +4,11 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportD
 import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
@@ -37,7 +36,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -294,7 +292,7 @@ class InfractionReportRequestControllerTest {
     void when_RequestAnalyzelInfractionsWithValidRequest_expect_statusOk() throws Exception {
         var infractionAnalyzed = infractionReport.toBuilder().situation(ANALYZED).build();
 
-        when(analyzeInfractionReportUseCase.execute(anyString(), anyInt(),any(),anyString())).thenReturn(infractionAnalyzed);
+        when(analyzeInfractionReportUseCase.execute(anyString(), any(),any())).thenReturn(infractionAnalyzed);
 
         var request = AnalyzeInfractionReportDTO.builder().ispb(1).result(InfractionAnalyzeResult.ACCEPTED).details("details").build();
 
@@ -308,7 +306,7 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId").exists())
             .andExpect(jsonPath("$.situation",equalTo(ANALYZED.name())));
 
-        verify(analyzeInfractionReportUseCase).execute(anyString(), anyInt(),any(),anyString());
+        verify(analyzeInfractionReportUseCase).execute(anyString(), any(),any());
 
     }
 

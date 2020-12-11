@@ -24,16 +24,17 @@ public class InfractionAcknowledgeUseCase {
     private final InfractionReportSavePort infractionReportSavePort;
     private final InfractionNotificationPort infractionNotificationPort;
     private final InfractionAcknowledgePort infractionAcknowledgePort;
+    private final String ispbPicpay;
 
     public void execute(InfractionReport infractionReport) {
 
-        WorkInfractionValidator.validate(infractionReport);
+        WorkInfractionValidator.validateIspbLength(infractionReport);
 
         infractionReportSavePort.save(infractionReport);
         infractionNotificationPort.notify(infractionReport);
 
         if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN))
-            infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId(), infractionReport.getIspbRequester());
+            infractionAcknowledgePort.acknowledge(infractionReport.getInfractionReportId(), ispbPicpay);
     }
 
 }

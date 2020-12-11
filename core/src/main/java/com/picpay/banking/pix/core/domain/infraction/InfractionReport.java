@@ -42,8 +42,6 @@ public class InfractionReport implements Serializable {
     @Setter
     private LocalDateTime dateLastUpdate;
     @EqualsAndHashCode.Include
-    private String ispbRequester;
-    @EqualsAndHashCode.Include
     private String details;
     @Setter
     private InfractionAnalyze analyze;

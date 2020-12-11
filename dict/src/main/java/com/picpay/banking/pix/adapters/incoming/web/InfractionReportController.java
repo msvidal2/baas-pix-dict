@@ -113,8 +113,7 @@ public class InfractionReportController {
             , kv("infractionReportId", infractionReportId)
             , kv("infractionType", dto.getIspb()));
 
-        var infractionReport = this.analyzeInfractionReportUseCase
-            .execute(infractionReportId, dto.getIspb(), dto.toInfractionAnalyze(), requestIdentifier);
+        var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.toInfractionAnalyze(), requestIdentifier);
 
         return CancelResponseInfractionDTO.from(infractionReport);
     }

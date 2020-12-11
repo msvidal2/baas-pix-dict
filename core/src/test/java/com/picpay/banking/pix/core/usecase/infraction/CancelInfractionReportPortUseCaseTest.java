@@ -48,7 +48,7 @@ class CancelInfractionReportPortUseCaseTest {
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCredited("1").ispbDebited("2").ispbRequester("3").reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+            .endToEndId("ID_END_TO_END").ispbCredited("1").ispbDebited("2").reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .situation(InfractionReportSituation.CANCELLED)
             .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())

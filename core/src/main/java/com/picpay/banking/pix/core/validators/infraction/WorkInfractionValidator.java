@@ -1,13 +1,14 @@
 package com.picpay.banking.pix.core.validators.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class WorkInfractionValidator {
 
-    public static void validate(final InfractionReport infractionReport) {
+    public static void validateIspbLength(final InfractionReport infractionReport) {
 
         if (ObjectUtils.isEmpty(infractionReport)) {
             throw new IllegalArgumentException("InfractionReport cannot be null");
@@ -17,7 +18,7 @@ public class WorkInfractionValidator {
             throw new IllegalArgumentException("InfractionReportId cannot be empty or null");
         }
 
-        if (!String.valueOf(infractionReport.getIspbRequester()).matches("^[0-9]{8}$")) {
+        if (!validateIspbLength(infractionReport.getIspbCredited()) || !validateIspbLength(infractionReport.getIspbDebited())) {
             throw new IllegalArgumentException("The ISPB must contain 8 digits");
         }
 
@@ -25,6 +26,10 @@ public class WorkInfractionValidator {
             throw new IllegalArgumentException("Situation cannot be empty or null");
         }
 
+    }
+
+    private static boolean validateIspbLength(String ispb) {
+        return String.valueOf(ispb).matches("^[0-9]{8}$");
     }
 
 }

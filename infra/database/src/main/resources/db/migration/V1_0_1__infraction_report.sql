@@ -7,7 +7,6 @@ CREATE TABLE dict.infraction_report (
 	ispb_credited varchar(8) NOT NULL,
 	created_date timestamp NOT NULL,
 	last_updated_date timestamp NOT NULL,
-	ispb_requester varchar(8) NOT NULL,
 	infraction_type varchar(10) NOT NULL,
 	details varchar(2000) NULL,
 	analyze_result varchar(10) NULL,

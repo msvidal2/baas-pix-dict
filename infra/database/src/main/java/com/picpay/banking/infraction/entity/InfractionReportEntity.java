@@ -50,7 +50,6 @@ public class InfractionReportEntity {
     private String ispbCredited;
     private LocalDateTime createdDate;
     private LocalDateTime lastUpdatedDate;
-    private String ispbRequester;
     @Enumerated(EnumType.STRING)
     private InfractionType infractionType;
     private String details;
@@ -69,7 +68,6 @@ public class InfractionReportEntity {
             .ispbCredited(infractionReport.getIspbCredited())
             .createdDate(infractionReport.getDateCreate())
             .lastUpdatedDate(infractionReport.getDateLastUpdate())
-            .ispbRequester(infractionReport.getIspbRequester())
             .infractionType(infractionReport.getInfractionType())
             .details(infractionReport.getDetails())
             .analyzeResult(getAnalyzeResult(infractionReport))
@@ -103,7 +101,6 @@ public class InfractionReportEntity {
             .ispbCredited(infractionReportEntity.getIspbCredited())
             .dateCreate(infractionReportEntity.getCreatedDate())
             .dateLastUpdate(infractionReportEntity.getLastUpdatedDate())
-            .ispbRequester(infractionReportEntity.getIspbRequester())
             .infractionType(infractionReportEntity.getInfractionType())
             .details(infractionReportEntity.getDetails())
             .analyze(Optional.ofNullable(InfractionAnalyze.builder().analyzeResult(infractionReportEntity.getAnalyzeResult())

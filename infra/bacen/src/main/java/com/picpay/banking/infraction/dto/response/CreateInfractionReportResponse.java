@@ -39,7 +39,6 @@ public class CreateInfractionReportResponse {
 
     public static InfractionReport toInfractionReport(CreateInfractionReportResponse response, final String ispbRequester) {
         return InfractionReport.builder()
-            .ispbRequester(ispbRequester)
             .endToEndId(response.getInfractionReportRequest().getTransactionId())
             .infractionType(InfractionType.resolve(response.getInfractionReportRequest().getInfractionType().getValue()))
             .reportedBy(ReportedBy.resolve(response.getInfractionReportRequest().getReportedBy().getValue()))

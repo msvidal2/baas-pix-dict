@@ -33,7 +33,6 @@ public class CreateInfractionReportRequestWebDTO {
 
     public static InfractionReport from(CreateInfractionReportRequestWebDTO request) {
         return InfractionReport.builder()
-            .ispbRequester(request.getIspbRequester())
             .endToEndId(request.getEndToEndId())
             .infractionType(request.getInfractionType())
             .details(request.getDetails())
