@@ -5,7 +5,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface ClaimTopicBinding {
+public interface ClaimTopicBindingOutput {
 
     String OUTPUT = "claim-notifications";
 

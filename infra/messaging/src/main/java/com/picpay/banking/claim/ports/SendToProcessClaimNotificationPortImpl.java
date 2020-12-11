@@ -1,6 +1,6 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.config.ClaimTopicBinding;
+import com.picpay.banking.claim.config.ClaimTopicBindingOutput;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -18,14 +18,14 @@ public class SendToProcessClaimNotificationPortImpl implements SendToProcessClai
 
     private static final String CIRCUIT_BREAKER = "send-to-process-claim-notification";
 
-    private final ClaimTopicBinding claimTopicBinding;
+    private final ClaimTopicBindingOutput claimTopicBindingOutput;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "sendFallback")
     public void send(final Claim claim) {
         var message = MessageBuilder.withPayload(claim).build();
 
-        claimTopicBinding.getClaimNotificationsOutput().send(message);
+        claimTopicBindingOutput.getClaimNotificationsOutput().send(message);
     }
 
     public void sendFallback(final Claim claim, final Exception e) {
