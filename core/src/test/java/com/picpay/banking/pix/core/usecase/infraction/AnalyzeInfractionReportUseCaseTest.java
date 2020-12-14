@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
@@ -31,13 +30,10 @@ import static org.mockito.Mockito.when;
 class AnalyzeInfractionReportUseCaseTest {
 
     private AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
-
     @Mock
     private InfractionReportAnalyzePort infractionReportAnalyzePort;
-
     @Mock
     private InfractionReportFindPort infractionReportFindPort;
-
     @Mock
     private InfractionReportSavePort infractionReportSavePort;
 
@@ -49,6 +45,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
     @BeforeEach
     void setup() {
+        analyzeInfractionReportUseCase = new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, infractionReportSavePort, "22896431");
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
@@ -61,8 +58,6 @@ class AnalyzeInfractionReportUseCaseTest {
         this.infractionReportAnalyze = InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build();
 
         this.infractionReportOptional = Optional.of(infractionReport);
-
-        this.analyzeInfractionReportUseCase = new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort,infractionReportFindPort,infractionReportSavePort,"22896431");
     }
 
     @Test
@@ -85,11 +80,6 @@ class AnalyzeInfractionReportUseCaseTest {
     @Test
     void when_tryCancelInfractionWithNullParams_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, null,null));
-    }
-
-    @Test
-    void when_tryCancelInfractionWithNullIspb_expect_throwsANullException() {
-        assertThrows(InfractionReportException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", infractionReportAnalyze, "1"));
     }
 
     @Test

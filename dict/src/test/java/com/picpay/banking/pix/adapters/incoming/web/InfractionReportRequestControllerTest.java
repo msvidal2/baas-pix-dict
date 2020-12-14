@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
@@ -71,8 +70,6 @@ class InfractionReportRequestControllerTest {
 
     private InfractionReport findInfractionReport;
 
-    private List<InfractionReport> listInfractionReport;
-
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.
@@ -108,7 +105,6 @@ class InfractionReportRequestControllerTest {
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 
-        this.listInfractionReport = List.of(this.infractionReport);
     }
 
     @Test

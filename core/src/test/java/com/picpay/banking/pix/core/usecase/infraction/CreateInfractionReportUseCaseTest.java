@@ -11,6 +11,7 @@ import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSaveP
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CreateInfractionReportUseCaseTest {
 
+    @InjectMocks
     private CreateInfractionReportUseCase createInfractionReportUseCase;
-
     @Mock
     private InfractionReportSavePort infractionReportSavePort;
     @Mock
@@ -42,24 +42,20 @@ class CreateInfractionReportUseCaseTest {
     @Mock
     private InfractionReportCacheSavePort infractionReportCacheSavePort;
 
-    private final String ispbPicPay = "22896431";
-
     @BeforeEach
-    public void init(){
-        this.createInfractionReportUseCase = new CreateInfractionReportUseCase(
-            infractionReportPort,
-            infractionReportSavePort,
-            infractionReportFindPort,
-            infractionReportCacheSavePort,
-            ispbPicPay
-        );
+    void setUp() {
+        final String ispbPicPay = "22896431";
+        createInfractionReportUseCase = new CreateInfractionReportUseCase(infractionReportPort,
+                                                                          infractionReportSavePort,
+                                                                          infractionReportFindPort,
+                                                                          infractionReportCacheSavePort,
+                                                                          ispbPicPay);
     }
-
 
     @Test
     void when_createInfractionReportWithSuccess_expect_OkWithValidResult() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
-        when(infractionReportPort.create(any(), anyString(), eq(ispbPicPay))).thenReturn(infractionReport);
+        when(infractionReportPort.create(any(), anyString(), anyString())).thenReturn(infractionReport);
         when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Collections.emptyList());
 
         var created = createInfractionReportUseCase.execute(infractionReport, "id");
@@ -71,7 +67,7 @@ class CreateInfractionReportUseCaseTest {
         assertThat(created.getDateCreate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:08:49.922138"));
         assertThat(created.getDateLastUpdate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:09:49.922138"));
 
-        verify(infractionReportPort).create(any(), anyString(), eq(ispbPicPay));
+        verify(infractionReportPort).create(any(), anyString(), anyString());
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportSavePort).save(any(InfractionReport.class));
         verify(infractionReportCacheSavePort).save(any(InfractionReport.class), anyString());
@@ -87,7 +83,7 @@ class CreateInfractionReportUseCaseTest {
             .hasMessageContaining(INFRACTION_REPORT_ALREADY_OPEN.getMessage());
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportPort, times(0)).create(any(), anyString(), eq(ispbPicPay));
+        verify(infractionReportPort, times(0)).create(any(), anyString(), anyString());
         verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
         verify(infractionReportCacheSavePort, times(0)).save(any(InfractionReport.class), anyString());
     }

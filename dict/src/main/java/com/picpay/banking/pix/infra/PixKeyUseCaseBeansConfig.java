@@ -25,8 +25,8 @@ public class PixKeyUseCaseBeansConfig {
     public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
                                                    CreatePixKeyPort createPixKeyPort,
                                                    FindPixKeyPort findPixKeyPort,
-        FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
-        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort,findOpenClaimByKeyPort);
+                                                   FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
     }
 
     @Bean

@@ -29,7 +29,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     private String urlGateway;
 
     public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient
-        , @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway ) {
+        , @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.dict.url}") String urlGateway ) {
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
