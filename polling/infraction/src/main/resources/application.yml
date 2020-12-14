@@ -24,6 +24,7 @@ spring:
     task:
       name: infraction-polling
       closecontext-enabled: true
+      initialize-enabled: false
   redis:
     enabled: false
 

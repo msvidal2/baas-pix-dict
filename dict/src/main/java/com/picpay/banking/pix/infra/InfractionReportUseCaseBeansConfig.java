@@ -13,18 +13,23 @@ import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSaveP
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class InfractionReportUseCaseBeansConfig {
 
+    @Value("{$picpay.ispb}")
+    private String ispbPicPay;
+
     @Bean
     public CreateInfractionReportUseCase createInfractionReportUseCase(CreateInfractionReportPort infractionReportPort,
                                                                        InfractionReportSavePort infractionReportSavePort,
                                                                        InfractionReportFindPort infractionReportFindPort,
                                                                        InfractionReportCacheSavePort infractionReportCacheSavePort) {
-        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, infractionReportFindPort, infractionReportCacheSavePort);
+        return new CreateInfractionReportUseCase(infractionReportPort, infractionReportSavePort, infractionReportFindPort,
+                                                 infractionReportCacheSavePort, ispbPicPay);
     }
 
     @Bean
@@ -49,7 +54,7 @@ public class InfractionReportUseCaseBeansConfig {
     public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(InfractionReportAnalyzePort analyzeInfractionReportPort,
                                                                          InfractionReportSavePort infractionReportSavePort,
                                                                          InfractionReportFindPort infractionReportFindPort) {
-        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportFindPort, infractionReportSavePort);
+        return new AnalyzeInfractionReportUseCase(analyzeInfractionReportPort, infractionReportFindPort, infractionReportSavePort, ispbPicPay);
     }
 
 }

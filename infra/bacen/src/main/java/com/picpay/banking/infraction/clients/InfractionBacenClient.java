@@ -49,7 +49,11 @@ public interface InfractionBacenClient {
     @GetMapping(value = "/",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
-    ListInfractionReportsResponse listInfractions(@RequestParam(value = "Participant") Integer ispb, @RequestParam(value = "Limit") Integer limit);
+    ListInfractionReportsResponse listInfractions(@RequestParam(value = "Participant") String ispb,
+                                                  @RequestParam(value = "Limit") Integer limit,
+                                                  @RequestParam(value = "ModifiedAfter") String modifiedBefore,
+                                                  @RequestParam(value = "ModifiedAfter") String modifiedAfter,
+                                                  @RequestParam(value = "IncludeDetails") boolean includeDetails);
 
     @PostMapping(value = "{InfractionReportId}/acknowledge",
         consumes = MediaType.APPLICATION_XML_VALUE,

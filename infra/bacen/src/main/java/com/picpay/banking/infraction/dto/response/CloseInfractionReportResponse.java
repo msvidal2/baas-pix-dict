@@ -43,8 +43,8 @@ public class CloseInfractionReportResponse {
             .details(this.getInfractionReportRequest().getReportDetails())
             .infractionReportId(this.getInfractionReportRequest().getId())
             .situation(InfractionReportSituation.resolve(this.getInfractionReportRequest().getStatus().getValue()))
-            .ispbDebited(Integer.parseInt(this.getInfractionReportRequest().getDebitedParticipant()))
-            .ispbCredited(Integer.parseInt(this.getInfractionReportRequest().getCreditedParticipant()))
+            .ispbDebited(this.getInfractionReportRequest().getDebitedParticipant())
+            .ispbCredited(this.getInfractionReportRequest().getCreditedParticipant())
             .dateCreate(this.getInfractionReportRequest().getCreationTime())
             .dateLastUpdate(this.getInfractionReportRequest().getLastModified())
             .analyze(InfractionAnalyze.builder().analyzeResult(

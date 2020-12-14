@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -29,10 +28,12 @@ public interface InfractionReportRepository extends JpaRepository<InfractionRepo
 
     List<InfractionReportEntity> findByEndToEndId(String endToEndId);
 
-    @Query("SELECT ir FROM InfractionReportEntity ir WHERE ir.ispbRequester = :ispb AND (:situation is null or ir.situation = :situation)" +
+    @Query("SELECT ir FROM InfractionReportEntity ir WHERE (:situation is null or ir.situation = :situation)" +
         " AND (ir.lastUpdatedDate is null or ir.lastUpdatedDate >= :dateStart) AND (cast(:dateEnd as timestamp) is null or ir.lastUpdatedDate <= :dateEnd)")
-    Page<InfractionReportEntity> list(@Param("ispb") Integer ispb, @Param("situation") InfractionReportSituation situation,
-        @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, Pageable pageable);
+    Page<InfractionReportEntity> list(@Param("situation") InfractionReportSituation situation,
+                                      @Param("dateStart") LocalDateTime dateStart,
+                                      @Param("dateEnd") LocalDateTime dateEnd,
+                                      Pageable pageable);
 
     @Modifying
     @Query("UPDATE InfractionReportEntity ir SET ir.situation = :situation WHERE ir.infractionReportId = :infractionReportId")
