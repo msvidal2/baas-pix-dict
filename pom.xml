@@ -21,6 +21,22 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <newrelic.version>5.8.0</newrelic.version>
+
+        <sonar.scm.provider>git</sonar.scm.provider>
+
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/dto/*.java,
+            **/entity/*.java,
+            **/config/**,
+            **/*Application.java
+        </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/dto/*.java
+        </sonar.exclusions>
+        <sonar.organization>nxgbiqstumcjehqxdrnhyefpsycaavryialkxzjevbfqjzdzsgilzwwgezkpsswareusxfgyqggwwmccvcohbsvxtegwdvrrldwc</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>8a223db1cbef745be8e616249f701821a7dccb46</sonar.login>
         <spring.version>5.2.4.RELEASE</spring.version>
     </properties>
 
@@ -93,14 +109,23 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>prepare-package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.7.0.1746</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

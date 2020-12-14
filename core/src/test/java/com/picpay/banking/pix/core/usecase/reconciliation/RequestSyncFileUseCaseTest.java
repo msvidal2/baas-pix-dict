@@ -21,18 +21,18 @@ import static org.mockito.Mockito.when;
  * @version 1.0 26/11/2020
  */
 @ExtendWith(MockitoExtension.class)
-public class RequestSyncFileUseCaseTest {
+class RequestSyncFileUseCaseTest {
 
     @Mock
-    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     @Mock
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    DatabaseContentIdentifierPort databaseContentIdentifierPort;
 
     @InjectMocks
-    private RequestSyncFileUseCase requestSyncFileUseCase;
+    RequestSyncFileUseCase requestSyncFileUseCase;
 
     @Test
-    public void requestFileInBacen(){
+    void requestFileInBacen(){
         final var contentIdentifierFile = ContentIdentifierFile.builder()
             .url("url")
             .keyType(KeyType.CPF)
