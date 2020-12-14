@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface FindClaimToCancelPort {
 
-    List<Claim> find(ClaimType type, List<ClaimSituation> status, Integer donorParticipant, LocalDateTime resolutionPeriodEnd, Integer limit);
+    List<Claim> find(ClaimType type, List<ClaimSituation> status, Integer ispb, LocalDateTime resolutionPeriodEnd, Integer limit);
 
 }

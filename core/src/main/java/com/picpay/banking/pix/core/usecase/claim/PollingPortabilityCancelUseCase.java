@@ -24,14 +24,14 @@ public class PollingPortabilityCancelUseCase {
 
     private final CancelClaimPort cancelClaimPort;
 
-    public List<Claim> execute(Integer donorParticipant, Integer limit) {
+    public List<Claim> execute(Integer ispb, Integer limit) {
 
-        List<Claim> claimsToCancel = findClaimToCancelPort.find(ClaimType.PORTABILITY, ClaimSituation.getPending(), donorParticipant,
+        List<Claim> claimsToCancel = findClaimToCancelPort.find(ClaimType.PORTABILITY, ClaimSituation.getPending(), ispb,
                 LocalDateTime.now(), limit);
 
         log.debug("Claims to cancel found: {}", claimsToCancel.size());
 
-        claimsToCancel.forEach(c -> cancelClaim(c, donorParticipant));
+        claimsToCancel.forEach(c -> cancelClaim(c, ispb));
 
         log.debug("Claims canceled");
 
@@ -40,6 +40,7 @@ public class PollingPortabilityCancelUseCase {
 
     private void cancelClaim(Claim claim, Integer donorParticipant){
         String requestIdentifier = UUID.randomUUID().toString();
+        claim.setClaimSituation(ClaimSituation.CANCELED);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, donorParticipant, requestIdentifier);
         cancelClaimPort.cancel(claim, ClaimCancelReason.DEFAULT_RESPONSE, requestIdentifier);
     }
