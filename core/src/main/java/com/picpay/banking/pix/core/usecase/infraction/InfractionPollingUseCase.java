@@ -9,8 +9,8 @@ package com.picpay.banking.pix.core.usecase.infraction;
 import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.ListInfractionReports;
-import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +35,8 @@ public class InfractionPollingUseCase {
     private final SendToAcknowledgePort acknowledgePort;
     private final ListInfractionPort listInfractionPort;
     private final ExecutionPort executionPort;
+    private static final LocalDateTime FIRST_DAY_OF_PIX = LocalDateTime.of(2020, 11, 16, 0, 0, 0, 0);
+    private static final String SUCCESS = "SUCCESS";
 
     public void execute(final String ispb, final Integer limit) {
         LocalDateTime startTime = LocalDateTime.now();
@@ -49,7 +51,7 @@ public class InfractionPollingUseCase {
 
     private void poll(final String ispb, final Integer limit) {
         log.info("Polling BACEN for infractions");
-        Execution execution = executionPort.lastExecution(INFRACTION_POLLING);
+        Execution execution = executionPort.lastExecution(INFRACTION_POLLING).orElseGet(this::defaultExecution);
         List<InfractionReport> infractions = pollWhile(execution, ispb, limit);
         log.info("Infraction_list_received -> size: {}", kv("infraction_list_size", infractions.size()));
         infractions.forEach(acknowledgePort::send);
@@ -77,6 +79,13 @@ public class InfractionPollingUseCase {
         } while (infractions.isHasMoreElements());
 
         return infractionReports;
+    }
+
+    private Execution defaultExecution() {
+        return Execution.builder()
+            .endTime(FIRST_DAY_OF_PIX)
+            .exitMessage(SUCCESS)
+            .build();
     }
 
 }

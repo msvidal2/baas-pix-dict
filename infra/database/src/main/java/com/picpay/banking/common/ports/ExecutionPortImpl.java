@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * @author rafael.braga
  * @version 1.0 11/12/2020
@@ -29,10 +31,8 @@ public class ExecutionPortImpl implements ExecutionPort {
     private final ExecutionRepository executionRepository;
 
     @Override
-    public Execution lastExecution(ExecutionType executionType) {
-        return executionRepository.findFirstByExitMessageAndTypeOrderByEndTimeDesc(SUCCESS, executionType)
-            .map(ExecutionEntity::to)
-            .orElseGet(Execution::nullObject);
+    public Optional<Execution> lastExecution(ExecutionType executionType) {
+        return executionRepository.findFirstByExitMessageAndTypeOrderByEndTimeDesc(SUCCESS, executionType).map(ExecutionEntity::to);
     }
 
     @Override
