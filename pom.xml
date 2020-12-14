@@ -37,6 +37,7 @@
         <sonar.organization>nxgbiqstumcjehqxdrnhyefpsycaavryialkxzjevbfqjzdzsgilzwwgezkpsswareusxfgyqggwwmccvcohbsvxtegwdvrrldwc</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.login>8a223db1cbef745be8e616249f701821a7dccb46</sonar.login>
+        <spring.version>5.2.4.RELEASE</spring.version>
     </properties>
 
     <modules>

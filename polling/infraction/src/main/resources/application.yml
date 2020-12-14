@@ -5,6 +5,8 @@ server:
   shutdown: graceful
 
 spring:
+  application:
+    name: InfractionPollingTaskApplication
   profiles:
     active:
       - database
@@ -21,7 +23,8 @@ spring:
           binder: kafka
     task:
       name: infraction-polling
-#      closecontext-enabled: true
+      closecontext-enabled: true
+      initialize-enabled: false
   redis:
     enabled: false
 

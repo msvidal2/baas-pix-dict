@@ -41,10 +41,10 @@ public class CloseInfractionReportRequest {
     @XmlElement(name = "AnalysisDetails")
     private String analysisDetails;
 
-    public static CloseInfractionReportRequest from(InfractionReport infractionReport) {
+    public static CloseInfractionReportRequest from(InfractionReport infractionReport, String ispbPicPay) {
         return CloseInfractionReportRequest.builder()
             .infractionReportId(infractionReport.getInfractionReportId())
-            .participant(String.valueOf(infractionReport.getIspbRequester()))
+            .participant(ispbPicPay)
             .analysisResult(AnalysisResult.from(infractionReport.getAnalyze().getAnalyzeResult()))
             .analysisDetails(infractionReport.getAnalyze().getDetails())
             .build();

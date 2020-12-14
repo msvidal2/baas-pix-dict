@@ -40,11 +40,12 @@ class CreateInfractionReportUseCaseTest {
     private CreateInfractionReportPort infractionReportPort;
     @Mock
     private InfractionReportCacheSavePort infractionReportCacheSavePort;
+    private final String ispbPicPay = "22896431";
 
     @Test
     void when_createInfractionReportWithSuccess_expect_OkWithValidResult() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
-        when(infractionReportPort.create(any(), anyString())).thenReturn(infractionReport);
+        when(infractionReportPort.create(any(), anyString(), ispbPicPay)).thenReturn(infractionReport);
         when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Collections.emptyList());
 
         var created = createInfractionReportUseCase.execute(infractionReport, "id");
@@ -56,7 +57,7 @@ class CreateInfractionReportUseCaseTest {
         assertThat(created.getDateCreate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:08:49.922138"));
         assertThat(created.getDateLastUpdate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:09:49.922138"));
 
-        verify(infractionReportPort).create(any(), anyString());
+        verify(infractionReportPort).create(any(), anyString(), ispbPicPay);
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportSavePort).save(any(InfractionReport.class));
         verify(infractionReportCacheSavePort).save(any(InfractionReport.class), anyString());
@@ -72,7 +73,7 @@ class CreateInfractionReportUseCaseTest {
             .hasMessageContaining(INFRACTION_REPORT_ALREADY_OPEN.getMessage());
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportPort, times(0)).create(any(), anyString());
+        verify(infractionReportPort, times(0)).create(any(), anyString(), ispbPicPay);
         verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
         verify(infractionReportCacheSavePort, times(0)).save(any(InfractionReport.class), anyString());
     }
@@ -91,8 +92,8 @@ class CreateInfractionReportUseCaseTest {
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
             .endToEndId("E9999901012341234123412345678900")
             .situation(situation)
-            .ispbDebited(1234)
-            .ispbCredited(56789)
+            .ispbDebited("1234")
+            .ispbCredited("56789")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();

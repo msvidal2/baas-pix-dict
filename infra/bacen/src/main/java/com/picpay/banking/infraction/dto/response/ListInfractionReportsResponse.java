@@ -6,6 +6,7 @@
 
 package com.picpay.banking.infraction.dto.response;
 
+import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.infraction.dto.request.AnalysisResult;
 import com.picpay.banking.infraction.dto.request.InfractionReportRequest;
 import com.picpay.banking.pix.core.domain.ReportedBy;
@@ -14,6 +15,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.ListInfractionReports;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +26,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -47,24 +51,37 @@ public class ListInfractionReportsResponse {
     @XmlElementWrapper(name = "InfractionReports")
     @XmlElement(name = "InfractionReport")
     private List<InfractionReportRequest> infractionReportRequest;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    @XmlElement(name = "ResponseTime")
+    private LocalDateTime responseTime;
 
-    public static List<InfractionReport> toInfractionReportList(final ListInfractionReportsResponse response) {
-        if (Objects.isNull(response))
+    public static ListInfractionReports toInfractionReportsList(final ListInfractionReportsResponse response) {
+        return ListInfractionReports.builder()
+            .responseTime(response.getResponseTime())
+            .infractionReports(getInfractionReports(response))
+            .hasMoreElements(response.getHasMoreElements())
+            .size(response.getInfractionReportRequest() != null ? response.getInfractionReportRequest().size() : 0)
+            .build();
+    }
+
+    private static List<InfractionReport> getInfractionReports(final ListInfractionReportsResponse response) {
+        if (Objects.isNull(response.infractionReportRequest)) {
             return Collections.emptyList();
+        }
 
         return response.infractionReportRequest
             .stream()
             .filter(infraction -> Objects.nonNull(infraction.getTransactionId()))
             .map(infractionReport -> InfractionReport.builder()
-                     .ispbRequester(ispbRequester(infractionReport))
+                     .infractionReportId(infractionReport.getId())
                      .endToEndId(infractionReport.getTransactionId())
                      .infractionType(InfractionType.resolve(infractionReport.getInfractionType().getValue()))
                      .reportedBy(ReportedBy.resolve(infractionReport.getReportedBy().getValue()))
                      .details(infractionReport.getReportDetails())
                      .dateLastUpdate(infractionReport.getLastModified())
                      .dateCreate(infractionReport.getCreationTime())
-                     .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
-                     .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
+                     .ispbCredited(infractionReport.getCreditedParticipant())
+                     .ispbDebited(infractionReport.getDebitedParticipant())
                      .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
                      .analyze(getAnalyzeResult(infractionReport))
                      .build()
@@ -72,15 +89,8 @@ public class ListInfractionReportsResponse {
             .collect(Collectors.toList());
     }
 
-    private static int ispbRequester(final InfractionReportRequest infractionReport) {
-        return infractionReport.getReportedBy().equals(ReportedBy.CREDITED_PARTICIPANT)
-            ? Integer.parseInt(infractionReport.getCreditedParticipant())
-            : Integer.parseInt(infractionReport.getDebitedParticipant());
-    }
-
     private static InfractionAnalyze getAnalyzeResult(final InfractionReportRequest infractionReport) {
         var analysisResult = Optional.ofNullable(infractionReport.getAnalysisResult());
-
         return InfractionAnalyze.builder()
             .details(infractionReport.getAnalysisDetails())
             .analyzeResult(analysisResult.map(AnalysisResult::getValue).map(InfractionAnalyzeResult::resolve).orElse(null))

@@ -49,6 +49,7 @@ class IdempotencyAspectTest {
     private HashOperations<String, Object, Object> hashOperations;
 
     private AspectJProxyFactory factory;
+    private final String ispbPicPay = "22896431";
 
     @BeforeEach
     void setUp() {
@@ -67,7 +68,7 @@ class IdempotencyAspectTest {
 
         InfractionReport differentReport = getInfractionReport("E9999901012341234123412345678900");
 
-        assertThatThrownBy(() -> proxy.create(differentReport, "id"))
+        assertThatThrownBy(() -> proxy.create(differentReport, "id", ispbPicPay))
             .isInstanceOf(IdempotencyException.class);
 
         verify(timeLimiterExecutor, times(0)).execute(any(), any(), any());
@@ -82,7 +83,7 @@ class IdempotencyAspectTest {
         when(hashOperations.get(any(), any())).thenReturn(null);
         when(timeLimiterExecutor.execute(anyString(), any(), any())).thenReturn(response(infractionReport));
 
-        proxy.create(infractionReport, "id");
+        proxy.create(infractionReport, "id", ispbPicPay);
 
         verify(timeLimiterExecutor).execute(any(), any(), any());
     }
@@ -95,7 +96,7 @@ class IdempotencyAspectTest {
         when(redisTemplate.opsForHash()).thenReturn(hashOperations);
         when(hashOperations.get(any(), any())).thenReturn(infractionReport);
 
-        proxy.create(infractionReport, "id");
+        proxy.create(infractionReport, "id", ispbPicPay);
 
         verify(timeLimiterExecutor, times(0)).execute(any(), any(), any());
     }
@@ -125,8 +126,8 @@ class IdempotencyAspectTest {
             .situation(InfractionReportSituation.OPEN)
             .infractionType(InfractionType.FRAUD)
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
-            .ispbDebited(1234)
-            .ispbCredited(56789)
+            .ispbDebited("1234")
+            .ispbCredited("56789")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();

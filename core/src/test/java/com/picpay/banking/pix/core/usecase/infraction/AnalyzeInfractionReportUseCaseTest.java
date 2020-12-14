@@ -53,7 +53,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+            .endToEndId("ID_END_TO_END").ispbCredited("1").ispbDebited("2").reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .situation(InfractionReportSituation.ANALYZED)
             .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
@@ -69,40 +69,40 @@ class AnalyzeInfractionReportUseCaseTest {
 
         when(infractionReportFindPort.find(anyString())).thenReturn(Optional.ofNullable(infractionReport));
 
-        when(infractionReportAnalyzePort.analyze(any(), anyString())).thenReturn(infractionReportOptional);
+        when(infractionReportAnalyzePort.analyze(any(), anyString(), anyString())).thenReturn(infractionReportOptional);
 
         infractionReportSavePort.save(any());
 
-        var infractionReport = this.analyzeInfractionReportUseCase.execute("1", 1, infractionReportAnalyze , "1");
+        var infractionReport = this.analyzeInfractionReportUseCase.execute("1", infractionReportAnalyze, "1");
         assertThat(infractionReport.getSituation()).isEqualTo(InfractionReportSituation.ANALYZED);
         assertThat(infractionReport.getEndToEndId()).isNotNull();
 
-       verify(infractionReportAnalyzePort).analyze(any(), anyString());
+       verify(infractionReportAnalyzePort).analyze(any(), anyString(), anyString());
     }
 
 
     @Test
     void when_tryCancelInfractionWithNullParams_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, null,null, null));
+        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, null,null));
     }
 
     @Test
     void when_tryCancelInfractionWithNullIspb_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", null, infractionReportAnalyze, "1"));
+        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", infractionReportAnalyze, "1"));
     }
 
     @Test
     void when_tryCancelInfractionWithNullInfractionReportId_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, 1, infractionReportAnalyze, "1"));
+        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, infractionReportAnalyze, "1"));
     }
 
     @Test
     void when_tryCancelInfractionWithNullAnalyze_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", 1, null, "1"));
+        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", null, "1"));
     }
 
     @Test
     void when_tryCancelInfractionWithNullRequestIdentifier_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", 1, infractionReportAnalyze, null));
+        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", infractionReportAnalyze, null));
     }
 }

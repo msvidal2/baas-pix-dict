@@ -18,19 +18,6 @@ pix:
     dict:
       url: ${BACEN_AWS_URL}
   partner: ${PARTNER}
-  services:
-    baas:
-      token-manager:
-        url: http://baas-pix-token-manager.ms.qa/pix/token-manager
-    jdpi:
-      claim:
-        url: ${JDPI_CLAIM_URL}
-      dict:
-        url: ${JDPI_DICT_URL}
-      headers:
-        host: JDPI${ISPB_CLIENT_ID}${JDPI_ENVIRONMENT}.jdPSTI.rtm
-      infraction:
-        url: ${JDPI_INFRACTION_URL}
 
 logging:
   level:
