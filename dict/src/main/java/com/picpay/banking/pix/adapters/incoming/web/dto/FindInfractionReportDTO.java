@@ -20,8 +20,8 @@ public class FindInfractionReportDTO {
     private final String infractionReportId;
     private final ReportedBy reportedBy;
     private final InfractionReportSituation situation;
-    private final int ispbDebited;
-    private final int ispbCredited;
+    private final String ispbDebited;
+    private final String ispbCredited;
     private final String dateCreate;
     private final String dateLastUpdate;
     private final InfractionAnalyze infractionAnalyze;

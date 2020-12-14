@@ -13,13 +13,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "com.picpay.banking.pixkey.repository",
     "com.picpay.banking.claim.repository",
     "com.picpay.banking.infraction.repository",
-    "com.picpay.banking.reconciliation.repository"
+    "com.picpay.banking.reconciliation.repository",
+    "com.picpay.banking.config.repository",
+    "com.picpay.banking.common.repository"
 })
 @EntityScan({
     "com.picpay.banking.pixkey.entity",
     "com.picpay.banking.claim.entity",
     "com.picpay.banking.infraction.entity",
-    "com.picpay.banking.reconciliation.entity"
+    "com.picpay.banking.reconciliation.entity",
+    "com.picpay.banking.config.entity",
+    "com.picpay.banking.common.entity"
 })
 public class DatabaseConfig {
 

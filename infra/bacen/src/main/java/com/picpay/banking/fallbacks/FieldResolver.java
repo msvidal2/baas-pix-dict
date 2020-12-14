@@ -3,7 +3,6 @@ package com.picpay.banking.fallbacks;
 import com.picpay.banking.fallbacks.dto.Violation;
 import org.springframework.validation.FieldError;
 
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.Map;
 import java.util.Optional;
 
