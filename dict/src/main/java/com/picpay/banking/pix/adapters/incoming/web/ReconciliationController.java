@@ -30,11 +30,4 @@ public class ReconciliationController {
         return ResponseEntity.ok(contentIdentifierFile);
     }
 
-    @Trace
-    @GetMapping("/file/{keyType}")
-    public ResponseEntity<Void> sync(@PathVariable("keyType") KeyType keyType) {
-        this.failureReconciliationSyncByFileUseCase.execute(keyType);
-        return ResponseEntity.accepted().body(null);
-    }
-
 }
