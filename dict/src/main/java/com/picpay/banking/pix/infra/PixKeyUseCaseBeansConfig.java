@@ -1,13 +1,20 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.*;
-import com.picpay.banking.pix.core.usecase.pixkey.*;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.UpdateAccountPixKeyUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,8 +24,9 @@ public class PixKeyUseCaseBeansConfig {
     @Bean
     public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
                                                    CreatePixKeyPort createPixKeyPort,
-                                                   FindPixKeyPort findPixKeyPort) {
-        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort);
+                                                   FindPixKeyPort findPixKeyPort,
+        FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort,findOpenClaimByKeyPort);
     }
 
     @Bean

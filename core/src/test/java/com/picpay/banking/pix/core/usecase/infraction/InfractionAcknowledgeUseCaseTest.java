@@ -45,8 +45,8 @@ public class InfractionAcknowledgeUseCaseTest {
                 .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
                 .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
                 .situation(InfractionReportSituation.OPEN)
-                .ispbDebited("2")
-                .ispbCredited("1")
+                .ispbDebited("22222222")
+                .ispbCredited("12222222")
                 .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
                 .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
                 .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
@@ -68,12 +68,13 @@ public class InfractionAcknowledgeUseCaseTest {
                 .details("details")
                 .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
                 .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
-                .ispbDebited("2")
-                .ispbCredited("1")
+                .ispbDebited("22222222")
+                .ispbCredited("12222222")
                 .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
                 .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
                 .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
                 .build();
+
         assertThatThrownBy(() -> infractionAcknowledgeUseCase.execute(infractionReport))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Situation cannot be empty or null");

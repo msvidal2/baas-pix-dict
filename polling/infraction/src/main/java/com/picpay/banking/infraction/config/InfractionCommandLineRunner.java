@@ -21,7 +21,7 @@ public class InfractionCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        infractionPollingTask.run();
+        infractionPollingTask.run(null);
     }
 
 }
