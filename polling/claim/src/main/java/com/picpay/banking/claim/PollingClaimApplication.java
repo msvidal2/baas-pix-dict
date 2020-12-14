@@ -12,7 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 })
 @SpringBootApplication(scanBasePackages = {
 		"com.picpay.banking.claim",
-		"com.picpay.banking.config"
+		"com.picpay.banking.config",
+		"com.picpay.banking.common"
 })
 public class PollingClaimApplication {
 

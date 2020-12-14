@@ -2,10 +2,12 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
+import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.UpdateClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.picpay.banking.pix.core.domain.ExecutionType.CLAIM_POLLING;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,9 +26,11 @@ public class PollingClaimUseCase {
 
     private final SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;
 
-    private final FindClaimLastPollingDatePort findClaimLastPollingDatePort;
+//    private final FindClaimLastPollingDatePort findClaimLastPollingDatePort;
+//
+//    private final UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort;
 
-    private final UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort;
+    private final ExecutionPort executionPort;
 
     public void execute(final Integer ispb, final Integer limit) {
         var claim = Claim.builder()
@@ -32,11 +38,23 @@ public class PollingClaimUseCase {
                 .build();
 
         var endDate = LocalDateTime.now(ZoneId.of("UTC"));
-
-        var startDate = findClaimLastPollingDatePort.getDate()
-                .orElse(endDate.minusHours(24));
+        var startDate = executionPort.lastExecution(CLAIM_POLLING).getEndTime();
 
         log.info("Start: {}, End: {}", startDate, endDate);
+
+        try {
+            var claims = poll(claim, ispb, startDate, endDate);
+
+            claims.forEach(sendToProcessClaimNotificationPort::send);
+
+            executionPort.save(Execution.success(startDate, LocalDateTime.now(), CLAIM_POLLING));
+        } catch (Exception e) {
+            executionPort.save(Execution.fail(startDate, endDate, CLAIM_POLLING, e));
+        }
+    }
+
+    private List<Claim> poll(final Claim claim, final Integer limit,
+                             LocalDateTime startDate, final LocalDateTime endDate) {
 
         List<Claim> claims = new ArrayList<>();
         ClaimIterable claimIterable;
@@ -58,9 +76,7 @@ public class PollingClaimUseCase {
 
         log.info("Claims found: {}", claims.size());
 
-        claims.forEach(sendToProcessClaimNotificationPort::send);
-
-        updateClaimLastPollingDatePort.update(endDate);
+        return claims;
     }
 
 }
