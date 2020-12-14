@@ -51,8 +51,8 @@ public interface InfractionBacenClient {
         produces = MediaType.APPLICATION_XML_VALUE)
     ListInfractionReportsResponse listInfractions(@RequestParam(value = "Participant") String ispb,
                                                   @RequestParam(value = "Limit") Integer limit,
-                                                  @RequestParam(value = "ModifiedAfter") String modifiedBefore,
-                                                  @RequestParam(value = "ModifiedAfter") String modifiedAfter,
+                                                  @RequestParam(value = "ModifiedAfter") String startDate,
+                                                  @RequestParam(value = "ModifiedBefore") String endDate,
                                                   @RequestParam(value = "IncludeDetails") boolean includeDetails);
 
     @PostMapping(value = "{InfractionReportId}/acknowledge",

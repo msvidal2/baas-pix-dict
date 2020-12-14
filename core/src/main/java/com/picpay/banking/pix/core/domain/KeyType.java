@@ -3,15 +3,16 @@ package com.picpay.banking.pix.core.domain;
 import com.picpay.banking.pix.core.validators.key.CNPJKeyValidator;
 import com.picpay.banking.pix.core.validators.key.CPFKeyValidator;
 import com.picpay.banking.pix.core.validators.key.CellPhoneKeyValidator;
-import com.picpay.banking.pix.core.validators.key.RandomKeyValidator;
 import com.picpay.banking.pix.core.validators.key.EmailKeyValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
-import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
+import com.picpay.banking.pix.core.validators.key.RandomKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @AllArgsConstructor
+@Slf4j
 public enum KeyType {
 
     CPF  (0, new CPFKeyValidator()),
@@ -22,7 +23,7 @@ public enum KeyType {
 
     private int value;
 
-    private KeyValidator validator;
+    private KeyValidator<String> validator;
 
     public static KeyType resolve(int value) {
         for(KeyType keyType : values()) {
@@ -34,16 +35,5 @@ public enum KeyType {
         return null;
     }
 
-    public static KeyType resolveByValue(String value) {
-        for(KeyType keyType : values()) {
-            try {
-                keyType.validator.validate(value);
-
-                return keyType;
-            } catch (KeyValidatorException e) {}
-        }
-
-        return null;
-    }
 
 }
