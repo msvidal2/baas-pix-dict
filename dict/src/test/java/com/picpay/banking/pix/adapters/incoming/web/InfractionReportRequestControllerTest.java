@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
@@ -71,8 +70,6 @@ class InfractionReportRequestControllerTest {
 
     private InfractionReport findInfractionReport;
 
-    private List<InfractionReport> listInfractionReport;
-
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.
@@ -108,7 +105,6 @@ class InfractionReportRequestControllerTest {
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
             .build();
 
-        this.listInfractionReport = List.of(this.infractionReport);
     }
 
     @Test
@@ -132,8 +128,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
     }
@@ -218,8 +214,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
 
@@ -241,8 +237,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")))
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))

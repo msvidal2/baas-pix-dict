@@ -1,18 +1,17 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
+import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.ReportedBy;
-import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,15 +29,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AnalyzeInfractionReportUseCaseTest {
 
-    @InjectMocks
     private AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
-
     @Mock
     private InfractionReportAnalyzePort infractionReportAnalyzePort;
-
     @Mock
     private InfractionReportFindPort infractionReportFindPort;
-
     @Mock
     private InfractionReportSavePort infractionReportSavePort;
 
@@ -50,6 +45,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
     @BeforeEach
     void setup() {
+        analyzeInfractionReportUseCase = new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, infractionReportSavePort, "22896431");
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
@@ -84,11 +80,6 @@ class AnalyzeInfractionReportUseCaseTest {
     @Test
     void when_tryCancelInfractionWithNullParams_expect_throwsANullException() {
         assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute(null, null,null));
-    }
-
-    @Test
-    void when_tryCancelInfractionWithNullIspb_expect_throwsANullException() {
-        assertThrows(NullPointerException.class, () ->  this.analyzeInfractionReportUseCase.execute("1", infractionReportAnalyze, "1"));
     }
 
     @Test
