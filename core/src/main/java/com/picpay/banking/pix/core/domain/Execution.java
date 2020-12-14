@@ -25,7 +25,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class Execution {
 
-    private static final LocalDateTime FIRST_DAY_OF_PIX = LocalDateTime.of(2020, 11, 16, 0, 0, 0, 0);
     private static final String SUCCESS = "SUCCESS";
     private static final int MAXIMUM_SIZE = 2499;
     private static final int START = 0;
@@ -56,11 +55,5 @@ public class Execution {
             .build();
     }
 
-    public static Execution nullObject() {
-        return Execution.builder()
-            .endTime(FIRST_DAY_OF_PIX)
-            .exitMessage(SUCCESS)
-            .build();
-    }
 
 }

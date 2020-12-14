@@ -8,9 +8,11 @@ package com.picpay.banking.pix.core.ports.execution;
 import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.domain.ExecutionType;
 
+import java.util.Optional;
+
 public interface ExecutionPort {
 
-    Execution lastExecution(ExecutionType executionType);
+    Optional<Execution> lastExecution(ExecutionType executionType);
     void save(Execution execution);
 
 }
