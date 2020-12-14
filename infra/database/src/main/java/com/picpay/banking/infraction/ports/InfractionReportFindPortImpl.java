@@ -9,7 +9,7 @@ package com.picpay.banking.infraction.ports;
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
 import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -26,8 +26,8 @@ public class InfractionReportDTO {
     private String infractionReportId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private Integer ispbDebited;
-    private Integer ispbCredited;
+    private String ispbDebited;
+    private String ispbCredited;
     private LocalDateTime dateCreate;
     private LocalDateTime dateLastUpdate;
     private InfractionAnalyzeDTO analyze;

@@ -5,8 +5,9 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,9 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.CANCELLED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,11 +38,14 @@ class CreateInfractionReportUseCaseTest {
     private InfractionReportFindPort infractionReportFindPort;
     @Mock
     private CreateInfractionReportPort infractionReportPort;
+    @Mock
+    private InfractionReportCacheSavePort infractionReportCacheSavePort;
+    private final String ispbPicPay = "22896431";
 
     @Test
     void when_createInfractionReportWithSuccess_expect_OkWithValidResult() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
-        when(infractionReportPort.create(any(), anyString())).thenReturn(infractionReport);
+        when(infractionReportPort.create(any(), anyString(), ispbPicPay)).thenReturn(infractionReport);
         when(infractionReportFindPort.findByEndToEndId(anyString())).thenReturn(Collections.emptyList());
 
         var created = createInfractionReportUseCase.execute(infractionReport, "id");
@@ -55,9 +57,10 @@ class CreateInfractionReportUseCaseTest {
         assertThat(created.getDateCreate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:08:49.922138"));
         assertThat(created.getDateLastUpdate()).isEqualTo(LocalDateTime.parse("2020-09-01T10:09:49.922138"));
 
-        verify(infractionReportPort).create(any(), anyString());
+        verify(infractionReportPort).create(any(), anyString(), ispbPicPay);
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportSavePort).save(any(InfractionReport.class), anyString());
+        verify(infractionReportSavePort).save(any(InfractionReport.class));
+        verify(infractionReportCacheSavePort).save(any(InfractionReport.class), anyString());
     }
 
     @Test
@@ -70,8 +73,9 @@ class CreateInfractionReportUseCaseTest {
             .hasMessageContaining(INFRACTION_REPORT_ALREADY_OPEN.getMessage());
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportPort, times(0)).create(any(), anyString());
-        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class), anyString());
+        verify(infractionReportPort, times(0)).create(any(), anyString(), ispbPicPay);
+        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
+        verify(infractionReportCacheSavePort, times(0)).save(any(InfractionReport.class), anyString());
     }
 
     @Test
@@ -88,8 +92,8 @@ class CreateInfractionReportUseCaseTest {
             .reportedBy(ReportedBy.DEBITED_PARTICIPANT)
             .endToEndId("E9999901012341234123412345678900")
             .situation(situation)
-            .ispbDebited(1234)
-            .ispbCredited(56789)
+            .ispbDebited("1234")
+            .ispbCredited("56789")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .build();

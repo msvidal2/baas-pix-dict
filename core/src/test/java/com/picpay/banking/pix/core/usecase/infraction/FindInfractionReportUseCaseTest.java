@@ -8,7 +8,7 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.exception.InfractionReportError;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportFindPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -47,8 +46,8 @@ class FindInfractionReportUseCaseTest {
             .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .situation(InfractionReportSituation.OPEN)
-            .ispbDebited(2)
-            .ispbCredited(1)
+            .ispbDebited("2")
+            .ispbCredited("1")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())

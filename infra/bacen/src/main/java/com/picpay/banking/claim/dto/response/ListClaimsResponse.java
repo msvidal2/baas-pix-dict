@@ -8,8 +8,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Getter
 @Setter
@@ -24,20 +23,20 @@ public class ListClaimsResponse {
     private Boolean hasMoreElements;
 
     @XmlElement(name = "Claims")
-    private List<ClaimResponse> claims;
+    private ClaimsList claimsList;
 
     public ClaimIterable toClaimIterable() {
+        var claims = Collections.<Claim>emptyList();
+
+        if(claimsList != null) {
+             claims = claimsList.getClaims();
+        }
+
         return ClaimIterable.builder()
                 .hasNext(hasMoreElements)
                 .count(claims.size())
-                .claims(getClaims())
+                .claims(claims)
                 .build();
-    }
-
-    private List<Claim> getClaims() {
-        return claims.stream()
-                .map(ClaimResponse::toClaim)
-                .collect(Collectors.toList());
     }
 
 }

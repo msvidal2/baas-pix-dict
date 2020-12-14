@@ -18,6 +18,6 @@ import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIde
 public interface CreateInfractionReportPort {
 
     @ValidateIdempotency(InfractionReport.class)
-    InfractionReport create(InfractionReport infractionReport, @IdempotencyKey String requestIdentifier);
+    InfractionReport create(InfractionReport infractionReport, @IdempotencyKey String requestIdentifier, final String ispbPicPay);
 
 }

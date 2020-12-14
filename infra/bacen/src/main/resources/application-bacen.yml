@@ -1,0 +1,24 @@
+feign:
+  client:
+    config:
+      default:
+        logger-level: ${HTTP_LOG_LEVEL:BASIC}
+        connect-timeout: 105000
+        read-timeout: 105000
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+      useGzipDecoder: true
+pix:
+  bacen:
+    dict:
+      url: ${BACEN_AWS_URL}
+  partner: ${PARTNER}
+
+logging:
+  level:
+    com.picpay.banking: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}

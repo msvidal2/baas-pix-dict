@@ -50,8 +50,8 @@ public class CancelInfractionReportResponse {
             .details(infractionReport.getReportDetails())
             .infractionReportId(infractionReport.getId())
             .situation(InfractionReportSituation.resolve(infractionReport.getStatus().getValue()))
-            .ispbDebited(Integer.parseInt(infractionReport.getDebitedParticipant()))
-            .ispbCredited(Integer.parseInt(infractionReport.getCreditedParticipant()))
+            .ispbDebited(infractionReport.getDebitedParticipant())
+            .ispbCredited(infractionReport.getCreditedParticipant())
             .dateCreate(infractionReport.getCreationTime())
             .dateLastUpdate(infractionReport.getLastModified())
             .build();
