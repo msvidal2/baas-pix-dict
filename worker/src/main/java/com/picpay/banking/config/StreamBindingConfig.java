@@ -7,10 +7,12 @@ package com.picpay.banking.config;
 
 import com.picpay.banking.claim.config.ClaimNotificationInputBinding;
 import com.picpay.banking.claim.config.ClaimNotificationOutputBinding;
+import com.picpay.banking.claim.config.ClaimTopicBindingOutput;
 import com.picpay.banking.infraction.config.AcknowledgeInputStream;
 import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
 import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -26,5 +28,10 @@ import org.springframework.context.annotation.Configuration;
 })
 @Configuration
 public class StreamBindingConfig {
+
+    @Bean
+    public ClaimTopicBindingOutput claimTopicBindingOutput() {
+        return () -> null;
+    }
 
 }
