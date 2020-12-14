@@ -132,8 +132,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
     }
@@ -218,8 +218,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")));
 
@@ -241,8 +241,8 @@ class InfractionReportRequestControllerTest {
             .andExpect(jsonPath("$.infractionReportId", equalTo("996196e5-c469-4069-b231-34a93ff7b89b")))
             .andExpect(jsonPath("$.reportedBy", equalTo("DEBITED_PARTICIPANT")))
             .andExpect(jsonPath("$.situation", equalTo("OPEN")))
-            .andExpect(jsonPath("$.ispbDebited", equalTo(1234)))
-            .andExpect(jsonPath("$.ispbCredited", equalTo(56789)))
+            .andExpect(jsonPath("$.ispbDebited", equalTo("1234")))
+            .andExpect(jsonPath("$.ispbCredited", equalTo("56789")))
             .andExpect(jsonPath("$.dateCreate", equalTo("2020-09-01T10:08:49.922138")))
             .andExpect(jsonPath("$.dateLastUpdate", equalTo("2020-09-01T10:09:49.922138")))
             .andExpect(jsonPath("$.infractionAnalyze.analyzeResult", equalTo("ACCEPTED")))
