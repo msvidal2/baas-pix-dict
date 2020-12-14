@@ -3,9 +3,7 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.domain.Execution;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.UpdateClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +24,6 @@ public class PollingClaimUseCase {
 
     private final SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;
 
-//    private final FindClaimLastPollingDatePort findClaimLastPollingDatePort;
-//
-//    private final UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort;
-
     private final ExecutionPort executionPort;
 
     public void execute(final Integer ispb, final Integer limit) {
@@ -38,16 +32,20 @@ public class PollingClaimUseCase {
                 .build();
 
         var endDate = LocalDateTime.now(ZoneId.of("UTC"));
-        var startDate = executionPort.lastExecution(CLAIM_POLLING).getEndTime();
+        var startDate = executionPort.lastExecution(CLAIM_POLLING)
+                .orElse(Execution.builder()
+                        .endTime(endDate.minusHours(24))
+                        .build())
+                .getEndTime();
 
         log.info("Start: {}, End: {}", startDate, endDate);
 
         try {
-            var claims = poll(claim, ispb, startDate, endDate);
+            var claims = poll(claim, limit, startDate, endDate);
 
             claims.forEach(sendToProcessClaimNotificationPort::send);
 
-            executionPort.save(Execution.success(startDate, LocalDateTime.now(), CLAIM_POLLING));
+            executionPort.save(Execution.success(startDate, endDate, CLAIM_POLLING));
         } catch (Exception e) {
             executionPort.save(Execution.fail(startDate, endDate, CLAIM_POLLING, e));
         }
