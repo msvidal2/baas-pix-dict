@@ -10,7 +10,7 @@ import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.ListInfractionReports;
 import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.ExecutionPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

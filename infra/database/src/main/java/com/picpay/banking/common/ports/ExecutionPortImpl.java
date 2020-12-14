@@ -11,7 +11,7 @@ import com.picpay.banking.common.entity.ExecutionEntity;
 import com.picpay.banking.common.repository.ExecutionRepository;
 import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.domain.ExecutionType;
-import com.picpay.banking.pix.core.ports.infraction.picpay.ExecutionPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -8,7 +8,7 @@
 package com.picpay.banking.infraction.config;
 
 import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.ExecutionPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.SendToAcknowledgePort;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionPollingUseCase;
 import org.springframework.context.annotation.Bean;
