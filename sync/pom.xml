@@ -11,10 +11,11 @@
 
     <artifactId>sync</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
 
     <modules>
-        <module>cids-files</module>
+        <module>cid-files</module>
     </modules>
 
     <properties>

@@ -148,7 +148,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort,never()).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
@@ -162,7 +162,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
@@ -176,7 +176,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
@@ -187,7 +187,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
@@ -198,7 +198,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
@@ -212,7 +212,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
@@ -224,7 +224,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
@@ -244,7 +244,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty());
         when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
@@ -257,7 +257,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-       verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+       verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
        verify(this.databaseContentIdentifierPort).listAll(any());
        verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
        verify(this.createPixKeyPort,never()).createPixKey(any(),any());
@@ -279,7 +279,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty(),Optional.of(pixKey));
         when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
@@ -290,7 +290,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
         verify(this.createPixKeyPort,never()).createPixKey(any(),any());
