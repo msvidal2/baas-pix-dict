@@ -8,8 +8,8 @@ import lombok.Getter;
 public enum AccountType {
 
     CHECKING(0,"CACC"),
-    SALARY(1,"SLRY"),
-    SAVINGS(2,"SVGS");
+    SALARY(1,""),
+    SAVINGS(2,"");
 
     private int value;
     private String initials;
