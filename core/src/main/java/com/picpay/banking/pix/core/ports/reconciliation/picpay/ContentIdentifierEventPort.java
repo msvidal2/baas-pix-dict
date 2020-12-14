@@ -14,4 +14,6 @@ public interface ContentIdentifierEventPort {
 
     Optional<PixKey> findPixKeyByContentIdentifier(String cid);
 
+    void save(ContentIdentifierEvent event);
+
 }

@@ -34,4 +34,9 @@ public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPor
         return pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
     }
 
+    @Override
+    public void save(final ContentIdentifierEvent event) {
+        contentIdentifierEventRepository.save(ContentIdentifierEventEntity.from(event));
+    }
+
 }

@@ -17,18 +17,19 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
 
-    private BacenArqClient bacenArqClient;
+    private final BacenArqClient bacenArqClient;
 
-    private BacenReconciliationClient bacenReconciliationClient;
+    private final BacenReconciliationClient bacenReconciliationClient;
 
-    private String participant;
-    private String urlGateway;
+    private final String participant;
+    private final String urlGateway;
 
     public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient,
         @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway) {
@@ -48,12 +49,16 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
             var bacenEvents = bacenReconciliationClient
                 .getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate, 200);
 
-            result.addAll(bacenEvents.getCidSetEvents().getEvents().stream()
-                .map(CidSetEvent::toContentIdentifierEvent)
-                .collect(Collectors.toSet()));
+            if (Objects.isNull(bacenEvents.getCidSetEvents())) {
+                hasNext = false;
+            } else {
+                result.addAll(bacenEvents.getCidSetEvents().getEvents().stream()
+                    .map(CidSetEvent::toContentIdentifierEvent)
+                    .collect(Collectors.toSet()));
 
-            nextDate = bacenEvents.getEndTime();
-            hasNext = bacenEvents.isHasMoreElements();
+                nextDate = bacenEvents.getEndTime();
+                hasNext = bacenEvents.isHasMoreElements();
+            }
         }
 
         return result;

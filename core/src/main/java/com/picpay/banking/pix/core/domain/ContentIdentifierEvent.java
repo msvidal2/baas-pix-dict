@@ -17,6 +17,8 @@ public class ContentIdentifierEvent {
     private final ContentIdentifierEventType contentIdentifierType;
     @NonNull
     private final LocalDateTime eventOnBacenAt;
+    private final String key;
+    private final KeyType keyType;
 
     @Override
     public boolean equals(final Object o) {

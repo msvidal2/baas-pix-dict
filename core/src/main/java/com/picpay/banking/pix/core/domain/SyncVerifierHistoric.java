@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,6 +10,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionClassification;
 
 @Builder
 @Getter
@@ -46,7 +49,9 @@ public class SyncVerifierHistoric {
 
             if (!databaseCidExistsInBacenCid) {
                 resultActions.add(
-                    new SyncVerifierHistoricAction(this, databaseSyncVerifierHistoricAction.getCid(), SyncVerifierHistoricAction.ActionType.REMOVE));
+                    new SyncVerifierHistoricAction(this,
+                        databaseSyncVerifierHistoricAction.getCid(),
+                        ActionType.REMOVE, ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN));
             }
         }
 
@@ -73,7 +78,8 @@ public class SyncVerifierHistoric {
                 Collectors.maxBy(Comparator.comparing(ContentIdentifierEvent::getEventOnBacenAt))))
             .values()).stream().map(
             event -> new SyncVerifierHistoricAction(this, event.orElseThrow().getCid(),
-                SyncVerifierHistoricAction.ActionType.resolve(event.get().getContentIdentifierType())))
+                ActionType.resolve(event.get().getContentIdentifierType()),
+                ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE))
             .collect(Collectors.toSet());
     }
 

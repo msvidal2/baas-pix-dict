@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.domain.UpdateReason;
@@ -19,9 +20,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
+import java.util.function.Consumer;
 
-import static com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -59,10 +61,12 @@ public class FailureReconciliationSyncUseCase {
                 String.format("No action found for %s type reconciliation", syncVerifierHistoric.getKeyType().name()));
         }
 
-        contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.ADD))
+        contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionClassification().equals(
+            SyncVerifierHistoricAction.ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE))
             .forEach(this::hasInBacenAndNotHaveInDatabase);
 
-        contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionType().equals(ActionType.REMOVE))
+        contentIdentifierActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getActionClassification().equals(
+            SyncVerifierHistoricAction.ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN))
             .forEach(this::hasInDatabaseAndNotHaveInBacen);
 
         syncVerifierHistoricActionPort.saveAll(contentIdentifierActions);
@@ -74,46 +78,94 @@ public class FailureReconciliationSyncUseCase {
     }
 
     private void hasInBacenAndNotHaveInDatabase(SyncVerifierHistoricAction action) {
-        var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
+        Consumer<PixKey> pixKeyPresentInTheBacen = pixKeyInBacen ->
+            findPixKeyPort.findPixKey(pixKeyInBacen.getKey()).ifPresentOrElse(pixKeyInDataBase ->
+                update(pixKeyInBacen, pixKeyInDataBase, true), () -> save(pixKeyInBacen, true));
 
-        if (pixKeyInBacen.isEmpty()) {
-            throw new ReconciliationsException(String.format(
-                "The CID %s was identified as ADD in the reconciliation process, but is not present in the CID link query in the DICT API",
-                action.getCid()));
-        }
+        Runnable pixKeyNotPresentInTheBacen = () ->
+            contentIdentifierEventPort.findPixKeyByContentIdentifier(action.getCid())
+                .ifPresent(pixKeyInDataBase -> delete(pixKeyInDataBase, true));
 
-        var pixKey = pixKeyInBacen.get();
-
-        var pixKeyInDataBase = findPixKeyPort.findPixKey(pixKeyInBacen.get().getKey());
-        if (pixKeyInDataBase.isPresent()) {
-            updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
-            log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
-                kv(LOG_START_TIME, startCurrentTimeMillis),
-                kv("updateAccountPixKey", pixKey.getKey()));
-        } else {
-            createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
-            log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
-                kv(LOG_START_TIME, startCurrentTimeMillis),
-                kv("createPixKey", pixKey.getKey()));
-        }
+        bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()).ifPresentOrElse(pixKeyPresentInTheBacen, pixKeyNotPresentInTheBacen);
     }
 
     private void hasInDatabaseAndNotHaveInBacen(final SyncVerifierHistoricAction action) {
-        var pixKeyInBacen = bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid());
+        Consumer<PixKey> pixKeyPresentInTheBacen = pixKeyInBacen ->
+            findPixKeyPort.findPixKey(pixKeyInBacen.getKey()).ifPresentOrElse(pixKeyInDataBase ->
+                update(pixKeyInBacen, pixKeyInDataBase, false), () -> save(pixKeyInBacen, false));
 
-        if (pixKeyInBacen.isPresent()) {
-            throw new ReconciliationsException(String.format(
-                "The CID %s was identified as REMOVE in the reconciliation process, but is present in the CID link query in the DICT API",
-                action.getCid()));
+        Runnable pixKeyNotPresentInTheBacen = () ->
+            contentIdentifierEventPort.findPixKeyByContentIdentifier(action.getCid())
+                .ifPresent(pixKeyInDataBase -> delete(pixKeyInDataBase, false));
+
+        bacenPixKeyByContentIdentifierPort.getPixKey(action.getCid()).ifPresentOrElse(pixKeyPresentInTheBacen, pixKeyNotPresentInTheBacen);
+    }
+
+    private void save(final PixKey pixKeyInBacen, final boolean generateLogEvent) {
+        createPixKeyPort.createPixKey(pixKeyInBacen, CreateReason.RECONCILIATION);
+        log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
+            kv(LOG_START_TIME, startCurrentTimeMillis),
+            kv("createPixKey", pixKeyInBacen.getKey()));
+
+        if (generateLogEvent) {
+            var event = ContentIdentifierEvent.builder()
+                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)
+                .cid(pixKeyInBacen.getCid())
+                .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
+                .key(pixKeyInBacen.getKey())
+                .keyType(pixKeyInBacen.getType())
+                .build();
+
+            contentIdentifierEventPort.save(event);
         }
+    }
 
-        var pixKeyInDatabase = contentIdentifierEventPort.findPixKeyByContentIdentifier(action.getCid());
-        pixKeyInDatabase.ifPresent(pixKey -> {
-            removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
-            log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
-                kv(LOG_START_TIME, startCurrentTimeMillis),
-                kv("removePixKey", pixKey.getKey()));
-        });
+    private void update(final PixKey pixKeyInBacen, final PixKey pixKeyInDataBase, final boolean generateLogEvent) {
+        updateAccountPixKeyPort.updateAccount(pixKeyInBacen, UpdateReason.RECONCILIATION);
+        log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
+            kv(LOG_START_TIME, startCurrentTimeMillis),
+            kv("updateAccountPixKey", pixKeyInBacen.getKey()));
+
+        if (generateLogEvent) {
+            if (!pixKeyInBacen.getCid().equals(pixKeyInDataBase.getCid())) {
+                var oldValue = ContentIdentifierEvent.builder()
+                    .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.REMOVED)
+                    .cid(pixKeyInDataBase.getCid())
+                    .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
+                    .key(pixKeyInBacen.getKey())
+                    .keyType(pixKeyInBacen.getType())
+                    .build();
+                contentIdentifierEventPort.save(oldValue);
+            }
+
+            var newValue = ContentIdentifierEvent.builder()
+                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)
+                .cid(pixKeyInBacen.getCid())
+                .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
+                .key(pixKeyInBacen.getKey())
+                .keyType(pixKeyInBacen.getType())
+                .build();
+            contentIdentifierEventPort.save(newValue);
+        }
+    }
+
+    private void delete(final PixKey pixKeyInDatabase, final boolean generateLogEvent) {
+        removePixKeyPort.remove(pixKeyInDatabase.getKey(), pixKeyInDatabase.getIspb());
+        log.info("FailureReconciliationSync_hasInDatabaseAndNotHaveInBacen {} {}",
+            kv(LOG_START_TIME, startCurrentTimeMillis),
+            kv("removePixKey", pixKeyInDatabase.getKey()));
+
+        if (generateLogEvent) {
+            var event = ContentIdentifierEvent.builder()
+                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.REMOVED)
+                .cid(pixKeyInDatabase.getCid())
+                .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
+                .key(pixKeyInDatabase.getKey())
+                .keyType(pixKeyInDatabase.getType())
+                .build();
+
+            contentIdentifierEventPort.save(event);
+        }
     }
 
 }

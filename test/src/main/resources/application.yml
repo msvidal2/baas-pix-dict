@@ -1,0 +1,18 @@
+spring:
+    main:
+        banner-mode: off
+    application:
+        name: test
+    datasource:
+        url: jdbc:postgresql://localhost:15432/postgres?currentSchema=dict
+        driver-class-name: org.postgresql.Driver
+        password: 123456
+        username: postgres
+    jpa:
+        database: POSTGRESQL
+        hibernate:
+            ddl-auto: none
+        show-sql: true
+        properties.hibernate.default_schema: dict
+        properties:
+            hibernate.jdbc.batch_size: 10

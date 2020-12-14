@@ -3,7 +3,6 @@ package com.picpay.banking.reconciliation.entity;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +12,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Getter
@@ -39,11 +35,6 @@ public class ContentIdentifierEventEntity {
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
 
-    @JoinColumn(name = "pix_key", insertable = false, updatable = false)
-    @JoinColumn(name = "key_type", insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PixKeyEntity pixKey;
-
     @Column(name = "cid", nullable = false)
     private String cid;
 
@@ -62,6 +53,17 @@ public class ContentIdentifierEventEntity {
             .cid(contentIdentifierEventEntity.getCid())
             .contentIdentifierType(contentIdentifierEventEntity.getType())
             .eventOnBacenAt(contentIdentifierEventEntity.getEventOnBacenAt())
+            .build();
+    }
+
+    public static ContentIdentifierEventEntity from(final ContentIdentifierEvent event) {
+        return ContentIdentifierEventEntity.builder()
+            .cid(event.getCid())
+            .eventOnBacenAt(event.getEventOnBacenAt())
+            .createdAt(LocalDateTime.now())
+            .type(event.getContentIdentifierType())
+            .key(event.getKey())
+            .keyType(event.getKeyType())
             .build();
     }
 

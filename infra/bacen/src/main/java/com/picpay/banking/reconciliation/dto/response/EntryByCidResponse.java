@@ -48,6 +48,7 @@ public class EntryByCidResponse {
     private Entry entry;
 
     public PixKey toDomain() {
+        // TODO: Aparentemente o campo ownerTradeName é utilizado no cid para CNPJ e não esta participando da classe PixKey
         return PixKey.builder()
             .type(KeyType.resolve(entry.getKeyType().getValue()))
             .key(entry.getKey())

@@ -74,10 +74,3 @@ pix:
         dict.url: ${BACEN_AWS_URL}/dict/api
         dict.entries.url: ${BACEN_AWS_URL}/dict/api
         dict.infraction.url: ${BACEN_AWS_URL}
-    services:
-        baas.token-manager.url: http://baas-pix-token-manager.ms.qa/pix/token-manager
-        jdpi:
-            dict.url: ${JDPI_DICT_URL}
-            claim.url: ${JDPI_CLAIM_URL}
-            headers.host: JDPI${ISPB_CLIENT_ID}${JDPI_ENVIRONMENT}.jdPSTI.rtm
-            infraction.url: ${JDPI_INFRACTION_URL}
