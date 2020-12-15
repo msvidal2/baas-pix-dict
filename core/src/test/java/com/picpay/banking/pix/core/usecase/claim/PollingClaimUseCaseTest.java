@@ -1,10 +1,8 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimLastPollingDatePort;
-import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.UpdateClaimLastPollingDatePort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,13 +29,7 @@ class PollingClaimUseCaseTest {
     private ListClaimsBacenPort listClaimsBacenPort;
 
     @Mock
-    private SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;
-
-    @Mock
-    private FindClaimLastPollingDatePort findClaimLastPollingDatePort;
-
-    @Mock
-    private UpdateClaimLastPollingDatePort updateClaimLastPollingDatePort;
+    private ExecutionPort executionPort;
 
     @Test
     void when_executeWithSuccess_expect_noExceptions() {

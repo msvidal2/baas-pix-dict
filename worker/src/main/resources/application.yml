@@ -57,6 +57,20 @@ spring:
               max.poll.interval.ms: ${SYNC_MAX_POLL_INTERVAL}
             partitionCount: 1
             concurrency: 1
+        claim-notifications-consumer:
+          destination: ${CLAIM_NOTIFICATIONS_TOPIC}
+          group: claim-notification-consumer-group
+          contentType: application/json
+#          consumer:
+#            maxAttemps: ${SYNC_MAX_ATTEMPTS}
+#            configuration:
+#              max.poll.records: ${SYNC_MAX_POLL_RECORDS}
+#              max.poll.interval.ms: ${SYNC_MAX_POLL_INTERVAL}
+#            partitionCount: 1
+#            concurrency: 1
+        send-new-claim-notification:
+          destination: ${PIX_ALERT_NOTIFICATION_TOPIC}
+          binder: kafka
         alert-notifications:
           destination: ${ALERT_NOTIFICATION_TOPIC}
           contentType: application/json

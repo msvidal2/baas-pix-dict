@@ -6,14 +6,18 @@
 package com.picpay.banking.claim.config;
 
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author rafael.braga
- * @version 1.0 08/12/2020
- */
-@EnableBinding(value = {ClaimTopicBinding.class})
+@EnableBinding(value = {
+        ClaimTopicBindingOutput.class
+})
 @Configuration
-public class StreamBindingConfig {
+public class ClaimBindingConfig {
+
+    @Bean
+    public ClaimNotificationOutputBinding claimNotificationOutputBinding() {
+        return () -> null;
+    }
 
 }
