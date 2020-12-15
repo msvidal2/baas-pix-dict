@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
-@RequestMapping(value = "v1/keys", produces = "application/json")
+@RequestMapping(value = "v1/keys", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
 public class PixKeyController {
