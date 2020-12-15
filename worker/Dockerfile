@@ -2,7 +2,7 @@ FROM picpay/jre-11.0.7_10-alpine-base:newrelic-5.11.0
 
 WORKDIR /app
 
-COPY dict/target/*.jar app.jar
+COPY target/*.jar app.jar
 
 EXPOSE 8080
 
