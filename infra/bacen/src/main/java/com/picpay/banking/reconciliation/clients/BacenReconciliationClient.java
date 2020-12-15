@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 
 @FeignClient(value = "Reconcilliation",
-    url = "${pix.bacen.url}",
-    path = "/dict/api/v1/")
+        url = "${pix.bacen.dict.url}",
+        path = "/dict/api/v1/")
 public interface BacenReconciliationClient {
 
     @PostMapping(value = "/cids/files",

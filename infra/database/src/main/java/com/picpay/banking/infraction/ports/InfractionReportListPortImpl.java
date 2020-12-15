@@ -3,6 +3,7 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.entity.InfractionReportEntity;
@@ -10,7 +11,7 @@ import com.picpay.banking.infraction.repository.InfractionReportRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportListPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,11 +32,14 @@ public class InfractionReportListPortImpl implements InfractionReportListPort {
     private final InfractionReportRepository infractionReportRepository;
 
     @Override
-    public InfractionPage list(final Integer ispb, final InfractionReportSituation situation, final LocalDateTime dateStart,
-        final LocalDateTime dateEnd, final int page, final int size) {
+    public InfractionPage list(final InfractionReportSituation situation,
+                               final LocalDateTime dateStart,
+                               final LocalDateTime dateEnd,
+                               final int page,
+                               final int size) {
 
-        PageRequest pageRequest = PageRequest.of(page,size);
-        Page<InfractionReportEntity> pageInfraction = infractionReportRepository.list(ispb,situation, dateStart, dateEnd,pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<InfractionReportEntity> pageInfraction = infractionReportRepository.list(situation, dateStart, dateEnd, pageRequest);
         List<InfractionReport> content = pageInfraction.getContent().stream().map(InfractionReportEntity::toDomain).collect(Collectors.toList());
 
         return InfractionPage.builder()

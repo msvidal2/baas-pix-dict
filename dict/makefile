@@ -6,6 +6,4 @@ build-maven:
 build-image:
 	docker build -t picpay/baas-pix-dict-api .
 
-build:
-	build-maven
-	build-image
+build: build-maven build-image

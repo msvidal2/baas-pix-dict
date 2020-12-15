@@ -7,7 +7,8 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,9 @@ class CancelInfractionReportPortUseCaseTest {
     @Mock
     private InfractionReportCancelPort infractionReportCancelPort;
 
+    @Mock
+    private InfractionReportFindPort infractionReportFindPort;
+
     private InfractionReport infractionReport;
 
     @BeforeEach
@@ -44,7 +48,7 @@ class CancelInfractionReportPortUseCaseTest {
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())
-            .endToEndId("ID_END_TO_END").ispbCredited(1).ispbDebited(2).ispbRequester(3).reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+            .endToEndId("ID_END_TO_END").ispbCredited("1").ispbDebited("2").reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .situation(InfractionReportSituation.CANCELLED)
             .infractionType(InfractionType.FRAUD)
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
@@ -62,6 +66,7 @@ class CancelInfractionReportPortUseCaseTest {
 
         verify(cancelInfractionReportPort).cancel(anyString(), anyInt(),anyString());
         verify(infractionReportCancelPort).cancel(anyString());
+        verify(infractionReportFindPort).find("1");
     }
 
 

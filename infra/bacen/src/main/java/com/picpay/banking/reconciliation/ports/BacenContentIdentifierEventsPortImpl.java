@@ -9,6 +9,7 @@ import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +35,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     private final String urlGateway;
 
     public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient,
-        @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.url}") String urlGateway) {
+        @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.dict.url}") String urlGateway) {
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
@@ -84,11 +87,11 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public List<String> downloadFile(final String url) {
-        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway + "/arq/");//CHANGE HOST TO GATEWAY
+    public List<String> downloadCidsFromBacen(final String url) {
+        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
-        return Arrays.asList(file.split("\n"));
+        return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toList());
     }
 
 }

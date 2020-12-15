@@ -10,7 +10,7 @@ import java.io.Serializable;
 public enum InfractionReportSituation implements Serializable {
 
     OPEN (0),
-    RECEIVED (1),
+    ACKNOWLEDGED(1),
     CANCELLED(2),
     ANALYZED (3);
 

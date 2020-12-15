@@ -7,13 +7,12 @@
 
 package com.picpay.banking.pix.core.ports.infraction.bacen;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 
 import java.util.Optional;
 
 public interface InfractionReportAnalyzePort {
 
-    Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier);
+    Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier, String ispbPicPay);
 
 }

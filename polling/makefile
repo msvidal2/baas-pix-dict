@@ -1,11 +1,13 @@
 SHELL := /bin/bash
 
-build-maven:
-	mvn clean install
+build-claim:
+	@ make --directory=claim build
+
+build-infraction:
+	@ make --directory=infraction build
 
 build-image:
-	docker build -t picpay/baas-pix-dict-bacen-pulling .
+	@ make --directory=claim build-image
+	@ make --directory=infraction build-image
 
-build:
-	build-maven
-	build-image
+build: build-claim build-infraction

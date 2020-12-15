@@ -86,6 +86,7 @@
                         <schema>public</schema>
                         <schema>dict</schema>
                     </schemas>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
                 <dependencies>
                     <dependency>

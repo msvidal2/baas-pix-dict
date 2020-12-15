@@ -4,10 +4,10 @@
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
 
-
 package com.picpay.banking.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -23,6 +23,7 @@ import java.time.Duration;
  * @version 1.0 23/11/2020
  */
 @Configuration
+@ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
 public class RedisConfiguration {
 
     @Bean

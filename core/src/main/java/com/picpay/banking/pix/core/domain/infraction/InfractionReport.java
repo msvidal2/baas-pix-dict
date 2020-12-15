@@ -14,9 +14,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 
+import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.ACKNOWLEDGED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.ANALYZED;
 import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.OPEN;
-import static com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation.RECEIVED;
 import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRACTION_REPORT_ALREADY_OPEN;
 
 @Getter
@@ -27,7 +27,7 @@ import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRAC
 @EqualsAndHashCode
 public class InfractionReport implements Serializable {
 
-    private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, RECEIVED);
+    private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, ACKNOWLEDGED);
 
     private String infractionReportId;
     @EqualsAndHashCode.Include
@@ -36,13 +36,11 @@ public class InfractionReport implements Serializable {
     private String endToEndId;
     private ReportedBy reportedBy;
     private InfractionReportSituation situation;
-    private int ispbDebited;
-    private int ispbCredited;
+    private String ispbDebited;
+    private String ispbCredited;
     private LocalDateTime dateCreate;
     @Setter
     private LocalDateTime dateLastUpdate;
-    @EqualsAndHashCode.Include
-    private int ispbRequester;
     @EqualsAndHashCode.Include
     private String details;
     @Setter

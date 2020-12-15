@@ -3,8 +3,10 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -23,6 +25,7 @@ public class CreatePixKeyUseCase {
     private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
+    private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -94,7 +97,11 @@ public class CreatePixKeyUseCase {
     }
 
     private void validateClaimExists(final PixKey pixKey) {
-        // TODO: verificar se existe algum processo de reivindicação local para a chave que esta tentando ser criada
+        var claim = findOpenClaimByKeyPort.find(pixKey.getKey());
+
+        if(claim.isPresent()) {
+            throw new PixKeyException(PixKeyError.CLAIM_PROCESS_EXISTING);
+        }
     }
 
 }

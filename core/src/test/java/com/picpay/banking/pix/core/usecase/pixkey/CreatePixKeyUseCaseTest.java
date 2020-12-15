@@ -1,11 +1,9 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PersonType;
-import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -45,6 +43,9 @@ class CreatePixKeyUseCaseTest {
 
     @Mock
     private CreatePixKeyBacenPort createPixKeyBacenPortBacen;
+
+    @Mock
+    private FindOpenClaimByKeyPort findOpenClaimByKeyPort;
 
     private PixKey pixKey;
 
@@ -368,9 +369,16 @@ class CreatePixKeyUseCaseTest {
         verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
     }
 
-//    @Test
-//    void when_executeIfClaimExists_expect_pixKeyException() {
-//        fail();
-//    }
+    @Test
+    void when_executeWithClaimProcessExisting_expect_pixKeyException() {
+        when(findOpenClaimByKeyPort.find(anyString()))
+                .thenReturn(Optional.of(Claim.builder().build()));
+
+        var error = assertThrows(PixKeyException.class,
+                () -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST))
+            .getPixKeyError();
+
+        assertEquals(PixKeyError.CLAIM_PROCESS_EXISTING, error);
+    }
 
 }

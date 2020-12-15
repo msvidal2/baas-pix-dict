@@ -6,7 +6,6 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyReque
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,18 +20,16 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
-//TODO validar esse caso de teste
 public class PixKeyControllerTest {
 
     public static final String BASE_URL = "/v1/keys";
@@ -231,6 +228,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -247,6 +245,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -263,6 +262,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -279,6 +279,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -295,6 +296,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -311,6 +313,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -327,6 +330,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -343,6 +347,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -359,6 +364,7 @@ public class PixKeyControllerTest {
 
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
@@ -372,6 +378,7 @@ public class PixKeyControllerTest {
     @Test
     public void when_createPixKeyWithNullRequestIdentifier_expect_statusBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
                 .andExpect(status().isBadRequest())
