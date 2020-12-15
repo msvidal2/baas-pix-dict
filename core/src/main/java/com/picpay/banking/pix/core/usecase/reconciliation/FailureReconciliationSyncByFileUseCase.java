@@ -44,7 +44,7 @@ public class FailureReconciliationSyncByFileUseCase {
             return;
         }
 
-        final var cids = this.bacenContentIdentifierEventsPort.downloadFile(availableFile.getUrl());
+        final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
         final var keyType = availableFile.getKeyType();
 
         final var contentIdentifiers = this.databaseContentIdentifierPort.listAll(keyType);
