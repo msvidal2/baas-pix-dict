@@ -8,7 +8,7 @@ import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +56,8 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
     @Override
     public ContentIdentifierFile getContentIdentifierFileInBacen(final Integer id) {
-        return this.bacenReconciliationClient.getCidFile(id, participant).toDomain();
+        final var cidFile = this.bacenReconciliationClient.getCidFile(id, participant);
+        return cidFile.toDomain();
     }
 
     @Override

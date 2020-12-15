@@ -22,9 +22,10 @@ public class ReconciliationController {
 
     @Trace
     @GetMapping("/{keyType}")
-    public ResponseEntity<ContentIdentifierFile> updateAccount(@PathVariable("keyType") KeyType keyType) {
+    public ResponseEntity<ContentIdentifierFile> updateAccount(@PathVariable("keyType")KeyType keyType) {
         final var contentIdentifierFile = this.requestSyncFileUseCase.execute(keyType);
         return ResponseEntity.ok(contentIdentifierFile);
     }
 
 }
+
