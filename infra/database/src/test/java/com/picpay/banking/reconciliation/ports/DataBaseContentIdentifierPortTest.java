@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -169,7 +169,7 @@ class DataBaseContentIdentifierPortTest {
         .build();
 
         this.databaseContentIdentifierPort.saveAction(1, pixKey,
-            "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a", ContentIdentifierAction.ADDED);
+            "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a", ContentIdentifierFileAction.ADDED);
 
         verify(this.contentIdentifierActionRepository).save(any());
     }

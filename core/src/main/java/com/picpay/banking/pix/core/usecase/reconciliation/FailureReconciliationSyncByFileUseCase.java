@@ -22,13 +22,13 @@ import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.UPD
 @Slf4j
 public class FailureReconciliationSyncByFileUseCase {
 
+    private final Integer participant;
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
-    private Integer participant;
 
     public void execute(KeyType keyType) {
         this.databaseContentIdentifierPort.findLastFileRequested(keyType).ifPresent(this::processFile);
@@ -106,7 +106,6 @@ public class FailureReconciliationSyncByFileUseCase {
             }
             log.info("Only Cid {} was removed from database because cid don't exists in bacen but key exists", cid);
         });
-        return;
     }
 
 }

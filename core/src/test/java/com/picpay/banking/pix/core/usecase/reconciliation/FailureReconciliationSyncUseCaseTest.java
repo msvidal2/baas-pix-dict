@@ -112,7 +112,7 @@ class FailureReconciliationSyncUseCaseTest {
             .thenReturn(Set.of(createContentIdentifier("1")));
 
         when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
-            .thenReturn(Optional.of(PixKey.builder().build()));
+            .thenReturn(Optional.of(PixKey.builder().cid("1").build()));
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())
@@ -141,10 +141,10 @@ class FailureReconciliationSyncUseCaseTest {
             .thenReturn(Set.of(createContentIdentifier("1")));
 
         when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
-            .thenReturn(Optional.of(PixKey.builder().build()));
+            .thenReturn(Optional.of(PixKey.builder().cid("1").build()));
 
         when(findPixKeyPort.findPixKey(any()))
-            .thenReturn(Optional.of(PixKey.builder().build()));
+            .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())

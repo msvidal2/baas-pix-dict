@@ -17,6 +17,7 @@
     <modules>
         <module>cid-events</module>
         <module>sync-verifier</module>
+        <module>cid-files</module>
     </modules>
 
 </project>

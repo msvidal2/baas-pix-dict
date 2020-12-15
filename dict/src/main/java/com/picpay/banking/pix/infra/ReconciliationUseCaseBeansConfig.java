@@ -27,8 +27,8 @@ public class ReconciliationUseCaseBeansConfig {
         BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort,
         DatabaseContentIdentifierPort databaseContentIdentifierPort, BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort,
         CreatePixKeyPort createPixKeyPort, RemovePixKeyPort removePixKeyPort, FindPixKeyPort findPixKeyPort) {
-        return new FailureReconciliationSyncByFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
-            bacenPixKeyByContentIdentifierPort, createPixKeyPort, findPixKeyPort, removePixKeyPort, participant);
+        return new FailureReconciliationSyncByFileUseCase(participant, bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
+            bacenPixKeyByContentIdentifierPort, createPixKeyPort, findPixKeyPort, removePixKeyPort);
     }
 
     @Bean
