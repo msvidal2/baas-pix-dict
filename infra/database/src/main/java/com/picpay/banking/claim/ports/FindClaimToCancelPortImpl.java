@@ -1,4 +1,4 @@
-package com.picpay.banking.ports;
+package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.repository.ClaimRepository;
