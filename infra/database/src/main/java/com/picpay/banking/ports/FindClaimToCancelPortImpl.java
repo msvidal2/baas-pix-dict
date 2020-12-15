@@ -1,11 +1,11 @@
 package com.picpay.banking.ports;
 
-import com.picpay.banking.entity.ClaimEntity;
+import com.picpay.banking.claim.entity.ClaimEntity;
+import com.picpay.banking.claim.repository.ClaimRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.domain.ClaimType;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
-import com.picpay.banking.repository.ClaimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
