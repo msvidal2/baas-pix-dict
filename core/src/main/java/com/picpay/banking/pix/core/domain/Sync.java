@@ -3,7 +3,6 @@ package com.picpay.banking.pix.core.domain;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,7 +25,7 @@ public class Sync {
         this.contentIdentifierFile = contentIdentifierFile;
     }
 
-    public void verify(final List<String> cidsInBacen, final Collection<ContentIdentifier> contentIdentifiers) {
+    public void verify(final List<String> cidsInBacen, final List<ContentIdentifier> contentIdentifiers) {
         final var cidsInDatabase = contentIdentifiers.stream()
             .map(ContentIdentifier::getCid)
             .collect(Collectors.toList());

@@ -40,29 +40,29 @@ import static org.mockito.Mockito.when;
  * @version 1.0 25/11/2020
  */
 @ExtendWith(MockitoExtension.class)
-class FailureReconciliationSyncByFileUseCaseTest {
+public class FailureReconciliationSyncByFileUseCaseTest {
 
     @Mock
-    BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
+    private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     @Mock
-    DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
     @Mock
-    BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
+    private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     @Mock
-    CreatePixKeyPort createPixKeyPort;
+    private CreatePixKeyPort createPixKeyPort;
     @Mock
-    RemovePixKeyPort removePixKeyPort;
+    private RemovePixKeyPort removePixKeyPort;
     @Mock
-    FindPixKeyPort findPixKeyPort;
+    private FindPixKeyPort findPixKeyPort;
 
-    FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
+    private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
-    ContentIdentifierFile cidFile;
-    List<String> cids;
-    PixKey pixKey;
+    private ContentIdentifierFile cidFile;
+    private List<String> cids;
+    private PixKey pixKey;
 
     @BeforeEach
-    void init(){
+    public void init(){
 
         this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
             22896431,bacenContentIdentifierEventsPort,databaseContentIdentifierPort,bacenPixKeyByContentIdentifierPort,
@@ -141,20 +141,20 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    void dontProcessWhenNotExistFilesRequestedInBacen(){
+    public void dontProcessWhenNotExistFilesRequestedInBacen(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.empty());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort,never()).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
 
     @Test
-    void dontInsertKeysFromBacenWhenFileNotAvailable(){
+    public void dontInsertKeysFromBacenWhenFileNotAvailable(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(cidFile);
 
@@ -162,13 +162,13 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
 
     @Test
-    void dontInsertKeysFromBacenWhenFileIsNull(){
+    public void dontInsertKeysFromBacenWhenFileIsNull(){
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(null);
 
@@ -176,18 +176,18 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort,never()).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort,never()).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort,never()).listAll(any());
         verify(this.databaseContentIdentifierPort,never()).saveFile(any());
     }
 
     @Test
-    void insertKeysFromBacen(){
+    public void insertKeysFromBacen(){
         final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
@@ -198,7 +198,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
@@ -207,12 +207,12 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    void updateKeysFromBacen(){
+    public void updateKeysFromBacen(){
         final var availableFile = cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).then(this::generateCidToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(),any())).then(this::generatePixKeyFromDomain);
@@ -224,7 +224,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort,times(5)).createPixKey(any(),any());
@@ -234,7 +234,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    void removeKeysFromBacen(){
+    public void removeKeysFromBacen(){
         final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
         final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
         final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
@@ -244,7 +244,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty());
         when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
@@ -257,7 +257,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
        verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-       verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
+       verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
        verify(this.databaseContentIdentifierPort).listAll(any());
        verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
        verify(this.createPixKeyPort,never()).createPixKey(any(),any());
@@ -269,7 +269,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
-    void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan(){
+    public void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan(){
         final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
         final var contentIdentifiersToRemove = ContentIdentifier.builder().cid("a").key("key").keyType(KeyType.CPF).pixKey(pixKey).build();
         final var contentIdentifiers = this.cids.stream().map(cid -> ContentIdentifier.builder()
@@ -279,7 +279,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
-        when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
+        when(this.bacenContentIdentifierEventsPort.downloadFile(anyString())).thenReturn(cids);
         when(this.databaseContentIdentifierPort.listAll(any())).thenReturn(contentIdentifiers);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty(),Optional.of(pixKey));
         when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
@@ -290,7 +290,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
-        verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
+        verify(this.bacenContentIdentifierEventsPort).downloadFile(anyString());
         verify(this.databaseContentIdentifierPort).listAll(any());
         verify(this.bacenPixKeyByContentIdentifierPort,times(2)).getPixKey(anyString());
         verify(this.createPixKeyPort,never()).createPixKey(any(),any());
@@ -302,7 +302,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
 
-    Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var cid = (String) invocationOnMock.getArgument(0);
         final var pixKey = PixKey.builder().accountNumber("0").accountOpeningDate(LocalDateTime.now())
             .branchNumber("1").accountType(AccountType.CHECKING).createdAt(LocalDateTime.now())
@@ -312,11 +312,11 @@ class FailureReconciliationSyncByFileUseCaseTest {
         return Optional.of(pixKey);
     }
 
-    PixKey generatePixKeyFromDomain(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private PixKey generatePixKeyFromDomain(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         return invocationOnMock.getArgument(0);
     }
 
-    List<ContentIdentifier > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private List<ContentIdentifier > generateCidToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
         return cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> ContentIdentifier.builder()
                 .cid(s).pixKey(PixKey.builder().build())

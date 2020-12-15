@@ -15,6 +15,6 @@ public interface BacenContentIdentifierEventsPort {
 
     ContentIdentifierFile getContentIdentifierFileInBacen(Integer id);
 
-    List<String> downloadCidsFromBacen(String url);
+    List<String> downloadFile(String url);
 
 }
