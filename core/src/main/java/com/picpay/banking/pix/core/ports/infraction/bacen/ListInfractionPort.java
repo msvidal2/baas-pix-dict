@@ -6,12 +6,12 @@
 
 package com.picpay.banking.pix.core.ports.infraction.bacen;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.ListInfractionReports;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public interface ListInfractionPort {
 
-    List<InfractionReport> list(Integer ispb, Integer limit);
+    ListInfractionReports list(String ispb, Integer limit, LocalDateTime startDate, LocalDateTime endDate);
 
 }

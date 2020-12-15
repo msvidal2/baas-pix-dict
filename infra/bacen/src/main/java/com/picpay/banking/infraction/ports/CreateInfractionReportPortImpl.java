@@ -37,11 +37,13 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "createFallback")
     @ValidateIdempotency(InfractionReport.class)
-    public InfractionReport create(final InfractionReport infractionReport, @IdempotencyKey final String requestIdentifier) {
+    public InfractionReport create(final InfractionReport infractionReport,
+                                   @IdempotencyKey final String requestIdentifier,
+                                   final String ispbPicPay) {
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-                                                         () -> bacenClient.create(CreateInfractionReportRequest.from(infractionReport)),
+                                                         () -> bacenClient.create(CreateInfractionReportRequest.from(infractionReport, ispbPicPay)),
                                                          requestIdentifier);
-        return CreateInfractionReportResponse.toInfractionReport(response, infractionReport.getIspbRequester());
+        return CreateInfractionReportResponse.toInfractionReport(response, ispbPicPay);
     }
 
     public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {

@@ -30,15 +30,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CreateInfractionReportRequest {
 
     @XmlElement(name = "Participant")
-    private int participant;
+    private String participant;
 
     @XmlElement(name = "InfractionReport")
     private InfractionReportRequest infractionReportRequest;
 
-    public static CreateInfractionReportRequest from(InfractionReport infractionReport) {
+    public static CreateInfractionReportRequest from(InfractionReport infractionReport, String ispbRequester) {
         return CreateInfractionReportRequest
             .builder()
-            .participant(infractionReport.getIspbRequester())
+            .participant(ispbRequester)
             .infractionReportRequest(InfractionReportRequest.builder()
                                   .infractionType(InfractionType.from(infractionReport.getInfractionType()))
                                   .reportDetails(infractionReport.getDetails())

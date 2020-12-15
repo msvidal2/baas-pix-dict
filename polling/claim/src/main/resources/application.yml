@@ -4,14 +4,16 @@ server:
     enabled: true
 
 spring:
+  profiles:
+    active:
+      - database
+      - bacen
+      - messaging
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
   cloud:
     stream:
-      kafka:
-        binder:
-          brokers: ${KAFKA_HOSTS}
       bindings:
         claim-notifications:
           destination: ${CLAIM_NOTIFICATIONS_TOPIC}
@@ -19,37 +21,6 @@ spring:
 
   redis:
     enabled: false
-
-  datasource:
-    driver-class-name: ${DB_DRIVE_CLASS_NAME}
-    password: ${DB_PASSWORD}
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-  jpa:
-    database: ${DB_TYPE}
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-
-feign:
-  compression:
-    request:
-      enabled: true
-      mime-types: text/xml,application/xml,application/json
-      min-request-size: 2048
-    response:
-      enabled: true
-      useGzipDecoder: true
-  client:
-    config:
-      default:
-        connect-timeout: 105000
-        read-timeout: 105000
-        logger-level: FULL
-
-logging:
-  level:
-    com.picpay.banking: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}
 
 picpay:
   ispb: ${ISPB_CLIENT_ID}
@@ -63,14 +34,6 @@ picpay:
           fixed-delay: ${POLLING_SCHEDULER_CLAIM_CANCEL_FIXED_DELAY}
           limit: ${POLLING_SCHEDULER_CLAIM_CANCEL_LIMIT}
 
-pix:
-  bacen:
-    url: ${BACEN_AWS_URL}
-    dict:
-      url: ${BACEN_AWS_URL}/dict/api
-      entries:
-        url: ${BACEN_AWS_URL}/dict/api
-
 management:
   endpoint:
     health:
@@ -82,5 +45,3 @@ management:
         include: prometheus, health
       path-mapping:
         prometheus: 'metrics'
-
-logging.level.org.apache.kafka.clients: OFF

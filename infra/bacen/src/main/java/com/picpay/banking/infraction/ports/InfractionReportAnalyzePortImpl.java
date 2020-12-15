@@ -33,13 +33,12 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
     private final InfractionBacenClient bacenClient;
     private final TimeLimiterExecutor timeLimiterExecutor;
 
-
     @Trace
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_CREATE_NAME, fallbackMethod = "analyzeFallback")
-    public Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier) {
+    public Optional<InfractionReport> analyze(InfractionReport infractionReport, String requestIdentifier, String ispbPicPay) {
         final var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_CREATE_NAME,
-                                                         () -> bacenClient.close(CloseInfractionReportRequest.from(infractionReport), infractionReport.getInfractionReportId()),
+                                                         () -> bacenClient.close(CloseInfractionReportRequest.from(infractionReport, ispbPicPay), infractionReport.getInfractionReportId()),
                                                          requestIdentifier);
         return Optional.of(response.toInfractionReport());
     }

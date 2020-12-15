@@ -5,18 +5,33 @@
  */
 package com.picpay.banking.config;
 
-import com.picpay.banking.config.AcknowledgeOutputStream;
-import com.picpay.banking.config.ClaimTopicBinding;
-import com.picpay.banking.config.InfractionAlertNotificationOutputStream;
+import com.picpay.banking.claim.config.ClaimNotificationInputBinding;
+import com.picpay.banking.claim.config.ClaimNotificationOutputBinding;
+import com.picpay.banking.claim.config.ClaimTopicBindingOutput;
+import com.picpay.banking.infraction.config.AcknowledgeInputStream;
+import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
+import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author rafael.braga
  * @version 1.0 08/12/2020
  */
-@EnableBinding(value = {AcknowledgeOutputStream.class, ClaimTopicBinding.class, InfractionAlertNotificationOutputStream.class})
+@EnableBinding(value = {
+        AcknowledgeOutputStream.class,
+        InfractionAlertNotificationOutputStream.class,
+        AcknowledgeInputStream.class,
+        ClaimNotificationInputBinding.class,
+        ClaimNotificationOutputBinding.class
+})
 @Configuration
 public class StreamBindingConfig {
+
+    @Bean
+    public ClaimTopicBindingOutput claimTopicBindingOutput() {
+        return () -> null;
+    }
 
 }

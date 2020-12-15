@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionAcknowledgeP
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificationPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionAcknowledgeUseCase;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,8 +20,9 @@ public class InfractionConfig {
     @Bean
     public InfractionAcknowledgeUseCase infractionAcknowledgeUseCase(InfractionReportSavePort infractionReportSavePort,
                                                                      InfractionNotificationPort infractionNotificationPort,
-                                                                     InfractionAcknowledgePort infractionAcknowledgePort) {
-        return new InfractionAcknowledgeUseCase(infractionReportSavePort, infractionNotificationPort, infractionAcknowledgePort);
+                                                                     InfractionAcknowledgePort infractionAcknowledgePort,
+                                                                     @Value("{$picpay.ispb}") String ispbPicPay) {
+        return new InfractionAcknowledgeUseCase(infractionReportSavePort, infractionNotificationPort, infractionAcknowledgePort, ispbPicPay);
     }
 
 }

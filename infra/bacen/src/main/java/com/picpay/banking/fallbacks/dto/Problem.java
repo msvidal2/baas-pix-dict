@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @Setter
@@ -28,6 +26,8 @@ public class Problem {
 
     private String correlationId;
 
+    @XmlElementWrapper(name = "violations")
+    @XmlElement(name = "violation")
     private List<Violation> violations;
 
 }

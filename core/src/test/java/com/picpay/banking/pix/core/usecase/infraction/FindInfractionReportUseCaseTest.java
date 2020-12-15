@@ -46,8 +46,8 @@ class FindInfractionReportUseCaseTest {
             .infractionReportId("7ab28f7f-f9de-4da8-be26-a66a0f7501c5")
             .reportedBy(ReportedBy.CREDITED_PARTICIPANT)
             .situation(InfractionReportSituation.OPEN)
-            .ispbDebited(2)
-            .ispbCredited(1)
+            .ispbDebited("2")
+            .ispbCredited("1")
             .dateCreate(LocalDateTime.parse("2020-09-01T10:08:49.922138"))
             .dateLastUpdate(LocalDateTime.parse("2020-09-01T10:09:49.922138"))
             .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
@@ -83,8 +83,8 @@ class FindInfractionReportUseCaseTest {
         assertEquals(infractionReport.getInfractionReportId(), "7ab28f7f-f9de-4da8-be26-a66a0f7501c5");
         assertEquals(infractionReport.getReportedBy(), ReportedBy.CREDITED_PARTICIPANT);
         assertEquals(infractionReport.getSituation(), InfractionReportSituation.OPEN);
-        assertEquals(infractionReport.getIspbDebited(), 2);
-        assertEquals(infractionReport.getIspbCredited(), 1);
+        assertEquals(infractionReport.getIspbDebited(), "2");
+        assertEquals(infractionReport.getIspbCredited(), "1");
         assertEquals(infractionReport.getDateCreate(), LocalDateTime.parse("2020-09-01T10:08:49.922138"));
         assertEquals(infractionReport.getDateLastUpdate(), LocalDateTime.parse("2020-09-01T10:09:49.922138"));
         assertEquals(infractionReport.getAnalyze().getAnalyzeResult(), InfractionAnalyzeResult.ACCEPTED);
