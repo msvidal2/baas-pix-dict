@@ -29,6 +29,7 @@ picpay:
       initial-delay: ${POLLING_SCHEDULER_CLAIM_INITIAL_DELAY}
       fixed-delay: ${POLLING_SCHEDULER_CLAIM_FIXED_DELAY}
       limit: ${POLLING_SCHEDULER_CLAIM_LIMIT}
+      cancel-limit: ${POLLING_SCHEDULER_CLAIM_CANCEL_LIMIT}
 
 management:
   endpoint:
