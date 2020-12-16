@@ -1,10 +1,11 @@
 package com.picpay.banking.mockserver.dict;
 
-import com.picpay.banking.mockserver.config.ClientAndServerInstance;
-import com.picpay.banking.mockserver.dict.reconciliation.SyncVerificationsNOK;
-import com.picpay.banking.mockserver.dict.reconciliation.SyncVerificationsOK;
-import lombok.AllArgsConstructor;
+import com.picpay.banking.mockserver.dict.reconciliation.events.ListCidEvents;
+import com.picpay.banking.mockserver.dict.reconciliation.sync.SyncVerificationsNOK;
+import com.picpay.banking.mockserver.dict.reconciliation.sync.SyncVerificationsOK;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.springframework.stereotype.Service;
@@ -16,24 +17,36 @@ import static org.mockserver.model.HttpRequest.request;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReconciliationMockServer {
 
-    private SyncVerificationsOK syncVerificationsOK;
-    private SyncVerificationsNOK syncVerificationsNOK;
+    private final ClientAndServer clientAndServer;
+    private final SyncVerificationsOK syncVerificationsOK;
+    private final SyncVerificationsNOK syncVerificationsNOK;
+    private final ListCidEvents listCidEvents;
 
     @PostConstruct
     public void start() {
-        ClientAndServerInstance.get().when(
+        clientAndServer.when(
             request()
                 .withMethod("POST")
-                .withPath("/api/v1/sync-verifications/"))
+                .withPath("/dict/api/v1/sync-verifications/"))
             .respond(this::syncVerifications);
+
+        clientAndServer.when(
+            request()
+                .withMethod("GET")
+                .withPath("/dict/api/v1/cids/events"))
+            .respond(this::events);
     }
 
     private HttpResponse syncVerifications(final HttpRequest httpRequest) throws IOException {
         syncVerificationsOK.setNextChain(syncVerificationsNOK);
         return syncVerificationsOK.run(httpRequest);
+    }
+
+    private HttpResponse events(final HttpRequest httpRequest) {
+        return listCidEvents.run(httpRequest);
     }
 
 }

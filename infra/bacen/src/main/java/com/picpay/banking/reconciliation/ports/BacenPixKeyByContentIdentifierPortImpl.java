@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;

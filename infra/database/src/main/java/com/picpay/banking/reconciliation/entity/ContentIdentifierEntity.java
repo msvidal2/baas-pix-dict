@@ -37,7 +37,8 @@ public class ContentIdentifierEntity {
     @Builder.Default
     private LocalDateTime requestTime = LocalDateTime.now();
 
-    @JoinColumns({@JoinColumn(name = "key", insertable = false, updatable = false), @JoinColumn(name = "keyType", insertable = false, updatable = false)})
+    @JoinColumn(name = "key", insertable = false, updatable = false)
+    @JoinColumn(name = "keyType", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private PixKeyEntity pixKey;
 

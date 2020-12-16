@@ -1,53 +1,58 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.Vsync;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseVsyncPort;
+import com.picpay.banking.pix.core.domain.SyncVerifier;
+import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Slf4j
 @AllArgsConstructor
 public class ReconciliationSyncUseCase {
 
-    private DatabaseVsyncPort databaseVsyncPort;
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
-    private BacenSyncVerificationsPort bacenSyncVerificationsPort;
-    private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
+    private final SyncVerifierPort syncVerifierPort;
+    private final SyncVerifierHistoricPort syncVerifierHistoricPort;
+    private final ContentIdentifierPort contentIdentifierPort;
+    private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
 
-    public void execute() {
-        // TODO: Esse usecase tem que rodar em horário agendado
+    public SyncVerifierHistoric execute(KeyType keyType) {
+        var startCurrentTimeMillis = System.currentTimeMillis();
+        log.info("ReconciliationSync_started {} {}",
+            kv("keyType", keyType),
+            kv("startCurrentTimeMillis", startCurrentTimeMillis));
 
-        List.of(KeyType.values()).forEach(keyType -> {
-            var vsync = databaseVsyncPort.getLastSuccessfulVsync(keyType);
-            if (vsync == null) {
-                vsync = Vsync.builder()
-                    .keyType(keyType)
-                    .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-                    .build();
-            }
+        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
+            .orElseGet(() -> SyncVerifier.builder()
+                .keyType(keyType)
+                .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+                .build());
 
-            List<ContentIdentifier> contentIdentifiers = databaseContentIdentifierPort.listAfterLastSuccessfulVsync(vsync.getKeyType(),
-                vsync.getSynchronizedAt());
+        List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
+            syncVerifier.getKeyType(),
+            syncVerifier.getSynchronizedAt());
 
-            vsync.calculateVsync(contentIdentifiers);
+        var vsyncCurrent = syncVerifier.calculateVsync(cids);
+        var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
+        var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
 
-            var result = bacenSyncVerificationsPort.syncVerification(vsync.getVsync());
+        syncVerifierPort.save(syncVerifier);
+        vsyncHistoric = syncVerifierHistoricPort.save(vsyncHistoric);
 
-            vsync.syncVerificationResult(result);
+        log.info("ReconciliationSync_ended {} {} {}",
+            kv("keyType", keyType),
+            kv("startCurrentTimeMillis", startCurrentTimeMillis),
+            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
 
-            databaseVsyncPort.updateVerificationResult(vsync);
-
-            if (vsync.getVsyncResult().equals(Vsync.VsyncResult.NOK)) {
-                failureReconciliationSyncUseCase.execute(vsync);
-            }
-        });
+        return vsyncHistoric;
     }
 
 }
