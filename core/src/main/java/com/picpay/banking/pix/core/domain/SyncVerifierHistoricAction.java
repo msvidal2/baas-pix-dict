@@ -33,9 +33,12 @@ public class SyncVerifierHistoricAction {
         ADD,
         REMOVE;
 
-        public static ActionType resolve(final ContentIdentifierEvent.ContentIdentifierEventType eventType) {
-            if (eventType.equals(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)) return ADD;
-            return REMOVE;
+        public static ActionType resolve(final ReconciliationAction action) {
+            switch (action) {
+                case ADD: return ADD;
+                case REMOVE: return REMOVE;
+                default: throw new IllegalArgumentException();
+            }
         }
     }
 

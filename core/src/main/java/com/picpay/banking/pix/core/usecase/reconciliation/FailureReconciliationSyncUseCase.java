@@ -49,10 +49,10 @@ public class FailureReconciliationSyncUseCase {
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
-        Set<ContentIdentifierEvent> bacenEvents = bacenContentIdentifierEventsPort
+        Set<ReconciliationEvent> bacenEvents = bacenContentIdentifierEventsPort
             .list(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart(), LocalDateTime.now());
 
-        Set<ContentIdentifierEvent> databaseEvents = contentIdentifierEventPort
+        Set<ReconciliationEvent> databaseEvents = contentIdentifierEventPort
             .findAllAfterLastSuccessfulVsync(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart());
 
         var contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);

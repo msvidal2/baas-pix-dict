@@ -1,24 +1,29 @@
 package com.picpay.banking.pix.core.util;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 
 import java.time.LocalDateTime;
 
 public class ContentIdentifierUtil {
 
-    public static ContentIdentifierEvent createContentIdentifier(String cid) {
-        return ContentIdentifierEvent.builder()
+    public static ReconciliationEvent createContentIdentifier(String cid) {
+        return ReconciliationEvent.builder()
             .cid(cid)
-            .contentIdentifierType(ContentIdentifierEventType.ADDED)
+            .action(ReconciliationAction.ADD)
+            .key("")
+            .keyType(KeyType.CELLPHONE)
             .eventOnBacenAt(LocalDateTime.now())
             .build();
     }
 
-    public static ContentIdentifierEvent createContentIdentifier(String cid, ContentIdentifierEventType eventType) {
-        return ContentIdentifierEvent.builder()
+    public static ReconciliationEvent createContentIdentifier(String cid, ReconciliationAction action) {
+        return ReconciliationEvent.builder()
             .cid(cid)
-            .contentIdentifierType(eventType)
+            .action(action)
+            .key("")
+            .keyType(KeyType.CELLPHONE)
             .eventOnBacenAt(LocalDateTime.now())
             .build();
     }

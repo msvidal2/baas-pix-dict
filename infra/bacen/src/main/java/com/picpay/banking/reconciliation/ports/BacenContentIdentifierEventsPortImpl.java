@@ -1,8 +1,8 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
@@ -43,8 +43,8 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public Set<ContentIdentifierEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
-        Set<ContentIdentifierEvent> result = new HashSet<>();
+    public Set<ReconciliationEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
+        Set<ReconciliationEvent> result = new HashSet<>();
 
         boolean hasNext = true;
         LocalDateTime nextDate = startTime;

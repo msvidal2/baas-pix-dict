@@ -16,15 +16,15 @@ class SyncVerifierHistoricTest {
     void should_generate_4_actions_add_and_2_remove() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ContentIdentifierEvent> bacenEvents = Set.of(
+        final Set<ReconciliationEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("1", ReconciliationAction.REMOVE),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("2", ReconciliationAction.REMOVE),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
+            createContentIdentifier("6", ReconciliationAction.REMOVE));
 
         final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, new HashSet<>());
 
@@ -42,7 +42,7 @@ class SyncVerifierHistoricTest {
     void should_generate_5_actions_remove() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ContentIdentifierEvent> databaseEvents = Set.of(
+        final Set<ReconciliationEvent> databaseEvents = Set.of(
             createContentIdentifier("1"),
             createContentIdentifier("2"),
             createContentIdentifier("3"),
@@ -62,17 +62,17 @@ class SyncVerifierHistoricTest {
     void should_generate_action_to_remove_for_2_and_6() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ContentIdentifierEvent> bacenEvents = Set.of(
+        final Set<ReconciliationEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("1", ReconciliationAction.REMOVE),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("2", ReconciliationAction.REMOVE),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
+            createContentIdentifier("6", ReconciliationAction.REMOVE));
 
-        final Set<ContentIdentifierEvent> databaseEvents = Set.of(
+        final Set<ReconciliationEvent> databaseEvents = Set.of(
             createContentIdentifier("1"),
             createContentIdentifier("2"),
             createContentIdentifier("3"),
@@ -96,31 +96,31 @@ class SyncVerifierHistoricTest {
     void should_generate_7_actions() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ContentIdentifierEvent> bacenCids = Set.of(
+        final Set<ReconciliationEvent> bacenCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("1", ReconciliationAction.REMOVE),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("2", ReconciliationAction.REMOVE),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
-            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("6", ReconciliationAction.REMOVE),
+            createContentIdentifier("7", ReconciliationAction.REMOVE),
             createContentIdentifier("7"),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("8", ReconciliationAction.REMOVE),
             createContentIdentifier("8"),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED));
+            createContentIdentifier("8", ReconciliationAction.REMOVE));
 
-        final Set<ContentIdentifierEvent> databaseCids = Set.of(
+        final Set<ReconciliationEvent> databaseCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("1", ReconciliationAction.REMOVE),
             createContentIdentifier("2"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
             createContentIdentifier("6"),
-            createContentIdentifier("7", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
-            createContentIdentifier("8", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
-            createContentIdentifier("9", ContentIdentifierEvent.ContentIdentifierEventType.REMOVED),
+            createContentIdentifier("7", ReconciliationAction.REMOVE),
+            createContentIdentifier("8", ReconciliationAction.REMOVE),
+            createContentIdentifier("9", ReconciliationAction.REMOVE),
             createContentIdentifier("10"));
 
         final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenCids, databaseCids);

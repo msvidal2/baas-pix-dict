@@ -26,8 +26,8 @@ public class SyncVerifierHistoric {
     private final LocalDateTime synchronizedEnd;
     private final SyncVerifierResultType syncVerifierResultType;
 
-    public Set<SyncVerifierHistoricAction> identifyActions(final Set<ContentIdentifierEvent> bacenEvents,
-        final Set<ContentIdentifierEvent> databaseEvents) {
+    public Set<SyncVerifierHistoricAction> identifyActions(final Set<ReconciliationEvent> bacenEvents,
+        final Set<ReconciliationEvent> databaseEvents) {
 
         var bacenLatestActions = groupByCidMaxByDateAndMapToActions(bacenEvents);
         var databaseLatestActions = groupByCidMaxByDateAndMapToActions(databaseEvents);
@@ -72,10 +72,10 @@ public class SyncVerifierHistoric {
         return resultActions;
     }
 
-    private Set<SyncVerifierHistoricAction> groupByCidMaxByDateAndMapToActions(final Set<ContentIdentifierEvent> bacenEvents) {
+    private Set<SyncVerifierHistoricAction> groupByCidMaxByDateAndMapToActions(final Set<ReconciliationEvent> bacenEvents) {
         return new HashSet<>(bacenEvents.stream().collect(
-            Collectors.groupingBy(ContentIdentifierEvent::getCid,
-                Collectors.maxBy(Comparator.comparing(ContentIdentifierEvent::getEventOnBacenAt))))
+            Collectors.groupingBy(ReconciliationEvent::getCid,
+                Collectors.maxBy(Comparator.comparing(ReconciliationEvent::getEventOnBacenAt))))
             .values()).stream().map(
             event -> new SyncVerifierHistoricAction(this, event.orElseThrow().getCid(),
                 ActionType.resolve(event.get().getContentIdentifierType()),

@@ -1,8 +1,9 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
@@ -16,6 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.picpay.banking.reconciliation.entity.ContentIdentifierEventEntity.fromDomain;
+
 @Component
 @RequiredArgsConstructor
 public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPort {
@@ -24,9 +27,14 @@ public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPor
     private final PixKeyRepository pixKeyRepository;
 
     @Override
-    public Set<ContentIdentifierEvent> findAllAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedStart) {
+    public void save(ReconciliationEvent event) {
+        contentIdentifierEventRepository.save(fromDomain(event));
+    }
+
+    @Override
+    public Set<ReconciliationEvent> findAllAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedStart) {
         return contentIdentifierEventRepository.findByKeyTypeAndEventOnBacenAtGreaterThanEqual(keyType, synchronizedStart)
-            .stream().map(ContentIdentifierEventEntity::toContentIdentifierEvent).collect(Collectors.toSet());
+            .stream().map(ContentIdentifierEventEntity::toDomain).collect(Collectors.toSet());
     }
 
     @Override
