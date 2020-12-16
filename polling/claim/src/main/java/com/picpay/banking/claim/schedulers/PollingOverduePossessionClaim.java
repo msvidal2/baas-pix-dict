@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.schedulers;
 
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,16 +18,18 @@ public class PollingOverduePossessionClaim {
     @Value("${picpay.ispb}")
     private Integer ispb;
 
-    private final PollingClaimUseCase pollingClaimUseCase;
+    @Value("${picpay.polling.claim.limit}")
+    private Integer limit;
 
-    @Scheduled(initialDelayString = "${picpay.polling.claim.initial-delay}",
-            fixedDelayString = "${picpay.polling.claim.fixed-delay}")
+    private final PollingOverduePossessionClaimUseCase pollingOverduePossessionClaimUseCase;
+
+    @Scheduled(fixedDelay = 2000)
     public void run() {
-        log.info("List claims polling started");
+        log.info("List overdue possesion claims polling started");
 
-        pollingClaimUseCase.execute(ispb, limit);
+        pollingOverduePossessionClaimUseCase.execute(ispb, limit);
 
-        log.info("List claims polling finished");
+        log.info("List overdue possesion claims polling finished");
     }
 
 }
