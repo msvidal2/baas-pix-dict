@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum UpdateReason {
 
     CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    BRANCH_TRANSFER(Reason.BRANCH_TRANSFER.getValue());
+    BRANCH_TRANSFER(Reason.BRANCH_TRANSFER.getValue()),
+    RECONCILIATION(-1); // TODO: Implementar tipo para reconciliação
 
     private int value;
 }

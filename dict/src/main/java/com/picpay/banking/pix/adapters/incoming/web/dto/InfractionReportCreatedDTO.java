@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.InfractionReport;
-import com.picpay.banking.pix.core.domain.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +12,13 @@ import lombok.ToString;
 @ToString
 public class InfractionReportCreatedDTO {
 
-    private String infractionReportId;
-    private ReportedBy reportedBy;
-    private InfractionReportSituation situation;
-    private int ispbDebited;
-    private int ispbCredited;
-    private String dateCreate;
-    private String dateLastUpdate;
+    private final String infractionReportId;
+    private final ReportedBy reportedBy;
+    private final InfractionReportSituation situation;
+    private final int ispbDebited;
+    private final int ispbCredited;
+    private final String dateCreate;
+    private final String dateLastUpdate;
 
     public static InfractionReportCreatedDTO from(InfractionReport infractionReport) {
         return InfractionReportCreatedDTO.builder()

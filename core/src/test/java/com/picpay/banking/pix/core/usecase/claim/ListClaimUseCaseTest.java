@@ -1,38 +1,29 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.domain.ClaimType;
-import com.picpay.banking.pix.core.domain.DonorData;
-import com.picpay.banking.pix.core.ports.claim.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.ListPendingClaimPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimIspbItemValidator;
-import com.picpay.banking.pix.core.validators.claim.ClaimValidatorComposite;
+import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
 import static com.picpay.banking.pix.core.domain.ClaimSituation.OPEN;
-import static com.picpay.banking.pix.core.domain.KeyType.CPF;
-import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
-import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ListClaimUseCaseTest {
 
+    @InjectMocks
     private ListClaimUseCase useCase;
 
     @Mock
@@ -41,106 +32,105 @@ class ListClaimUseCaseTest {
     @Mock
     private ListPendingClaimPort listPendingClaimPort;
 
+    private Claim claimRequest;
+
+    private ClaimIterable claimIterablePending;
+
+    private ClaimIterable claimIterableIsDonor;
+
+    private ClaimIterable claimIterableIsClaimer;
+
     @BeforeEach
     void setup() {
-        var validator = new ClaimValidatorComposite(List.of(
-                new ClaimIspbItemValidator()
-        ));
-
-        useCase = new ListClaimUseCase(listPendingClaimPort, listClaimPort, validator);
-    }
-
-    @Test
-    void when_listClaimWithSuccess_expect_listOfClaims() {
-        var claimMock1 = Claim.builder()
-                .claimType(ClaimType.POSSESSION_CLAIM)
-                .participationFlow(0)
-                .key("28592755093")
-                .keyType(CPF)
-                .ispb(3543543)
+        claimRequest = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
                 .branchNumber("0001")
-                .accountType(CHECKING)
-                .accountNumber("123456")
-                .accountOpeningDate(LocalDateTime.now())
-                .personType(INDIVIDUAL_PERSON)
-                .cpfCnpj("28592755093")
-                .donorIspb(3456345)
-                .donorData(DonorData.builder()
-                        .cpfCnpj(70950328073L)
-                        .notificationDate(LocalDateTime.now())
-                        .name("Joana da Silva")
-                        .fantasyName("Joana da Silva")
-                        .branchNumber("0002")
-                        .accountNumber("098765")
-                        .accountType(CHECKING)
-                        .personType(INDIVIDUAL_PERSON)
-                        .build())
-                .claimId(randomUUID().toString())
-                .claimSituation(OPEN)
-                .resolutionThresholdDate(LocalDateTime.now())
-                .completionThresholdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
                 .build();
 
-        var claimIterableMock = ClaimIterable.builder()
+        var claimResponse = Claim.builder()
+                .ispb(22896431)
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .cpfCnpj("11122233300")
+                .branchNumber("0001")
+                .accountNumber("0007654321")
+                .accountType(AccountType.CHECKING)
+                .claimSituation(OPEN)
+                .build();
+
+        claimIterablePending = ClaimIterable.builder()
                 .count(1)
                 .hasNext(false)
-                .claims(List.of(
-                    claimMock1
-                ))
+                .claims(List.of(claimResponse))
                 .build();
 
-        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(),any(String.class)))
-                .thenReturn(claimIterableMock);
+        claimResponse.setClaimSituation(ClaimSituation.CANCELED);
+        claimResponse.setDonorIspb(22896431);
 
-        var claimRequest = Claim.builder()
-                .ispb(35345343)
-                .branchNumber("0001")
-                .accountNumber("123456")
-                .accountType(CHECKING)
+        claimIterableIsDonor = ClaimIterable.builder()
+                .count(1)
+                .hasNext(false)
+                .claims(List.of(claimResponse))
                 .build();
 
-        assertDoesNotThrow(() -> {
-            var claimIterable = useCase.execute(claimRequest,false, 10, true, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString());
+        claimResponse.setIsClaim(true);
+        claimResponse.setDonorIspb(0);
 
-            assertNotNull(claimIterable.getClaims());
-            assertEquals(1,claimIterable.getClaims().size());
-        });
+        claimIterableIsClaimer = ClaimIterable.builder()
+                .count(1)
+                .hasNext(false)
+                .claims(List.of(claimResponse))
+                .build();
     }
 
     @Test
-    void when_listClaimWithoutIspb_expect_exception() {
-        var claimRequest = Claim.builder()
-                .branchNumber("0001")
-                .accountNumber("123456")
-                .accountType(CHECKING)
-                .build();
+    void when_listPendentClaimsWithSuccess_expect_claimIterable() {
+        when(listPendingClaimPort.list(any(), anyInt(), anyString())).thenReturn(claimIterablePending);
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString()));
+        ClaimIterable claimList = useCase.execute(claimRequest, true, 5, true, false, LocalDateTime.now(), null, "12345");
+
+        assertEquals(1, claimList.getCount());
+
+        verify(listPendingClaimPort, times(1)).list(any(), anyInt(), anyString());
     }
 
     @Test
-    void when_listClaimWithoutClient_expect_exception() {
-        var claimRequest = Claim.builder()
-            .branchNumber("0001")
-            .accountNumber("123456")
-            .ispb(12345)
-            .accountType(CHECKING)
-            .build();
+    void when_listClaimsWhereIsDonorWithSuccess_expect_claimIterable() {
+        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(), anyString())).thenReturn(claimIterableIsDonor);
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, null, null, LocalDateTime.now(), LocalDateTime.now(), randomUUID().toString()));
+        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, null, true, LocalDateTime.now(), null, "12345");
+
+        assertEquals(1, claimList.getCount());
+
+        verify(listClaimPort, times(1)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
     }
 
     @Test
-    void when_listClaimWithBothClient_expect_exception() {
-        var claimRequest = Claim.builder()
-            .branchNumber("0001")
-            .accountNumber("123456")
-            .ispb(12345)
-            .accountType(CHECKING)
-            .build();
+    void when_listClaimsWhereIsClaimerWithSuccess_expect_claimIterable() {
+        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(), anyString())).thenReturn(claimIterableIsClaimer);
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest,false, 10, true, true, LocalDateTime.now(), LocalDateTime.now(),randomUUID().toString()));
+        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, true, null, LocalDateTime.now(), null, "12345");
+
+        assertEquals(1, claimList.getCount());
+
+        verify(listClaimPort, times(1)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
+    }
+
+    @Test
+    void when_listClaimsWithoutIsClaimerAndWithoutIsDonor_expect_illegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest, false, 5, null, null, LocalDateTime.now(), null, "12345"));
+
+        verify(listClaimPort, times(0)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
+    }
+
+    @Test
+    void when_listClaimsWithIsClaimerAndWithIsDonor_expect_illegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest, false, 5, true, true, LocalDateTime.now(), null, "12345"));
+
+        verify(listClaimPort, times(0)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
     }
 
 }

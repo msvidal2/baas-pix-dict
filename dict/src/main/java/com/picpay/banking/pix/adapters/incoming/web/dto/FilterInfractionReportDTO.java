@@ -1,5 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Luis Silva
@@ -20,21 +23,34 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FilterInfractionReportDTO {
 
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+    @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.Integer", required = true)
     @NotNull
     private Integer ispb;
 
-    private Boolean ehDebitado;
+    @ApiModelProperty(value = "Situation of Infraction", dataType="java.lang.String", required = true)
+    private InfractionReportSituation situation;
 
-    private Boolean ehCreditado;
+    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
+    @NotNull
+    private String startDate;
 
-    private Integer stRelatoInfracao;
+    @ApiModelProperty(value = "End date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
+    private String endDate;
 
-    private Boolean incluiDetalhes;
+    public LocalDateTime getStartDateAsLocalDateTime() {
+        if(startDate == null) {
+            return null;
+        }
+        return LocalDateTime.from(dateTimeFormatter.parse(startDate));
+    }
 
-    private LocalDateTime dtHrModificacaoInicio;
-
-    private LocalDateTime dtHrModificacaoFim;
-
-    private Integer nrLimite;
+    public LocalDateTime getEndDateAsLocalDateTime() {
+        if(endDate == null) {
+            return null;
+        }
+        return LocalDateTime.from(dateTimeFormatter.parse(endDate));
+    }
 
 }

@@ -1,6 +1,7 @@
 spring:
     main:
         banner-mode: off
+        allow-bean-definition-overriding: true
     application:
         name: sync
     kafka:
@@ -24,6 +25,25 @@ spring:
                             max.poll.interval.ms: ${SYNC_MAX_POLL_INTERVAL}
                         partitionCount: 1
                         concurrency: 1
+    datasource:
+        url: ${DB_URL}
+        driver-class-name: ${DB_DRIVE_CLASS_NAME}
+        password: ${DB_PASSWORD}
+        username: ${DB_USERNAME}
+    jpa:
+        database: ${DB_TYPE}
+        hibernate:
+            ddl-auto: none
+        show-sql: true
+        properties.hibernate.default_schema: dict
+        properties:
+            hibernate.jdbc.batch_size: 10
+    # TODO: Ver se isto esta certo
+    redis:
+        host: ${PICPAY_REDIS_HOST}
+        port: ${PICPAY_REDIS_PORT}
+        timeout: ${PICPAY_REDIS_TIMEOUT}
+        keyTtl: ${PICPAY_REDIS_KEY_TTL}
 
 server:
     tomcat:
@@ -32,6 +52,7 @@ server:
             min-spare: 50
 
 picpay:
+    ispb: 22896431
     service.name: ${spring.application.name}
     logging:
         level: ${PICPAY_LOGGING_LEVEL}
@@ -54,3 +75,32 @@ management:
             base-path: '/'
             path-mapping:
                 prometheus: 'metrics'
+# TODO: Ver se isso esta correto
+feign:
+    client.config.default:
+        logger-level: FULL
+        connect-timeout: 105000
+        read-timeout: 105000
+    compression:
+        request:
+            enabled: true
+            mime-types: text/xml,application/xml,application/json
+            min-request-size: 2048
+        response:
+            enabled: true
+            useGzipDecoder: true
+
+pix:
+    partner: ${PARTNER}
+    bacen:
+        url: ${BACEN_AWS_URL}
+        dict.url: ${BACEN_AWS_URL}/dict/api
+        dict.entries.url: ${BACEN_AWS_URL}/dict/api
+        dict.infraction.url: ${BACEN_AWS_URL}
+    services:
+        baas.token-manager.url: http://baas-pix-token-manager.ms.qa/pix/token-manager
+        jdpi:
+            dict.url: ${JDPI_DICT_URL}
+            claim.url: ${JDPI_CLAIM_URL}
+            headers.host: JDPI${ISPB_CLIENT_ID}${JDPI_ENVIRONMENT}.jdPSTI.rtm
+            infraction.url: ${JDPI_INFRACTION_URL}

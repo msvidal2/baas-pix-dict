@@ -2,13 +2,12 @@ package com.picpay.banking.pix.core.usecase.reconciliation.services;
 
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.exception.reconciliation.InvalidReconciliationOperationException;
-import com.picpay.banking.pix.core.ports.reconciliation.ContentIdentifierEventPort;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ContentIdentifierEventValidator {
 
-    private final ContentIdentifierEventPort port; // trocar porta para pixKey
+//    private final ContentIdentifierEventPort port; // trocar porta para pixKey
 
     public void validate(ReconciliationEvent event) throws Exception {
         // TODO: find cid on pixKey
