@@ -17,3 +17,4 @@ spring:
     keyTtl: ${PICPAY_REDIS_KEY_TTL}
     port: ${PICPAY_REDIS_PORT}
     timeout: ${PICPAY_REDIS_TIMEOUT}
+    password: ${PICPAY_REDIS_PASSWORD}
