@@ -30,7 +30,7 @@ public class ContentIdentifierEntity {
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
 
-    @Column
+    @Column(name = "pix_key")
     private String key;
 
     @Column(name = "creation_date")

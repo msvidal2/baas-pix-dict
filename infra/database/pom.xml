@@ -36,8 +36,9 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.22</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -70,20 +71,17 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>7.2.0</version>
                 <configuration>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:15432/postgres</url>
-                    <user>postgres</user>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <url>jdbc:mysql://localhost:3306/dict</url>
+                    <user>root</user>
                     <password>123456</password>
-                    <schemas>
-                        <schema>dict</schema>
-                    </schemas>
                     <outOfOrder>true</outOfOrder>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>42.2.18</version>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>8.0.22</version>
                     </dependency>
                 </dependencies>
             </plugin>
