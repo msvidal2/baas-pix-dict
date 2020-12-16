@@ -36,11 +36,11 @@ public class ReconciliationSyncUseCase {
                 .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
                 .build());
 
-        List<String> contentIdentifiers = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
+        List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
             syncVerifier.getKeyType(),
             syncVerifier.getSynchronizedAt());
 
-        var vsyncCurrent = syncVerifier.calculateVsync(contentIdentifiers);
+        var vsyncCurrent = syncVerifier.calculateVsync(cids);
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
         var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
 

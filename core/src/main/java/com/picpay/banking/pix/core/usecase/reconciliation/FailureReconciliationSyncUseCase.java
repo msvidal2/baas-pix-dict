@@ -1,10 +1,6 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -47,10 +43,10 @@ public class FailureReconciliationSyncUseCase {
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
-        Set<ContentIdentifierEvent> bacenEvents = bacenContentIdentifierEventsPort
+        Set<ReconciliationEvent> bacenEvents = bacenContentIdentifierEventsPort
             .list(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart(), LocalDateTime.now());
 
-        Set<ContentIdentifierEvent> databaseEvents = contentIdentifierEventPort
+        Set<ReconciliationEvent> databaseEvents = contentIdentifierEventPort
             .findAllAfterLastSuccessfulVsync(syncVerifierHistoric.getKeyType(), syncVerifierHistoric.getSynchronizedStart());
 
         var contentIdentifierActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);

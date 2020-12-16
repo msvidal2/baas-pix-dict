@@ -1,25 +1,15 @@
 package com.picpay.banking.reconciliation.entity;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent.ContentIdentifierEventType;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -57,16 +47,36 @@ public class ContentIdentifierEventEntity {
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ContentIdentifierEventType type;
+    private ReconciliationAction type;
 
-    public static ContentIdentifierEvent toContentIdentifierEvent(final ContentIdentifierEventEntity contentIdentifierEventEntity) {
-        return ContentIdentifierEvent.builder()
-            .cid(contentIdentifierEventEntity.getCid())
-            .contentIdentifierType(contentIdentifierEventEntity.getType())
-            .eventOnBacenAt(contentIdentifierEventEntity.getEventOnBacenAt())
-            .build();
+//    public static ContentIdentifierEvent toContentIdentifierEvent(final ContentIdentifierEventEntity contentIdentifierEventEntity) {
+//        return ContentIdentifierEvent.builder()
+//            .cid(contentIdentifierEventEntity.getCid())
+//            .contentIdentifierType(contentIdentifierEventEntity.getType())
+//            .eventOnBacenAt(contentIdentifierEventEntity.getEventOnBacenAt())
+//            .build();
+//    }
+
+    public ReconciliationEvent toDomain() {
+        return ReconciliationEvent.builder()
+                .cid(this.cid)
+                .key(this.key)
+                .keyType(this.keyType)
+                .action(this.type)
+                .eventOnBacenAt(this.eventOnBacenAt)
+                // TODO: check if action type is needed
+                .build();
     }
 
+    public static ContentIdentifierEventEntity fromDomain(ReconciliationEvent event) {
+        return ContentIdentifierEventEntity.builder()
+                .cid(event.getCid())
+                .key(event.getKey())
+                .keyType(event.getKeyType())
+                .eventOnBacenAt(event.getEventOnBacenAt())
+                .type(event.getAction())
+                .build();
+    }
 }
 
 

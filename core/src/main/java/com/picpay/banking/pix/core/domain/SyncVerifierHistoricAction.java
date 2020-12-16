@@ -9,9 +9,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class SyncVerifierHistoricAction {
 
-    private SyncVerifierHistoric syncVerifierHistoric;
-    private String cid;
-    private ActionType actionType;
+    private final SyncVerifierHistoric syncVerifierHistoric;
+    private final String cid;
+    private final ActionType actionType;
 
     @Override
     public boolean equals(final Object o) {
@@ -31,9 +31,12 @@ public class SyncVerifierHistoricAction {
         ADD,
         REMOVE;
 
-        public static ActionType resolve(final ContentIdentifierEvent.ContentIdentifierEventType eventType) {
-            if (eventType.equals(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)) return ADD;
-            return REMOVE;
+        public static ActionType resolve(final ReconciliationAction action) {
+            switch (action) {
+                case ADD: return ADD;
+                case REMOVE: return REMOVE;
+                default: throw new IllegalArgumentException();
+            }
         }
     }
 
