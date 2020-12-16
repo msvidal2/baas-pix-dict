@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.sync.eventsourcing;
+package com.picpay.banking.pix.dict.cidevents.eventsourcing;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.usecase.reconciliation.ContentIdentifierEventRecordUseCase;

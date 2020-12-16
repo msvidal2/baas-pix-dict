@@ -2,7 +2,6 @@ package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
@@ -40,11 +39,6 @@ public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPor
     @Override
     public Optional<PixKey> findPixKeyByContentIdentifier(final String cid) {
         return pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
-    }
-
-    @Override
-    public void save(final ContentIdentifierEvent event) {
-        contentIdentifierEventRepository.save(ContentIdentifierEventEntity.from(event));
     }
 
 }

@@ -11,10 +11,9 @@ import java.util.Objects;
 @Getter
 public class ReconciliationEvent {
 
-    @NonNull
+
     private final String key;
 
-    @NonNull
     private final KeyType keyType;
 
     @NonNull
@@ -26,8 +25,13 @@ public class ReconciliationEvent {
     @NonNull
     private final LocalDateTime eventOnBacenAt;
 
-    public Boolean isARemoveAction() { return this.getAction().equals(ReconciliationAction.REMOVE); }
-    public Boolean isAUpdateAction() { return this.getAction().equals(ReconciliationAction.UPDATE); }
+    public Boolean isARemoveAction() {
+        return this.getAction().equals(ReconciliationAction.REMOVED);
+    }
+
+    public Boolean isAUpdateAction() {
+        return this.getAction().equals(ReconciliationAction.UPDATED);
+    }
 
     @Override
     public boolean equals(final Object o) {
@@ -42,14 +46,4 @@ public class ReconciliationEvent {
         return Objects.hash(cid, action, eventOnBacenAt);
     }
 
-//    public ContentIdentifierEvent.KeyType getKeyType() throws Exception {
-//        switch (this.keyType) {
-//            case "PHONE": return ContentIdentifierEvent.KeyType.PHONE;
-//            case "CPF": return ContentIdentifierEvent.KeyType.CPF;
-//            case "CNPJ": return ContentIdentifierEvent.KeyType.CNPJ;
-//            case "EMAIL": return ContentIdentifierEvent.KeyType.EMAIL;
-//            case "EVP": return ContentIdentifierEvent.KeyType.EVP;
-//            default: throw new Exception(); // TODO: Create a custom specific exception
-//        }
-//    }
 }

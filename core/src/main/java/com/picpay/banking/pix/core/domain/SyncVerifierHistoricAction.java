@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.core.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +34,8 @@ public class SyncVerifierHistoricAction {
 
         public static ActionType resolve(final ReconciliationAction action) {
             switch (action) {
-                case ADD: return ADD;
-                case REMOVE: return REMOVE;
+                case ADDED: return ADD;
+                case REMOVED: return REMOVE;
                 default: throw new IllegalArgumentException();
             }
         }

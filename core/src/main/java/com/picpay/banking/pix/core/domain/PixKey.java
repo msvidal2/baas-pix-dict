@@ -89,7 +89,6 @@ public class PixKey {
         return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
     }
 
-    // TODO: Melhorar este ponto. Fiz isso somente para testar o fluxo todo.
     public void calculateCid() {
         byte[] requestIdBytes = new byte[16];
 

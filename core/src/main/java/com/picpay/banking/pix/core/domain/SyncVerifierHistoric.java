@@ -78,7 +78,7 @@ public class SyncVerifierHistoric {
                 Collectors.maxBy(Comparator.comparing(ReconciliationEvent::getEventOnBacenAt))))
             .values()).stream().map(
             event -> new SyncVerifierHistoricAction(this, event.orElseThrow().getCid(),
-                ActionType.resolve(event.get().getContentIdentifierType()),
+                ActionType.resolve(event.get().getAction()),
                 ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE))
             .collect(Collectors.toSet());
     }

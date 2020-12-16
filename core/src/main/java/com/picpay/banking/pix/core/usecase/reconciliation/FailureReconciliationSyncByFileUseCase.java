@@ -91,6 +91,7 @@ public class FailureReconciliationSyncByFileUseCase {
     }
 
     private void remove(final KeyType keyType, final Sync sync, final String cid) {
+        // FIXME: A classe ContentIdentifier não existe mais. Temos que refatorar este ponto para não usá-la.
         final var cidInDatabase = this.databaseContentIdentifierPort.findByCid(cid);
         cidInDatabase.ifPresent(contentIdentifier -> {
             this.databaseContentIdentifierPort.delete(cid);

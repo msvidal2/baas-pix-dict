@@ -2,6 +2,7 @@ package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
@@ -90,9 +91,7 @@ public class ListCidSetEventsResponse {
         public static ReconciliationEvent toContentIdentifierEvent(final ListCidSetEventsResponse.CidSetEvent cidSetEvent) {
             return ReconciliationEvent.builder()
                 .cid(cidSetEvent.getCid())
-//                .key(??)  TODO: Rever
-//                .action(??)   TODO: Rever
-                .keyType(KeyType.valueOf(cidSetEvent.getType().name()))
+                .action(ReconciliationAction.valueOf(cidSetEvent.getType().name()))
                 .eventOnBacenAt(cidSetEvent.getTimestamp())
                 .build();
         }

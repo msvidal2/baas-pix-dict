@@ -1,8 +1,9 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.domain.UpdateReason;
@@ -108,14 +109,13 @@ public class FailureReconciliationSyncUseCase {
             kv("createPixKey", pixKeyInBacen.getKey()));
 
         if (generateLogEvent) {
-            var event = ContentIdentifierEvent.builder()
-                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)
+            var event = ReconciliationEvent.builder()
+                .action(ReconciliationAction.ADDED)
                 .cid(pixKeyInBacen.getCid())
                 .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
                 .key(pixKeyInBacen.getKey())
                 .keyType(pixKeyInBacen.getType())
                 .build();
-
             contentIdentifierEventPort.save(event);
         }
     }
@@ -128,8 +128,8 @@ public class FailureReconciliationSyncUseCase {
 
         if (generateLogEvent) {
             if (!pixKeyInBacen.getCid().equals(pixKeyInDataBase.getCid())) {
-                var oldValue = ContentIdentifierEvent.builder()
-                    .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.REMOVED)
+                var oldValue = ReconciliationEvent.builder()
+                    .action(ReconciliationAction.REMOVED)
                     .cid(pixKeyInDataBase.getCid())
                     .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
                     .key(pixKeyInBacen.getKey())
@@ -138,8 +138,8 @@ public class FailureReconciliationSyncUseCase {
                 contentIdentifierEventPort.save(oldValue);
             }
 
-            var newValue = ContentIdentifierEvent.builder()
-                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.ADDED)
+            var newValue = ReconciliationEvent.builder()
+                .action(ReconciliationAction.ADDED)
                 .cid(pixKeyInBacen.getCid())
                 .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
                 .key(pixKeyInBacen.getKey())
@@ -156,14 +156,13 @@ public class FailureReconciliationSyncUseCase {
             kv("removePixKey", pixKeyInDatabase.getKey()));
 
         if (generateLogEvent) {
-            var event = ContentIdentifierEvent.builder()
-                .contentIdentifierType(ContentIdentifierEvent.ContentIdentifierEventType.REMOVED)
+            var event = ReconciliationEvent.builder()
+                .action(ReconciliationAction.REMOVED)
                 .cid(pixKeyInDatabase.getCid())
                 .eventOnBacenAt(LocalDateTime.now(ZoneOffset.UTC))
                 .key(pixKeyInDatabase.getKey())
                 .keyType(pixKeyInDatabase.getType())
                 .build();
-
             contentIdentifierEventPort.save(event);
         }
     }

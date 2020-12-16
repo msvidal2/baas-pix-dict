@@ -12,14 +12,9 @@ public interface ContentIdentifierEventPort {
 
     void save(ReconciliationEvent event);
 
-//    void update(ReconciliationEvent event);
+    Set<ReconciliationEvent> findAllAfterLastSuccessfulVsync(KeyType keyType,
+        LocalDateTime synchronizedStart);
 
-//    void remove(ReconciliationEvent event);
-
-    Set<ReconciliationEvent> findAllAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedStart); // TODO: trocar args para Reconciliation event
-
-    Optional<PixKey> findPixKeyByContentIdentifier(String cid); // TODO: trocar args para Reconciliation event
-
-    void save(ContentIdentifierEvent event);
+    Optional<PixKey> findPixKeyByContentIdentifier(String cid);
 
 }

@@ -69,9 +69,21 @@ class CreatePixKeyUseCaseTest {
                 .endToEndId("endToEndId").build();
 
         pixKeyCreated = PixKey.builder()
+                .requestId(UUID.randomUUID())
                 .key(pixKey.getKey())
                 .createdAt(LocalDateTime.now())
                 .startPossessionAt(LocalDateTime.now())
+                .type(KeyType.RANDOM)
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1234")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
                 .build();
     }
 
@@ -96,9 +108,21 @@ class CreatePixKeyUseCaseTest {
     @Test
     void when_executeWithSuccessRandomKey_expect_pixKeyWithCreatedAt() {
         var pixKeyCreatedMock = PixKey.builder()
+                .requestId(UUID.randomUUID())
                 .key(randomUUID().toString())
                 .createdAt(LocalDateTime.now())
                 .startPossessionAt(LocalDateTime.now())
+                .type(KeyType.RANDOM)
+                .ispb(1)
+                .nameIspb("Empresa Picpay")
+                .branchNumber("1")
+                .accountType(AccountType.SALARY)
+                .accountNumber("1234")
+                .accountOpeningDate(LocalDateTime.now())
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
+                .fantasyName("Nome Fantasia")
                 .build();
 
         when(createPixKeyBacenPortBacen.create(anyString(), any(), any()))

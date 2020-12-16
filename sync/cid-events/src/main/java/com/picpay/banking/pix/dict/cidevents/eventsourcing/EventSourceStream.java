@@ -1,4 +1,4 @@
-//package com.picpay.banking.pix.sync.eventsourcing;
+//package com.picpay.banking.pix.dict.cidevents.eventsourcing;
 //
 //import org.springframework.cloud.stream.annotation.Input;
 //import org.springframework.messaging.SubscribableChannel;

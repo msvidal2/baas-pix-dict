@@ -11,7 +11,7 @@ public class ContentIdentifierUtil {
     public static ReconciliationEvent createContentIdentifier(String cid) {
         return ReconciliationEvent.builder()
             .cid(cid)
-            .action(ReconciliationAction.ADD)
+            .action(ReconciliationAction.ADDED)
             .key("")
             .keyType(KeyType.CELLPHONE)
             .eventOnBacenAt(LocalDateTime.now())

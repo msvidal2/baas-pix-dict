@@ -49,14 +49,6 @@ public class ContentIdentifierEventEntity {
     @Enumerated(EnumType.STRING)
     private ReconciliationAction type;
 
-//    public static ContentIdentifierEvent toContentIdentifierEvent(final ContentIdentifierEventEntity contentIdentifierEventEntity) {
-//        return ContentIdentifierEvent.builder()
-//            .cid(contentIdentifierEventEntity.getCid())
-//            .contentIdentifierType(contentIdentifierEventEntity.getType())
-//            .eventOnBacenAt(contentIdentifierEventEntity.getEventOnBacenAt())
-//            .build();
-//    }
-
     public ReconciliationEvent toDomain() {
         return ReconciliationEvent.builder()
                 .cid(this.cid)
@@ -64,7 +56,6 @@ public class ContentIdentifierEventEntity {
                 .keyType(this.keyType)
                 .action(this.type)
                 .eventOnBacenAt(this.eventOnBacenAt)
-                // TODO: check if action type is needed
                 .build();
     }
 

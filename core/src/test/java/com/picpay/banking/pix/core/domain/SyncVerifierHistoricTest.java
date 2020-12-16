@@ -18,13 +18,13 @@ class SyncVerifierHistoricTest {
 
         final Set<ReconciliationEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVE),
+            createContentIdentifier("1", ReconciliationAction.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVE),
+            createContentIdentifier("2", ReconciliationAction.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVE));
+            createContentIdentifier("6", ReconciliationAction.REMOVED));
 
         final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, new HashSet<>());
 
@@ -64,13 +64,13 @@ class SyncVerifierHistoricTest {
 
         final Set<ReconciliationEvent> bacenEvents = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVE),
+            createContentIdentifier("1", ReconciliationAction.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVE),
+            createContentIdentifier("2", ReconciliationAction.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVE));
+            createContentIdentifier("6", ReconciliationAction.REMOVED));
 
         final Set<ReconciliationEvent> databaseEvents = Set.of(
             createContentIdentifier("1"),
@@ -98,29 +98,29 @@ class SyncVerifierHistoricTest {
 
         final Set<ReconciliationEvent> bacenCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVE),
+            createContentIdentifier("1", ReconciliationAction.REMOVED),
             createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVE),
+            createContentIdentifier("2", ReconciliationAction.REMOVED),
             createContentIdentifier("3"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVE),
-            createContentIdentifier("7", ReconciliationAction.REMOVE),
+            createContentIdentifier("6", ReconciliationAction.REMOVED),
+            createContentIdentifier("7", ReconciliationAction.REMOVED),
             createContentIdentifier("7"),
-            createContentIdentifier("8", ReconciliationAction.REMOVE),
+            createContentIdentifier("8", ReconciliationAction.REMOVED),
             createContentIdentifier("8"),
-            createContentIdentifier("8", ReconciliationAction.REMOVE));
+            createContentIdentifier("8", ReconciliationAction.REMOVED));
 
         final Set<ReconciliationEvent> databaseCids = Set.of(
             createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVE),
+            createContentIdentifier("1", ReconciliationAction.REMOVED),
             createContentIdentifier("2"),
             createContentIdentifier("4"),
             createContentIdentifier("5"),
             createContentIdentifier("6"),
-            createContentIdentifier("7", ReconciliationAction.REMOVE),
-            createContentIdentifier("8", ReconciliationAction.REMOVE),
-            createContentIdentifier("9", ReconciliationAction.REMOVE),
+            createContentIdentifier("7", ReconciliationAction.REMOVED),
+            createContentIdentifier("8", ReconciliationAction.REMOVED),
+            createContentIdentifier("9", ReconciliationAction.REMOVED),
             createContentIdentifier("10"));
 
         final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenCids, databaseCids);
