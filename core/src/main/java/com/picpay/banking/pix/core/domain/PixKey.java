@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,6 @@ import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -25,6 +25,7 @@ import static com.google.common.base.Charsets.UTF_8;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@EqualsAndHashCode(of = {"type", "key", "ispb", "branchNumber", "accountType", "accountNumber", "personType", "taxId"})
 public class PixKey {
 
     private static final String SEPARATOR = "&";
@@ -67,26 +68,6 @@ public class PixKey {
         }
 
         return Strings.padStart(taxId, size, '0');
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PixKey pixKey = (PixKey) o;
-        return type == pixKey.type &&
-            key.equals(pixKey.key) &&
-            ispb.equals(pixKey.ispb) &&
-            branchNumber.equals(pixKey.branchNumber) &&
-            accountType == pixKey.accountType &&
-            accountNumber.equals(pixKey.accountNumber) &&
-            personType == pixKey.personType &&
-            taxId.equals(pixKey.taxId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, key, ispb, branchNumber, accountType, accountNumber, personType, taxId);
     }
 
     public void calculateCid() {

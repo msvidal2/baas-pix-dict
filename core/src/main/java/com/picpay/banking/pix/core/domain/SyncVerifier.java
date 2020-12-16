@@ -6,19 +6,19 @@ import lombok.Getter;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Builder
 public class SyncVerifier {
 
+    private static final String EMPTY_VSYNC = "0000000000000000000000000000000000000000000000000000000000000000";
     private final KeyType keyType;
     private String vsync;
     private LocalDateTime synchronizedAt;
     private SyncVerifierResultType syncVerifierResultType;
 
     public String calculateVsync(final List<String> contentIdentifiers) {
-        if (vsync == null) vsync = "0000000000000000000000000000000000000000000000000000000000000000";
+        if (vsync == null) vsync = EMPTY_VSYNC;
 
         BigInteger vsyncAsBigInteger = new BigInteger(vsync, 16);
 
