@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static com.picpay.banking.pix.core.domain.ExecutionType.CLAIM_POLLING;
+import static com.picpay.banking.pix.core.domain.ExecutionType.CANCEL_PORTABILITY_POLLING;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,10 +27,10 @@ public class CancelPortabilityPollingUseCase {
         LocalDateTime startTime = LocalDateTime.now();
         try {
             poll(ispb, limit);
-            executionPort.save(Execution.success(startTime, LocalDateTime.now(), CLAIM_POLLING));
+            executionPort.save(Execution.success(startTime, LocalDateTime.now(), CANCEL_PORTABILITY_POLLING));
         } catch (Exception e) {
             log.error("Cancel Portability Polling failed: ", e);
-            executionPort.save(Execution.fail(startTime, LocalDateTime.now(), CLAIM_POLLING, e));
+            executionPort.save(Execution.fail(startTime, LocalDateTime.now(), CANCEL_PORTABILITY_POLLING, e));
         }
     }
 
