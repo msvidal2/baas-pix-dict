@@ -36,7 +36,7 @@ public class CancelPortabilityPollingUseCase {
 
     private void poll(final String ispb, final Integer limit) {
         log.info("Polling database for portabilities to cancel");
-        List<Claim> claimsToCancel = findClaimToCancelPort.find(ClaimType.PORTABILITY, ClaimSituation.getPending(), Integer.parseInt(ispb),
+        List<Claim> claimsToCancel = findClaimToCancelPort.find(ClaimType.PORTABILITY, List.of(ClaimSituation.AWAITING_CLAIM), Integer.parseInt(ispb),
                 LocalDateTime.now(), limit);
 
         log.debug("Portabilities to cancel found: {}", claimsToCancel.size());
