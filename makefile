@@ -5,35 +5,26 @@ APPLICATION?=maven
 build-maven:
 	@ mvn clean install
 
-build-images: build-maven
-	@ make --directory=dict build-image
-	@ make --directory=polling build-image
-	@ make --directory=worker build-image
-
 build-push-images: build-$(APPLICATION)
 	@ docker tag ${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION} 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION}
 	@ docker push 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION}
 
-build-core:
-	@ make --directory=core build-maven
+build-dict:
+	@ mvn --projects dict -am clean install
+	@ make --directory=dict build-image
 
-build-infra: build-core
-	@ make --directory=infra build
+build-polling-claim:
+	@ mvn --projects com.picpay.banking.pix.dict.polling:claim -am clean install
+	@ make --directory=polling build-claim-image
 
-build-dict: build-infra
-	@ make --directory=dict build
+build-polling-infraction:
+	@ mvn --projects com.picpay.banking.pix.dict.polling:bacen-infraction-task -am clean install
+	@ make --directory=polling build-infraction-image
 
-build-polling-claim: build-infra
-	@ make --directory=polling build-claim
+build-worker:
+	@ mvn --projects worker -am clean install
+	@ make --directory=worker build-image
 
-build-polling-infraction: build-infra
-	@ make --directory=polling build-infraction
-
-build-polling: build-infra
-	@ make --directory=polling build
-
-build-worker: build-infra
-	@ make --directory=worker build
-
-build-sync: build-infra
-	@ make --directory=sync/cid-files build
+build-sync:
+	@ mvn --projects com.picpay.banking.pix.dict:cid-files -am clean install
+	@ make --directory=sync/cid-files build-image
