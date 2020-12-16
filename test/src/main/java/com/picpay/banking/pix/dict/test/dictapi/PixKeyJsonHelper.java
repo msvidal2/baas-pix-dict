@@ -1,5 +1,9 @@
 package com.picpay.banking.pix.dict.test.dictapi;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PixKeyJsonHelper {
 
     public static String createCPF() {
@@ -15,6 +19,19 @@ public class PixKeyJsonHelper {
             "    \"cpfCnpj\": \"11660117046\",\n" +
             "    \"name\": \"Rodrigo Argentato\",\n" +
             "    \"reason\": \"CLIENT_REQUEST\"\n" +
+            "}";
+    }
+
+    public static String updateCPF() {
+        return "{\n" +
+            "  \"accountNumber\": \"0001098200\",\n" +
+            "  \"accountOpeningDate\": \"2020-08-14T13:59:12.000Z\",\n" +
+            "  \"accountType\": \"CHECKING\",\n" +
+            "  \"branchNumber\": \"0004\",\n" +
+            "  \"ispb\": 22896431,\n" +
+            "  \"reason\": \"CLIENT_REQUEST\",\n" +
+            "  \"type\": \"CPF\",\n" +
+            "  \"userId\": \"93405736099\"\n" +
             "}";
     }
 

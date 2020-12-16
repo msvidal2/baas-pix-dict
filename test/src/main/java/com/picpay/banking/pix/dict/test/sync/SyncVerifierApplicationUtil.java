@@ -26,6 +26,8 @@ public class SyncVerifierApplicationUtil {
         envs.add("PICPAY_LOGGING_APPENDER=CONSOLE");
         envs.add("PARTNER=bacen");
         envs.add("BACEN_AWS_URL=http://baas-pix-proxy-bacen.ms.qa");
+        envs.add("DB_SHOW_SQL=true");
+
 
         String[] envsAsArray = new String[envs.size()];
         for (int i = 0; i < envs.size(); i++) {

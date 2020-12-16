@@ -42,18 +42,11 @@ public class DatabaseUtils {
         return result.stream().findFirst().orElseThrow();
     }
 
-    public String findAnyPixKeyByType(final String keyType) {
-        return namedParameterJdbcTemplate.query(
-            "select k.key from dict.pix_key k where k.type = :keyType limit 1",
-            Map.of("keyType", keyType),
-            (rs, rowNum) -> rs.getString("")).get(0);
-    }
-
     public List<String> findCidEventsByPixKey(final String pixKey) {
         return namedParameterJdbcTemplate.query(
             "select e.type from dict.content_identifier_event e where e.pix_key = :pixKey",
             Map.of("pixKey", pixKey),
-            (rs, rowNum) -> rs.getString(""));
+            (rs, rowNum) -> rs.getString("type"));
     }
 
 }

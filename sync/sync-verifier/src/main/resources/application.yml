@@ -1,27 +1,10 @@
 spring:
-    main:
-        banner-mode: off
-        allow-bean-definition-overriding: true
     application:
         name: sync
-    datasource:
-        url: ${DB_URL}
-        driver-class-name: ${DB_DRIVE_CLASS_NAME}
-        password: ${DB_PASSWORD}
-        username: ${DB_USERNAME}
-    jpa:
-        database: ${DB_TYPE}
-        hibernate:
-            ddl-auto: none
-        show-sql: true
-        properties.hibernate.default_schema: dict
-        properties:
-            hibernate.jdbc.batch_size: 10
-    redis:
-        host: ${PICPAY_REDIS_HOST}
-        port: ${PICPAY_REDIS_PORT}
-        timeout: ${PICPAY_REDIS_TIMEOUT}
-        keyTtl: ${PICPAY_REDIS_KEY_TTL}
+    profiles:
+        active:
+            - bacen
+            - database
 
 server:
     tomcat:
@@ -53,24 +36,3 @@ management:
             base-path: '/'
             path-mapping:
                 prometheus: 'metrics'
-feign:
-    client.config.default:
-        logger-level: FULL
-        connect-timeout: 105000
-        read-timeout: 105000
-    compression:
-        request:
-            enabled: true
-            mime-types: text/xml,application/xml,application/json
-            min-request-size: 2048
-        response:
-            enabled: true
-            useGzipDecoder: true
-
-pix:
-    partner: ${PARTNER}
-    bacen:
-        url: ${BACEN_AWS_URL}
-        dict.url: ${BACEN_AWS_URL}/dict/api
-        dict.entries.url: ${BACEN_AWS_URL}/dict/api
-        dict.infraction.url: ${BACEN_AWS_URL}
