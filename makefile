@@ -6,8 +6,8 @@ build-maven:
 	@ mvn clean install
 
 build-push-images: build-$(APPLICATION)
-	@ docker tag ${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION} 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION}
-	@ docker push 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}-${APPLICATION}
+	docker tag ${GO_PIPELINE_GROUP_NAME}:${TAG} 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}
+	docker push 493959330548.dkr.ecr.us-east-1.amazonaws.com/${GO_PIPELINE_GROUP_NAME}:${TAG}
 
 build-dict:
 	@ mvn --projects dict -am clean install
