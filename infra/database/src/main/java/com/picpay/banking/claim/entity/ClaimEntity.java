@@ -26,7 +26,7 @@ public class ClaimEntity {
     @Enumerated(EnumType.STRING)
     private ClaimType type;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "pix_key")
     private String key;
 
     @Column(nullable = false)

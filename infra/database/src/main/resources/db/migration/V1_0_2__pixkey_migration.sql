@@ -1,26 +1,26 @@
-CREATE TABLE dict.pix_key
+CREATE TABLE IF NOT EXISTS pix_key
 (
-    key character varying(100)  NOT NULL,
-    type character varying(10)  NOT NULL,
+    pix_key varchar(100)  NOT NULL,
+    type varchar(10)  NOT NULL,
     participant integer NOT NULL,
-    branch character varying(4) NULL,
-    account_number character varying(20) NOT NULL,
-    account_type character varying(10) NOT NULL,
-    opening_date timestamp without time zone NOT NULL,
-    person_type character varying(20) NOT NULL,
-    tax_id character varying(14) NOT NULL,
-    name character varying(100) NOT NULL,
-    reason character varying(20) NOT NULL,
-    correlation_id character varying(32) NOT NULL,
-    creation_date timestamp without time zone NOT NULL,
-    ownership_date timestamp without time zone NOT NULL,
-    update_date timestamp without time zone,
-    open_claim_creation_date timestamp without time zone,
-    request_id character varying(36) NOT NULL,
-    CONSTRAINT pix_key_primary_key PRIMARY KEY (key, type)
+    branch varchar(4) NULL,
+    account_number varchar(20) NOT NULL,
+    account_type varchar(10) NOT NULL,
+    opening_date timestamp NOT NULL,
+    person_type varchar(20) NOT NULL,
+    tax_id varchar(14) NOT NULL,
+    name varchar(100) NOT NULL,
+    reason varchar(20) NOT NULL,
+    correlation_id varchar(32) NOT NULL,
+    creation_date timestamp NOT NULL,
+    ownership_date timestamp NOT NULL,
+    update_date timestamp ,
+    open_claim_creation_date timestamp ,
+    request_id varchar(36) NOT NULL,
+    CONSTRAINT pix_key_primary_key PRIMARY KEY (pix_key, type)
 );
 
-CREATE INDEX pix_key_key ON dict.pix_key (key);
-CREATE INDEX pix_key_key_type ON dict.pix_key (key, type);
-CREATE INDEX pix_key_taxId ON dict.pix_key (tax_id);
-CREATE INDEX pix_key_account ON dict.pix_key (participant, branch, account_number, account_type);
+CREATE INDEX pix_key_key ON pix_key (pix_key);
+CREATE INDEX pix_key_key_type ON pix_key (pix_key, type);
+CREATE INDEX pix_key_taxId ON pix_key (tax_id);
+CREATE INDEX pix_key_account ON pix_key (participant, branch, account_number, account_type);

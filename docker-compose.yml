@@ -2,28 +2,16 @@ version: "3.7"
 
 services:
 
-    postgres:
-        container_name: postgres
-        image: postgres
+    mysql:
+        container_name: mysql
+        image: mysql
         environment:
-            POSTGRES_PASSWORD: "123456"
+            MYSQL_USER: dict
+            MYSQL_PASSWORD: 123456
+            MYSQL_ROOT_PASSWORD: 123456
         ports:
-            - "15432:5432"
-        volumes:
-            - postgres:/var/lib/postgresql/data
-        networks:
-            - baas_pix_net
-
-    pgadmin:
-        container_name: pgadmin
-        image: dpage/pgadmin4
-        environment:
-            PGADMIN_DEFAULT_EMAIL: "pix@picpay.com"
-            PGADMIN_DEFAULT_PASSWORD: "123456"
-        ports:
-            - "16543:80"
-        depends_on:
-            - postgres
+            - 3306:3306
+            - 33060:33060
         networks:
             - baas_pix_net
 

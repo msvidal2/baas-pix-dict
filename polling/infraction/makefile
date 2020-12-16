@@ -4,6 +4,6 @@ build-maven:
 	mvn clean install
 
 build-image:
-	docker build -t picpay/baas-pix-dict-polling-infraction .
+	docker build -t ${GO_PIPELINE_GROUP_NAME}:${TAG}-polling-infraction .
 
 build: build-maven build-image

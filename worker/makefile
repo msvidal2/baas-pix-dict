@@ -4,6 +4,6 @@ build-maven:
 	mvn clean install
 
 build-image:
-	docker build -t picpay/baas-pix-dict-worker .
+	docker build -t ${GO_PIPELINE_GROUP_NAME}:${TAG}-worker .
 
 build: build-maven build-image
