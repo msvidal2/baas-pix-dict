@@ -36,6 +36,7 @@ public class SyncVerifierApplicationUtil {
 
         String onlySyncVerifierParameter = onlySyncVerifier ? " -onlySyncVerifier" : "";
 
+        // FIXME: Corrigir a foram de rodar o projeto
         Process process = Runtime.getRuntime().exec(
             "java -jar /Users/rodrigo.argentato/src/picpay/pix/baas-pix-dict/sync/sync-verifier/target/sync-verifier-1.0-SNAPSHOT.jar -keyType " + keyType + onlySyncVerifierParameter,
             envsAsArray);
