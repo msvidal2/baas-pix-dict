@@ -2,7 +2,7 @@ feign:
   client:
     config:
       default:
-        logger-level: ${HTTP_LOG_LEVEL:BASIC}
+        logger-level: BASIC
         connect-timeout: 105000
         read-timeout: 105000
   compression:
@@ -14,12 +14,9 @@ feign:
       enabled: true
       useGzipDecoder: true
 pix:
-  participant: ${ISPB_CLIENT_ID}
   bacen:
     dict:
-      url: ${BACEN_AWS_URL}
-  partner: ${PARTNER}
-
+      url: http://baas-pix-proxy-bacen.ms.qa
 logging:
   level:
-    com.picpay.banking: ${FEIGN_CLIENTS_LOG_LEVEL:INFO}
+    com.picpay.banking: DEBUG
