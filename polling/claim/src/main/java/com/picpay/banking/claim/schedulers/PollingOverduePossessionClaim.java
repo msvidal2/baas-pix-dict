@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.schedulers;
 
-import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

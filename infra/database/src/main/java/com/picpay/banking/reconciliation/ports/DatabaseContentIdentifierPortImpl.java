@@ -1,11 +1,6 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
@@ -67,7 +62,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
         final var contentIdentifierActionEntity = ContentIdentifierActionEntity.builder()
             .action(action)
             .cid(cid)
-            .pixKey(PixKeyEntity.from(key, CreateReason.RECONCILIATION))
+            .pixKey(PixKeyEntity.from(key, Reason.RECONCILIATION))
             .idContentIdentifierFile(idReference)
             .build();
 
