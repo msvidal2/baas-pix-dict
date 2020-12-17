@@ -1,46 +1,16 @@
 server:
   compression:
     enabled: true
-  shutdown: graceful
 
 spring:
-  main:
-    banner-mode: off
-    allow-bean-definition-overriding: true
   cloud:
     stream:
       bindings:
-        new-infractions:
-          destination: new-infraction-reports
+        claim-notifications:
+          destination: claim-notifications-topic
           binder: kafka
-    task:
-      name: infraction-polling
-      closecontext-enabled: true
-      initialize-enabled: false
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
   redis:
     enabled: false
-
-logging:
-  level:
-    com:
-      picpay:
-        banking: DEBUG
-
-picpay:
-  ispb: 22896431
-  polling:
-    infraction:
-      limit: 200
-
-management:
-  endpoint:
-    health:
-      probes:
-        enabled: true
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: prometheus, health
-      path-mapping:
-        prometheus: '''metrics'''
