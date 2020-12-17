@@ -6,7 +6,7 @@ spring:
     cloud:
         config:
             uri: http://localhost:8888
-            name: dict-sync-cid-file, dict
+            name: dict-sync-cid-file,dict-bacen,dict-database
     profiles:
         active:
             - local

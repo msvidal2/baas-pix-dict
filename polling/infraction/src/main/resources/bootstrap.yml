@@ -6,7 +6,7 @@ spring:
     cloud:
         config:
             uri: http://localhost:8888
-            name: dict-polling-infraction, dict
+            name: dict-polling-infraction,dict-bacen,dict-database,dict-messaging
     profiles:
         active:
             - local

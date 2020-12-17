@@ -8,4 +8,4 @@ EXPOSE 8080
 
 RUN sed -i 's/${NEW_RELIC_APP_NAME}/'"${APP_NAME}"'/g' /newrelic/newrelic.yml
 
-CMD java $@ -javaagent:/newrelic/newrelic.jar -jar app.jar
+CMD java -Dspring.profiles.active='${environment}'  $@ -javaagent:/newrelic/newrelic.jar -jar app.jar

@@ -78,16 +78,14 @@ spring:
             partitionCount: 1
 
 management:
-  health:
-    diskspace:
-      enabled: false
   endpoint:
     health:
+      probes:
+        enabled: true
       show-details: always
   endpoints:
     web:
       exposure:
         include: prometheus, health
-      base-path: '/'
       path-mapping:
-        prometheus: 'metrics'
+        prometheus: '''metrics'''
