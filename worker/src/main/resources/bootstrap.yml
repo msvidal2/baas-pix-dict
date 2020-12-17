@@ -1,0 +1,16 @@
+spring:
+    main:
+        banner-mode: off
+        allow-bean-definition-overriding: true
+    application:
+        name: dict-infraction-worker
+    cloud:
+        config:
+            uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+            name: dict-infraction-worker,dict-database,dict-bacen,dict-messaging
+    profiles:
+        active:
+            - ${ENV:local}
+            - bacen-${ENV:local}
+            - database-${ENV:local}
+            - messaging-${ENV:local}

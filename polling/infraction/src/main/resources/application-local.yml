@@ -1,0 +1,25 @@
+server:
+  compression:
+    enabled: true
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        new-infractions:
+          destination: new-infraction-reports
+          binder: kafka
+    task:
+      name: infraction-polling
+      closecontext-enabled: true
+      initialize-enabled: false
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+  redis:
+    enabled: false
+picpay:
+  polling:
+    infraction:
+      limit: 200
+  ispb: 22896431

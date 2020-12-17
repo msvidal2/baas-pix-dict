@@ -1,0 +1,17 @@
+spring:
+    main:
+        banner-mode: off
+        allow-bean-definition-overriding: true
+    application:
+        name: dict-polling-claim
+    cloud:
+        config:
+            uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+            name: dict-polling-infraction,dict-bacen,dict-database,dict-messaging
+    profiles:
+        active:
+            - ${ENV:local}
+            - local
+            - bacen-local
+            - database-local
+            - messaging-local
