@@ -11,3 +11,4 @@ spring:
             - bacen-${ENV:local}
             - database-${ENV:local}
 
+

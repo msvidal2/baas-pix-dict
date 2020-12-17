@@ -5,10 +5,10 @@ spring:
         name: dict-sync-cid-file
     cloud:
         config:
-            uri: http://localhost:8888
+            uri: ${CONFIG_SERVER_URI:http://localhost:8888}
             name: dict-sync-cid-file,dict-bacen,dict-database
     profiles:
         active:
-            - local
-            - bacen-local
-            - database-local
+            - ${ENV:local}
+            - bacen-${ENV:local}
+            - database-${ENV:local}
