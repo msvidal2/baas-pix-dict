@@ -1,0 +1,15 @@
+spring:
+    main:
+        banner-mode: off
+    application:
+        name: dict-polling-claim
+    cloud:
+        config:
+            uri: http://localhost:8888
+            name: dict-polling-infraction, dict
+    profiles:
+        active:
+            - local
+            - bacen-local
+            - database-local
+            - messaging-local

@@ -1,0 +1,12 @@
+spring:
+    application:
+        name: dict
+    cloud:
+        config:
+            uri: http://localhost:8888
+    profiles:
+        active:
+            - local
+            - bacen-local
+            - database-local
+

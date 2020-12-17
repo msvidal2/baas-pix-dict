@@ -1,12 +1,10 @@
 spring:
     application:
-        name: sync-cid-file
+        name: dict-sync-cid-file
     cloud:
         task:
             name: sync-cid-file
-    profiles:
-        active:
-            - bacen
-            - database
+        config:
+            enabled: false
 picpay:
     ispb: 22896431

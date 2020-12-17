@@ -1,0 +1,15 @@
+spring:
+    main:
+        banner-mode: off
+    application:
+        name: dict-infraction-worker
+    cloud:
+        config:
+            uri: http://localhost:8888
+            name: dict-infraction-worker, dict
+    profiles:
+        active:
+            - local
+            - bacen-local
+            - database-local
+            - messaging-local

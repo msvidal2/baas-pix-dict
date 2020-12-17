@@ -1,0 +1,14 @@
+spring:
+    main:
+        banner-mode: off
+    application:
+        name: dict-sync-cid-file
+    cloud:
+        config:
+            uri: http://localhost:8888
+            name: dict-sync-cid-file, dict
+    profiles:
+        active:
+            - local
+            - bacen-local
+            - database-local

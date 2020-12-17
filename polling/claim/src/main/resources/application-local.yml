@@ -1,14 +1,8 @@
 server:
-  port: ${LOCAL_PORT:8080}
   compression:
     enabled: true
 
 spring:
-  profiles:
-    active:
-      - database
-      - bacen
-      - messaging
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
@@ -16,19 +10,19 @@ spring:
     stream:
       bindings:
         claim-notifications:
-          destination: ${CLAIM_NOTIFICATIONS_TOPIC}
+          destination: claim-notifications-topic
           binder: kafka
 
   redis:
     enabled: false
 
 picpay:
-  ispb: ${ISPB_CLIENT_ID}
+  ispb: 22896431
   polling:
     claim:
-      initial-delay: ${POLLING_SCHEDULER_CLAIM_INITIAL_DELAY}
-      fixed-delay: ${POLLING_SCHEDULER_CLAIM_FIXED_DELAY}
-      limit: ${POLLING_SCHEDULER_CLAIM_LIMIT}
+      initial-delay: 10000
+      fixed-delay: 360000
+      limit: 200
 
 management:
   endpoint:
