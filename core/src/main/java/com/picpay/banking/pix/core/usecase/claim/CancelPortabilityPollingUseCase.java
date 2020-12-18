@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,11 @@ public class CancelPortabilityPollingUseCase {
     private final CancelClaimBacenPort cancelClaimBacenPort;
     private final CancelClaimPort cancelClaimPort;
     private final ExecutionPort executionPort;
+    private final SendToCancelPortabilityPort sendToCancelPortabilityPort;
+    private String donorParticipant;
 
     public void execute(String ispb, Integer limit) {
+        this.donorParticipant = ispb;
         LocalDateTime startTime = LocalDateTime.now();
         try {
             poll(ispb, limit);
@@ -40,11 +44,11 @@ public class CancelPortabilityPollingUseCase {
                 LocalDateTime.now(), limit);
 
         log.debug("Portabilities to cancel found: {}", claimsToCancel.size());
-        claimsToCancel.forEach(c -> cancelClaim(c, ispb));
+        claimsToCancel.forEach(c -> sendToCancelPortabilityPort.send(c));
         log.debug("Portabilities canceled");
     }
 
-    private void cancelClaim(Claim claim, String donorParticipant){
+    public void cancelClaim(Claim claim){
         String requestIdentifier = UUID.randomUUID().toString();
         claim.setClaimSituation(ClaimSituation.CANCELED);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);

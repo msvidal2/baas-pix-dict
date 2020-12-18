@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ public class CancelPortabilityPollingUseCaseTest {
 
     @Mock
     private ExecutionPort executionPort;
+
+    @Mock
+    private SendToCancelPortabilityPort sendToCancelPortabilityPort;
 
     private Claim claim;
 
@@ -70,14 +74,15 @@ public class CancelPortabilityPollingUseCaseTest {
     @Test
     void execute_success() {
         when(findClaimToCancelPort.find(any(), any(), anyInt(), any(), anyInt())).thenReturn(claims);
-        when(cancelClaimBacenPort.cancel(anyString(), any(), anyInt(), anyString())).thenReturn(claim);
+        doNothing().when(sendToCancelPortabilityPort).send(any());
 
         useCase.execute("22896431", 200);
 
         verify(findClaimToCancelPort, times(1)).find(any(), any(), anyInt(), any(), anyInt());
-        verify(cancelClaimBacenPort, times(1)).cancel(anyString(), any(), anyInt(), anyString());
-        verify(cancelClaimPort, times(1)).cancel(any(), any(), anyString());
+        verify(cancelClaimBacenPort, times(0)).cancel(anyString(), any(), anyInt(), anyString());
+        verify(cancelClaimPort, times(0)).cancel(any(), any(), anyString());
         verify(executionPort, times(1)).save(any());
+        verify(sendToCancelPortabilityPort, times(1)).send(any());
     }
 
     @Test

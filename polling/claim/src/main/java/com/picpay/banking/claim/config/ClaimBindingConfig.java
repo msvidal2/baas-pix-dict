@@ -20,4 +20,9 @@ public class ClaimBindingConfig {
         return () -> null;
     }
 
+    @Bean
+    public CancelPortabilityPollingOutputBinding cancelPortabilityPollingOutputBinding() {
+        return () -> null;
+    }
+
 }
