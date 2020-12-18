@@ -16,6 +16,8 @@ spring:
 
     redis:
         enabled: false
+    flyway:
+        enabled: false
 
 picpay:
     ispb: 22896431
@@ -24,7 +26,6 @@ picpay:
             initial-delay: 10000
             fixed-delay: 360000
             limit: 200
-
 management:
     endpoint:
         health:

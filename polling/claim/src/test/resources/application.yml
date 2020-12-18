@@ -30,8 +30,8 @@ spring:
       ddl-auto: none
     show-sql: true
 
-  flyway:
-    enabled: false
+flyway:
+  enabled: false
 
 feign:
   compression:

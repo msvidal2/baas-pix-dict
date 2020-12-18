@@ -11,20 +11,10 @@ import java.util.Optional;
 
 public interface DatabaseContentIdentifierPort {
 
-    void save(ContentIdentifier contentIdentifier);
-
     void saveFile(ContentIdentifierFile contentIdentifierFile);
 
     Optional<ContentIdentifierFile> findLastFileRequested(KeyType keyType);
 
-    List<ContentIdentifier> listAll(KeyType keyType);
-
-    Optional<ContentIdentifier> findByCid(String cid);
-
-    void delete(String cid);
-
     void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierFileAction action);
-
-    Optional<ContentIdentifier> findByKey(String key);
 
 }
