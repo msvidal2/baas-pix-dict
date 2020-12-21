@@ -41,10 +41,10 @@ public class InfractionAcknowledgeUseCase {
         if (infractionReport.getSituation().equals(InfractionReportSituation.OPEN)) {
             switch (infractionReport.getReportedBy()) {
                 case DEBITED_PARTICIPANT:
-                    if (!infractionReport.getIspbDebited().equalsIgnoreCase("22896431")) return true;
+                    if (!infractionReport.getIspbDebited().equalsIgnoreCase(ispbPicpay)) return true;
                     break;
                 case CREDITED_PARTICIPANT:
-                    if (!infractionReport.getIspbCredited().equalsIgnoreCase("22896431")) return true;
+                    if (!infractionReport.getIspbCredited().equalsIgnoreCase(ispbPicpay)) return true;
                     break;
             }
         }
