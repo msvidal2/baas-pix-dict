@@ -1,13 +1,6 @@
 spring:
     application:
-        name: sync
-    profiles:
-        active:
-            - bacen
-            - database
-    kafka:
-        bootstrap-servers: ${KAFKA_SERVERS}
-        consumer.auto-offset-reset: latest
+        name: cid-events
     cloud:
         stream:
             kafka.binder.brokers: ${KAFKA_SERVERS}
@@ -34,9 +27,6 @@ picpay:
     logging:
         level: ${PICPAY_LOGGING_LEVEL}
         appender: ${PICPAY_LOGGING_APPENDER}
-
-logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
-#logging.level.org.apache.kafka.clients: OFF
 
 management:
     health.diskspace.enabled: false

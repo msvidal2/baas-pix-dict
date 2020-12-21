@@ -7,6 +7,8 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.NotifyReconciliationMessagingPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import org.junit.jupiter.api.Assertions;
@@ -34,8 +36,14 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Mock
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
+    @Mock
+    private FindPixKeyPort findPixKeyPort;
+
+    @Mock
+    private NotifyReconciliationMessagingPort notifyReconciliationMessagingPort;
+
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort, findPixKeyPort, notifyReconciliationMessagingPort);
 
     @Test
     public void testUpdate() {

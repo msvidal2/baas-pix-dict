@@ -24,11 +24,8 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     @Override
     @Transactional
     public PixKey remove(String pixKey, Integer participant) {
-
-        pixKeyRepository.deleteByIdKeyAndParticipant(pixKey, participant);
-
-        return PixKey.builder().key(pixKey).build();
-
+        var pixKeyEntity = pixKeyRepository.deleteByIdKeyAndParticipant(pixKey, participant);
+        return pixKeyEntity.toPixKey();
     }
 
 }

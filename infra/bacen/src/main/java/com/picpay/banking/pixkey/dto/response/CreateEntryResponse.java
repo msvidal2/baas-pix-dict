@@ -59,6 +59,7 @@ public class CreateEntryResponse {
             .taxId(entry.getOwner().getTaxIdNumber())
             .name(entry.getOwner().getName())
             .createdAt(entry.getCreationDate())
+            .updatedAt(responseTime)
             .startPossessionAt(entry.getKeyOwnershipDate())
             .endToEndId(requestIdentifier)
             .correlationId(correlationId)

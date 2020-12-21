@@ -153,6 +153,7 @@ public class PixKeyEntity {
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
             .cid(cid)
+            .updatedAt(updateDate)
             //TODO incluir claim?
             //                .claim()
             .build();

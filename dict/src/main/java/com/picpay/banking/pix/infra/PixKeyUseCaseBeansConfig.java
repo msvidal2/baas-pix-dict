@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPo
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.NotifyReconciliationMessagingPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
@@ -15,40 +16,51 @@ import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.UpdateAccountPixKeyUseCase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class PixKeyUseCaseBeansConfig {
 
+    private final CreatePixKeyBacenPort createPixKeyBacenPort;
+    private final CreatePixKeyPort createPixKeyPort;
+    private final FindPixKeyPort findPixKeyPort;
+    private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
+    private final NotifyReconciliationMessagingPort notifyReconciliationMessagingPort;
+    private final RemovePixKeyPort removePixKeyPort;
+    private final RemovePixKeyBacenPort removePixKeyBacenPort;
+    private final FindPixKeyBacenPort findPixKeyBacenPort;
+    private final ListPixKeyPort listPixKeyPort;
+    private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private final UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
+
     @Bean
-    public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
-                                                   CreatePixKeyPort createPixKeyPort,
-                                                   FindPixKeyPort findPixKeyPort,
-                                                   FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
-        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
+    public CreatePixKeyUseCase createPixKeyUseCase() {
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort,
+            notifyReconciliationMessagingPort);
     }
 
     @Bean
-    public RemovePixKeyUseCase removePixKeyUseCase(RemovePixKeyPort removePixKeyPort,
-                                                   RemovePixKeyBacenPort removePixKeyBacenPort) {
-        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort);
+    public RemovePixKeyUseCase removePixKeyUseCase() {
+        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort, notifyReconciliationMessagingPort);
     }
 
     @Bean
-    public FindPixKeyUseCase findPixKeyUseCase(FindPixKeyPort findPixKeyPort,
-                                               FindPixKeyBacenPort findPixKeyBacenPort) {
+    public FindPixKeyUseCase findPixKeyUseCase() {
         return new FindPixKeyUseCase(findPixKeyPort, findPixKeyBacenPort);
     }
 
     @Bean
-    public ListPixKeyUseCase listPixKeyUseCase(ListPixKeyPort listPixKeyPort) {
+    public ListPixKeyUseCase listPixKeyUseCase() {
         return new ListPixKeyUseCase(listPixKeyPort);
     }
 
     @Bean
-    public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(UpdateAccountPixKeyPort updateAccountPixKeyPort,
-                                                                 UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort) {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort);
+    public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase() {
+        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort,
+            notifyReconciliationMessagingPort);
     }
+
 }

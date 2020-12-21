@@ -1,26 +1,17 @@
 spring:
-    application:
-        name: sync
-    profiles:
-        active:
-            - bacen
-            - database
-
+    main:
+        allow-bean-definition-overriding: true
 server:
     tomcat:
         threads:
             max: 400
             min-spare: 50
-
 picpay:
     ispb: 22896431
     service.name: ${spring.application.name}
     logging:
         level: ${PICPAY_LOGGING_LEVEL}
         appender: ${PICPAY_LOGGING_APPENDER}
-
-logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
-#logging.level.org.apache.kafka.clients: OFF
 
 management:
     health:

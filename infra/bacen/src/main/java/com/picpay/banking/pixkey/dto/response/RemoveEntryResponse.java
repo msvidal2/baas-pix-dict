@@ -42,6 +42,7 @@ public class RemoveEntryResponse {
         return PixKey.builder()
                 .key(key)
                 .correlationId(correlationId)
+                .updatedAt(responseTime)
                 .build();
     }
 

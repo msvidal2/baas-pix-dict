@@ -1,0 +1,14 @@
+spring:
+    application:
+        name: sync-verifier
+    cloud:
+        config:
+            uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+            name: dict-sync-verifier,dict-sync-verifier-bacen,dict-sync-verifier-database
+    profiles:
+        active:
+            - ${ENV:local}
+            - bacen-${ENV:local}
+            - database-${ENV:local}
+
+
