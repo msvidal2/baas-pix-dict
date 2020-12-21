@@ -1,11 +1,11 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    password: 123456
-    url: jdbc:mysql://localhost:3306/dict
-    username: root
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    password: 123456
+#    url: jdbc:mysql://localhost:3306/dict
+#    username: root
   jpa:
-    database: mysql
+#    database: mysql
     hibernate:
       ddl-auto: none
     show-sql: true
@@ -18,3 +18,15 @@ spring:
     port: 6379
     timeout: 5000
     password: none
+
+cloud:
+  aws:
+    credentials:
+      profile-name: ${AWS_PROFILE}
+    rds:
+      # precisa trocar para o nome da instancia
+      baas-dict-db:
+        username: ${AWS_DATABASE_USERNAME}
+        password: ${AWS_DATABASE_PASSWORD}
+        readReplicaSupport: true
+        databaseName: ${AWS_DATABASE_NAME}
