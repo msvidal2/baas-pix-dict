@@ -1,8 +1,6 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.domain.ClaimType;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendOverduePossessionClaimPort;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +28,7 @@ public class PollingOverduePossessionClaimUseCase {
                 LocalDateTime.now(),
                 limit);
 
-        Optional.of(overdueClaims).ifPresentOrElse(
+        Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
                     log.info("Overdue possession claims founded: " + claims.size());
                     claims.forEach(sendOverduePossessionClaimPort::send);

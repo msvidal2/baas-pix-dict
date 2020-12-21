@@ -26,8 +26,6 @@ public class OverduePossessionClaimUseCase {
 
         claim.setConfirmationReason(DEFAULT_RESPONSE);
 
-        saveClaimPort.saveClaim(claim, requestIdentifier);
-
         log.info("OverduePossessionClaim_confirmed",
                 kv("claimId", claim.getClaimId()));
 
