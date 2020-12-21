@@ -60,26 +60,18 @@ public class FailureReconciliationSyncByFileUseCase {
             .forEach(cid -> {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
                     final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
+                    var action = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey()).isPresent() ? UPDATED : ADDED;
                     this.createPixKeyPort.createPixKey(pixKeyToInsert, CreateReason.RECONCILIATION);
 
-                    this.insertAuditLog(keyType, sync, cid, pixKeyToInsert);
+                    this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, action);
+                    log.info("Cid {} of key type {} {} in database", cid, keyType,action);
+
                 }, () -> {
                     this.remove(keyType, sync, cid);
                 });
             });
     }
 
-    private void insertAuditLog(final KeyType keyType, final Sync sync, final String cid,
-        final com.picpay.banking.pix.core.domain.PixKey pixKeyInBacen) {
-        final var keyInDatabase = this.findPixKeyPort.findPixKey(pixKeyInBacen.getKey());
-        keyInDatabase.ifPresentOrElse(pixKey -> {
-            this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyInBacen, cid, UPDATED);
-            log.info("Cid {} of key type {} updated in database", cid, keyType);
-        }, () -> {
-            this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyInBacen, cid, ADDED);
-            log.info("Cid {} of key type {} was inserted in database", cid, keyType);
-        });
-    }
 
     private void remove(final KeyType keyType, final Sync sync, final String cid) {
         final var cidInDatabase = this.findPixKeyPort.findByCid(cid);
