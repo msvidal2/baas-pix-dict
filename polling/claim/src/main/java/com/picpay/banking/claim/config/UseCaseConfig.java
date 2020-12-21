@@ -4,10 +4,12 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendOverduePossessionClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.usecase.claim.CancelPortabilityPollingUseCase;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +29,13 @@ public class UseCaseConfig {
                                                                            final CancelClaimPort cancelClaimPort,
                                                                            final ExecutionPort executionPort) {
         return new CancelPortabilityPollingUseCase(findClaimToCancelPort, cancelClaimBacenPort, cancelClaimPort, executionPort);
+    }
+
+    @Bean
+    public PollingOverduePossessionClaimUseCase pollingOverduePossessionClaimUseCase(
+            final FindClaimToCancelPort findClaimToCancelPort,
+            final SendOverduePossessionClaimPort sendOverduePossessionClaimPort) {
+        return new PollingOverduePossessionClaimUseCase(findClaimToCancelPort, sendOverduePossessionClaimPort);
     }
 
 }

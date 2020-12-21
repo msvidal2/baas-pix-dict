@@ -8,6 +8,7 @@ package com.picpay.banking.config;
 import com.picpay.banking.claim.config.ClaimNotificationInputBinding;
 import com.picpay.banking.claim.config.ClaimNotificationOutputBinding;
 import com.picpay.banking.claim.config.ClaimTopicBindingOutput;
+import com.picpay.banking.claim.config.OverduePossessionClaimInputTopic;
 import com.picpay.banking.infraction.config.AcknowledgeInputStream;
 import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
 import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
@@ -24,7 +25,8 @@ import org.springframework.context.annotation.Configuration;
         InfractionAlertNotificationOutputStream.class,
         AcknowledgeInputStream.class,
         ClaimNotificationInputBinding.class,
-        ClaimNotificationOutputBinding.class
+        ClaimNotificationOutputBinding.class,
+        OverduePossessionClaimInputTopic.class
 })
 @Configuration
 public class StreamBindingConfig {

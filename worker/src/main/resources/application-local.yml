@@ -68,6 +68,10 @@ spring:
 #              max.poll.interval.ms: 1
 #            partitionCount: 1
 #            concurrency: 1
+        overdue-possession-claim-consumer:
+          destination: overdue-possession-claim
+          group: overdue-possession-claim-group
+          contentType: application/json
         send-new-claim-notification:
           destination: pix-alert-notification
           binder: kafka

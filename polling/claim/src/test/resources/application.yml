@@ -15,6 +15,9 @@ spring:
         claim-notifications:
           destination: claim-notifications
           binder: kafka
+        send-overdue-possession-claim:
+          destination: overdue-possession-claim
+          binder: kafka
 
   redis:
     enabled: false
