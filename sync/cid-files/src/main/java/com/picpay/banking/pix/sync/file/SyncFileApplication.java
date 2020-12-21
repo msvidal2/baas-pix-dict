@@ -12,8 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class SyncFileApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(SyncFileApplication.class, args);
-        System.exit(SpringApplication.exit(applicationContext));
+        SpringApplication.run(SyncFileApplication.class);
     }
 
 }
