@@ -75,8 +75,10 @@ public class ClaimEntity {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    @Enumerated(EnumType.STRING)
     private ClaimConfirmationReason confirmReason;
 
+    @Enumerated(EnumType.STRING)
     private ClaimCancelReason cancelReason;
 
     private Boolean cancelledByClaimant;
