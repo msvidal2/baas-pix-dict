@@ -5,7 +5,7 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface CancelPortabilityPollingInputBinding {
 
-    String INPUT = "cancel-portabilities";
+    String INPUT = "cancel-portabilities-input-stream";
 
     @Input(INPUT)
     SubscribableChannel receiveNewPortabilityToCancel();

@@ -76,6 +76,10 @@ spring:
           contentType: application/json
           producer:
             partitionCount: 1
+        cancel-portabilities-input-stream:
+          destination: ${CANCEL_PORTABILITIES_TOPIC}
+          group: cancel-portabilities-consumer-group
+          contentType: application/json
 
 management:
   health:

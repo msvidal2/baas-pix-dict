@@ -4,5 +4,11 @@ spring:
       kafka:
         binder:
           brokers: ${KAFKA_HOSTS}
+      bindings:
+        cancel-portabilities-output-stream:
+          destination: ${CANCEL_PORTABILITIES_TOPIC}
+          contentType: application/json
+          producer:
+            partitionCount: 1
 
 logging.level.org.apache.kafka.clients: OFF

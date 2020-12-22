@@ -10,18 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @EnableBinding(value = {
-        ClaimTopicBindingOutput.class
+        ClaimTopicBindingOutput.class,
+        CancelPortabilityPollingOutputBinding.class
 })
 @Configuration
 public class ClaimBindingConfig {
 
     @Bean
     public ClaimNotificationOutputBinding claimNotificationOutputBinding() {
-        return () -> null;
-    }
-
-    @Bean
-    public CancelPortabilityPollingOutputBinding cancelPortabilityPollingOutputBinding() {
         return () -> null;
     }
 

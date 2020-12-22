@@ -5,7 +5,7 @@ import org.springframework.messaging.MessageChannel;
 
 public interface CancelPortabilityPollingOutputBinding {
 
-    String OUTPUT = "cancel-portabilities";
+    String OUTPUT = "cancel-portabilities-output-stream";
 
     @Output(OUTPUT)
     MessageChannel sendNewPortabilityToCancel();
