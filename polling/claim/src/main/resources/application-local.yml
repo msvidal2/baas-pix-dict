@@ -13,9 +13,6 @@ spring:
                 claim-notifications:
                     destination: claim-notifications-topic
                     binder: kafka
-                cancel-portabilities-output:
-                    destination: ${CANCEL_PORTABILITIES_TOPIC}
-                    binder: kafka
 
     redis:
         enabled: false

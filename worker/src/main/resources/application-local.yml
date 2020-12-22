@@ -77,7 +77,7 @@ spring:
           producer:
             partitionCount: 1
         cancel-portabilities-input:
-          destination: ${CANCEL_PORTABILITIES_TOPIC}
+          destination: cancel-portabilities-topic
           group: cancel-portabilities-consumer-group
           contentType: application/json
 

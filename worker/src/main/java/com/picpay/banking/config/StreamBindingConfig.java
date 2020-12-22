@@ -33,4 +33,9 @@ public class StreamBindingConfig {
         return () -> null;
     }
 
+    @Bean
+    public CancelPortabilityPollingOutputBinding cancelPortabilityPollingOutputBinding() {
+        return () -> null;
+    }
+
 }
