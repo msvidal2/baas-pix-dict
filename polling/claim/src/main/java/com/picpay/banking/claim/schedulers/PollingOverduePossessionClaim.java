@@ -8,11 +8,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+//TODO: isso aqui vai virar spring cloud task
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Profile("!test")
 public class PollingOverduePossessionClaim {
+
+    private static final int TEN_MIN = 600000;
 
     @Value("${picpay.ispb}")
     private Integer ispb;
@@ -22,7 +25,7 @@ public class PollingOverduePossessionClaim {
 
     private final PollingOverduePossessionClaimUseCase pollingOverduePossessionClaimUseCase;
 
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(fixedDelay = TEN_MIN)
     public void run() {
         log.info("List overdue possesion claims polling started");
 
