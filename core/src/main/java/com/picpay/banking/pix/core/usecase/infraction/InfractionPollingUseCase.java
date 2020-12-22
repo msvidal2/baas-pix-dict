@@ -39,13 +39,10 @@ public class InfractionPollingUseCase {
     private static final String SUCCESS = "SUCCESS";
 
     public void execute(final String ispb, final Integer limit) {
-        LocalDateTime startTime = LocalDateTime.now();
         try {
             poll(ispb, limit);
-            executionPort.save(Execution.success(startTime, LocalDateTime.now(), INFRACTION_POLLING));
         } catch (Exception e) {
             log.error("Infraction Polling failed: ", e);
-            executionPort.save(Execution.fail(startTime, LocalDateTime.now(), INFRACTION_POLLING, e));
         }
     }
 

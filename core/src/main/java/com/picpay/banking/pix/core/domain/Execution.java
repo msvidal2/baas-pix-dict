@@ -28,18 +28,24 @@ public class Execution {
     private static final String SUCCESS = "SUCCESS";
     private static final int MAXIMUM_SIZE = 2499;
     private static final int START = 0;
+    private static final int EXIT_CODE_SUCCESS = 0;
+    private static final int EXIT_CODE_FAIL = 1;
 
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
+    private final LocalDateTime lastUpdated;
     private final String exitMessage;
-    private final ExecutionType type;
+    private final String taskName;
+    private final Integer exitCode;
 
     public static Execution success(LocalDateTime startTime, LocalDateTime endTime, ExecutionType type) {
         return Execution.builder()
-            .type(type)
+            .taskName(type.toString())
             .endTime(endTime)
             .exitMessage(SUCCESS)
+            .lastUpdated(endTime)
             .startTime(startTime)
+            .exitCode(EXIT_CODE_SUCCESS)
             .build();
     }
 
@@ -48,10 +54,12 @@ public class Execution {
         var finalMessage = message.map(mes -> StringUtils.substring(mes, START, MAXIMUM_SIZE)).orElse("FAILED");
 
         return Execution.builder()
-            .type(type)
+            .taskName(type.toString())
             .endTime(endTime)
             .exitMessage(finalMessage)
             .startTime(startTime)
+            .lastUpdated(endTime)
+            .exitCode(EXIT_CODE_FAIL)
             .build();
     }
 

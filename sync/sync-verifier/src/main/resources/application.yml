@@ -1,38 +1,42 @@
 spring:
-    application:
-        name: sync
-    profiles:
-        active:
-            - bacen
-            - database
+  application:
+    name: sync
+  profiles:
+    active:
+      - bacen
+      - database
+  cloud:
+    task:
+      name: SYNC_VERIFIER
+      initialize-enabled: false
 
 server:
-    tomcat:
-        threads:
-            max: 400
-            min-spare: 50
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
 
 picpay:
-    ispb: 22896431
-    service.name: ${spring.application.name}
-    logging:
-        level: ${PICPAY_LOGGING_LEVEL}
-        appender: ${PICPAY_LOGGING_APPENDER}
+  ispb: 22896431
+  service.name: ${spring.application.name}
+  logging:
+    level: ${PICPAY_LOGGING_LEVEL}
+    appender: ${PICPAY_LOGGING_APPENDER}
 
 logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
 #logging.level.org.apache.kafka.clients: OFF
 
 management:
+  health:
+    diskspace:
+      enabled: false
+  endpoint:
     health:
-        diskspace:
-            enabled: false
-    endpoint:
-        health:
-            show-details: always
-    endpoints:
-        web:
-            exposure:
-                include: prometheus, health
-            base-path: '/'
-            path-mapping:
-                prometheus: 'metrics'
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      base-path: '/'
+      path-mapping:
+        prometheus: 'metrics'
