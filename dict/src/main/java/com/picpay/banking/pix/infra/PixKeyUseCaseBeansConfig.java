@@ -8,7 +8,7 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPo
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.NotifyReconciliationMessagingPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
@@ -28,7 +28,7 @@ public class PixKeyUseCaseBeansConfig {
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-    private final NotifyReconciliationMessagingPort notifyReconciliationMessagingPort;
+    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final RemovePixKeyBacenPort removePixKeyBacenPort;
     private final FindPixKeyBacenPort findPixKeyBacenPort;
@@ -39,12 +39,12 @@ public class PixKeyUseCaseBeansConfig {
     @Bean
     public CreatePixKeyUseCase createPixKeyUseCase() {
         return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort,
-            notifyReconciliationMessagingPort);
+            reconciliationSyncEventPort);
     }
 
     @Bean
     public RemovePixKeyUseCase removePixKeyUseCase() {
-        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort, notifyReconciliationMessagingPort);
+        return new RemovePixKeyUseCase(removePixKeyPort, removePixKeyBacenPort, reconciliationSyncEventPort);
     }
 
     @Bean
@@ -60,7 +60,7 @@ public class PixKeyUseCaseBeansConfig {
     @Bean
     public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase() {
         return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort,
-            notifyReconciliationMessagingPort);
+            reconciliationSyncEventPort);
     }
 
 }

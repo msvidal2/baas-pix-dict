@@ -1,8 +1,8 @@
 package com.picpay.banking.reconciliation.ports;
 
+import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
@@ -15,14 +15,12 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
@@ -43,8 +41,8 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public Set<ReconciliationEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
-        Set<ReconciliationEvent> result = new HashSet<>();
+    public Set<BacenCidEvent> list(final KeyType keyType, final LocalDateTime startTime) {
+        Set<BacenCidEvent> result = new HashSet<>();
 
         boolean hasNext = true;
         LocalDateTime nextDate = startTime;
@@ -88,7 +86,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
     @Override
     public List<String> downloadCidsFromBacen(final String url) {
-        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway+"/arq/" );
+        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway + "/arq/");
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
         return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toList());

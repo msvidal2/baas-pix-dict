@@ -250,7 +250,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty());
         when(this.databaseContentIdentifierPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
         doNothing().when(this.databaseContentIdentifierPort).delete(any());
-        when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(PixKey.builder().build());
+        when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(Optional.of(PixKey.builder().build()));
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
 

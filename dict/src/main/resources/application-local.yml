@@ -1,6 +1,13 @@
 spring:
     main:
         allow-bean-definition-overriding: true
+    cloud:
+        stream:
+            bindings:
+                new-reconciliation-sync:
+                    destination: ${TOPIC_RECONCILIATION}
+                    binder: kafka
+
 picpay:
     ispb: 22896431
     logging:

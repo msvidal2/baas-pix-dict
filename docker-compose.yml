@@ -41,10 +41,24 @@ services:
         environment:
             KAFKA_BROKER_ID: 1
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
             KAFKA_LOG4J_LOGGERS: 'kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO'
         volumes:
+            - kafka
+        networks:
+            - baas_pix_net
+
+    kafdrop:
+        container_name: kafdrop
+        image: obsidiandynamics/kafdrop:latest
+        environment:
+            KAFKA_BROKERCONNECT: "kafka:9092"
+            JVM_OPTS: "-Xms32M -Xmx64M"
+            SERVER_SERVLET_CONTEXTPATH: "/"
+        ports:
+            - 19001:9000
+        depends_on:
             - kafka
         networks:
             - baas_pix_net

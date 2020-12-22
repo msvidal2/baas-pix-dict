@@ -1,0 +1,7 @@
+spring:
+    cloud:
+        stream:
+            bindings:
+                new-reconciliation-sync:
+                    destination: ${TOPIC_RECONCILIATION}
+                    binder: kafka

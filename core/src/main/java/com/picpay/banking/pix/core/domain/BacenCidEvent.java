@@ -7,14 +7,10 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Getter
+@Builder
 @EqualsAndHashCode(of = {"cid", "action", "eventOnBacenAt"})
-public class ReconciliationEvent {
-
-    private final String key;
-
-    private final KeyType keyType;
+public class BacenCidEvent {
 
     @NonNull
     private final String cid;

@@ -9,7 +9,7 @@ import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByConte
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricReconciliationPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncUseCase;
@@ -24,7 +24,7 @@ public class ReconciliationSyncUseCaseConfig {
 
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
-    private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
+    private final SyncVerifierHistoricReconciliationPort syncVerifierHistoricReconciliationPort;
     private final ContentIdentifierEventPort contentIdentifierEventPort;
     private final CreatePixKeyPort createPixKeyPort;
     private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
@@ -44,7 +44,7 @@ public class ReconciliationSyncUseCaseConfig {
     @Bean
     public FailureReconciliationSyncUseCase failureReconciliationSyncUseCase() {
         return new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort, bacenPixKeyByContentIdentifierPort,
-            syncVerifierHistoricActionPort,
+            syncVerifierHistoricReconciliationPort,
             contentIdentifierEventPort, createPixKeyPort, updateAccountPixKeyPort, removePixKeyPort, findPixKeyPort);
     }
 

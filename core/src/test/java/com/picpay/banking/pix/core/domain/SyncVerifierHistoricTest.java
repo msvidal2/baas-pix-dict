@@ -1,158 +1,178 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionClassification;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.createContentIdentifier;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.BACEN_CID_EVENT_ADD;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.BACEN_CID_EVENT_REMOVE;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.DATABASE_CID_EVENT_ADD;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.DATABASE_CID_EVENT_REMOVE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SyncVerifierHistoricTest {
 
     @Test
     @DisplayName("Deve agrupar os eventos por cid e pegar a data mais recente")
-    void should_generate_4_actions_add_and_2_remove() {
+    void shouldGroupEventsByCidAndGetTheMostRecentDate() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ReconciliationEvent> bacenEvents = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVED),
-            createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVED),
-            createContentIdentifier("3"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVED));
+        final Set<BacenCidEvent> bacenEvents = Set.of(
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("1"),
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("2"),
+            BACEN_CID_EVENT_ADD("3"),
+            BACEN_CID_EVENT_ADD("4"),
+            BACEN_CID_EVENT_ADD("5"),
+            BACEN_CID_EVENT_REMOVE("6"));
 
-        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, new HashSet<>());
+        final Set<SyncVerifierHistoricDifference> differences = syncVerifierHistoric.identifyDifferences(bacenEvents, new HashSet<>());
 
-        assertThat(syncVerifierHistoricActions.size()).isEqualTo(6);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
-                SyncVerifierHistoricAction.ActionType.ADD)).count()).isEqualTo(4);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
-                SyncVerifierHistoricAction.ActionType.REMOVE)).count()).isEqualTo(2);
+        assertThat(differences.size()).isEqualTo(6);
+        assertThat(differences.stream().filter(
+            contentIdentifierAction -> contentIdentifierAction.getActionClassification().equals(
+                ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE)).count()).isEqualTo(6);
+        assertThat(differences.stream().filter(
+            contentIdentifierAction -> contentIdentifierAction.getActionClassification().equals(
+                ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN)).count()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("Quando não tem eventos no Bacen, mas tem CIDs, todos devem gerar ações de REMOVE")
-    void should_generate_5_actions_remove() {
+    @DisplayName("Quando tem eventos no database e não tem no Bacen todos devem estar classificados como HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN")
+    void should_classify_HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
         final Set<ReconciliationEvent> databaseEvents = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("2"),
-            createContentIdentifier("3"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"));
+            DATABASE_CID_EVENT_ADD("1"),
+            DATABASE_CID_EVENT_ADD("2"),
+            DATABASE_CID_EVENT_ADD("3"),
+            DATABASE_CID_EVENT_ADD("4"),
+            DATABASE_CID_EVENT_ADD("5"));
 
-        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(new HashSet<>(), databaseEvents);
+        final Set<SyncVerifierHistoricDifference> syncVerifierHistoricActions = syncVerifierHistoric.identifyDifferences(new HashSet<>(),
+            databaseEvents);
 
         assertThat(syncVerifierHistoricActions.size()).isEqualTo(5);
         assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getActionType().equals(
-                SyncVerifierHistoricAction.ActionType.REMOVE)).count()).isEqualTo(5);
+            contentIdentifierAction -> contentIdentifierAction.getActionClassification().equals(
+                ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN)).count()).isEqualTo(5);
     }
 
     @Test
-    @DisplayName("Apenas os CIDs 2 e 6 devem gerar ações para REMOVE.")
-    void should_generate_action_to_remove_for_2_and_6() {
+    @DisplayName("Apenas os CIDs 2 e 6 devem compor as diferenças")
+    void onlyCID2And6ShouldCompareTheDifferences() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ReconciliationEvent> bacenEvents = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVED),
-            createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVED),
-            createContentIdentifier("3"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVED));
+        final Set<BacenCidEvent> bacenEvents = Set.of(
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("1"),
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("2"),
+            BACEN_CID_EVENT_ADD("3"),
+            BACEN_CID_EVENT_ADD("4"),
+            BACEN_CID_EVENT_ADD("5"),
+            BACEN_CID_EVENT_REMOVE("6"));
 
         final Set<ReconciliationEvent> databaseEvents = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("2"),
-            createContentIdentifier("3"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"),
-            createContentIdentifier("6"));
+            DATABASE_CID_EVENT_ADD("1"),
+            DATABASE_CID_EVENT_ADD("2"),
+            DATABASE_CID_EVENT_ADD("3"),
+            DATABASE_CID_EVENT_ADD("4"),
+            DATABASE_CID_EVENT_ADD("5"),
+            DATABASE_CID_EVENT_ADD("6"));
 
-        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenEvents, databaseEvents);
+        final Set<SyncVerifierHistoricDifference> differences = syncVerifierHistoric.identifyDifferences(bacenEvents, databaseEvents);
 
-        assertThat(syncVerifierHistoricActions.size()).isEqualTo(2);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("2")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("6")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        var hasInBacenAndNotHaveInDatabase = differences.stream().filter(
+            difference -> ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE.equals(difference.getActionClassification()))
+            .collect(Collectors.toSet());
+
+        var hasInDatabaseAndNotHaveInBacen = differences.stream().filter(
+            difference -> ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN.equals(difference.getActionClassification()))
+            .collect(Collectors.toSet());
+
+        assertThat(hasInBacenAndNotHaveInDatabase.size()).isEqualTo(2);
+        assertThat(hasInDatabaseAndNotHaveInBacen.size()).isEqualTo(2);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference -> difference.getCid().equals("2")).count()).isEqualTo(1);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference -> difference.getCid().equals("6")).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference -> difference.getCid().equals("2")).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference -> difference.getCid().equals("6")).count()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("Deve gerar 7 ações. 3 Add e 4 Remove")
-    void should_generate_7_actions() {
+    @DisplayName("Deve encontrar 11 diferenças, sendo 5 hasInBacenAndNotHaveInDatabase e 6 hasInDatabaseAndNotHaveInBacen")
+    void should_generate_11_differences() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
-        final Set<ReconciliationEvent> bacenCids = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVED),
-            createContentIdentifier("1"),
-            createContentIdentifier("2", ReconciliationAction.REMOVED),
-            createContentIdentifier("3"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"),
-            createContentIdentifier("6", ReconciliationAction.REMOVED),
-            createContentIdentifier("7", ReconciliationAction.REMOVED),
-            createContentIdentifier("7"),
-            createContentIdentifier("8", ReconciliationAction.REMOVED),
-            createContentIdentifier("8"),
-            createContentIdentifier("8", ReconciliationAction.REMOVED));
+        final Set<BacenCidEvent> bacenCids = Set.of(
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("1"),
+            BACEN_CID_EVENT_ADD("1"),
+            BACEN_CID_EVENT_REMOVE("2"),
+            BACEN_CID_EVENT_ADD("3"),
+            BACEN_CID_EVENT_ADD("4"),
+            BACEN_CID_EVENT_ADD("5"),
+            BACEN_CID_EVENT_REMOVE("6"),
+            BACEN_CID_EVENT_REMOVE("7"),
+            BACEN_CID_EVENT_ADD("7"),
+            BACEN_CID_EVENT_REMOVE("8"),
+            BACEN_CID_EVENT_ADD("8"),
+            BACEN_CID_EVENT_REMOVE("8"));
 
         final Set<ReconciliationEvent> databaseCids = Set.of(
-            createContentIdentifier("1"),
-            createContentIdentifier("1", ReconciliationAction.REMOVED),
-            createContentIdentifier("2"),
-            createContentIdentifier("4"),
-            createContentIdentifier("5"),
-            createContentIdentifier("6"),
-            createContentIdentifier("7", ReconciliationAction.REMOVED),
-            createContentIdentifier("8", ReconciliationAction.REMOVED),
-            createContentIdentifier("9", ReconciliationAction.REMOVED),
-            createContentIdentifier("10"));
+            DATABASE_CID_EVENT_ADD("1"),
+            DATABASE_CID_EVENT_REMOVE("1"),
+            DATABASE_CID_EVENT_ADD("2"),
+            DATABASE_CID_EVENT_ADD("4"),
+            DATABASE_CID_EVENT_ADD("5"),
+            DATABASE_CID_EVENT_ADD("6"),
+            DATABASE_CID_EVENT_REMOVE("7"),
+            DATABASE_CID_EVENT_REMOVE("8"),
+            DATABASE_CID_EVENT_REMOVE("9"),
+            DATABASE_CID_EVENT_ADD("10"));
 
-        final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions = syncVerifierHistoric.identifyActions(bacenCids, databaseCids);
+        final Set<SyncVerifierHistoricDifference> differences = syncVerifierHistoric.identifyDifferences(bacenCids, databaseCids);
 
-        assertThat(syncVerifierHistoricActions.size()).isEqualTo(7);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("1")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("2")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("3")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
-        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("4")).count())
-            .isZero();
-        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("5")).count())
-            .isZero();
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("6")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("7")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.ADD);
-        assertThat(syncVerifierHistoricActions.stream().filter(contentIdentifierAction -> contentIdentifierAction.getCid().equals("8")).count())
-            .isZero();
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("9")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
-        assertThat(syncVerifierHistoricActions.stream().filter(
-            contentIdentifierAction -> contentIdentifierAction.getCid().equals("10")).findFirst().orElseThrow().getActionType())
-            .isEqualTo(SyncVerifierHistoricAction.ActionType.REMOVE);
+        var hasInBacenAndNotHaveInDatabase = differences.stream().filter(
+            difference -> ActionClassification.HAS_IN_BACEN_AND_NOT_HAVE_IN_DATABASE.equals(difference.getActionClassification()))
+            .collect(Collectors.toSet());
+
+        var hasInDatabaseAndNotHaveInBacen = differences.stream().filter(
+            difference -> ActionClassification.HAS_IN_DATABASE_AND_NOT_HAVE_IN_BACEN.equals(difference.getActionClassification()))
+            .collect(Collectors.toSet());
+
+        assertThat(differences.size()).isEqualTo(11);
+        assertThat(hasInBacenAndNotHaveInDatabase.size()).isEqualTo(5);
+        assertThat(hasInDatabaseAndNotHaveInBacen.size()).isEqualTo(6);
+
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference ->
+            difference.getCid().equals("1") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference ->
+            difference.getCid().equals("3") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference ->
+            difference.getCid().equals("7") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference ->
+            difference.getCid().equals("2") && ReconciliationAction.REMOVED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInBacenAndNotHaveInDatabase.stream().filter(difference ->
+            difference.getCid().equals("6") && ReconciliationAction.REMOVED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("2") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("6") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("10") && ReconciliationAction.ADDED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("1") && ReconciliationAction.REMOVED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("7") && ReconciliationAction.REMOVED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
+        assertThat(hasInDatabaseAndNotHaveInBacen.stream().filter(difference ->
+            difference.getCid().equals("9") && ReconciliationAction.REMOVED.equals(difference.getReconciliationAction())).count()).isEqualTo(1);
     }
 
 }

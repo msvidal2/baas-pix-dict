@@ -1,16 +1,18 @@
 package com.picpay.banking.pix.dict.cidevents;
 
-import com.picpay.banking.pix.dict.cidevents.config.CidEventsInputBinding;
+import com.picpay.banking.reconciliation.config.ReconciliationSyncEventOutputBinding;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.messaging.support.GenericMessage;
 
 @SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
-@EnableBinding(CidEventsInputBinding.class)
 public class CidEventsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CidEventsApplication.class, args);
+        var ctx = SpringApplication.run(CidEventsApplication.class, args);
+        var input = ctx.getBean(ReconciliationSyncEventOutputBinding.class);
+        input.sendReconciliationSyncEvent().send(new GenericMessage<>("Teste"));
+        System.out.println("Teste");
     }
 
 }

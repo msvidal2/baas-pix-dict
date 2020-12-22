@@ -31,6 +31,58 @@ class SyncVerifierTest {
     }
 
     @Test
+    @DisplayName("Calcula o Vsync com sucesso seguindo um caso real de cpf")
+    void calculateVsync_success_cpf() {
+        final List<String> contentIdentifiers = List.of(
+            "b790523c9140c6179a903414e511411bf7ebb5308dd40237fe0e4fe8b83219c5",
+            "3cffe4768f1deba26a5e097d1f12a18f530c2542f367e39d4781a97cf2437423",
+            "5428b8076a310f82985e5cec9e046bb92ae17854f05aba63b0ed709c43ffa9ed",
+            "85de03695a98e4ee0434bc40255e375e7fd0849f2a2a2143f58d31fd04fd2da4");
+
+        SyncVerifier syncVerifier = SyncVerifier.builder().build();
+
+        String vsync = syncVerifier.calculateVsync(contentIdentifiers);
+
+        String expectedVsync = "5a990d242ef4c6d96ca4ddc54159bc73f1d66cb9a4c37a8afcefa7f50d73e9af";
+        assertThat(vsync).isEqualTo(expectedVsync);
+    }
+
+    @Test
+    @DisplayName("Calcula o Vsync com sucesso seguindo um caso real de EMAIL")
+    void calculateVsync_success_email() {
+        final List<String> contentIdentifiers = List.of(
+            "967c242cd276e3bec7647c5066fb946c59075abb4181eb66e808648a9bcbfa66",
+            "3188ccd11484acfd185ca65ccf14f29ccae5a1344f42e19369fc18ffbc801c4f",
+            "3738b56cfdf7c779768e201a1e93168debd6e15e01d9fb066ec9a7060d1345c7",
+            "6faf865efec3d0be26c0cc682dc19b2408520b72e9a450063a05269233a812d2",
+            "3766f705fc14118ab2139eedf2f07355632af98054b7a48311da4f8c01278374",
+            "dd8f70aaef821fa72517bd747d889549d3d28bc03776f989c567e4ad4cf80c10",
+            "452c144eec3cd91f9d689b1ec2c0e1bfc6334731cc0a03f26662a93cc5abb6b0",
+            "f53f24b31e1d73b8c936d3afe02021662b5ace2bb3a749bb8d7c02928ce8db2c");
+
+        SyncVerifier syncVerifier = SyncVerifier.builder().build();
+
+        String vsync = syncVerifier.calculateVsync(contentIdentifiers);
+
+        String expectedVsync = "a5996c9d2471fc0e4c2c5d563725cd9c2df7eaf9fad2b6b6ea9bfd6e1d6c53c4";
+        assertThat(vsync).isEqualTo(expectedVsync);
+    }
+
+    @Test
+    @DisplayName("Calcula o Vsync com sucesso quando existe apenas um Cid")
+    void calculateVsync_only_one_cid() {
+        final List<String> contentIdentifiers = List.of(
+            "b2b3779042fba1a7ebec59cebdee70837c8e393782071d1c02ae33384f8c41c4");
+
+        SyncVerifier syncVerifier = SyncVerifier.builder().build();
+
+        String vsync = syncVerifier.calculateVsync(contentIdentifiers);
+
+        String expectedVsync = "b2b3779042fba1a7ebec59cebdee70837c8e393782071d1c02ae33384f8c41c4";
+        assertThat(vsync).isEqualTo(expectedVsync);
+    }
+
+    @Test
     @DisplayName("Calcula o Vsync de forma cumulativa")
     void calculateVsyncCumulative_success() {
         var vsync = SyncVerifier.builder().build()

@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.ports.reconciliation.bacen;
 
+import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 public interface BacenContentIdentifierEventsPort {
 
-    Set<ReconciliationEvent> list(KeyType keyType, LocalDateTime startTime, LocalDateTime endTime);
+    Set<BacenCidEvent> list(KeyType keyType, LocalDateTime startTime);
 
     ContentIdentifierFile requestContentIdentifierFile(KeyType keyType);
 

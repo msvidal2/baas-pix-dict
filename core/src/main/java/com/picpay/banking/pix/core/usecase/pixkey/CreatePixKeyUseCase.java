@@ -9,13 +9,12 @@ import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.NotifyReconciliationMessagingPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -27,7 +26,7 @@ public class CreatePixKeyUseCase {
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-    private final NotifyReconciliationMessagingPort notifyReconciliationMessagingPort;
+    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -43,12 +42,11 @@ public class CreatePixKeyUseCase {
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
         createPixKeyPort.createPixKey(createdPixKey, reason);
-        notifyReconciliationMessagingPort.notifyPixKeyCreated(createdPixKey);
+        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", createdPixKey.getKey()));
-
 
         return createdPixKey;
     }
