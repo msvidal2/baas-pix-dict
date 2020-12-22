@@ -22,7 +22,7 @@ public class PollingOverduePossessionClaim {
 
     private final PollingOverduePossessionClaimUseCase pollingOverduePossessionClaimUseCase;
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 20000)
     public void run() {
         log.info("List overdue possesion claims polling started");
 

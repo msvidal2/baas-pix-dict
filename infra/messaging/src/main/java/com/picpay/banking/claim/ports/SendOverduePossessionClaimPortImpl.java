@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.config.ClaimTopicBindingOutput;
 import com.picpay.banking.claim.config.OverduePossessionClaimOutputTopic;
 import com.picpay.banking.claim.dto.ClaimDTO;
 import com.picpay.banking.pix.core.domain.Claim;
