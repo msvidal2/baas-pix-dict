@@ -21,7 +21,7 @@ public enum ConfirmClaimReason {
         return Arrays.stream(ConfirmClaimReason.values())
                 .filter(reason -> reason.confirmationReason.equals(claimConfirmationReason))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElse(null);
     }
 
 }

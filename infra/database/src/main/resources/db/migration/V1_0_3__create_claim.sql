@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS claim
 (
     id varchar(100) NOT NULL,
-    claim_type varchar(20) NOT NULL,
+    type varchar(20) NOT NULL,
     pix_key varchar(100) NOT NULL,
     key_type varchar(20) NOT NULL,
     claimer_participant integer NOT NULL,

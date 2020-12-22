@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @EnableBinding(value = {
-        ClaimTopicBindingOutput.class
+        ClaimTopicBindingOutput.class,
+        OverduePossessionClaimOutputTopic.class
 })
 @Configuration
 public class ClaimBindingConfig {
