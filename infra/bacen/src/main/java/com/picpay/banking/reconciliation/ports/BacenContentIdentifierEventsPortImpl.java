@@ -1,35 +1,41 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
+import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
 
-    private BacenArqClient bacenArqClient;
+    private final BacenArqClient bacenArqClient;
 
-    private BacenReconciliationClient bacenReconciliationClient;
+    private final BacenReconciliationClient bacenReconciliationClient;
 
-    private String participant;
-    private String urlGateway;
+    private final String participant;
+    private final String urlGateway;
 
-    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient
-        , @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.dict.url}") String urlGateway ) {
+    public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient,
+        @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.dict.url}") String urlGateway) {
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
@@ -37,8 +43,28 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public List<ContentIdentifierEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
-        return null;
+    public Set<ReconciliationEvent> list(final KeyType keyType, final LocalDateTime startTime, final LocalDateTime endTime) {
+        Set<ReconciliationEvent> result = new HashSet<>();
+
+        boolean hasNext = true;
+        LocalDateTime nextDate = startTime;
+        while (hasNext) {
+            var bacenEvents = bacenReconciliationClient
+                .getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate, 200);
+
+            if (Objects.isNull(bacenEvents.getCidSetEvents())) {
+                hasNext = false;
+            } else {
+                result.addAll(bacenEvents.getCidSetEvents().getEvents().stream()
+                    .map(CidSetEvent::toContentIdentifierEvent)
+                    .collect(Collectors.toSet()));
+
+                nextDate = bacenEvents.getEndTime();
+                hasNext = bacenEvents.isHasMoreElements();
+            }
+        }
+
+        return result;
     }
 
     @Override

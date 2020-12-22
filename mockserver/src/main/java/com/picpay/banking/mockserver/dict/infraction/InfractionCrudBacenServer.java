@@ -7,8 +7,9 @@
 
 package com.picpay.banking.mockserver.dict.infraction;
 
-import com.picpay.banking.mockserver.config.ClientAndServerInstance;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.HttpStatusCode;
@@ -25,11 +26,14 @@ import static org.mockserver.model.HttpRequest.request;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class InfractionCrudBacenServer {
+
+    private final ClientAndServer clientAndServer;
 
     @PostConstruct
     public void start() {
-        ClientAndServerInstance.get().when(
+        clientAndServer.when(
             request()
                 .withMethod("POST")
                 .withPath("/api/v1/infraction-reports"))

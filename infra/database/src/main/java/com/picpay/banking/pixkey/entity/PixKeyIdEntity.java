@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Embeddable
 public class PixKeyIdEntity implements Serializable {
 
+    @Column(name = "pix_key")
     private String key;
 
     @Enumerated(EnumType.STRING)

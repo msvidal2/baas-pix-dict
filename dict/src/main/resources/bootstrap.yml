@@ -1,0 +1,14 @@
+spring:
+    application:
+        name: dict
+    cloud:
+        config:
+            uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+            name: dict,dict-bacen,dict-database
+    profiles:
+        active:
+            - ${ENV:local}
+            - bacen-${ENV:local}
+            - database-${ENV:local}
+
+

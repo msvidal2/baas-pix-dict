@@ -1,0 +1,39 @@
+server:
+    compression:
+        enabled: true
+    shutdown: graceful
+
+spring:
+    main:
+        allow-bean-definition-overriding: true
+        banner-mode: off
+    cloud:
+        stream:
+            bindings:
+                claim-notifications:
+                    destination: claim-notifications-topic
+                    binder: kafka
+
+    redis:
+        enabled: false
+
+picpay:
+    ispb: 22896431
+    polling:
+        claim:
+            initial-delay: 10000
+            fixed-delay: 360000
+            limit: 200
+
+management:
+    endpoint:
+        health:
+            probes:
+                enabled: true
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: prometheus, health
+            path-mapping:
+                prometheus: '''metrics'''

@@ -2,8 +2,8 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

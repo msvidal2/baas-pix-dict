@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +44,11 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         var pixKey = PixKey.builder()
+                .requestId(UUID.randomUUID())
+                .nameIspb("Empresa Picpay")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
                 .key("13614501000")
                 .type(KeyType.CPF)
                 .ispb(22896431)
@@ -52,6 +59,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
     }
@@ -98,6 +106,11 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         var pixKey = PixKey.builder()
+                .requestId(UUID.randomUUID())
+                .nameIspb("Empresa Picpay")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
                 .key(randomKey)
                 .type(KeyType.RANDOM)
                 .ispb(22896431)
@@ -108,6 +121,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
     }
@@ -130,6 +144,11 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Test
     public void testValidatePixKey() {
         var pixKey = PixKey.builder()
+                .requestId(UUID.randomUUID())
+                .nameIspb("Empresa Picpay")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
                 .key(randomUUID().toString())
                 .type(KeyType.RANDOM)
                 .ispb(22896431)
@@ -138,6 +157,8 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
+
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
@@ -216,6 +237,11 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Test
     public void testValidatePixKeyBranchEmpty() {
         var pixKey = PixKey.builder()
+                .requestId(UUID.randomUUID())
+                .nameIspb("Empresa Picpay")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .taxId("57950197048")
+                .name("Joao da Silva")
                 .key(randomUUID().toString())
                 .type(KeyType.RANDOM)
                 .ispb(22896431)
@@ -223,6 +249,8 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
+
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,

@@ -45,21 +45,23 @@ public class UpdateEntryResponse {
 
     public PixKey toDomain(PixKey pixKey, String requestIdentifier) {
         return PixKey.builder()
-                .type(KeyType.resolve(entry.getKeyType().getValue()))
-                .key(entry.getKey())
-                .ispb(pixKey.getIspb())
-                .branchNumber(entry.getAccount().getBranch())
-                .accountType(AccountType.resolve(entry.getAccount().getAccountType().getValue()))
-                .accountNumber(entry.getAccount().getAccountNumber())
-                .accountOpeningDate(entry.getAccount().getOpeningDate())
-                .personType(PersonType.resolve(entry.getOwner().getType().getValue()))
-                .taxId(entry.getOwner().getTaxIdNumber())
-                .name(entry.getOwner().getName())
-                .fantasyName(entry.getOwner().getName())
-                .createdAt(entry.getCreationDate())
-                .startPossessionAt(entry.getKeyOwnershipDate())
-                .correlationId(correlationId)
-                .requestId(UUID.fromString(requestIdentifier))
-                .build();
+            .type(KeyType.resolve(entry.getKeyType().getValue()))
+            .key(entry.getKey())
+            .ispb(pixKey.getIspb())
+            .branchNumber(entry.getAccount().getBranch())
+            .accountType(AccountType.resolve(entry.getAccount().getAccountType().getValue()))
+            .accountNumber(entry.getAccount().getAccountNumber())
+            .accountOpeningDate(entry.getAccount().getOpeningDate())
+            .personType(PersonType.resolve(entry.getOwner().getType().getValue()))
+            .taxId(entry.getOwner().getTaxIdNumber())
+            .name(entry.getOwner().getName())
+            .fantasyName(entry.getOwner().getName())
+            .createdAt(entry.getCreationDate())
+            .updatedAt(responseTime)
+            .startPossessionAt(entry.getKeyOwnershipDate())
+            .correlationId(correlationId)
+            .requestId(UUID.fromString(requestIdentifier))
+            .build();
     }
+
 }

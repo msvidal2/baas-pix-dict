@@ -1,53 +1,104 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifier;
-import com.picpay.banking.pix.core.domain.Vsync;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseVsyncPort;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.SyncVerifier;
+import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReconciliationSyncUseCaseTest {
+class ReconciliationSyncUseCaseTest {
 
     @Mock
-    private DatabaseVsyncPort databaseVsyncPort;
+    private SyncVerifierPort syncVerifierPort;
     @Mock
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private SyncVerifierHistoricPort syncVerifierHistoricPort;
+    @Mock
+    private ContentIdentifierPort contentIdentifierPort;
     @Mock
     private BacenSyncVerificationsPort bacenSyncVerificationsPort;
     @Mock
-    private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
+    private ReconciliationSyncUseCase reconciliationSyncUseCase;
 
-    //@Test
-    public void success() {
-        when(databaseVsyncPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Vsync.builder().build());
+    @BeforeEach
+    private void beforeEach() {
+        reconciliationSyncUseCase = new ReconciliationSyncUseCase(
+            syncVerifierPort,
+            syncVerifierHistoricPort,
+            contentIdentifierPort,
+            bacenSyncVerificationsPort);
+    }
 
-        when(databaseContentIdentifierPort.listAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(List.of(
-                ContentIdentifier.builder()
-                    .cid("1")
-                    .build()));
+    @Test
+    @DisplayName("Quando OK não deve executar nenhuma ação")
+    void when_ok_no_action_happens() {
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.empty());
 
-        ReconciliationSyncUseCase reconciliationSyncUseCase = new ReconciliationSyncUseCase(
-            databaseVsyncPort,
-            databaseContentIdentifierPort,
-            bacenSyncVerificationsPort,
-            failureReconciliationSyncUseCase);
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.empty());
 
-        reconciliationSyncUseCase.execute();
+        when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
+            .thenReturn(new ArrayList<>());
 
-        //ArgumentCaptor<PixKey> vsyncArgumentCaptor = ArgumentCaptor.forClass(PixKey.class);
-        //verify(failureReconciliationSyncUseCase).execute(vsyncArgumentCaptor.capture());
-        //assertThat(vsyncArgumentCaptor.getValue().getKey()).isEqualTo(pixAdd.getKey());
+        when(bacenSyncVerificationsPort.syncVerification(any(), any()))
+            .thenReturn(SyncVerifierResult.builder()
+                .syncVerifierLastModified(LocalDateTime.now())
+                .syncVerifierResultType(SyncVerifierResultType.OK)
+                .build());
+
+        when(syncVerifierHistoricPort.save(any()))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
+
+        verify(syncVerifierPort, times(1)).save(any());
+        verify(syncVerifierHistoricPort, times(1)).save(any());
+        assertThat(syncVerifierHistoric.isOK()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Quando NOK deve enviar mensagem de falha para reconciliação")
+    void when_NOK_send_failure_reconciliation() {
+        when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
+            .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
+
+        when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
+            .thenReturn(new ArrayList<>());
+
+        when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "1"))
+            .thenReturn(SyncVerifierResult.builder()
+                .syncVerifierLastModified(LocalDateTime.now())
+                .syncVerifierResultType(SyncVerifierResultType.NOK)
+                .build());
+
+        when(syncVerifierHistoricPort.save(any()))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
+
+        verify(syncVerifierPort, times(1)).save(any());
+        verify(syncVerifierHistoricPort, times(1)).save(any());
+        assertThat(syncVerifierHistoric.isNOK()).isTrue();
     }
 
 }

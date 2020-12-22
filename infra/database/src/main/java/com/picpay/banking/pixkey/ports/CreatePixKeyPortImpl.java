@@ -21,7 +21,8 @@ public class CreatePixKeyPortImpl implements CreatePixKeyPort {
 
     @Override
     public PixKey createPixKey(PixKey pixKey, CreateReason reason) {
-        repository.save(PixKeyEntity.from(pixKey, reason));
+        final PixKeyEntity pixKeyEntity = PixKeyEntity.from(pixKey, reason);
+        repository.save(pixKeyEntity);
 
         return pixKey;
     }

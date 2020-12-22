@@ -2,7 +2,7 @@ package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.ports.reconciliation.BacenContentIdentifierEventsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;

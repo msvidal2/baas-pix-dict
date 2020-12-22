@@ -1,0 +1,95 @@
+server:
+  compression_enabled: true
+  port: 8080
+
+logging:
+  level:
+    com.picpay.banking.jdpi.clients: INFO
+
+feign:
+  client:
+    config:
+      default:
+        logger-level: FULL
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+      useGzipDecoder: true
+
+picpay:
+  ispb: 22896431
+
+pix:
+    bacen:
+      dict:
+        url: http://baas-pix-proxy-bacen.ms.qa
+        entries:
+          url: http://baas-pix-proxy-bacen.ms.qa/dict/api
+      url: http://baas-pix-proxy-bacen.ms.qa
+
+spring:
+  profiles:
+    active:
+      - database
+      - messaging
+      - bacen
+  main:
+    banner-mode: off
+  application:
+    name: dict-infraction-worker
+  redis:
+    enabled: false
+  cloud:
+    stream:
+      bindings:
+        new-infraction-reports:
+          destination: new-infraction-reports
+          group: dict
+          contentType: application/json
+          consumer:
+            maxAttemps: 2
+            configuration:
+              max.poll.records: 1
+              max.poll.interval.ms: 1
+            partitionCount: 1
+            concurrency: 1
+        claim-notifications-consumer:
+          destination: claim-notifications-topic
+          group: claim-notification-consumer-group
+          contentType: application/json
+#          consumer:
+#            maxAttemps: 2
+#            configuration:
+#              max.poll.records: 1
+#              max.poll.interval.ms: 1
+#            partitionCount: 1
+#            concurrency: 1
+        send-new-claim-notification:
+          destination: pix-alert-notification
+          binder: kafka
+        alert-notifications:
+          destination: alert-notification-topic
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        cancel-portabilities-input-stream:
+          destination: ${CANCEL_PORTABILITIES_TOPIC}
+          group: cancel-portabilities-consumer-group
+          contentType: application/json
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      path-mapping:
+        prometheus: '''metrics'''

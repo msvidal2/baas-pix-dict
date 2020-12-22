@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.entity;
 
-import com.picpay.banking.pix.core.domain.ContentIdentifierAction;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
@@ -44,14 +44,14 @@ public class ContentIdentifierActionEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private ContentIdentifierAction action;
+    private ContentIdentifierFileAction action;
 
     @Column(name = "creation_date")
     @Builder.Default
     private LocalDateTime creationDate = LocalDateTime.now();
 
     @Type(type = "json")
-    @Column(name = "content",columnDefinition = "json")
+    @Column(name = "content", columnDefinition = "json")
     private PixKeyEntity pixKey;
 
     @Column

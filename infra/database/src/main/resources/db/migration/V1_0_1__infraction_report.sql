@@ -1,4 +1,4 @@
-CREATE TABLE dict.infraction_report (
+CREATE TABLE IF NOT EXISTS infraction_report (
 	infraction_report_id varchar(36) NOT NULL,
 	end_to_end_id varchar(32) NOT NULL,
 	reported_by varchar(32) NOT NULL,
@@ -14,4 +14,4 @@ CREATE TABLE dict.infraction_report (
     CONSTRAINT infraction_report_id_primary_key PRIMARY KEY (infraction_report_id)
 );
 
-CREATE INDEX infraction_report_e2e ON dict.infraction_report (end_to_end_id);
+CREATE INDEX infraction_report_e2e ON infraction_report (end_to_end_id);

@@ -1,0 +1,10 @@
+spring:
+    application:
+        name: dict-sync-cid-file
+    cloud:
+        task:
+            name: sync-cid-file
+        config:
+            enabled: false
+picpay:
+    ispb: 22896431

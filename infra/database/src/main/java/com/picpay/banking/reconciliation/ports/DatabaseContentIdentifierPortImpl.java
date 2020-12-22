@@ -1,7 +1,12 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.ports.reconciliation.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.domain.ContentIdentifier;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
+import com.picpay.banking.pix.core.domain.CreateReason;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierEntity;
@@ -12,7 +17,6 @@ import com.picpay.banking.reconciliation.repository.ContentIdentifierRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,18 +30,13 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     private ContentIdentifierActionRepository contentIdentifierActionRepository;
 
     @Override
-    public List<ContentIdentifier> listAfterLastSuccessfulVsync(final KeyType keyType, final LocalDateTime synchronizedAt) {
-        return null;
-    }
-
-    @Override
     public void save(final ContentIdentifier contentIdentifier) {
         this.contentIdentifierRepository.save(ContentIdentifierEntity.from(contentIdentifier));
     }
 
     @Override
     public void saveFile(final ContentIdentifierFile contentIdentifierFile) {
-       this.contentIdentifierFileRepository.save(ContentIdentifierFileEntity.from(contentIdentifierFile));
+        this.contentIdentifierFileRepository.save(ContentIdentifierFileEntity.from(contentIdentifierFile));
     }
 
     @Override
@@ -54,7 +53,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     public Optional<ContentIdentifierFile> findLastFileRequested(final KeyType keyType) {
         return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(keyType, List.of(
             ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED))
-        .map(ContentIdentifierFileEntity::toDomain);
+            .map(ContentIdentifierFileEntity::toDomain);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
     }
 
     @Override
-    public void saveAction(Integer idReference,PixKey key, String cid, ContentIdentifierAction action){
+    public void saveAction(Integer idReference, PixKey key, String cid, ContentIdentifierFileAction action) {
         final var contentIdentifierActionEntity = ContentIdentifierActionEntity.builder()
             .action(action)
             .cid(cid)

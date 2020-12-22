@@ -20,12 +20,12 @@ spring:
     enabled: false
 
   datasource:
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     password: 123456
-    url: jdbc:postgresql://localhost:15432/postgres
-    username: postgres
+    url: jdbc:mysql://localhost:3306/dict
+    username: root
   jpa:
-    database: postgresql
+    database: mysql
     hibernate:
       ddl-auto: none
     show-sql: true
