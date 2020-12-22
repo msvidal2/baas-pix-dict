@@ -8,3 +8,6 @@ spring:
             enabled: false
 picpay:
     ispb: 22896431
+    logging:
+        appender: CONSOLE
+        level: INFO
