@@ -13,6 +13,9 @@ spring:
                 claim-notifications:
                     destination: claim-notifications-topic
                     binder: kafka
+                cancel-portabilities-output:
+                    destination: ${CANCEL_PORTABILITIES_TOPIC}
+                    binder: kafka
 
     redis:
         enabled: false
@@ -24,6 +27,7 @@ picpay:
             initial-delay: 10000
             fixed-delay: 360000
             limit: 200
+            cancel-limit: 200
 
 management:
     endpoint:

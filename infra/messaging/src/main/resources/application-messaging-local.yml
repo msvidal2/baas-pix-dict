@@ -4,12 +4,6 @@ spring:
       kafka:
         binder:
           brokers: localhost:9092
-    bindings:
-      cancel-portabilities-output-stream:
-        destination: ${CANCEL_PORTABILITIES_TOPIC}
-        contentType: application/json
-        producer:
-          partitionCount: 1
 
 logging:
   level:
