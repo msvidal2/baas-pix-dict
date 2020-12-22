@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static com.google.common.base.Charsets.UTF_8;
 
-@Builder
+@Builder(toBuilder = true)
 @Setter
 @Getter
 @ToString
@@ -89,6 +89,11 @@ public class PixKey {
             .putString(accountType.getInitials(), UTF_8)
             .hash().toString()
             .toLowerCase();
+    }
+
+    public String recalculateCid() {
+        this.calculateCid();
+        return this.cid;
     }
 
 }

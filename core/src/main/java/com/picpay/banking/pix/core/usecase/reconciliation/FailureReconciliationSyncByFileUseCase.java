@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Sync;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -44,7 +45,7 @@ public class FailureReconciliationSyncByFileUseCase {
         final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
         final var keyType = availableFile.getKeyType();
 
-        final var contentIdentifiers = this.databaseContentIdentifierPort.listAll(keyType);
+        final var contentIdentifiers = this.findPixKeyPort.findAllByKeyType(keyType);
 
         final var sync = new Sync(contentIdentifierFile);
         sync.verify(cids, contentIdentifiers);
@@ -58,55 +59,37 @@ public class FailureReconciliationSyncByFileUseCase {
         sync.getCidsNotSyncronized().stream()
             .forEach(cid -> {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
-                    this.createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
+                    final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
+                    var action = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey()).isPresent() ? UPDATED : ADDED;
+                    this.createPixKeyPort.createPixKey(pixKeyToInsert, CreateReason.RECONCILIATION);
 
-                    this.insertCID(keyType, cid, pixKey);
+                    this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, action);
+                    log.info("Cid {} of key type {} {} in database", cid, keyType,action);
 
-                    this.insertAuditLog(keyType, sync, cid, pixKey);
                 }, () -> {
                     this.remove(keyType, sync, cid);
                 });
             });
     }
 
-    private void insertCID(final KeyType keyType, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKeyInBacen) {
-        final var contentIdentifier = ContentIdentifier.builder()
-            .key(pixKeyInBacen.getKey())
-            .keyType(keyType)
-            .cid(cid)
-            .build();
-        this.databaseContentIdentifierPort.save(contentIdentifier);
-    }
-
-    private void insertAuditLog(final KeyType keyType, final Sync sync, final String cid,
-        final com.picpay.banking.pix.core.domain.PixKey pixKeyInBacen) {
-        final var keyInDatabase = this.findPixKeyPort.findPixKey(pixKeyInBacen.getKey());
-        keyInDatabase.ifPresentOrElse(pixKey -> {
-            this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyInBacen, cid, UPDATED);
-            log.info("Cid {} of key type {} updated in database", cid, keyType);
-        }, () -> {
-            this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyInBacen, cid, ADDED);
-            log.info("Cid {} of key type {} was inserted in database", cid, keyType);
-        });
-    }
 
     private void remove(final KeyType keyType, final Sync sync, final String cid) {
-        // FIXME: A classe ContentIdentifier não existe mais. Temos que refatorar este ponto para não usá-la.
-        final var cidInDatabase = this.databaseContentIdentifierPort.findByCid(cid);
-        cidInDatabase.ifPresent(contentIdentifier -> {
-            this.databaseContentIdentifierPort.delete(cid);
-            contentIdentifier.getPixKey().calculateCid(); // TODO: Melhorar este ponto
-            final var calculatedCid = contentIdentifier.getPixKey().getCid();
+        final var cidInDatabase = this.findPixKeyPort.findByCid(cid);
+        cidInDatabase.ifPresent(pixKey -> {
+            final var calculatedCid = pixKey.recalculateCid();;
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
-            if (!valueInBacen.isPresent()) {
-                this.removePixKeyPort.remove(contentIdentifier.getKey(), participant);
-                this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), contentIdentifier.getPixKey(), cid, REMOVED);
-                log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"
-                    , contentIdentifier.getCid(), contentIdentifier.getKey(), keyType);
-                return;
+            if (valueInBacen.isEmpty()) {
+                this.removePixKey(keyType, sync, cid, pixKey);
             }
             log.info("Only Cid {} was removed from database because cid don't exists in bacen but key exists", cid);
         });
+    }
+
+    private void removePixKey(final KeyType keyType, final Sync sync, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKey) {
+        this.removePixKeyPort.remove(pixKey.getKey(), participant);
+        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKey, cid, REMOVED);
+        log.info("Cid {} of pixKey {} type {} was removed from database because don't exists in bacen"
+            , pixKey.getCid(), pixKey.getKey(), keyType);
     }
 
 }

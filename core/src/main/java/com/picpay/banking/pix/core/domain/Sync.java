@@ -25,9 +25,9 @@ public class Sync {
         this.contentIdentifierFile = contentIdentifierFile;
     }
 
-    public void verify(final List<String> cidsInBacen, final List<ContentIdentifier> contentIdentifiers) {
+    public void verify(final List<String> cidsInBacen, final List<PixKey> contentIdentifiers) {
         final var cidsInDatabase = contentIdentifiers.stream()
-            .map(ContentIdentifier::getCid)
+            .map(PixKey::getCid)
             .collect(Collectors.toList());
 
 
