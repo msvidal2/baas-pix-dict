@@ -13,6 +13,8 @@ services:
     ports:
       - 3306:3306
       - 33060:33060
+    volumes:
+      - 'mysql:/var/lib/mysql'
     networks:
       - baas_pix_net
 
@@ -67,3 +69,4 @@ volumes:
   postgres:
   zookeeper:
   kafka:
+  mysql:
