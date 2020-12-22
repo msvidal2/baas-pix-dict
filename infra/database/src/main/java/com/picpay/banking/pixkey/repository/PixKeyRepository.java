@@ -35,4 +35,6 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     Optional<PixKeyEntity> findByCid(String cid);
 
+    List<PixKeyEntity> findAllByIdType(KeyType keyType);
+
 }

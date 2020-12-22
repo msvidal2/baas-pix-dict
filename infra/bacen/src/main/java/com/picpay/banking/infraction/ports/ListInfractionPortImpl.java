@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * @author rafael.braga
@@ -37,10 +38,13 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public ListInfractionReports list(String ispb, Integer limit, LocalDateTime startDate, LocalDateTime endDate) {
-        //        ListInfractionReportsResponse response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
-        //                                                                             () -> infractionBacenClient.listInfractions(ispb, limit, modifiedAfter),
-        //                                                                             UUID.randomUUID().toString());
-        var response = infractionBacenClient.listInfractions(ispb, limit, DATE_FORMATTER.format(startDate), DATE_FORMATTER.format(endDate), true);
+        ListInfractionReportsResponse response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
+                                                                             () -> infractionBacenClient.listInfractions(ispb,
+                                                                                                                         limit,
+                                                                                                                         DATE_FORMATTER.format(startDate),
+                                                                                                                         DATE_FORMATTER.format(endDate),
+                                                                                                                         true),
+                                                                             UUID.randomUUID().toString());
         return ListInfractionReportsResponse.toInfractionReportsList(response);
     }
 

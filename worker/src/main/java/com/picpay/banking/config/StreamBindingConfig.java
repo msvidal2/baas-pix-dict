@@ -23,7 +23,9 @@ import org.springframework.context.annotation.Configuration;
         AcknowledgeInputStream.class,
         ClaimNotificationInputBinding.class,
         ClaimNotificationOutputBinding.class,
-        CancelPortabilityPollingInputBinding.class
+        CancelPortabilityPollingInputBinding.class,
+        ClaimNotificationOutputBinding.class,
+        OverduePossessionClaimInputTopic.class
 })
 @Configuration
 public class StreamBindingConfig {
@@ -35,6 +37,11 @@ public class StreamBindingConfig {
 
     @Bean
     public CancelPortabilityPollingOutputBinding cancelPortabilityPollingOutputBinding() {
+        return () -> null;
+    }
+
+    @Bean
+    public OverduePossessionClaimOutputTopic overduePossessionClaimOutputTopic() {
         return () -> null;
     }
 

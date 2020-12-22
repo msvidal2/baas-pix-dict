@@ -3,8 +3,6 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
-
 package com.picpay.banking.common.ports;
 
 import com.picpay.banking.common.entity.ExecutionEntity;
@@ -32,12 +30,12 @@ public class ExecutionPortImpl implements ExecutionPort {
 
     @Override
     public Optional<Execution> lastExecution(ExecutionType executionType) {
-        return executionRepository.findFirstByExitMessageAndTypeOrderByEndTimeDesc(SUCCESS, executionType).map(ExecutionEntity::to);
+        return executionRepository.findFirstByExitMessageAndTaskNameOrderByEndTimeDesc(SUCCESS, executionType.toString()).map(ExecutionEntity::to);
     }
 
     @Override
     public void save(final Execution execution) {
-        log.info("Saved last execution for {} as {}", execution.getType(), execution.getEndTime());
+        log.info("Saved last execution for {} as {}", execution.getTaskName(), execution.getEndTime());
         executionRepository.save(ExecutionEntity.from(execution));
     }
 

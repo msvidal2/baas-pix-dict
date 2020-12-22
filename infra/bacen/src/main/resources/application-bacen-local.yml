@@ -1,3 +1,9 @@
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+        cancelRunningFuture: true
 feign:
   client:
     config:

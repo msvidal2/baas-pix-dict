@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableBinding(value = {
         ClaimTopicBindingOutput.class,
-        CancelPortabilityPollingOutputBinding.class
+        CancelPortabilityPollingOutputBinding.class,
+        ClaimTopicBindingOutput.class,
+        OverduePossessionClaimOutputTopic.class
 })
 @Configuration
 public class ClaimBindingConfig {
