@@ -26,13 +26,12 @@ public class CancelPortabilityPollingUseCase {
     private final SendToCancelPortabilityPort sendToCancelPortabilityPort;
 
     public void execute(String ispb, Integer limit) {
-        LocalDateTime startTime = LocalDateTime.now();
         try {
             poll(ispb, limit);
-            executionPort.save(Execution.success(startTime, LocalDateTime.now(), CANCEL_PORTABILITY_POLLING));
+            executionPort.lastExecution(CANCEL_PORTABILITY_POLLING);
         } catch (Exception e) {
             log.error("Cancel Portability Polling failed: ", e);
-            executionPort.save(Execution.fail(startTime, LocalDateTime.now(), CANCEL_PORTABILITY_POLLING, e));
+            executionPort.lastExecution(CANCEL_PORTABILITY_POLLING);
         }
     }
 
