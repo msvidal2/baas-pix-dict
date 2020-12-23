@@ -30,10 +30,10 @@ public class PollingOverduePossessionClaimUseCase {
 
         Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
-                    log.info("Overdue possession claims founded: " + claims.size());
+                    log.info("Overdue possession claims found: " + claims.size());
                     claims.forEach(sendOverduePossessionClaimPort::send);
                 },
-                () -> log.info("There is no overdue possession claims")
+                () -> log.info("There are no overdue possession claims")
         );
     }
 

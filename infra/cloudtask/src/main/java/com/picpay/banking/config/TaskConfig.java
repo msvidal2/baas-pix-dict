@@ -1,11 +1,9 @@
 /*
- *  baas-pix-dict 1.0 12/21/20
+ *  baas-pix-dict 1.0 22/12/20
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
-
-package com.picpay.banking.infraction.config;
+package com.picpay.banking.config;
 
 import com.newrelic.api.agent.NewRelic;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author rafael.braga
- * @version 1.0 21/12/2020
+ * @version 1.0 22/12/2020
  */
 @Configuration
 @Slf4j
@@ -27,12 +25,12 @@ public class TaskConfig {
 
     @BeforeTask
     public void beforeTask(TaskExecution taskExecution) {
-        log.info("Starting infraction polling task");
+        log.info("Starting {} task", taskExecution.getTaskName());
     }
 
     @AfterTask
     public void afterTask(TaskExecution taskExecution) {
-        log.info("Infraction polling task was successful");
+        log.info("{} task was successful", taskExecution.getTaskName());
         taskExecution.setExitCode(0);
         taskExecution.setExitMessage("SUCCESS");
     }
@@ -40,7 +38,7 @@ public class TaskConfig {
     @FailedTask
     public void onFailedTask(TaskExecution taskExecution, Throwable throwable) {
         NewRelic.noticeError(throwable);
-        log.error("Infraction polling failed. Cause: ", throwable);
+        log.error("{} task failed. Cause: ", taskExecution.getTaskName(), throwable);
         taskExecution.setExitCode(1);
         taskExecution.setExitMessage("FAILED");
     }

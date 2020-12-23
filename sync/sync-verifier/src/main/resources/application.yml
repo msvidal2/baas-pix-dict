@@ -5,10 +5,10 @@ spring:
     active:
       - bacen
       - database
+      - cloudtask
   cloud:
     task:
       name: SYNC_VERIFIER
-      initialize-enabled: false
 
 server:
   tomcat:

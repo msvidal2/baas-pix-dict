@@ -2,7 +2,7 @@ package com.picpay.banking.pix.sync.file.task;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -14,14 +14,14 @@ import java.util.Arrays;
  * @version 1.0 10/12/2020
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SyncFileTask implements ApplicationRunner {
 
-    private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
+    private final FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
     @Override
     public void run(final ApplicationArguments args) throws Exception {
-        Arrays.stream(KeyType.values()).forEach(keyType -> this.failureReconciliationSyncByFileUseCase.execute(keyType));
+        Arrays.stream(KeyType.values()).forEach(this.failureReconciliationSyncByFileUseCase::execute);
     }
 
 }

@@ -4,7 +4,6 @@ import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendOverduePossessionClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;

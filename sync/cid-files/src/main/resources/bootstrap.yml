@@ -12,3 +12,4 @@ spring:
             - ${ENV:local}
             - bacen-${ENV:local}
             - database-${ENV:local}
+            - cloudtask-${ENV:local}
