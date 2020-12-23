@@ -24,10 +24,8 @@ public class CancelPortabilityPollingUseCase {
     private final CancelClaimPort cancelClaimPort;
     private final ExecutionPort executionPort;
     private final SendToCancelPortabilityPort sendToCancelPortabilityPort;
-    private String donorParticipant;
 
     public void execute(String ispb, Integer limit) {
-        this.donorParticipant = ispb;
         LocalDateTime startTime = LocalDateTime.now();
         try {
             poll(ispb, limit);
@@ -48,7 +46,7 @@ public class CancelPortabilityPollingUseCase {
         log.debug("Portabilities canceled");
     }
 
-    public void cancelClaim(Claim claim){
+    public void cancelClaim(Claim claim, final String donorParticipant){
         String requestIdentifier = UUID.randomUUID().toString();
         claim.setClaimSituation(ClaimSituation.CANCELED);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);
