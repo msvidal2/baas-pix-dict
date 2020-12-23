@@ -14,6 +14,8 @@ package com.picpay.banking.pix.core.domain;
 public enum ExecutionType {
 
     INFRACTION_POLLING,
-    CLAIM_POLLING
+    CLAIM_POLLING,
+    CANCEL_PORTABILITY,
+    OVERDUE_POSSESSION_CLAIM
 
 }

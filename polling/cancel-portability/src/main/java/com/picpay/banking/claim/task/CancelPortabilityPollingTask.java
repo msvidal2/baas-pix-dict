@@ -14,7 +14,6 @@ public class CancelPortabilityPollingTask implements ApplicationRunner {
     private final Integer limit;
     private final CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase;
 
-    // TODO - verificar porque nao ta reconhecendo o ${picpay.polling.claim.cancel-limit}
     public CancelPortabilityPollingTask(@Value("${picpay.ispb}") final String ispb,
                                         @Value("${picpay.polling.claim.limit}") final Integer limit,
                                         final CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase) {

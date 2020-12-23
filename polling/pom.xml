@@ -21,6 +21,8 @@
 	<modules>
 		<module>infraction</module>
 		<module>claim</module>
+		<module>overdue-possession-claim</module>
+		<module>cancel-portability</module>
 	</modules>
 
 </project>

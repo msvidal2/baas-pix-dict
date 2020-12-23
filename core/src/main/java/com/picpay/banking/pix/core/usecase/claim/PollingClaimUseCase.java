@@ -3,8 +3,8 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import com.picpay.banking.pix.core.domain.Execution;
-import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,7 @@ import static com.picpay.banking.pix.core.domain.ExecutionType.CLAIM_POLLING;
 public class PollingClaimUseCase {
 
     private final ListClaimsBacenPort listClaimsBacenPort;
-
     private final SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;
-
     private final ExecutionPort executionPort;
 
     public void execute(final Integer ispb, final Integer limit) {
@@ -42,12 +40,9 @@ public class PollingClaimUseCase {
 
         try {
             var claims = poll(claim, limit, startDate, endDate);
-
             claims.forEach(sendToProcessClaimNotificationPort::send);
-
-            executionPort.save(Execution.success(startDate, endDate, CLAIM_POLLING));
         } catch (Exception e) {
-            executionPort.save(Execution.fail(startDate, endDate, CLAIM_POLLING, e));
+            log.error("Error while polling claims: ", e);
         }
     }
 
