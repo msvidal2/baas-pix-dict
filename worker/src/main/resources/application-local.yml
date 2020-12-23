@@ -80,6 +80,10 @@ spring:
           contentType: application/json
           producer:
             partitionCount: 1
+        cancel-portabilities-input:
+          destination: cancel-portabilities-topic
+          group: cancel-portabilities-consumer-group
+          contentType: application/json
 
 management:
   endpoint:

@@ -22,7 +22,6 @@ public class ClaimEntity {
     @Id
     private String id;
 
-    @Column(nullable = false, name = "type")
     @Enumerated(EnumType.STRING)
     private ClaimType type;
 
@@ -74,18 +73,20 @@ public class ClaimEntity {
     @Column(name = "last_modified")
     private LocalDateTime lastModified;
 
-    @CreatedDate
     @Column(name = "creation_date")
+    @CreatedDate
     private LocalDateTime creationDate;
 
-    @LastModifiedDate
     @Column(name = "update_date")
+    @LastModifiedDate
     private LocalDateTime updateDate;
 
     @Column(name = "confirm_reason")
+    @Enumerated(EnumType.STRING)
     private ClaimConfirmationReason confirmReason;
 
     @Column(name = "cancel_reason")
+    @Enumerated(EnumType.STRING)
     private ClaimCancelReason cancelReason;
 
     @Column(name = "cancelled_by_claimant")
@@ -96,54 +97,54 @@ public class ClaimEntity {
 
     public static ClaimEntity from(Claim claim) {
         return ClaimEntity.builder()
-            .id(claim.getClaimId())
-            .type(claim.getClaimType())
-            .key(claim.getKey())
-            .keyType(claim.getKeyType())
-            .claimerAccountNumber(claim.getAccountNumber())
-            .claimerAccountOpeningDate(claim.getAccountOpeningDate())
-            .claimerAccountType(claim.getAccountType())
-            .claimerBranch(claim.getBranchNumber())
-            .claimerName(claim.getOwnerName())
-            .claimerParticipant(claim.getDonorIspb())
-            .claimerTaxId(claim.getCpfCnpj())
-            .claimerType(claim.getPersonType())
-            .donorParticipant(claim.getDonorIspb())
-            .status(claim.getClaimSituation())
-            .completionPeriodEnd(claim.getCompletionThresholdDate())
-            .resolutionPeriodEnd(claim.getResolutionThresholdDate())
-            .lastModified(Optional.ofNullable(claim.getLastModifiedDate()).orElse(null))
-            .confirmReason(claim.getConfirmationReason())
-            .cancelReason(claim.getCancelReason())
-            .cancelledByClaimant(claim.getIsClaim())
-            .correlationId(claim.getCorrelationId())
-            .build();
+                .id(claim.getClaimId())
+                .type(claim.getClaimType())
+                .key(claim.getKey())
+                .keyType(claim.getKeyType())
+                .claimerAccountNumber(claim.getAccountNumber())
+                .claimerAccountOpeningDate(claim.getAccountOpeningDate())
+                .claimerAccountType(claim.getAccountType())
+                .claimerBranch(claim.getBranchNumber())
+                .claimerName(claim.getOwnerName())
+                .claimerParticipant(claim.getDonorIspb())
+                .claimerTaxId(claim.getCpfCnpj())
+                .claimerType(claim.getPersonType())
+                .donorParticipant(claim.getDonorIspb())
+                .status(claim.getClaimSituation())
+                .completionPeriodEnd(claim.getCompletionThresholdDate())
+                .resolutionPeriodEnd(claim.getResolutionThresholdDate())
+                .lastModified(Optional.ofNullable(claim.getLastModifiedDate()).orElse(null))
+                .confirmReason(claim.getConfirmationReason())
+                .cancelReason(claim.getCancelReason())
+                .cancelledByClaimant(claim.getIsClaim())
+                .correlationId(claim.getCorrelationId())
+                .build();
     }
 
     public Claim toClaim() {
         return Claim.builder()
-            .claimId(id)
-            .claimType(type)
-            .key(key)
-            .keyType(keyType)
-            .donorIspb(donorParticipant)
-            .branchNumber(claimerBranch)
-            .accountNumber(claimerAccountNumber)
-            .accountType(claimerAccountType)
-            .accountOpeningDate(claimerAccountOpeningDate)
-            .personType(claimerType)
-            .cpfCnpj(claimerTaxId)
-            .name(claimerName)
-            .claimSituation(status)
-            .completionThresholdDate(completionPeriodEnd)
-            .resolutionThresholdDate(resolutionPeriodEnd)
-            .lastModifiedDate(lastModified)
-            .ispb(claimerParticipant)
-            .confirmationReason(confirmReason)
-            .cancelReason(cancelReason)
-            .isClaim(cancelledByClaimant)
-            .correlationId(correlationId)
-            .build();
+                .claimId(id)
+                .claimType(type)
+                .key(key)
+                .keyType(keyType)
+                .donorIspb(donorParticipant)
+                .branchNumber(claimerBranch)
+                .accountNumber(claimerAccountNumber)
+                .accountType(claimerAccountType)
+                .accountOpeningDate(claimerAccountOpeningDate)
+                .personType(claimerType)
+                .cpfCnpj(claimerTaxId)
+                .name(claimerName)
+                .claimSituation(status)
+                .completionThresholdDate(completionPeriodEnd)
+                .resolutionThresholdDate(resolutionPeriodEnd)
+                .lastModifiedDate(lastModified)
+                .ispb(claimerParticipant)
+                .confirmationReason(confirmReason)
+                .cancelReason(cancelReason)
+                .isClaim(cancelledByClaimant)
+                .correlationId(correlationId)
+                .build();
     }
 
 }

@@ -15,7 +15,7 @@ public class CancelPortabilityPollingTask implements ApplicationRunner {
     private final CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase;
 
     public CancelPortabilityPollingTask(@Value("${picpay.ispb}") final String ispb,
-                                        @Value("${picpay.polling.claim.limit}") final Integer limit,
+                                        @Value("${picpay.polling.claim.cancel-limit}") final Integer limit,
                                         final CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase) {
         this.ispb = ispb;
         this.limit = limit;

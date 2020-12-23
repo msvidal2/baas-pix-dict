@@ -9,9 +9,11 @@ package com.picpay.banking.claim.config;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Configuration;
 
-@EnableBinding(value = {ClaimNotificationOutputBinding.class, ClaimTopicBindingOutput.class})
+@EnableBinding(value = {
+        ClaimTopicBindingOutput.class,
+        OverduePossessionClaimOutputTopic.class,
+        ClaimNotificationOutputBinding.class
+})
 @Configuration
 public class ClaimBindingConfig {
-
-
 }

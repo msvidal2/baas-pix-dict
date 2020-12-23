@@ -10,6 +10,8 @@ package com.picpay.banking.claim.config;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
+import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.usecase.claim.CancelPortabilityPollingUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +26,10 @@ public class CancelPortabilityUseCaseConfig {
     @Bean
     public CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase(final FindClaimToCancelPort findClaimToCancelPort,
                                                                            final CancelClaimBacenPort cancelClaimBacenPort,
-                                                                           final CancelClaimPort cancelClaimPort) {
-        return new CancelPortabilityPollingUseCase(findClaimToCancelPort, cancelClaimBacenPort, cancelClaimPort);
+                                                                           final CancelClaimPort cancelClaimPort,
+                                                                           final ExecutionPort executionPort,
+                                                                           final SendToCancelPortabilityPort sendToCancelPortabilityPort) {
+        return new CancelPortabilityPollingUseCase(findClaimToCancelPort, cancelClaimBacenPort, cancelClaimPort, executionPort, sendToCancelPortabilityPort);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.picpay.banking.claim.config;
 
 import com.picpay.banking.pix.core.ports.claim.bacen.ListClaimsBacenPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotificationPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
 import org.springframework.context.annotation.Bean;
