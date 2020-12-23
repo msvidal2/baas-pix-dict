@@ -24,10 +24,7 @@ public class FindClaimToCancelPortImpl implements FindClaimToCancelPort {
 
     @Override
     public List<Claim> find(ClaimType type, List<ClaimSituation> status, Integer ispb, LocalDateTime resolutionPeriodEnd, Integer limit) {
-        // TODO reverter gambiarra
-        resolutionPeriodEnd = LocalDateTime.now().plusDays(10);
-        type = ClaimType.POSSESSION_CLAIM;
-        Page<ClaimEntity> claimEntityList = claimRepository.findClaimToCancel(type, List.of(ClaimSituation.OPEN), ispb,
+        Page<ClaimEntity> claimEntityList = claimRepository.findClaimToCancel(type, status, ispb,
                 resolutionPeriodEnd, PageRequest.of(0, limit));
 
         return claimEntityList.map(ClaimEntity::toClaim).toList();
