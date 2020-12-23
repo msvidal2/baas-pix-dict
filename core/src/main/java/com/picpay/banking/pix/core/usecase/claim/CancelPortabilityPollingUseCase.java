@@ -43,7 +43,6 @@ public class CancelPortabilityPollingUseCase {
 
         log.debug("Portabilities to cancel found: {}", claimsToCancel.size());
         claimsToCancel.forEach(c -> sendToCancelPortabilityPort.send(c));
-        log.debug("Portabilities canceled");
     }
 
     public void cancelClaim(Claim claim, final String donorParticipant){
@@ -51,6 +50,7 @@ public class CancelPortabilityPollingUseCase {
         claim.setClaimSituation(ClaimSituation.CANCELED);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);
         cancelClaimPort.cancel(claim, ClaimCancelReason.DEFAULT_RESPONSE, requestIdentifier);
+        log.debug("Portabilitie canceled : " + claim.getClaimId());
     }
 
 }
