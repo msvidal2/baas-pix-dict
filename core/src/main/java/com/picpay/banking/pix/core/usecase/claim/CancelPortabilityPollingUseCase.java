@@ -50,7 +50,7 @@ public class CancelPortabilityPollingUseCase {
         claim.setClaimSituation(ClaimSituation.CANCELED);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);
         cancelClaimPort.cancel(claim, ClaimCancelReason.DEFAULT_RESPONSE, requestIdentifier);
-        log.debug("Portabilitie canceled : " + claim.getClaimId());
+        log.debug("Portability canceled : " + claim.getClaimId());
     }
 
 }
