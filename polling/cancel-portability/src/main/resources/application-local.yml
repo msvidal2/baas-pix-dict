@@ -26,6 +26,7 @@ picpay:
       initial-delay: 10000
       fixed-delay: 360000
       limit: 200
+      cancel-limit: 200
 management:
   endpoint:
     health:
