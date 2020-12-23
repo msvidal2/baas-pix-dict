@@ -92,7 +92,7 @@ public class ClaimEntity {
     @Column(name = "cancelled_by_claimant")
     private Boolean cancelledByClaimant;
 
-    @Column(nullable = false, name = "correlation_id")
+    @Column(name = "correlation_id")
     private String correlationId;
 
     public static ClaimEntity from(Claim claim) {
