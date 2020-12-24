@@ -7,7 +7,7 @@ spring:
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-polling-claim,dict-bacen,dict-database,dict-messaging
+            name: dict-overdue-possession-claim,dict-bacen,dict-database,dict-messaging
     profiles:
         active:
             - ${ENV:local}
