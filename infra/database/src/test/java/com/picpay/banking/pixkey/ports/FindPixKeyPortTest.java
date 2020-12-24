@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,13 +81,13 @@ public class FindPixKeyPortTest {
 
     @Test
     void shouldListAllCids(){
-        when(this.pixKeyRepository.findAllByIdType(any()))
-            .thenReturn(List.of(PixKeyEntity.from(pixKey, CreateReason.RECONCILIATION)));
+        when(this.pixKeyRepository.findAllByIdType(any(),any()))
+            .thenReturn(new PageImpl<PixKeyEntity>(List.of(PixKeyEntity.from(pixKey, CreateReason.RECONCILIATION)), PageRequest.of(0,10),1));
 
-        final var cids = this.findPixKeyPort.findAllByKeyType(KeyType.EMAIL);
-        assertThat(cids).isNotNull().isNotEmpty();
+        final var cids = this.findPixKeyPort.findAllByKeyType(KeyType.EMAIL,0,10);
+        assertThat(cids.getHasNext()).isFalse();
 
-        verify(this.pixKeyRepository).findAllByIdType(any());
+        verify(this.pixKeyRepository).findAllByIdType(any(),any());
     }
 
     @Test

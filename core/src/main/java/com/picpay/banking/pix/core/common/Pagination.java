@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class Pagination<T> {
 
-    private Integer totalRecords;
-    private Integer currentPage;
+    private Long totalRecords;
+    private Integer currentPage = 0;
     private Integer pageSize;
-    private Boolean hasPrevious;
-    private Boolean hasNext;
+    private Boolean hasPrevious = false;
+    private Boolean hasNext = false;
     private List<T> result;
 
     public <R> Pagination<R> copy(Function<T,R> function){
@@ -37,6 +37,10 @@ public class Pagination<T> {
         pagination.setPageSize(pageSize);
         pagination.setHasNext(hasNext);
         return pagination;
+    }
+
+    public Integer nextPage() {
+        return this.currentPage == null ? 0 : this.currentPage+1;
     }
 
 }
