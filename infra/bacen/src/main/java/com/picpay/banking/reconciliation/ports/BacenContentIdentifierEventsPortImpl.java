@@ -3,12 +3,14 @@ package com.picpay.banking.reconciliation.ports;
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
+import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -90,6 +93,16 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
         return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<PixKey> getPixKey(final String cid) {
+        try {
+            final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
+            return Optional.of(response.toDomain());
+        } catch (FeignException.NotFound ex) {
+            return Optional.empty();
+        }
     }
 
 }

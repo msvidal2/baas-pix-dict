@@ -40,4 +40,9 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<PixKey> findPixKeyByCid(final String cid) {
+        return pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
+    }
+
 }

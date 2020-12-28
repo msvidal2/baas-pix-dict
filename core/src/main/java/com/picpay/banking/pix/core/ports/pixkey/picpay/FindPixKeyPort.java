@@ -13,4 +13,6 @@ public interface FindPixKeyPort {
 
     List<PixKey> findByAccount(Integer ispb, String branch, String accountNumber, AccountType accountType);
 
+    Optional<PixKey> findPixKeyByCid(String cid);
+
 }

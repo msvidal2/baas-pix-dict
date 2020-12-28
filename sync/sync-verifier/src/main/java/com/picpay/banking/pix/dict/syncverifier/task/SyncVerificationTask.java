@@ -43,7 +43,6 @@ public class SyncVerificationTask implements ApplicationRunner {
 
         if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {
             syncVerifierService.failureReconciliationSync(syncVerifierHistoric);
-            syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
         }
 
         log.info("SyncApplication end: {}", syncVerifierHistoric);
