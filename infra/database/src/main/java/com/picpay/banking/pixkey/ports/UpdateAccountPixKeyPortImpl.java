@@ -25,7 +25,7 @@ public class UpdateAccountPixKeyPortImpl implements UpdateAccountPixKeyPort {
     @Override
     public PixKey updateAccount(PixKey pixKey, UpdateReason reason) {
 
-        var pixKeyEntity = PixKeyEntity.from(pixKey, reason);
+        var pixKeyEntity = PixKeyEntity.from(pixKey, reason.getValue());
 
         var entitySaved = pixKeyRepository.save(pixKeyEntity);
 

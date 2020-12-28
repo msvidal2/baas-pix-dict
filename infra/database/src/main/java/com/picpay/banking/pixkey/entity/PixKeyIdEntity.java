@@ -22,6 +22,7 @@ public class PixKeyIdEntity implements Serializable {
     @Column(name = "pix_key")
     private String key;
 
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private KeyType type;
 

@@ -21,6 +21,14 @@ build-polling-infraction:
 	@ mvn --projects com.picpay.banking.pix.dict.polling:bacen-infraction-task -am clean install
 	@ make --directory=polling build-infraction-image
 
+build-polling-cancel-portability:
+	@ mvn --projects com.picpay.banking.pix.dict.polling:cancel-portability -am clean install
+	@ make --directory=polling build-cancel-portability-image
+
+build-polling-overdue-possession-claim:
+	@ mvn --projects com.picpay.banking.pix.dict.polling:overdue-possession-claim -am clean install
+	@ make --directory=overdue-possession-claim build-overdue-possession-claim-image
+
 build-worker:
 	@ mvn --projects worker -am clean install
 	@ make --directory=worker build-image

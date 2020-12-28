@@ -11,7 +11,7 @@ spring:
     profiles:
         active:
             - ${ENV:local}
-            - local
-            - bacen-local
-            - database-local
-            - messaging-local
+            - bacen-${ENV:local}
+            - database-${ENV:local}
+            - messaging-${ENV:local}
+            - cloudtask-${ENV:local}

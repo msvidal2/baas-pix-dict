@@ -12,4 +12,3 @@ spring:
             - database-${ENV:local}
             - messaging-${ENV:local}
 
-

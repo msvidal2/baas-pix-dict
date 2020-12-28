@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface ExecutionPort {
 
     Optional<Execution> lastExecution(ExecutionType executionType);
-    void save(Execution execution);
 
 }

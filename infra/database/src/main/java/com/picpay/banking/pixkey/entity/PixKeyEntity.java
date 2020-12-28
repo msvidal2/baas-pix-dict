@@ -7,11 +7,9 @@
 package com.picpay.banking.pixkey.entity;
 
 import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.domain.UpdateReason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -89,37 +87,19 @@ public class PixKeyEntity {
     @Column
     private String cid;
 
-    public static PixKeyEntity from(final PixKey pixKey, final CreateReason reason) {
-        return PixKeyEntity.builder()
-            .id(PixKeyIdEntity.builder()
-                .key(pixKey.getKey())
-                .type(pixKey.getType())
-                .build())
-            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
-            .taxId(pixKey.getTaxId())
-            .participant(pixKey.getIspb())
-            .branch(pixKey.getBranchNumber())
-            .accountNumber(pixKey.getAccountNumber())
-            .accountType(pixKey.getAccountType())
-            .openingDate(pixKey.getAccountOpeningDate())
-            .personType(pixKey.getPersonType())
-            .name(pixKey.getName())
-            .reason(reason.getValue())
-            .correlationId(pixKey.getCorrelationId())
-            .creationDate(pixKey.getCreatedAt())
-            .ownershipDate(pixKey.getStartPossessionAt())
-            .cid(pixKey.getCid())
-            .build();
-    }
+    private boolean donatedAutomatically;
 
-    public static PixKeyEntity from(final PixKey pixKey, final UpdateReason reason) {
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime completionPeriodEnd;
+
+    public static PixKeyEntity from(final PixKey pixKey, final Reason reason) {
         return PixKeyEntity.builder()
             .id(PixKeyIdEntity.builder()
                 .key(pixKey.getKey())
                 .type(pixKey.getType())
                 .build())
-            .taxId(pixKey.getTaxId())
             .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
+            .taxId(pixKey.getTaxId())
             .participant(pixKey.getIspb())
             .branch(pixKey.getBranchNumber())
             .accountNumber(pixKey.getAccountNumber())
@@ -127,7 +107,7 @@ public class PixKeyEntity {
             .openingDate(pixKey.getAccountOpeningDate())
             .personType(pixKey.getPersonType())
             .name(pixKey.getName())
-            .reason(Reason.resolve(reason.getValue()))
+            .reason(reason)
             .correlationId(pixKey.getCorrelationId())
             .creationDate(pixKey.getCreatedAt())
             .updateDate(pixKey.getUpdatedAt())
@@ -154,8 +134,6 @@ public class PixKeyEntity {
             .requestId(UUID.fromString(requestId))
             .cid(cid)
             .updatedAt(updateDate)
-            //TODO incluir claim?
-            //                .claim()
             .build();
     }
 

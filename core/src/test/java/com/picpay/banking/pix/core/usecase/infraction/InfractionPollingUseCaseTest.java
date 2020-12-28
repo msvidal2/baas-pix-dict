@@ -5,7 +5,6 @@
  */
 package com.picpay.banking.pix.core.usecase.infraction;
 
-import com.picpay.banking.pix.core.domain.Execution;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
@@ -54,7 +53,6 @@ class InfractionPollingUseCaseTest {
         infractionPollingUseCase.execute("22896431", 200);
 
         verify(listInfractionPort).list(anyString(), anyInt(), any(LocalDateTime.class), any(LocalDateTime.class));
-        verify(executionPort).save(any(Execution.class));
         verify(sendToAcknowledgePort, times(2)).send(any());
     }
 
@@ -69,7 +67,6 @@ class InfractionPollingUseCaseTest {
         infractionPollingUseCase.execute("22896431", 200);
 
         verify(listInfractionPort).list(anyString(), anyInt(), any(LocalDateTime.class), any(LocalDateTime.class));
-        verify(executionPort).save(any(Execution.class));
         verify(sendToAcknowledgePort, times(0)).send(any());
     }
 

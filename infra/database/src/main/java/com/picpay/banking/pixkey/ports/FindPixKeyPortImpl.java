@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
@@ -41,8 +42,13 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     }
 
     @Override
-    public Optional<PixKey> findPixKeyByCid(final String cid) {
-        return pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
+    public List<PixKey> findAllByKeyType(final KeyType keyType) {
+        return this.pixKeyRepository.findAllByIdType(keyType).stream().map(PixKeyEntity::toPixKey).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<PixKey> findByCid(final String cid) {
+        return this.pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
     }
 
 }
