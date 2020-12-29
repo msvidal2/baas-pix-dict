@@ -20,9 +20,12 @@ import java.util.stream.Collectors;
 public class Pagination<T> {
 
     private Long totalRecords;
+    @Builder.Default
     private Integer currentPage = 0;
     private Integer pageSize;
+    @Builder.Default
     private Boolean hasPrevious = false;
+    @Builder.Default
     private Boolean hasNext = false;
     private List<T> result;
 

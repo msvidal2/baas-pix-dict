@@ -83,7 +83,7 @@ public class FindPixKeyPortTest {
     @Test
     void shouldListAllCids(){
         when(this.pixKeyRepository.findAllByIdType(any(),any()))
-            .thenReturn(new PageImpl<PixKeyEntity>(List.of(PixKeyEntity.from(pixKey, CreateReason.RECONCILIATION)), PageRequest.of(0,10),1));
+            .thenReturn(new PageImpl<PixKeyEntity>(List.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)), PageRequest.of(0,10),1));
 
         final var cids = this.findPixKeyPort.findAllByKeyType(KeyType.EMAIL,0,10);
         assertThat(cids.getHasNext()).isFalse();
