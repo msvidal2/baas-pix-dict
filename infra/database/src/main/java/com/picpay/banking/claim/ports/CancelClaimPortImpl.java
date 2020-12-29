@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CancelClaimPortImpl implements CancelClaimPort  {
 
-    private ClaimRepository repository;
+    private final ClaimRepository repository;
 
     @Override
     public void cancel(Claim claim, ClaimCancelReason reason, String requestIdentifier) {

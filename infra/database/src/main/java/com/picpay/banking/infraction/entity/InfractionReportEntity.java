@@ -30,8 +30,8 @@ import java.util.Optional;
  * @author rafael.braga
  * @version 1.0 18/11/2020
  */
-@Entity
 @Table(name = "infraction_report")
+@Entity
 @Data
 @Builder
 @AllArgsConstructor
@@ -41,20 +41,29 @@ public class InfractionReportEntity {
     @Id
     @Column(name = "infraction_report_id")
     private String infractionReportId;
+    @Column(name = "end_to_end_id")
     private String endToEndId;
     @Enumerated(EnumType.STRING)
+    @Column(name = "reported_by")
     private ReportedBy reportedBy;
     @Enumerated(EnumType.STRING)
     private InfractionReportSituation situation;
+    @Column(name = "ispb_debited")
     private String ispbDebited;
+    @Column(name = "ispb_credited")
     private String ispbCredited;
+    @Column(name = "created_dated")
     private LocalDateTime createdDate;
+    @Column(name = "last_updated_date")
     private LocalDateTime lastUpdatedDate;
     @Enumerated(EnumType.STRING)
+    @Column(name = "infraction_type")
     private InfractionType infractionType;
     private String details;
     @Enumerated(EnumType.STRING)
+    @Column(name = "analyze_result")
     private InfractionAnalyzeResult analyzeResult;
+    @Column(name = "analyze_details")
     private String analyzeDetails;
 
 

@@ -22,65 +22,77 @@ public class ClaimEntity {
     @Id
     private String id;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClaimType type;
 
-    @Column(nullable = false,name = "pix_key")
+    @Column(nullable = false, name = "pix_key")
     private String key;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "key_type")
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_participant")
     private Integer claimerParticipant;
 
+    @Column(name = "claimer_branch")
     private String claimerBranch;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_account_number")
     private String claimerAccountNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_account_type")
     @Enumerated(EnumType.STRING)
     private AccountType claimerAccountType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_account_opening_date")
     private LocalDateTime claimerAccountOpeningDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_type")
     @Enumerated(EnumType.STRING)
     private PersonType claimerType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_tax_id")
     private String claimerTaxId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "claimer_name")
     private String claimerName;
 
+    @Column(name = "donor_participant")
     private Integer donorParticipant;
 
     @Enumerated(EnumType.STRING)
     private ClaimSituation status;
 
+    @Column(name = "completion_period_end")
     private LocalDateTime completionPeriodEnd;
 
+    @Column(name = "resolution_period_end")
     private LocalDateTime resolutionPeriodEnd;
 
+    @Column(name = "last_modified")
     private LocalDateTime lastModified;
 
+    @Column(name = "creation_date")
     @CreatedDate
     private LocalDateTime creationDate;
 
+    @Column(name = "update_date")
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    @Column(name = "confirm_reason")
+    @Enumerated(EnumType.STRING)
     private ClaimConfirmationReason confirmReason;
 
+    @Column(name = "cancel_reason")
+    @Enumerated(EnumType.STRING)
     private ClaimCancelReason cancelReason;
 
+    @Column(name = "cancelled_by_claimant")
     private Boolean cancelledByClaimant;
 
+    @Column(name = "correlation_id")
     private String correlationId;
 
     public static ClaimEntity from(Claim claim) {

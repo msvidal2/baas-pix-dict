@@ -2,7 +2,6 @@ package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

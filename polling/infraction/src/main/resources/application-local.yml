@@ -10,9 +10,11 @@ spring:
           destination: new-infraction-reports
           binder: kafka
     task:
-      name: infraction-polling
-      closecontext-enabled: true
-      initialize-enabled: false
+      name: INFRACTION_POLLING
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   main:
     banner-mode: off
     allow-bean-definition-overriding: true

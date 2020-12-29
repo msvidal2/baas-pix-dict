@@ -1,8 +1,9 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +57,7 @@ public class FindPixKeyPortTest {
     @Test
     void shouldFindCid(){
         when(this.pixKeyRepository.findByCid(any()))
-            .thenReturn(Optional.of(PixKeyEntity.from(pixKey, CreateReason.RECONCILIATION)));
+            .thenReturn(Optional.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)));
 
         final var cidDomain = this.findPixKeyPort.findByCid(
             "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a");
@@ -93,7 +94,7 @@ public class FindPixKeyPortTest {
     @Test
     void shouldFindByKey(){
         when(this.pixKeyRepository.findByIdKey(any()))
-            .thenReturn(Optional.of(PixKeyEntity.from(pixKey, CreateReason.RECONCILIATION)));
+            .thenReturn(Optional.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)));
 
         final var cid = this.findPixKeyPort.findPixKey("teste@gmail.com");
         assertThat(cid).isPresent();

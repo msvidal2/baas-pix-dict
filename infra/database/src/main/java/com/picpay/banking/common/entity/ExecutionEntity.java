@@ -6,7 +6,6 @@
 package com.picpay.banking.common.entity;
 
 import com.picpay.banking.pix.core.domain.Execution;
-import com.picpay.banking.pix.core.domain.ExecutionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +13,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
@@ -29,25 +25,34 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "job_execution")
+@Entity(name = "TASK_EXECUTION")
 public class ExecutionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
+    @GeneratedValue
+    @Column(name = "TASK_EXECUTION_ID")
+    private Long taskExecutionId;
+    @Column(name = "START_TIME")
     private LocalDateTime startTime;
+    @Column(name = "END_TIME")
     private LocalDateTime endTime;
+    @Column(name = "EXIT_MESSAGE")
     private String exitMessage;
-    @Enumerated(EnumType.STRING)
-    private ExecutionType type;
+    @Column(name = "TASK_NAME")
+    private String taskName;
+    @Column(name = "LAST_UPDATED")
+    private LocalDateTime lastUpdated;
+    @Column(name = "EXIT_CODE")
+    private Integer exitCode;
 
     public static ExecutionEntity from(Execution execution) {
         return ExecutionEntity.builder()
             .startTime(execution.getStartTime())
             .endTime(execution.getEndTime())
             .exitMessage(execution.getExitMessage())
-            .type(execution.getType())
+            .taskName(execution.getTaskName())
+            .exitCode(execution.getExitCode())
+            .lastUpdated(execution.getLastUpdated())
             .build();
     }
 
@@ -56,7 +61,9 @@ public class ExecutionEntity {
             .startTime(this.startTime)
             .endTime(this.endTime)
             .exitMessage(this.exitMessage)
-            .type(this.type)
+            .taskName(this.taskName)
+            .lastUpdated(this.lastUpdated)
+            .exitCode(this.exitCode)
             .build();
     }
 

@@ -1,18 +1,18 @@
-package com.picpay.banking.claim.schedulers;
+package com.picpay.banking.claim.task;
 
+import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile("!test")
-public class PollingClaimsScheduler {
+public class PollingClaimTask implements ApplicationRunner {
 
     @Value("${picpay.ispb}")
     private Integer ispb;
@@ -22,14 +22,10 @@ public class PollingClaimsScheduler {
 
     private final PollingClaimUseCase pollingClaimUseCase;
 
-    @Scheduled(initialDelayString = "${picpay.polling.claim.initial-delay}",
-            fixedDelayString = "${picpay.polling.claim.fixed-delay}")
-    public void run() {
-        log.info("List claims polling started");
-
+    @Override
+    @Trace(dispatcher = true, metricName = "claimPollingTask")
+    public void run(final ApplicationArguments args) throws Exception {
         pollingClaimUseCase.execute(ispb, limit);
-
-        log.info("List claims polling finished");
     }
 
 }

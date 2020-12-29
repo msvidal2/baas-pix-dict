@@ -7,9 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UpdateReason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    BRANCH_TRANSFER(Reason.BRANCH_TRANSFER.getValue()),
-    RECONCILIATION(Reason.RECONCILIATION.getValue());
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
+    BRANCH_TRANSFER(Reason.BRANCH_TRANSFER),
+    RECONCILIATION(Reason.RECONCILIATION);
 
-    private int value;
+    private Reason value;
+
 }
