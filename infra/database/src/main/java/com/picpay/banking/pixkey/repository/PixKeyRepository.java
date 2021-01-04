@@ -22,7 +22,7 @@ import java.util.Set;
 @Repository
 public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
 
-    Optional<PixKeyEntity> findByIdKey(String key);
+    Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyFalse(String key);
 
     @Query("SELECT t FROM pix_key t " +
         "WHERE t.participant = :participant " +

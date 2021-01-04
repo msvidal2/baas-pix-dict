@@ -89,24 +89,24 @@ public class FindPixKeyPortTest {
 
     @Test
     void shouldFindByKey(){
-        when(this.pixKeyRepository.findByIdKey(any()))
+        when(this.pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(any()))
             .thenReturn(Optional.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)));
 
         final var cid = this.findPixKeyPort.findPixKey("teste@gmail.com");
         assertThat(cid).isPresent();
 
-        verify(this.pixKeyRepository).findByIdKey(any());
+        verify(this.pixKeyRepository).findByIdKeyAndDonatedAutomaticallyFalse(any());
     }
 
     @Test
     void notShouldFindByKey(){
-        when(this.pixKeyRepository.findByIdKey(any()))
+        when(this.pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(any()))
             .thenReturn(Optional.empty());
 
         final var cid = this.findPixKeyPort.findPixKey("teste@gmail.com");
         assertThat(cid).isEmpty();
 
-        verify(this.pixKeyRepository).findByIdKey(any());
+        verify(this.pixKeyRepository).findByIdKeyAndDonatedAutomaticallyFalse(any());
     }
 
 

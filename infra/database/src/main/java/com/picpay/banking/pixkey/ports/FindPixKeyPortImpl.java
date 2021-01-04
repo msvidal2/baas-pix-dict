@@ -29,7 +29,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public Optional<PixKey> findPixKey(String pixKey) {
-        return pixKeyRepository.findByIdKey(pixKey)
+        return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
                 .map(PixKeyEntity::toPixKey);
     }
 
