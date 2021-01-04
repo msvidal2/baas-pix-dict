@@ -33,10 +33,4 @@ public class ExecutionPortImpl implements ExecutionPort {
         return executionRepository.findFirstByExitMessageAndTaskNameOrderByEndTimeDesc(SUCCESS, executionType.toString()).map(ExecutionEntity::to);
     }
 
-    @Override
-    public void save(final Execution execution) {
-        log.info("Saved last execution for {} as {}", execution.getTaskName(), execution.getEndTime());
-        executionRepository.save(ExecutionEntity.from(execution));
-    }
-
 }

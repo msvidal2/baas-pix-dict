@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.TableGenerator;
 import java.time.LocalDateTime;
 
 /**
@@ -31,15 +29,7 @@ import java.time.LocalDateTime;
 public class ExecutionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "TASK_SEQ")
-    @TableGenerator(
-        name="TASK_SEQ",
-        table="TASK_SEQ",
-        pkColumnName = "UNIQUE_KEY",
-        valueColumnName = "id",
-        pkColumnValue="0",
-        allocationSize = 1
-    )
+    @GeneratedValue
     @Column(name = "TASK_EXECUTION_ID")
     private Long taskExecutionId;
     @Column(name = "START_TIME")

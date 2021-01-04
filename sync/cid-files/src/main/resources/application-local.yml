@@ -4,7 +4,6 @@ spring:
   cloud:
     task:
       name: SYNC_CID_FILE
-      initialize-enabled: false
     config:
       enabled: false
 picpay:

@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.ports.claim.picpay.SendToProcessClaimNotifica
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@ConditionalOnProperty(value = "picpay.polling.claim.notification-dispatcher", havingValue = "true")
 public class SendToProcessClaimNotificationPortImpl implements SendToProcessClaimNotificationPort {
 
     private static final String CIRCUIT_BREAKER = "send-to-process-claim-notification";

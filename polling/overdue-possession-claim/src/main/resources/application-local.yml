@@ -1,0 +1,46 @@
+server:
+  compression:
+    enabled: true
+  shutdown: graceful
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+  cloud:
+    stream:
+      bindings:
+        claim-notifications:
+          destination: claim-notifications-topic
+          binder: kafka
+    task:
+      name: OVERDUE_POSSESSION_CLAIM
+
+  redis:
+    enabled: false
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+picpay:
+  ispb: 22896431
+  polling:
+    overdue-possession:
+      notification-dispatcher: true
+    claim:
+      limit: 200
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      path-mapping:
+        prometheus: '''metrics'''
