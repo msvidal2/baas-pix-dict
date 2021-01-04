@@ -6,7 +6,7 @@ spring:
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-sync-cid-events,dict-bacen,dict-database
+            name: dict-sync-verifier,dict-bacen,dict-database
     profiles:
         active:
             - ${ENV:local}
