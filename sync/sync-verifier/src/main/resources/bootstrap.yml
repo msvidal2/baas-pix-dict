@@ -2,14 +2,13 @@ spring:
     main:
         banner-mode: off
     application:
-        name: dict-sync-cid-file
+        name: dict-sync-cid-events
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-sync-cid-file,dict-bacen,dict-database
+            name: dict-sync-verifier,dict-bacen,dict-database
     profiles:
         active:
             - ${ENV:local}
             - bacen-${ENV:local}
             - database-${ENV:local}
-            - cloudtask-${ENV:local}
