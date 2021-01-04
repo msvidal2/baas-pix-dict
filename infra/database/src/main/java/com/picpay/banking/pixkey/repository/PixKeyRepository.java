@@ -28,13 +28,15 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
         "WHERE t.participant = :participant " +
         "   AND t.branch = :branch " +
         "   AND t.accountNumber = :accountNumber " +
-        "   AND t.accountType = :accountType")
-    List<PixKeyEntity> findByAccount(Integer participant, String branch, String accountNumber, AccountType accountType);
+        "   AND t.accountType = :accountType" +
+        "   AND t.donatedAutomatically = false")
+    List<PixKeyEntity> findByAccountAndDonatedAutomaticallyFalse(Integer participant, String branch, String accountNumber, AccountType accountType);
 
     void deleteByIdKeyAndParticipant(String key, Integer participant);
 
-    Optional<PixKeyEntity> findByCid(String cid);
+    Optional<PixKeyEntity> findByCidAndDonatedAutomaticallyFalse(String cid);
 
-    List<PixKeyEntity> findAllByIdType(KeyType keyType);
+    List<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType);
 
 }
+

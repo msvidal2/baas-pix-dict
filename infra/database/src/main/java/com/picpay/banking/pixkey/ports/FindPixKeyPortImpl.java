@@ -35,7 +35,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public List<PixKey> findByAccount(Integer ispb, String branch, String accountNUmber, AccountType accountType) {
-        return pixKeyRepository.findByAccount(ispb, branch, accountNUmber, accountType)
+        return pixKeyRepository.findByAccountAndDonatedAutomaticallyFalse(ispb, branch, accountNUmber, accountType)
                 .stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());
@@ -43,12 +43,15 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public List<PixKey> findAllByKeyType(final KeyType keyType) {
-        return this.pixKeyRepository.findAllByIdType(keyType).stream().map(PixKeyEntity::toPixKey).collect(Collectors.toList());
+        return this.pixKeyRepository.findAllByIdTypeAndDonatedAutomaticallyFalse(keyType)
+                .stream()
+                .map(PixKeyEntity::toPixKey)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<PixKey> findByCid(final String cid) {
-        return this.pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
+        return this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(cid).map(PixKeyEntity::toPixKey);
     }
 
 }
