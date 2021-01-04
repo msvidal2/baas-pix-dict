@@ -41,7 +41,12 @@ public class StreamBindingConfig {
     }
 
     @Bean
-    public OverduePossessionClaimOutputTopic overduePossessionClaimOutputTopic() {
+    public OverduePossessionClaimDonorOutputTopic overduePossessionClaimDonorOutputTopic() {
+        return () -> null;
+    }
+
+    @Bean
+    public OverduePossessionClaimClaimerOutputTopic overduePossessionClaimClaimerOutputTopic() {
         return () -> null;
     }
 
