@@ -11,5 +11,3 @@ picpay:
     logging:
         appender: CONSOLE
         level: INFO
-sync:
-    key-type: CPF
