@@ -31,7 +31,6 @@ public class Pagination<T> {
 
     public <R> Pagination<R> copy(Function<T,R> function){
         List<R> list = result.stream().map(function).collect(Collectors.toList());
-
         Pagination<R> pagination = new Pagination<>();
         pagination.setResult(list);
         pagination.setTotalRecords(totalRecords);
@@ -43,7 +42,7 @@ public class Pagination<T> {
     }
 
     public Integer nextPage() {
-        return this.currentPage == null ? 0 : this.currentPage+1;
+        return this.currentPage == null ? 0 : (this.currentPage + 1);
     }
 
 }

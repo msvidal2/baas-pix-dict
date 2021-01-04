@@ -30,7 +30,7 @@ public class ContentIdentifierFile {
         PROCESSING;
 
         public boolean isNotAvaliable() {
-            return !this.equals(AVAILABLE);
+            return this != AVAILABLE;
         }
     }
 

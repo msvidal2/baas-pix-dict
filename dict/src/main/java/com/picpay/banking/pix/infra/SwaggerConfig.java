@@ -25,7 +25,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
-    private ApiInfo apiInfo() {
+    private static ApiInfo apiInfo() {
         return new ApiInfo(
                 "BAAS - DICT API",
                 "Diretório de Identificadores de Contas Transacionais. <br>\n" +

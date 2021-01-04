@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class Sync {
         this.cidsNotSyncronized = new HashSet<>();
     }
 
-    public void verify(final List<String> cidsInBacen, final List<PixKey> contentIdentifiers) {
+    public void verify(final List<String> cidsInBacen, final Collection<PixKey> contentIdentifiers) {
         final var cidsInDatabase = contentIdentifiers.stream()
             .map(PixKey::getCid)
             .collect(Collectors.toList());
@@ -51,7 +52,7 @@ public class Sync {
             .collect(Collectors.toList());
 
         this.cidsNotSyncronized.addAll(cidsNotSyncronizedAtDatabaseAndNeedToInsert);
-        this.cidsNotSyncronized.addAll(listOfcidsNotSyncronized);;
+        this.cidsNotSyncronized.addAll(listOfcidsNotSyncronized);
 
         log.info("Verifying Keys not syncronized with Bacen - cids size {}", this.cidsNotSyncronized.size());
 

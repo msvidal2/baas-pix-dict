@@ -2,13 +2,10 @@ package com.picpay.banking.pix.sync.file.task;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 /**
  * @author Luis Silva
