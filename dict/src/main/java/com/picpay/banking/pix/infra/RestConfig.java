@@ -14,23 +14,21 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class RestConfig {
 
-	@Bean
-	public RestTemplate restTemplate() {
-		var httpClient = HttpClientBuilder.create().build();
-		var clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    @Bean
+    public RestTemplate restTemplate() {
+        var httpClient = HttpClientBuilder.create().build();
+        var clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 
-		var restTemplate = new RestTemplate(clientHttpRequestFactory);
+        return new RestTemplate(clientHttpRequestFactory);
+        }
 
-		return restTemplate;
-	}
-
-	@Bean
-	public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-		return builder -> {
-			builder.simpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-			builder.serializers(new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE));
-			builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-		};
-	}
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+        return builder -> {
+            builder.simpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            builder.serializers(new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE));
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        };
+    }
 
 }

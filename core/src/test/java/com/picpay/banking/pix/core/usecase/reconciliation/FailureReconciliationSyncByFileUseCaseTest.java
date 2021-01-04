@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
