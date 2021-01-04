@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
  * @version 1.0 26/11/2020
  */
 @ExtendWith(MockitoExtension.class)
-public class RequestSyncFileUseCaseTest {
+class RequestSyncFileUseCaseTest {
 
     @Mock
     private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
@@ -32,7 +33,7 @@ public class RequestSyncFileUseCaseTest {
     private RequestSyncFileUseCase requestSyncFileUseCase;
 
     @Test
-    public void requestFileInBacen(){
+    void requestFileInBacen(){
         final var contentIdentifierFile = ContentIdentifierFile.builder()
             .url("url")
             .keyType(KeyType.CPF)
@@ -41,12 +42,12 @@ public class RequestSyncFileUseCaseTest {
         .build();
 
         when(bacenContentIdentifierEventsPort.requestContentIdentifierFile(any())).thenReturn(contentIdentifierFile);
-        //doNothing().when(databaseContentIdentifierPort).save(any());
+       doNothing().when(databaseContentIdentifierPort).saveFile(any());
 
         this.requestSyncFileUseCase.execute(KeyType.CPF);
 
         verify(bacenContentIdentifierEventsPort).requestContentIdentifierFile(any());
-        //verify(databaseContentIdentifierPort).save(any());
+       verify(databaseContentIdentifierPort).saveFile(any());
 
     }
 }

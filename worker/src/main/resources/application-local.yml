@@ -22,8 +22,11 @@ feign:
 
 picpay:
   ispb: 22896431
+  polling:
+    claim:
+      notification-dispatcher: true
 
-pix:
+  pix:
     bacen:
       dict:
         url: http://baas-pix-proxy-bacen.ms.qa

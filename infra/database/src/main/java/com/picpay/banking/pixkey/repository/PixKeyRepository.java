@@ -9,18 +9,19 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
-public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
+public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity>, PagingAndSortingRepository<PixKeyEntity,PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
 
     Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyFalse(String key);
 
@@ -36,7 +37,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     Optional<PixKeyEntity> findByCidAndDonatedAutomaticallyFalse(String cid);
 
-    List<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType);
+    Page<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType, Pageable pageable);
 
 }
 

@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,6 @@ public interface BacenContentIdentifierEventsPort {
 
     ContentIdentifierFile getContentIdentifierFileInBacen(Integer id);
 
-    List<String> downloadCidsFromBacen(String url);
+    List<String> downloadCidsFromBacen(String url) ;
 
 }

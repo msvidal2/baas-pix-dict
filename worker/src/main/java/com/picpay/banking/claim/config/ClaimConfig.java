@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.SendClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.usecase.claim.CancelPortabilityPollingUseCase;
@@ -24,12 +25,12 @@ public class ClaimConfig {
     public PollingClaimListenerUseCase pollingClaimListenerUseCase(@Value("${picpay.ispb}") Integer participant,
                                                                    AcknowledgeClaimPort acknowledgeClaimPort,
                                                                    CreateClaimPort saveClaimPort,
-                                                                   SendClaimNotificationPortImpl sendClaimNotificationPortImpl) {
+                                                                   SendClaimNotificationPort sendClaimNotificationPort) {
         return new PollingClaimListenerUseCase(
                 participant,
                 acknowledgeClaimPort,
                 saveClaimPort,
-                sendClaimNotificationPortImpl);
+                sendClaimNotificationPort);
     }
 
     @Bean
