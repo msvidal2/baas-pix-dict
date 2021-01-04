@@ -25,7 +25,7 @@ public class BacenPixKeyByContentIdentifierPortImpl implements BacenPixKeyByCont
         try {
             final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
             return Optional.of(response.toDomain());
-        }catch (FeignException.NotFound ex){
+        }catch (FeignException.NotFound | FeignException.Forbidden ex){
             return Optional.empty();
         }
     }

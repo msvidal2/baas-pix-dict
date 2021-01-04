@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
+import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.ContentIdentifier;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
@@ -148,7 +149,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort, never()).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort, never()).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort, never()).findAllByKeyType(any());
+        verify(this.findPixKeyPort, never()).findAllByKeyType(any(),any(),anyInt());
         verify(this.databaseContentIdentifierPort, never()).saveFile(any());
     }
 
@@ -162,7 +163,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort, never()).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort, never()).findAllByKeyType(any());
+        verify(this.findPixKeyPort, never()).findAllByKeyType(any(),any(),anyInt());
         verify(this.databaseContentIdentifierPort, never()).saveFile(any());
     }
 
@@ -176,7 +177,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort, never()).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort, never()).findAllByKeyType(any());
+        verify(this.findPixKeyPort, never()).findAllByKeyType(any(),any(),anyInt());
         verify(this.databaseContentIdentifierPort, never()).saveFile(any());
     }
 
@@ -187,7 +188,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
         when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
-        when(this.findPixKeyPort.findAllByKeyType(any())).then(this::generatePixkKeyToInsert);
+        when(this.findPixKeyPort.findAllByKeyType(any(),any(),anyInt())).then(this::generatePixkKeyToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(), any())).then(this::generatePixKeyFromDomain);
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
@@ -198,7 +199,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort).findAllByKeyType(any());
+        verify(this.findPixKeyPort).findAllByKeyType(any(),any(),anyInt());
         verify(this.bacenPixKeyByContentIdentifierPort, times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort, times(5)).createPixKey(any(), any());
         verify(this.databaseContentIdentifierPort, times(5)).saveAction(anyInt(), any(), anyString(),
@@ -213,7 +214,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
         when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
-        when(this.findPixKeyPort.findAllByKeyType(any())).then(this::generatePixkKeyToInsert);
+        when(this.findPixKeyPort.findAllByKeyType(any(),any(),anyInt())).then(this::generatePixkKeyToInsert);
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.createPixKey(any(), any())).then(this::generatePixKeyFromDomain);
         when(this.findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
@@ -225,7 +226,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort).findAllByKeyType(any());
+        verify(this.findPixKeyPort).findAllByKeyType(any(),any(),anyInt());
         verify(this.bacenPixKeyByContentIdentifierPort, times(5)).getPixKey(anyString());
         verify(this.createPixKeyPort, times(5)).createPixKey(any(), any());
         verify(this.findPixKeyPort, times(5)).findPixKey(any());
@@ -246,7 +247,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
         when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
-        when(this.findPixKeyPort.findAllByKeyType(any())).thenReturn(contentIdentifiers);
+        when(this.findPixKeyPort.findAllByKeyType(any(),any(),anyInt())).thenReturn(Pagination.<PixKey>builder().currentPage(1).hasNext(false).result(contentIdentifiers).build());
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty());
         when(this.findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
         when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(PixKey.builder().build());
@@ -258,7 +259,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort).findAllByKeyType(any());
+        verify(this.findPixKeyPort).findAllByKeyType(any(),any(),anyInt());
         verify(this.bacenPixKeyByContentIdentifierPort, times(2)).getPixKey(anyString());
         verify(this.createPixKeyPort, never()).createPixKey(any(), any());
         verify(this.findPixKeyPort).findByCid(anyString());
@@ -272,15 +273,16 @@ public class FailureReconciliationSyncByFileUseCaseTest {
     public void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan() {
         final var availableFile = this.cidFile.toBuilder().status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE).build();
         final var contentIdentifiersToRemove =  pixKey.toBuilder().cid("a").build();
-        final var contentIdentifiers = this.cids.stream().map(cid -> PixKey.builder()
+        final var pixKeys = this.cids.stream().map(cid -> PixKey.builder()
             .cid(cid)
             .type(KeyType.CPF).key(UUID.randomUUID().toString()).build()).collect(Collectors.toList());
-        contentIdentifiers.add(contentIdentifiersToRemove);
+        pixKeys.add(contentIdentifiersToRemove);
+
 
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(availableFile);
         when(this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(anyString())).thenReturn(cids);
-        when(this.findPixKeyPort.findAllByKeyType(any())).thenReturn(contentIdentifiers);
+        when(this.findPixKeyPort.findAllByKeyType(any(),any(),anyInt())).thenReturn(Pagination.<PixKey>builder().currentPage(1).hasNext(false).result(pixKeys).build());
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty(), Optional.of(pixKey));
         when(this.findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
@@ -290,7 +292,7 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
         verify(this.bacenContentIdentifierEventsPort).getContentIdentifierFileInBacen(anyInt());
         verify(this.bacenContentIdentifierEventsPort).downloadCidsFromBacen(anyString());
-        verify(this.findPixKeyPort).findAllByKeyType(any());
+        verify(this.findPixKeyPort).findAllByKeyType(any(),any(),anyInt());
         verify(this.bacenPixKeyByContentIdentifierPort, times(2)).getPixKey(anyString());
         verify(this.createPixKeyPort, never()).createPixKey(any(), any());
         verify(this.findPixKeyPort).findByCid(anyString());
@@ -314,12 +316,18 @@ public class FailureReconciliationSyncByFileUseCaseTest {
         return invocationOnMock.getArgument(0);
     }
 
-    private List<PixKey> generatePixkKeyToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
+    private Pagination<PixKey> generatePixkKeyToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
-        return cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> PixKey.builder()
+        final var content = cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> PixKey.builder()
                 .cid(s)
                 .type(keyType).key(UUID.randomUUID().toString()).build()
-                                                                    ).collect(Collectors.toList());
+                                                                           ).collect(Collectors.toList());
+        return Pagination.<PixKey>builder()
+            .result(content)
+            .currentPage(0)
+            .totalRecords(Long.valueOf(content.size()))
+            .hasNext(false)
+            .build();
     }
 
 }
