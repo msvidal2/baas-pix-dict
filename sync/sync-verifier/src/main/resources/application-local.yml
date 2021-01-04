@@ -1,11 +1,6 @@
 spring:
   application:
     name: sync
-  profiles:
-    active:
-      - bacen
-      - database
-      - cloudtask
   cloud:
     task:
       name: SYNC_VERIFIER
@@ -19,12 +14,8 @@ server:
 picpay:
   ispb: 22896431
   service.name: ${spring.application.name}
-  logging:
-    level: ${PICPAY_LOGGING_LEVEL}
-    appender: ${PICPAY_LOGGING_APPENDER}
 
 logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
-#logging.level.org.apache.kafka.clients: OFF
 
 management:
   health:
