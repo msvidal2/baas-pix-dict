@@ -5,7 +5,7 @@ import org.springframework.messaging.MessageChannel;
 
 public interface OverduePossessionClaimDonorOutputTopic {
 
-    String OUTPUT = "overdue-possession-claim";
+    String OUTPUT = "overdue-possession-claim-claimer";
 
     @Output(OUTPUT)
     MessageChannel getMessageChannel();
