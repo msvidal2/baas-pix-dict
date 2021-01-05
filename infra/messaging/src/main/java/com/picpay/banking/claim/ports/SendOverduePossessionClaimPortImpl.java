@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.config.OverduePossessionClaimOutputTopic;
+import com.picpay.banking.claim.config.OverduePossessionClaimClaimerOutputTopic;
+import com.picpay.banking.claim.config.OverduePossessionClaimDonorOutputTopic;
 import com.picpay.banking.claim.dto.ClaimDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendOverduePossessionClaimPort;
@@ -21,12 +22,23 @@ public class SendOverduePossessionClaimPortImpl implements SendOverduePossession
 
     private static final String CIRCUIT_BREAKER = "send-overdue-possession-claim";
 
-    private final OverduePossessionClaimOutputTopic overduePossessionClaimOutputTopic;
+    private final OverduePossessionClaimDonorOutputTopic overduePossessionClaimDonorOutputTopic;
+    private final OverduePossessionClaimClaimerOutputTopic overduePossessionClaimClaimerOutputTopic;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "sendFallback")
-    public void send(Claim claim) {
-        overduePossessionClaimOutputTopic
+    public void sendToConfirm(Claim claim) {
+        overduePossessionClaimDonorOutputTopic
+                .getMessageChannel()
+                .send(MessageBuilder
+                        .withPayload(ClaimDTO.from(claim))
+                        .build());
+    }
+
+    @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "sendFallback")
+    public void sendToComplete(Claim claim) {
+        overduePossessionClaimClaimerOutputTopic
                 .getMessageChannel()
                 .send(MessageBuilder
                         .withPayload(ClaimDTO.from(claim))
