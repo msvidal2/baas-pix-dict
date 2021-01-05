@@ -50,8 +50,11 @@ public class ClaimConfig {
     @Bean
     public OverduePossessionClaimUseCase overduePossessionClaimUseCase(ConfirmClaimPort confirmClaimPort,
                                                                        CreateClaimPort saveClaimPort,
-                                                                       RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort) {
-        return new OverduePossessionClaimUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort);
+                                                                       RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort,
+                                                                       CancelClaimPort cancelClaimPort,
+                                                                       CancelClaimBacenPort cancelClaimBacenPort) {
+        return new OverduePossessionClaimUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort,
+                cancelClaimPort, cancelClaimBacenPort);
     }
 
 }

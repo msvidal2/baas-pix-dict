@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.picpay.banking.pix.core.domain.ClaimSituation.AWAITING_CLAIM;
+import static com.picpay.banking.pix.core.domain.ClaimSituation.CONFIRMED;
 import static com.picpay.banking.pix.core.domain.ClaimType.POSSESSION_CLAIM;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class PollingOverduePossessionClaimUseCase {
 
         List<Claim> overdueClaimsWhereIsClaimer = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
                 POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM),
+                List.of(AWAITING_CLAIM, CONFIRMED),
                 ispb,
                 LocalDateTime.now(),
                 limit);
