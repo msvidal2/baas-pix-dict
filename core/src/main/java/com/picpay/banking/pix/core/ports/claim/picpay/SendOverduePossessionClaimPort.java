@@ -4,8 +4,6 @@ import com.picpay.banking.pix.core.domain.Claim;
 
 public interface SendOverduePossessionClaimPort {
 
-    void sendToConfirm(Claim claim);
-
-    void sendToComplete(Claim claim);
+    void send(Claim claim);
 
 }

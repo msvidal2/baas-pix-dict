@@ -38,8 +38,6 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     Page<ClaimEntity> findAllPendingClaims(int ispb, List<ClaimSituation> openStatus, Pageable pageable);
 
     @Query("SELECT c FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
-    Page<ClaimEntity> findClaimToCancelWhereIsDonor(ClaimType type, List<ClaimSituation> status, Integer donorParticipant, LocalDateTime resolutionPeriodEnd, Pageable pageable);
+    Page<ClaimEntity> findClaimToCancel(ClaimType type, List<ClaimSituation> status, Integer donorParticipant, LocalDateTime resolutionPeriodEnd, Pageable pageable);
 
-    @Query("SELECT c FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.claimerParticipant = :claimerParticipant AND c.completionPeriodEnd <= :completionPeriodEnd")
-    Page<ClaimEntity> findClaimToCancelWhereIsClaimer(ClaimType type, List<ClaimSituation> status, Integer claimerParticipant, LocalDateTime completionPeriodEnd, Pageable pageable);
 }

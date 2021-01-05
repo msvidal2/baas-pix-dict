@@ -11,9 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableBinding(value = {
         ClaimTopicBindingOutput.class,
-        OverduePossessionClaimDonorOutputTopic.class,
-        ClaimNotificationOutputBinding.class,
-        OverduePossessionClaimClaimerOutputTopic.class
+        OverduePossessionClaimOutputTopic.class,
+        ClaimNotificationOutputBinding.class
 })
 @Configuration
 public class ClaimBindingConfig {

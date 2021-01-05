@@ -21,34 +21,19 @@ public class PollingOverduePossessionClaimUseCase {
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
 
     public void execute(Integer ispb, Integer limit) {
-        List<Claim> overdueClaimsWhereIsDonor = findClaimToCancelPort.findClaimToCancelWhereIsDonor(
+        List<Claim> overdueClaims = findClaimToCancelPort.find(
                 POSSESSION_CLAIM,
                 List.of(AWAITING_CLAIM),
                 ispb,
                 LocalDateTime.now(),
                 limit);
 
-        Optional.ofNullable(overdueClaimsWhereIsDonor).ifPresentOrElse(
+        Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
-                    log.info("Overdue possession claims to confirm found: " + claims.size());
-                    claims.forEach(sendOverduePossessionClaimPort::sendToConfirm);
+                    log.info("Overdue possession claims found: " + claims.size());
+                    claims.forEach(sendOverduePossessionClaimPort::send);
                 },
-                () -> log.info("There are no overdue possession claims to confirm")
-        );
-
-        List<Claim> overdueClaimsWhereIsClaimer = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
-                POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM),
-                ispb,
-                LocalDateTime.now(),
-                limit);
-
-        Optional.ofNullable(overdueClaimsWhereIsClaimer).ifPresentOrElse(
-                claims -> {
-                    log.info("Overdue possession claims to complete found: " + claims.size());
-                    claims.forEach(sendOverduePossessionClaimPort::sendToComplete);
-                },
-                () -> log.info("There are no overdue possession claims to complete")
+                () -> log.info("There are no overdue possession claims")
         );
     }
 
