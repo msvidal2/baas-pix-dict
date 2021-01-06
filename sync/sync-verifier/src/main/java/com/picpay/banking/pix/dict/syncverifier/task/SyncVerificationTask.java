@@ -11,6 +11,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 
 @Slf4j
 @Component
@@ -21,8 +23,7 @@ public class SyncVerificationTask implements ApplicationRunner {
 
     @Parameter(names = "-keyType",
         description = "Type of key used for sync: CPF, CNPJ, EMAIL, CELLPHONE, RANDOM.",
-        converter = CommandLineKeyTypeConverter.class,
-        required = true
+        converter = CommandLineKeyTypeConverter.class
     )
     private KeyType keyType;
 
@@ -32,14 +33,22 @@ public class SyncVerificationTask implements ApplicationRunner {
     private boolean onlySyncVerifier = false;
 
     @Override
-    public void run(final ApplicationArguments args) throws Exception {
+    public void run(final ApplicationArguments args) {
         JCommander.newBuilder()
             .addObject(this)
             .build()
             .parse(args.getSourceArgs());
 
-        log.info("SyncApplication start: {}", keyType.name());
-        SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
+        if (keyType != null) {
+            runByKeyType(keyType);
+        } else {
+            Arrays.stream(KeyType.values()).forEach(this::runByKeyType);
+        }
+    }
+
+    private void runByKeyType(KeyType syncKeyType) {
+        log.info("SyncApplication start: {}", syncKeyType.name());
+        SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(syncKeyType);
 
         if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {
             syncVerifierService.failureReconciliationSync(syncVerifierHistoric);
