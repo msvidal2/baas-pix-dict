@@ -58,11 +58,11 @@ public class CancelClaimUseCase {
                 .get(claim.getClaimType());
 
         if (!situationsAllowed.contains(claim.getClaimSituation())) {
-            if(canceledClaimant) {
+            if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_SITUATION_NOT_ALLOWED);
             }
 
-            if(ClaimType.PORTABILITY.equals(claim.getClaimType())) {
+            if (ClaimType.PORTABILITY.equals(claim.getClaimType())) {
                 throw new ClaimException(ClaimError.PORTABILITY_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION);
             }
 
@@ -80,7 +80,7 @@ public class CancelClaimUseCase {
                     .get(reason);
 
         if (!allowedReasons.contains(ClaimantType.resolve(canceledClaimant))) {
-            if(canceledClaimant) {
+            if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }
             throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
@@ -90,21 +90,13 @@ public class CancelClaimUseCase {
     private void validateExpiredResolutionPeriod(final Claim claim,
                                                  final ClaimCancelReason reason,
                                                  final boolean canceledClaimant) {
-        if(!ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)) {
-            return;
+        if (ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)
+                && LocalDateTime.now().isBefore(claim.getResolutionThresholdDate())) {
+            if (canceledClaimant) {
+                throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
+            }
+            throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
         }
-
-        var currentDate = LocalDateTime.now();
-
-        if(currentDate.isAfter(claim.getResolutionThresholdDate())) {
-            return;
-        }
-
-        if(canceledClaimant) {
-            throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
-        }
-
-        throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
     }
 
 }
