@@ -2,7 +2,7 @@ spring:
     main:
         banner-mode: off
     application:
-        name: dict-sync-cid-events
+        name: dict-sync-verifier
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
