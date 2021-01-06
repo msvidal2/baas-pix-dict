@@ -40,6 +40,14 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, String> {
     @Query("SELECT c FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
     Page<ClaimEntity> findClaimToCancelWhereIsDonor(ClaimType type, List<ClaimSituation> status, Integer donorParticipant, LocalDateTime resolutionPeriodEnd, Pageable pageable);
 
-    @Query("SELECT c FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.claimerParticipant = :claimerParticipant AND DATEDIFF(day, c.creationDate, :nowDate) >= 30")
-    Page<ClaimEntity> findClaimToCancelWhereIsClaimer(ClaimType type, List<ClaimSituation> status, Integer claimerParticipant, LocalDateTime nowDate, Pageable pageable);
+    // TODO remover comentario
+    /*@Query(value = "SELECT * FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.claimer_participant = :claimerParticipant " +
+            "AND datediff(now() , c.resolution_period_end) >= :interval)",
+            countQuery = "SELECT count(*) FROM claim",
+            nativeQuery = true)*/
+    @Query(value = "SELECT * FROM claim c WHERE c.type = :type AND c.status in (:status) AND c.claimer_participant = :claimerParticipant " +
+            "AND c.resolution_period_end <= date_sub(now(), INTERVAL :interval DAY)",
+            countQuery = "SELECT count(*) FROM claim",
+            nativeQuery = true)
+    Page<ClaimEntity> findClaimToCancelWhereIsClaimer(ClaimType type, List<ClaimSituation> status, Integer claimerParticipant, Integer interval, Pageable pageable);
 }

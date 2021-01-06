@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.ClaimSituation.AWAITING_CLAIM;
-import static com.picpay.banking.pix.core.domain.ClaimSituation.CONFIRMED;
+import static com.picpay.banking.pix.core.domain.ClaimSituation.*;
 import static com.picpay.banking.pix.core.domain.ClaimType.POSSESSION_CLAIM;
 
 @Slf4j
@@ -20,6 +19,7 @@ public class PollingOverduePossessionClaimUseCase {
 
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
+    private final Integer DAYS_TO_OVERDUE = 37;
 
     public void execute(Integer ispb, Integer limit) {
         List<Claim> overdueClaimsWhereIsDonor = findClaimToCancelPort.findClaimToCancelWhereIsDonor(
@@ -37,12 +37,13 @@ public class PollingOverduePossessionClaimUseCase {
                 () -> log.info("There are no overdue possession claims to confirm")
         );
 
+        // TODO remover open
         List<Claim> overdueClaimsWhereIsClaimer = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
                 POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM, CONFIRMED),
+                List.of(AWAITING_CLAIM, CONFIRMED, OPEN),
                 ispb,
-                LocalDateTime.now(),
-                limit);
+                limit,
+                DAYS_TO_OVERDUE);
 
         Optional.ofNullable(overdueClaimsWhereIsClaimer).ifPresentOrElse(
                 claims -> {

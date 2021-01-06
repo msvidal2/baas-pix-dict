@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Configuration;
         ClaimTopicBindingOutput.class,
         OverduePossessionClaimDonorOutputTopic.class,
         ClaimNotificationOutputBinding.class,
-        OverduePossessionClaimClaimerOutputTopic.class
+        OverduePossessionClaimClaimerOutputTopic.class,
+        CancelPortabilityPollingOutputBinding.class
 })
 @Configuration
 public class ClaimBindingConfig {
