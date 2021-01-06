@@ -5,9 +5,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
@@ -23,9 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class ReconciliationSyncUseCaseConfig {
 
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
-    private final ContentIdentifierEventPort contentIdentifierEventPort;
     private final CreatePixKeyPort createPixKeyPort;
     private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
@@ -43,9 +39,9 @@ public class ReconciliationSyncUseCaseConfig {
 
     @Bean
     public FailureReconciliationSyncUseCase failureReconciliationSyncUseCase() {
-        return new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort, bacenPixKeyByContentIdentifierPort,
-            syncVerifierHistoricActionPort,
-            contentIdentifierEventPort, createPixKeyPort, updateAccountPixKeyPort, removePixKeyPort, findPixKeyPort);
+        return new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort,
+            findPixKeyPort, syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort,
+            syncVerifierHistoricActionPort, createPixKeyPort, updateAccountPixKeyPort, removePixKeyPort);
     }
 
 }

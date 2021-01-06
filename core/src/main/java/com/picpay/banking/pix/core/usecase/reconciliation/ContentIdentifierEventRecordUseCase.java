@@ -1,30 +1,24 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
-import com.picpay.banking.pix.core.usecase.reconciliation.services.ContentIdentifierEventValidator;
+import com.picpay.banking.pix.core.validators.reconciliation.ReconciliationSyncEventValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
 public class ContentIdentifierEventRecordUseCase {
 
-    private final ContentIdentifierEventPort port;
-    private final ContentIdentifierEventValidator validator;
+    private final ContentIdentifierEventPort contentIdentifierEventPort;
 
-    public void execute(ReconciliationEvent... events) {
-        Stream.of(events).forEach(event -> {
-            try {
-                validator.validate(event);
-                port.save(event);
-            } catch (Exception e) {
-                // TODO: Add treatment
-            }
-        });
+    public void execute(ReconciliationSyncEvent event) {
+        ReconciliationSyncEventValidator.validate(event);
+        List<ReconciliationEvent> reconciliationEvents = event.generateContentIdentifierEvents();
+        reconciliationEvents.forEach(contentIdentifierEventPort::save);
     }
 
 }

@@ -4,7 +4,6 @@ import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.RemoveReason;
-import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.RemoveEntryRequest;
@@ -39,19 +38,18 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
         var removeEntryResponse = bacenKeyClient.removeAccountPixKey(removeEntryRequest, pixKey.getKey());
 
         return removeEntryResponse.toDomain();
-
     }
 
     public PixKey fallbackMethod(PixKey pixKey, RemoveReason reason, Exception e) {
-        log.error("PixKey_fallback_removeAccountBacen",
-                kv("pixKey", pixKey.getKey()),
-                kv("reason", reason),
-                kv("exceptionMessage", e.getMessage()),
-                kv("exception", e));
+        log.error("PixKey_fallback_removeAccountBacen: {}, {}, {}, {}",
+            kv("pixKey", pixKey.getKey()),
+            kv("reason", reason),
+            kv("exceptionMessage", e.getMessage()),
+            kv("exception", e));
 
         throw BacenExceptionBuilder.from(e)
-                .withFieldResolver(new PixKeyFieldResolver())
-                .build();
+            .withFieldResolver(new PixKeyFieldResolver())
+            .build();
     }
 
 }

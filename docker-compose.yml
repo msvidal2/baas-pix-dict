@@ -2,71 +2,85 @@ version: "3.7"
 
 services:
 
-  mysql:
-    container_name: mysql
-    image: mysql
-    environment:
-      - "MYSQL_DATABASE=dict"
-      - "MYSQL_USER=dict"
-      - "MYSQL_PASSWORD=123456"
-      - "MYSQL_ROOT_PASSWORD=123456"
-    ports:
-      - 3306:3306
-      - 33060:33060
-    volumes:
-      - 'mysql:/var/lib/mysql'
-    networks:
-      - baas_pix_net
+    mysql:
+        container_name: mysql
+        image: mysql
+        environment:
+            - "MYSQL_DATABASE=dict"
+            - "MYSQL_USER=dict"
+            - "MYSQL_PASSWORD=123456"
+            - "MYSQL_ROOT_PASSWORD=123456"
+        ports:
+            - 3306:3306
+            - 33060:33060
+        volumes:
+            - 'mysql:/var/lib/mysql'
+        networks:
+            - baas_pix_net
 
-  zookeeper:
-    container_name: zookeeper
-    image: confluentinc/cp-zookeeper:5.3.1
-    restart: always
-    ports:
-      - 2181:2181
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    volumes:
-      - zookeeper:/data
-      - zookeeper:/datalog
-    networks:
-      - baas_pix_net
+    zookeeper:
+        container_name: zookeeper
+        image: confluentinc/cp-zookeeper:5.3.1
+        restart: always
+        ports:
+            - 2181:2181
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        volumes:
+            - zookeeper:/data
+            - zookeeper:/datalog
+        networks:
+            - baas_pix_net
 
-  kafka:
-    container_name: kafka
-    image: confluentinc/cp-kafka:5.3.1
-    restart: always
-    ports:
-      - 9092:9092
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG4J_LOGGERS: 'kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO'
-    volumes:
-      - kafka
-    networks:
-      - baas_pix_net
+    kafka:
+        container_name: kafka
+        image: confluentinc/cp-kafka:5.3.1
+        restart: always
+        ports:
+            - 9092:9092
+        depends_on:
+            - zookeeper
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_LOG4J_LOGGERS: 'kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO'
+        volumes:
+            - kafka
+        networks:
+            - baas_pix_net
 
-  redis:
-    container_name: redis
-    image: redis
-    restart: always
-    command: [ "redis-server", "--appendonly", "yes", "--requirepass",  "none" ]
-    ports:
-      - "6379:6379"
-    networks:
-      - baas_pix_net
+    kafdrop:
+        container_name: kafdrop
+        image: obsidiandynamics/kafdrop:latest
+        environment:
+            KAFKA_BROKERCONNECT: "kafka:9092"
+            JVM_OPTS: "-Xms32M -Xmx64M"
+            SERVER_SERVLET_CONTEXTPATH: "/"
+        ports:
+            - 19001:9000
+        depends_on:
+            - kafka
+        networks:
+            - baas_pix_net
+
+    redis:
+        container_name: redis
+        image: redis
+        restart: always
+        command: [ "redis-server", "--appendonly", "yes", "--requirepass",  "none" ]
+        ports:
+            - "6379:6379"
+        networks:
+            - baas_pix_net
 
 networks:
-  baas_pix_net:
+    baas_pix_net:
 
 volumes:
-  postgres:
-  zookeeper:
-  kafka:
-  mysql:
+    postgres:
+    zookeeper:
+    kafka:
+    mysql:

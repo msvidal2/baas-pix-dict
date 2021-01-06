@@ -249,7 +249,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         when(this.findPixKeyPort.findAllByKeyType(any(),any(),anyInt())).thenReturn(Pagination.<PixKey>builder().currentPage(1).hasNext(false).result(contentIdentifiers).build());
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty());
         when(this.findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
-        when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(PixKey.builder().build());
+        when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(Optional.of(PixKey.builder().build()));
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
 

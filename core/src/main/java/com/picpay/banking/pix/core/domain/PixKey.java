@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.core.domain;
 
 import com.google.common.base.Strings;
-import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,12 +10,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.codec.digest.HmacAlgorithms;
+import org.apache.commons.codec.digest.HmacUtils;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static com.google.common.base.Charsets.UTF_8;
 
 @Builder(toBuilder = true)
 @Setter
@@ -72,28 +72,35 @@ public class PixKey {
 
     public void calculateCid() {
         byte[] requestIdBytes = new byte[16];
-
         ByteBuffer.wrap(requestIdBytes)
             .putLong(requestId.getMostSignificantBits())
             .putLong(requestId.getLeastSignificantBits());
 
-        this.cid = Hashing.hmacSha256(requestIdBytes).newHasher()
-            .putString(type.name(), UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(key, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(taxId, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(name, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(fantasyName == null ? "" : fantasyName, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(String.valueOf(ispb), UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(branchNumber == null ? "" : branchNumber, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(accountNumber, UTF_8).putString(SEPARATOR, UTF_8)
-            .putString(accountType.getInitials(), UTF_8)
-            .hash().toString()
-            .toLowerCase();
+        var tradeName = (PersonType.LEGAL_ENTITY.equals(personType) && !Strings.isNullOrEmpty(fantasyName) ? fantasyName : "");
+
+        final String entryAttributes = new StringBuilder()
+            .append(type.keyTypeNameOnBacen()).append(SEPARATOR)
+            .append(key).append(SEPARATOR)
+            .append(taxId).append(SEPARATOR)
+            .append(name).append(SEPARATOR)
+            .append(tradeName).append(SEPARATOR)
+            .append(ispb).append(SEPARATOR)
+            .append(branchNumber).append(SEPARATOR)
+            .append(accountNumber).append(SEPARATOR)
+            .append(accountType.getInitials())
+            .toString();
+
+        HmacUtils hmacSHA256 = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, requestIdBytes);
+        this.cid = hmacSHA256.hmacHex(entryAttributes.getBytes(StandardCharsets.UTF_8)).toLowerCase();
     }
 
     public String recalculateCid() {
         this.calculateCid();
         return this.cid;
+    }
+
+    public void keepCreationRequestIdentifier(final UUID requestId) {
+        this.requestId = requestId;
     }
 
 }

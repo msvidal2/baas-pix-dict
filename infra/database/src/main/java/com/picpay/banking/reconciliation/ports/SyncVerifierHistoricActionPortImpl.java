@@ -7,9 +7,6 @@ import com.picpay.banking.reconciliation.repository.SyncVerifierHistoricActionRe
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class SyncVerifierHistoricActionPortImpl implements SyncVerifierHistoricActionPort {
@@ -17,9 +14,8 @@ public class SyncVerifierHistoricActionPortImpl implements SyncVerifierHistoricA
     private final SyncVerifierHistoricActionRepository syncVerifierHistoricActionRepository;
 
     @Override
-    public void saveAll(final Set<SyncVerifierHistoricAction> syncVerifierHistoricActions) {
-        syncVerifierHistoricActionRepository.saveAll(syncVerifierHistoricActions.stream()
-            .map(SyncVerifierHistoricActionEntity::from).collect(Collectors.toSet()));
+    public void save(final SyncVerifierHistoricAction syncVerifierHistoricAction) {
+        syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(syncVerifierHistoricAction));
     }
 
 }
