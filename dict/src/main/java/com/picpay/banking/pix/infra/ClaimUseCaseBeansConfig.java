@@ -39,10 +39,10 @@ public class ClaimUseCaseBeansConfig {
     }
     
     @Bean
-    public ClaimCancelUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
+    public CancelClaimUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
                                                  FindByIdPort findByIdPort,
                                                  CancelClaimPort cancelClaimPort) {
-        return new ClaimCancelUseCase(claimCancelPort, findByIdPort, cancelClaimPort);
+        return new CancelClaimUseCase(claimCancelPort, findByIdPort, cancelClaimPort);
     }
 
     @Bean

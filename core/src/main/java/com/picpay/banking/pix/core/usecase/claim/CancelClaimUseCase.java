@@ -18,32 +18,13 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ClaimCancelUseCase {
+public class CancelClaimUseCase {
 
     private final CancelClaimBacenPort cancelClaimBacenPort;
 
     private final FindByIdPort findByIdPort;
 
     private final CancelClaimPort cancelClaimPort;
-
-    private static final Map<ClaimType, List<ClaimSituation>> situationsAllowedByType = Map.of(
-        ClaimType.POSSESSION_CLAIM, List.of(ClaimSituation.AWAITING_CLAIM, ClaimSituation.CONFIRMED),
-        ClaimType.PORTABILITY, List.of(ClaimSituation.AWAITING_CLAIM)
-    );
-
-    private static final Map<ClaimCancelReason, List<ClaimantType>> ownershipAllowedReasons = Map.of(
-        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.CLAIMANT)
-    );
-
-    private static final Map<ClaimCancelReason, List<ClaimantType>> portabilityAllowedReasons = Map.of(
-        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.DONOR)
-    );
 
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
@@ -64,15 +45,17 @@ public class ClaimCancelUseCase {
         cancelClaimPort.cancel(claimCanceled, reason, requestIdentifier);
 
         if (claimCanceled != null)
-            log.info("Claim_canceled"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("claimId", claimCanceled.getClaimId()));
+            log.info("Claim_canceled",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("claimId", claimCanceled.getClaimId()));
 
         return claimCanceled;
     }
 
     private void validateAllowedSituation(final Claim claim, final boolean canceledClaimant) {
-        var situationsAllowed = situationsAllowedByType.get(claim.getClaimType());
+        var situationsAllowed = ClaimSituation
+                .getCancelSituationsAllowedByType()
+                .get(claim.getClaimType());
 
         if (!situationsAllowed.contains(claim.getClaimSituation())) {
             if(canceledClaimant) {
@@ -87,23 +70,26 @@ public class ClaimCancelUseCase {
         }
     }
 
-    private void validateAllowedReason(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
+    private void validateAllowedReason(final Claim claim,
+                                       final ClaimCancelReason reason,
+                                       final boolean canceledClaimant) {
         var allowedReasons = Map.of(
-                ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
-                ClaimType.PORTABILITY, portabilityAllowedReasons)
-                .get(claim.getClaimType())
-                .get(reason);
+                ClaimType.POSSESSION_CLAIM, ClaimCancelReason.getOwnershipAllowedReasons(),
+                ClaimType.PORTABILITY, ClaimCancelReason.getPortabilityAllowedReasons())
+                    .get(claim.getClaimType())
+                    .get(reason);
 
         if (!allowedReasons.contains(ClaimantType.resolve(canceledClaimant))) {
             if(canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }
-
             throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
         }
     }
 
-    private void validateExpiredResolutionPeriod(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
+    private void validateExpiredResolutionPeriod(final Claim claim,
+                                                 final ClaimCancelReason reason,
+                                                 final boolean canceledClaimant) {
         if(!ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)) {
             return;
         }
