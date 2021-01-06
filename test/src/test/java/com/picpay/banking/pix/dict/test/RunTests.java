@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @CucumberContextConfiguration
-@SpringBootTest
+@SpringBootTest(classes = TestApplication.class)
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources")
 public class RunTests {

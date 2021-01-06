@@ -27,20 +27,25 @@ public class Owner {
     @XmlElement(name = "Name")
     private String name;
 
+    @XmlElement(name = "TradeName", nillable = true)
+    private String tradeName;
+
     public static Owner from(PixKey pixKey) {
         return Owner.builder()
-                .type(PersonType.resolve(pixKey.getPersonType()))
-                .taxIdNumber(pixKey.getTaxId())
-                .name(pixKey.getOwnerName())
-                .build();
+            .type(PersonType.resolve(pixKey.getPersonType()))
+            .taxIdNumber(pixKey.getTaxId())
+            .name(pixKey.getOwnerName())
+            .tradeName(pixKey.getFantasyName())
+            .build();
     }
 
     public static Owner from(Claim claim) {
         return Owner.builder()
-                .type(PersonType.resolve(claim.getPersonType()))
-                .taxIdNumber(claim.getCpfCnpj())
-                .name(claim.getOwnerName())
-                .build();
+            .type(PersonType.resolve(claim.getPersonType()))
+            .taxIdNumber(claim.getCpfCnpj())
+            .name(claim.getOwnerName())
+            .tradeName(claim.getFantasyName())
+            .build();
     }
 
 }

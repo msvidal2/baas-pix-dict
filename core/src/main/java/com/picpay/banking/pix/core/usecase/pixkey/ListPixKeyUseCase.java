@@ -2,13 +2,10 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
-import com.picpay.banking.pix.core.validators.DictItemValidator;
 import com.picpay.banking.pix.core.validators.pixkey.ListPixKeyValidator;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;

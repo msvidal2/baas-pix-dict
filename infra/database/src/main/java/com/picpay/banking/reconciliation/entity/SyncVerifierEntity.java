@@ -15,6 +15,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Getter
 @Builder
@@ -30,7 +31,7 @@ public class SyncVerifierEntity {
     @Column(nullable = false)
     private String vsync;
 
-    @Column(name = "synchronized_at", nullable = false)
+    @Column(name = "synchronized_at", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime synchronizedAt;
 
     @LastModifiedDate
@@ -42,7 +43,7 @@ public class SyncVerifierEntity {
             .keyType(syncVerifier.getKeyType())
             .vsync(syncVerifier.getVsync())
             .synchronizedAt(syncVerifier.getSynchronizedAt())
-            .updatedAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now(ZoneId.of("UTC")))
             .build();
     }
 

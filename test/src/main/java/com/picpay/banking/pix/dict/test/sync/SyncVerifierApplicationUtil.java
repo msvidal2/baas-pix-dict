@@ -13,11 +13,11 @@ public class SyncVerifierApplicationUtil {
     @SneakyThrows
     public void run(String keyType, boolean onlySyncVerifier) {
         List<String> envs = new ArrayList<>();
-        envs.add("DB_URL=jdbc:postgresql://localhost:15432/postgres?currentSchema=dict");
-        envs.add("DB_DRIVE_CLASS_NAME=org.postgresql.Driver");
+        envs.add("DB_URL=jdbc:mysql://localhost:3306/dict");
+        envs.add("DB_DRIVE_CLASS_NAME=com.mysql.jdbc.Driver");
         envs.add("DB_PASSWORD=123456");
-        envs.add("DB_USERNAME=postgres");
-        envs.add("DB_TYPE=POSTGRESQL");
+        envs.add("DB_USERNAME=root");
+        envs.add("DB_TYPE=MYSQL");
         envs.add("PICPAY_REDIS_HOST=localhost");
         envs.add("PICPAY_REDIS_PORT=6379");
         envs.add("PICPAY_REDIS_TIMEOUT=5000");

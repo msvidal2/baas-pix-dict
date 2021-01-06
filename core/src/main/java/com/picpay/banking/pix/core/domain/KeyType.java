@@ -46,4 +46,21 @@ public enum KeyType {
         return null;
     }
 
+    public String keyTypeNameOnBacen() {
+        switch (value) {
+            case 0:
+                return CPF.name();
+            case 1:
+                return CNPJ.name();
+            case 2:
+                return EMAIL.name();
+            case 3:
+                return "PHONE";
+            case 4:
+                return "EVP";
+            default:
+                throw new IllegalArgumentException("The type of the key is not known in the bacen");
+        }
+    }
+
 }

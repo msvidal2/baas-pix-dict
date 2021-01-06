@@ -134,6 +134,7 @@ public class PixKeyEntity {
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
             .cid(cid)
+            .updatedAt(updateDate)
             .donatedAutomatically(donatedAutomatically)
             .build();
     }

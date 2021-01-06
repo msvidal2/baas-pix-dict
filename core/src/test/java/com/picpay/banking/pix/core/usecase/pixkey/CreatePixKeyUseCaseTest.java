@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class CreatePixKeyUseCaseTest {
     private CreatePixKeyUseCase useCase;
 
     @Mock
-    private SavePixKeyPort createPixKeyPort;
+    private SavePixKeyPort savePixKeyPort;
 
     @Mock
     private FindPixKeyPort findPixKeyPort;
@@ -46,6 +47,9 @@ class CreatePixKeyUseCaseTest {
 
     @Mock
     private FindOpenClaimByKeyPort findOpenClaimByKeyPort;
+
+    @Mock
+    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     private PixKey pixKey;
 
@@ -102,7 +106,7 @@ class CreatePixKeyUseCaseTest {
         });
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
-        verify(createPixKeyPort).savePixKey(any(), any());
+        verify(savePixKeyPort).savePixKey(any(), any());
     }
 
     @Test
@@ -152,7 +156,7 @@ class CreatePixKeyUseCaseTest {
         });
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
-        verify(createPixKeyPort).savePixKey(any(), any());
+        verify(savePixKeyPort).savePixKey(any(), any());
     }
 
     @Test

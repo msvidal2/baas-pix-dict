@@ -38,19 +38,18 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
         var removeEntryResponse = bacenKeyClient.removeAccountPixKey(removeEntryRequest, pixKey.getKey());
 
         return removeEntryResponse.toDomain();
-
     }
 
     public PixKey fallbackMethod(PixKey pixKey, RemoveReason reason, Exception e) {
-        log.error("PixKey_fallback_removeAccountBacen",
-                kv("pixKey", pixKey.getKey()),
-                kv("reason", reason),
-                kv("exceptionMessage", e.getMessage()),
-                kv("exception", e));
+        log.error("PixKey_fallback_removeAccountBacen: {}, {}, {}, {}",
+            kv("pixKey", pixKey.getKey()),
+            kv("reason", reason),
+            kv("exceptionMessage", e.getMessage()),
+            kv("exception", e));
 
         throw BacenExceptionBuilder.from(e)
-                .withFieldResolver(new PixKeyFieldResolver())
-                .build();
+            .withFieldResolver(new PixKeyFieldResolver())
+            .build();
     }
 
 }

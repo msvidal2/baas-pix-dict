@@ -1,8 +1,13 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import org.junit.jupiter.api.Assertions;
@@ -30,8 +35,14 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Mock
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
+    @Mock
+    private FindPixKeyPort findPixKeyPort;
+
+//    @Mock
+//    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(savePixKeyPort, updateAccountPixKeyBacenPort);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(savePixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort);
 
     @Test
     public void testUpdate() {
@@ -155,6 +166,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
@@ -247,6 +259,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,

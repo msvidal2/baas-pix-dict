@@ -10,8 +10,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -26,8 +24,8 @@ public class FindPixKeyUseCase {
     private final FindPixKeyBacenPort findPixKeyBacenPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
-                          @NonNull final String pixKey,
-                          @NonNull final String userId) {
+        @NonNull final String pixKey,
+        @NonNull final String userId) {
 
         if (requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("The [requestIdentifier] can not be empty");
@@ -38,9 +36,9 @@ public class FindPixKeyUseCase {
         }
 
         Stream.of(KeyType.values())
-                .filter(type -> validateKey(pixKey, type.getValidator()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid key"));
+            .filter(type -> validateKey(pixKey, type.getValidator()))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("Invalid key"));
 
         Optional<PixKey> optionalPixKey = findPixKeyPort.findPixKey(pixKey);
 
@@ -48,8 +46,8 @@ public class FindPixKeyUseCase {
 
         if (pixKeyFound != null)
             log.info("PixKey_foundAccount"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("key", pixKeyFound.getKey()));
+                , kv("requestIdentifier", requestIdentifier)
+                , kv("key", pixKeyFound.getKey()));
 
         return pixKeyFound;
     }
@@ -58,7 +56,8 @@ public class FindPixKeyUseCase {
         try {
             validator.validate(pixKey);
             return true;
-        } catch (KeyValidatorException e) {}
+        } catch (KeyValidatorException e) {
+        }
 
         return false;
     }

@@ -7,8 +7,9 @@ import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ public class CreatePixKeyUseCase {
     private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
+    // FIXME: Esta porta esta em desenvolvimento
+//    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -38,14 +41,13 @@ public class CreatePixKeyUseCase {
         validateClaimExists(pixKey);
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
-
         createdPixKey.calculateCid();
+        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+//        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", createdPixKey.getKey()));
-
-        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
 
         return createdPixKey;
     }
@@ -98,7 +100,7 @@ public class CreatePixKeyUseCase {
     private void validateClaimExists(final PixKey pixKey) {
         var claim = findOpenClaimByKeyPort.find(pixKey.getKey());
 
-        if(claim.isPresent()) {
+        if (claim.isPresent()) {
             throw new PixKeyException(PixKeyError.CLAIM_PROCESS_EXISTING);
         }
     }

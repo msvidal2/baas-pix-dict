@@ -2,15 +2,19 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.SyncVerifier;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.exception.ReconciliationsException;
+import com.picpay.banking.pix.core.domain.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
+import com.picpay.banking.pix.core.util.ContentIdentifierUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,10 +26,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.createContentIdentifier;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,36 +35,35 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FailureReconciliationSyncUseCaseTest {
 
-
     @Mock
     private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     @Mock
-    private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
+    private FindPixKeyPort findPixKeyPort;
+    @Mock
+    private SyncVerifierPort syncVerifierPort;
+    @Mock
+    private BacenSyncVerificationsPort bacenSyncVerificationsPort;
+    @Mock
+    private SyncVerifierHistoricPort syncVerifierHistoricPort;
     @Mock
     private SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
-    @Mock
-    private ContentIdentifierEventPort contentIdentifierEventPort;
     @Mock
     private SavePixKeyPort savePixKeyPort;
     @Mock
     private RemovePixKeyPort removePixKeyPort;
-    @Mock
-    private FindPixKeyPort findPixKeyPort;
 
     private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
 
     @BeforeEach
     private void beforeEach() {
-        failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(
-            bacenContentIdentifierEventsPort, bacenPixKeyByContentIdentifierPort,
-            syncVerifierHistoricActionPort, contentIdentifierEventPort,
-            savePixKeyPort,
-            removePixKeyPort, findPixKeyPort);
+        failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort,
+            findPixKeyPort, syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort,
+            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort);
     }
 
     @Test
     @DisplayName("Quando o vsyncHistoric é nulo lança exception")
-    void exception_when_vsyncHistoric_is_null() {
+    void exception_when_vsync_historic_is_null() {
         assertThatThrownBy(() -> failureReconciliationSyncUseCase.execute(null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("VsyncHistoric cannot be null");
@@ -70,7 +71,7 @@ class FailureReconciliationSyncUseCaseTest {
 
     @Test
     @DisplayName("Quando o keyType é nulo lança exception")
-    void exception_when_keyType_is_null() {
+    void exception_when_key_type_is_null() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
         assertThatThrownBy(() -> failureReconciliationSyncUseCase.execute(syncVerifierHistoric))
             .isInstanceOf(IllegalArgumentException.class)
@@ -79,7 +80,7 @@ class FailureReconciliationSyncUseCaseTest {
 
     @Test
     @DisplayName("Quando o SynchronizedAt é nulo lança exception")
-    void exception_when_synchronizedAt_is_null() {
+    void exception_when_synchronized_at_is_null() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .keyType(KeyType.CPF)
             .build();
@@ -90,105 +91,88 @@ class FailureReconciliationSyncUseCaseTest {
     }
 
     @Test
-    @DisplayName("Quando nenhuma ação é encontrada, lança exception")
-    void exception_when_no_actions_found() {
-        var syncVerifierHistoric = SyncVerifierHistoric.builder()
-            .keyType(KeyType.CPF)
-            .synchronizedStart(LocalDateTime.now())
-            .build();
-
-        assertThatThrownBy(() -> failureReconciliationSyncUseCase.execute(syncVerifierHistoric))
-            .isInstanceOf(ReconciliationsException.class)
-            .hasMessageStartingWith("No action found for");
-    }
-
-    @Test
     @DisplayName("Criar Key quando ela existe no Bacen e não existe no database")
     void create_when_exists_in_bacen_and_not_exists_in_database() {
-        when(bacenContentIdentifierEventsPort.list(any(), any(), any()))
-            .thenReturn(Set.of(createContentIdentifier("1")));
-
-        when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
+        when(bacenContentIdentifierEventsPort.list(any(), any()))
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("1")));
+        when(findPixKeyPort.findByCid(any()))
+            .thenReturn(Optional.empty());
+        when(findPixKeyPort.findPixKey(any()))
+            .thenReturn(Optional.empty());
+        when(bacenContentIdentifierEventsPort.getPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder()
                 .key("1")
                 .type(KeyType.CPF)
                 .cid("1")
                 .build()));
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+        when(bacenSyncVerificationsPort.syncVerification(any(), any()))
+            .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())
             .keyType(KeyType.CPF)
             .build();
-
         failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
 
-        verify(syncVerifierHistoricActionPort, times(1))
-            .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
-
-        verify(savePixKeyPort, times(1))
-            .savePixKey(any(), any());
-
-        verify(removePixKeyPort, times(0))
-            .remove(any(), any());
+        verify(syncVerifierHistoricActionPort, times(1)).save(any());
+        verify(savePixKeyPort, times(1)).savePixKey(any(), any());
+        verify(removePixKeyPort, times(0)).removeByCid(any());
     }
 
     @Test
     @DisplayName("Atualizar Key quando ela existe no Bacen e existe no database com outros valores")
     void update_when_exists_in_bacen_and_exists_diff_in_database() {
-        when(bacenContentIdentifierEventsPort.list(any(), any(), any()))
-            .thenReturn(Set.of(createContentIdentifier("1")));
-
-        when(bacenPixKeyByContentIdentifierPort.getPixKey(any()))
+        when(bacenContentIdentifierEventsPort.list(any(), any()))
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("1")));
+        when(findPixKeyPort.findByCid(any()))
+            .thenReturn(Optional.empty());
+        when(findPixKeyPort.findPixKey(any()))
+            .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
+        when(bacenContentIdentifierEventsPort.getPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder()
                 .key("1")
                 .type(KeyType.CPF)
                 .cid("1")
                 .build()));
-
         when(findPixKeyPort.findPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+        when(bacenSyncVerificationsPort.syncVerification(any(), any()))
+            .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())
             .keyType(KeyType.CPF)
             .build();
-
         failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
 
-        verify(syncVerifierHistoricActionPort, times(1))
-            .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
-
-        verify(savePixKeyPort, times(1))
-            .savePixKey(any(), any());
-
-        verify(removePixKeyPort, times(0))
-            .remove(any(), any());
+        verify(syncVerifierHistoricActionPort, times(2)).save(any());
+        verify(savePixKeyPort, times(1)).savePixKey(any(), any());
+        verify(removePixKeyPort, times(0)).removeByCid(any());
     }
 
     @Test
-    @DisplayName("Remover Key quando ela existe no database e não existe no Bacen")
-    void delete_when_exists_in_database_and_not_exists_in_bacen() {
-        when(contentIdentifierEventPort.findAllAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(Set.of(createContentIdentifier("1")));
-
-        when(contentIdentifierEventPort.findPixKeyByContentIdentifier(any()))
-            .thenReturn(Optional.of(PixKey.builder().build()));
+    @DisplayName("Remover a Key quando foi removida do Bacen e não foi removida do database")
+    void remove_when_exists_in_database_and_not_exists_in_bacen() {
+        when(bacenContentIdentifierEventsPort.list(any(), any()))
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventRemove("1")));
+        when(syncVerifierPort.getLastSuccessfulVsync(any()))
+            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+        when(bacenSyncVerificationsPort.syncVerification(any(), any()))
+            .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())
             .keyType(KeyType.CPF)
             .build();
-
         failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
 
-        verify(syncVerifierHistoricActionPort, times(1))
-            .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
-
-        verify(savePixKeyPort, times(0))
-            .savePixKey(any(), any());
-
-        verify(removePixKeyPort, times(1))
-            .remove(any(), any());
+        verify(syncVerifierHistoricActionPort, times(1)).save(any());
+        verify(savePixKeyPort, times(0)).savePixKey(any(), any());
+        verify(removePixKeyPort, times(1)).removeByCid(any());
     }
 
 }

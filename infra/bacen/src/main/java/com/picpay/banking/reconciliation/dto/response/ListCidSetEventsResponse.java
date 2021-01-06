@@ -1,6 +1,7 @@
 package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
+import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
@@ -88,8 +89,8 @@ public class ListCidSetEventsResponse {
         @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
         private LocalDateTime timestamp;
 
-        public static ReconciliationEvent toContentIdentifierEvent(final ListCidSetEventsResponse.CidSetEvent cidSetEvent) {
-            return ReconciliationEvent.builder()
+        public static BacenCidEvent toContentIdentifierEvent(final ListCidSetEventsResponse.CidSetEvent cidSetEvent) {
+            return BacenCidEvent.builder()
                 .cid(cidSetEvent.getCid())
                 .action(ReconciliationAction.valueOf(cidSetEvent.getType().name()))
                 .eventOnBacenAt(cidSetEvent.getTimestamp())
