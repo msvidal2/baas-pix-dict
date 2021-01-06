@@ -39,12 +39,11 @@ public class UpdateAccountPixKeyUseCaseTest {
     @Mock
     private FindPixKeyPort findPixKeyPort;
 
-    @Mock
-    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+//    @Mock
+//    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort, findPixKeyPort,
-        reconciliationSyncEventPort);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort, findPixKeyPort);
 
     @Test
     public void testUpdate() {

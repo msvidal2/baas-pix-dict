@@ -26,7 +26,8 @@ public class CreatePixKeyUseCase {
     private final CreatePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
+    // FIXME: Esta porta esta em desenvolvimento
+//    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -42,7 +43,7 @@ public class CreatePixKeyUseCase {
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
         createPixKeyPort.createPixKey(createdPixKey, reason);
-        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
+//        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)

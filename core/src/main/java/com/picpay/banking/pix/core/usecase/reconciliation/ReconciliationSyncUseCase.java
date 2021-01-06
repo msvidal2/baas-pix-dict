@@ -35,8 +35,7 @@ public class ReconciliationSyncUseCase {
                 .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
                 .build());
 
-        // TODO: Alterei o comportamento temporariamente até que os eventos cheguem via kafka
-        // TODO: O desenvolvimento via kafka esta em andamento
+        // FIXME: Alterado comportamento temporariamente até que os eventos cheguem via kafka
 //        List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
 //            syncVerifier.getKeyType(),
 //            syncVerifier.getSynchronizedAt());

@@ -22,7 +22,8 @@ public class UpdateAccountPixKeyUseCase {
     private UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
     private FindPixKeyPort findPixKeyPort;
-    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+    // FIXME: Em desenvolvimento
+//    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
         @NonNull final PixKey pixKey,
@@ -45,7 +46,7 @@ public class UpdateAccountPixKeyUseCase {
         pixKeyResponse.calculateCid();
 
         var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixKeyResponse, reason);
-        reconciliationSyncEventPort.eventByPixKeyUpdated(oldPixKey, pixKeyUpdated);
+//        reconciliationSyncEventPort.eventByPixKeyUpdated(oldPixKey, pixKeyUpdated);
 
         log.info("PixKey_updated"
             , kv("requestIdentifier", requestIdentifier)

@@ -122,7 +122,7 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(1)).save(any());
         verify(createPixKeyPort, times(1)).createPixKey(any(), any());
         verify(updateAccountPixKeyPort, times(0)).updateAccount(any(), any());
-        verify(removePixKeyPort, times(0)).remove(any(), any());
+        verify(removePixKeyPort, times(0)).removeByCid(any());
     }
 
     @Test
@@ -156,7 +156,7 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(2)).save(any());
         verify(createPixKeyPort, times(0)).createPixKey(any(), any());
         verify(updateAccountPixKeyPort, times(1)).updateAccount(any(), any());
-        verify(removePixKeyPort, times(0)).remove(any(), any());
+        verify(removePixKeyPort, times(0)).removeByCid(any());
     }
 
     @Test
@@ -164,8 +164,6 @@ class FailureReconciliationSyncUseCaseTest {
     void remove_when_exists_in_database_and_not_exists_in_bacen() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.BACEN_CID_EVENT_REMOVE("1")));
-        when(findPixKeyPort.findByCid(any()))
-            .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
@@ -180,7 +178,7 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(1)).save(any());
         verify(createPixKeyPort, times(0)).createPixKey(any(), any());
         verify(updateAccountPixKeyPort, times(0)).updateAccount(any(), any());
-        verify(removePixKeyPort, times(1)).remove(any(), any());
+        verify(removePixKeyPort, times(1)).removeByCid(any());
     }
 
 }

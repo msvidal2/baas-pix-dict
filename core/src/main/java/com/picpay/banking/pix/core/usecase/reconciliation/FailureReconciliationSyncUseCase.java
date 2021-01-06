@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
@@ -56,13 +55,11 @@ public class FailureReconciliationSyncUseCase {
             syncVerifierHistoric.getSynchronizedStart());
         Set<BacenCidEvent> latestBacenEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
         latestBacenEvents.forEach(bacenCidEvent -> {
-            var pixKeyInDatabase = findPixKeyPort.findByCid(bacenCidEvent.getCid());
             if (ReconciliationAction.ADDED.equals(bacenCidEvent.getAction())) {
+                var pixKeyInDatabase = findPixKeyPort.findByCid(bacenCidEvent.getCid());
                 if (pixKeyInDatabase.isEmpty()) createOrUpdatePixKey(bacenCidEvent);
             } else {
-                // TODO: Opção de melhoria aqui no remover:
-                // Daria para chamar o remover sempre, sem o find da linha 59, removendo por cid
-                pixKeyInDatabase.ifPresent(this::removePixKey);
+                removePixKey(bacenCidEvent.getCid());
             }
         });
 
@@ -88,18 +85,15 @@ public class FailureReconciliationSyncUseCase {
 
     private void createOrUpdatePixKey(final BacenCidEvent bacenCidEvent) {
         bacenContentIdentifierEventsPort.getPixKey(bacenCidEvent.getCid())
-            .ifPresent(pixKey -> {
-                findPixKeyPort.findPixKey(pixKey.getKey()).ifPresentOrElse(
-                    pixKeyInDatabase -> {
-                        updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
-                        createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
-                        createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                    },
-                    () -> {
-                        createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
-                        createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                    });
-            });
+            .ifPresent(pixKey -> findPixKeyPort.findPixKey(pixKey.getKey()).ifPresentOrElse(
+                pixKeyInDatabase -> {
+                    updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
+                    createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
+                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                }, () -> {
+                    createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
+                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                }));
     }
 
     private void createHistoricAction(final String cid, final ActionType actionType) {
@@ -116,9 +110,9 @@ public class FailureReconciliationSyncUseCase {
             kv("vsyncHistoric", syncVerifierHistoric));
     }
 
-    private void removePixKey(final PixKey pixKey) {
-        removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
-        createHistoricAction(pixKey.getCid(), ActionType.REMOVE);
+    private void removePixKey(final String cid) {
+        removePixKeyPort.removeByCid(cid);
+        createHistoricAction(cid, ActionType.REMOVE);
     }
 
 }

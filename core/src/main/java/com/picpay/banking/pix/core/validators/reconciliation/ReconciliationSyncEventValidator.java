@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReconciliationSyncEventValidator {
 
-    public static void validate(ReconciliationSyncEvent event) throws InvalidReconciliationSyncEventException {
+    public static void validate(ReconciliationSyncEvent event) {
         if (event.getKeyType() == null) {
             throw new InvalidReconciliationSyncEventException("Reconciliation requires that the keyType be reported");
         }

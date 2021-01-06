@@ -53,7 +53,6 @@ public class RemovePixKeyUseCaseTest {
 
         verify(removePixKeyBacenPort).remove(any(), any());
         verify(removePixKeyPort).remove(anyString(), anyInt());
-        verify(reconciliationSyncEventPort).eventByPixKeyRemoved(any(), any());
     }
 
     @Test

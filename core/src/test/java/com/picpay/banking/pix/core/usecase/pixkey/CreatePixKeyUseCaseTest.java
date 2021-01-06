@@ -107,7 +107,6 @@ class CreatePixKeyUseCaseTest {
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
         verify(createPixKeyPort).createPixKey(any(), any());
-        verify(reconciliationSyncEventPort).eventByPixKeyCreated(any());
     }
 
     @Test
@@ -158,7 +157,6 @@ class CreatePixKeyUseCaseTest {
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
         verify(createPixKeyPort).createPixKey(any(), any());
-        verify(reconciliationSyncEventPort).eventByPixKeyCreated(any());
     }
 
     @Test

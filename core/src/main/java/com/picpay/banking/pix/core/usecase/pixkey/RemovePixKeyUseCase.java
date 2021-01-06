@@ -17,7 +17,8 @@ public class RemovePixKeyUseCase {
 
     private RemovePixKeyPort removePixKeyPort;
     private RemovePixKeyBacenPort removePixKeyBacenPort;
-    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+    // FIXME: Em desenvolvimento
+//    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     public void execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -27,7 +28,7 @@ public class RemovePixKeyUseCase {
 
         var removeAt = removePixKeyBacenPort.remove(pixKey, reason).getUpdatedAt();
         var oldPixKey = removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb());
-        reconciliationSyncEventPort.eventByPixKeyRemoved(oldPixKey, removeAt);
+//        reconciliationSyncEventPort.eventByPixKeyRemoved(oldPixKey, removeAt);
 
         log.info("PixKey_removed",
             kv("requestIdentifier", requestIdentifier),
