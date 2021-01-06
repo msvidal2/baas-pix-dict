@@ -7,7 +7,7 @@ spring:
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-polling-claim,dict-bacen,dict-database
+            name: dict-cancel-portability,dict-bacen,dict-database
     profiles:
         active:
             - ${ENV:local}

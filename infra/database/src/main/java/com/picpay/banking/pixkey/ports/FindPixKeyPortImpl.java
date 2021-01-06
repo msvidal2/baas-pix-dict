@@ -1,5 +1,6 @@
 package com.picpay.banking.pixkey.ports;
 
+import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -8,6 +9,7 @@ import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,26 +31,35 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public Optional<PixKey> findPixKey(String pixKey) {
-        return pixKeyRepository.findByIdKey(pixKey)
+        return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
                 .map(PixKeyEntity::toPixKey);
     }
 
     @Override
     public List<PixKey> findByAccount(Integer ispb, String branch, String accountNUmber, AccountType accountType) {
-        return pixKeyRepository.findByAccount(ispb, branch, accountNUmber, accountType)
+        return pixKeyRepository.findByAccountAndDonatedAutomaticallyFalse(ispb, branch, accountNUmber, accountType)
                 .stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PixKey> findAllByKeyType(final KeyType keyType) {
-        return this.pixKeyRepository.findAllByIdType(keyType).stream().map(PixKeyEntity::toPixKey).collect(Collectors.toList());
+    public Pagination<PixKey> findAllByKeyType(final KeyType keyType, Integer page, Integer size) {
+        final var pageResult = this.pixKeyRepository.findAllByIdTypeAndDonatedAutomaticallyFalse(keyType, PageRequest.of(page, size));
+        final List<PixKey> pixKeys = pageResult.getContent().stream().map(PixKeyEntity::toPixKey).collect(Collectors.toList());
+        return Pagination.<PixKey>builder()
+            .currentPage(page)
+            .pageSize(size)
+            .result(pixKeys)
+            .totalRecords(pageResult.getTotalElements())
+            .hasNext(pageResult.hasNext())
+            .hasPrevious(pageResult.hasPrevious())
+            .build();
     }
 
     @Override
     public Optional<PixKey> findByCid(final String cid) {
-        return this.pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
+        return this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(cid).map(PixKeyEntity::toPixKey);
     }
 
 }

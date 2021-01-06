@@ -1,7 +1,22 @@
 spring:
-    cloud:
-        stream:
-            bindings:
-                new-reconciliation-sync:
-                    destination: ${TOPIC_RECONCILIATION}
-                    binder: kafka
+    application:
+        name: sync
+server:
+    tomcat:
+        threads:
+            max: 400
+            min-spare: 50
+picpay:
+    ispb: 22896431
+    service.name: ${spring.application.name}
+
+logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
+
+management:
+    health.diskspace.enabled: false
+    endpoint.health.show-details: always
+    endpoints:
+        web:
+            exposure.include: prometheus, health
+            base-path: '/'
+            path-mapping.prometheus: 'metrics'

@@ -7,7 +7,7 @@ spring:
     config:
       enabled: false
 picpay:
-  ispb: 22896431
-  logging:
-    appender: CONSOLE
-    level: INFO
+    ispb: 22896431
+    logging:
+        appender: CONSOLE
+        level: INFO
