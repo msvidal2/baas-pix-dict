@@ -11,6 +11,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 
 @Slf4j
 @Component
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class SyncVerificationTask implements ApplicationRunner {
 
     private final SyncVerifierService syncVerifierService;
-
+/*
     @Parameter(names = "-keyType",
         description = "Type of key used for sync: CPF, CNPJ, EMAIL, CELLPHONE, RANDOM.",
         converter = CommandLineKeyTypeConverter.class,
@@ -29,24 +31,29 @@ public class SyncVerificationTask implements ApplicationRunner {
     @Parameter(names = "-onlySyncVerifier",
         description = "Defines that only the sync check will be done and no data correction will be applied: True or False"
     )
-    private boolean onlySyncVerifier = false;
+    private boolean onlySyncVerifier = false;*/
 
     @Override
     public void run(final ApplicationArguments args) throws Exception {
-        JCommander.newBuilder()
-            .addObject(this)
-            .build()
-            .parse(args.getSourceArgs());
+        //JCommander.newBuilder()
+            //.addObject(this)
+            //.build()
+            //.parse(args.getSourceArgs());
 
-        log.info("SyncApplication start: {}", keyType.name());
-        SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
+        Arrays.stream(KeyType.values())
+            .forEach(keyType -> {
 
-        if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {
-            syncVerifierService.failureReconciliationSync(syncVerifierHistoric);
-            syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
-        }
+                log.info("SyncApplication start: {}", keyType.name());
+                SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
 
-        log.info("SyncApplication end: {}", syncVerifierHistoric);
+                if (syncVerifierHistoric.isNOK()) {
+                    syncVerifierService.failureReconciliationSync(syncVerifierHistoric);
+                    syncVerifierHistoric = syncVerifierService.syncVerifier(keyType);
+                }
+
+                log.info("SyncApplication end: {}", syncVerifierHistoric);
+
+            });
     }
 
 }
