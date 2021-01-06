@@ -56,10 +56,12 @@ public class FailureReconciliationSyncUseCase {
             syncVerifierHistoric.getSynchronizedStart());
         Set<BacenCidEvent> latestBacenEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
         latestBacenEvents.forEach(bacenCidEvent -> {
-            var pixKeyInDatabase = findPixKeyPort.findPixKeyByCid(bacenCidEvent.getCid());
+            var pixKeyInDatabase = findPixKeyPort.findByCid(bacenCidEvent.getCid());
             if (ReconciliationAction.ADDED.equals(bacenCidEvent.getAction())) {
                 if (pixKeyInDatabase.isEmpty()) createOrUpdatePixKey(bacenCidEvent);
             } else {
+                // TODO: Opção de melhoria aqui no remover:
+                // Daria para chamar o remover sempre, sem o find da linha 59, removendo por cid
                 pixKeyInDatabase.ifPresent(this::removePixKey);
             }
         });

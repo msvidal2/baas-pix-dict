@@ -168,6 +168,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
@@ -260,6 +261,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
+        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,

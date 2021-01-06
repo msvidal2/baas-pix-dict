@@ -66,7 +66,7 @@ class FailureReconciliationSyncUseCaseTest {
 
     @Test
     @DisplayName("Quando o vsyncHistoric é nulo lança exception")
-    void exceptionWhenVsyncHistoricIsNull() {
+    void exception_when_vsync_historic_is_null() {
         assertThatThrownBy(() -> failureReconciliationSyncUseCase.execute(null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("VsyncHistoric cannot be null");
@@ -74,7 +74,7 @@ class FailureReconciliationSyncUseCaseTest {
 
     @Test
     @DisplayName("Quando o keyType é nulo lança exception")
-    void exceptionWhenKeyTypeIsNull() {
+    void exception_when_key_type_is_null() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
         assertThatThrownBy(() -> failureReconciliationSyncUseCase.execute(syncVerifierHistoric))
             .isInstanceOf(IllegalArgumentException.class)
@@ -83,7 +83,7 @@ class FailureReconciliationSyncUseCaseTest {
 
     @Test
     @DisplayName("Quando o SynchronizedAt é nulo lança exception")
-    void exceptionWhenSynchronizedAtIsNull() {
+    void exception_when_synchronized_at_is_null() {
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .keyType(KeyType.CPF)
             .build();
@@ -98,7 +98,7 @@ class FailureReconciliationSyncUseCaseTest {
     void create_when_exists_in_bacen_and_not_exists_in_database() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.BACEN_CID_EVENT_ADD("1")));
-        when(findPixKeyPort.findPixKeyByCid(any()))
+        when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey(any()))
             .thenReturn(Optional.empty());
@@ -130,7 +130,7 @@ class FailureReconciliationSyncUseCaseTest {
     void update_when_exists_in_bacen_and_exists_diff_in_database() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.BACEN_CID_EVENT_ADD("1")));
-        when(findPixKeyPort.findPixKeyByCid(any()))
+        when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
@@ -164,7 +164,7 @@ class FailureReconciliationSyncUseCaseTest {
     void remove_when_exists_in_database_and_not_exists_in_bacen() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.BACEN_CID_EVENT_REMOVE("1")));
-        when(findPixKeyPort.findPixKeyByCid(any()))
+        when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));

@@ -22,7 +22,7 @@ public class ClaimEntity {
     @Id
     private String id;
 
-    @Column(nullable = false, name = "claim_type")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClaimType type;
 

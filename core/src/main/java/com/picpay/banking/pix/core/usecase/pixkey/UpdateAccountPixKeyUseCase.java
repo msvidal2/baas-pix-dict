@@ -39,9 +39,11 @@ public class UpdateAccountPixKeyUseCase {
         }
 
         var pixKeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+
+        var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey());
+        oldPixKey.ifPresent(oldPixKeyInDatabase -> pixKeyResponse.keepCreationRequestIdentifier(oldPixKeyInDatabase.getRequestId()));
         pixKeyResponse.calculateCid();
 
-        var oldPixKey = findPixKeyPort.findPixKey(pixKeyResponse.getKey());
         var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixKeyResponse, reason);
         reconciliationSyncEventPort.eventByPixKeyUpdated(oldPixKey, pixKeyUpdated);
 

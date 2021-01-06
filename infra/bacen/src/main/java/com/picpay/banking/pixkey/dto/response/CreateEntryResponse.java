@@ -58,6 +58,7 @@ public class CreateEntryResponse {
             .personType(entry.getOwner().getType().getPersonType())
             .taxId(entry.getOwner().getTaxIdNumber())
             .name(entry.getOwner().getName())
+            .fantasyName(entry.getOwner().getTradeName())
             .createdAt(entry.getCreationDate())
             .updatedAt(responseTime)
             .startPossessionAt(entry.getKeyOwnershipDate())

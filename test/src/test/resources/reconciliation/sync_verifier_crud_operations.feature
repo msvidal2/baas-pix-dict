@@ -9,27 +9,22 @@ Funcionalidade: Verificar Sincronismo após operações de CRUD
   Esquema do Cenário: Sincronismo de base após operações de CRUD
     Dado que exista uma chave do pix do tipo "<keyType>"
     Quando uma operação de "<operation>" é executada
-#    Então um evento do tipo "<type>" deve existir no banco de dados
     E a sincronização entre as bases deve estar OK
 
     Exemplos:
-      | keyType   | operation | type         |
-      | CPF       | CREATE    | ADD          |
-#      | CPF       | UPDATE    | ADD + REMOVE |
-#      | CPF       | REMOVE    | REMOVE       |
-#      | CNPJ      | CREATE    | ADD          |
-#      | CNPJ      | UPDATE    | ADD + REMOVE |
-#      | CNPJ      | REMOVE    | REMOVE       |
-#      | CELLPHONE | CREATE    | ADD          |
-#      | CELLPHONE | UPDATE    | ADD + REMOVE |
-#      | CELLPHONE | REMOVE    | REMOVE       |
-#      | EMAIL     | CREATE    | ADD          |
-#      | EMAIL     | UPDATE    | ADD + REMOVE |
-#      | EMAIL     | REMOVE    | REMOVE       |
-#      | RANDOM    | CREATE    | ADD          |
-#      | RANDOM    | UPDATE    | ADD + REMOVE |
-#      | RANDOM    | REMOVE    | REMOVE       |
-
-#  Cenário: Após todas alterações tudo deve permanecer OK
-#    Dado a sincronização de base seja executada
-#    Então os 5 tipos de chaves devem estar sincronizados
+      | keyType   | operation |
+      | CPF       | CREATE    |
+      | CPF       | UPDATE    |
+      | CPF       | REMOVE    |
+      | CNPJ      | CREATE    |
+      | CNPJ      | UPDATE    |
+      | CNPJ      | REMOVE    |
+      | CELLPHONE | CREATE    |
+      | CELLPHONE | UPDATE    |
+      | CELLPHONE | REMOVE    |
+      | EMAIL     | CREATE    |
+      | EMAIL     | UPDATE    |
+      | EMAIL     | REMOVE    |
+      | RANDOM    | CREATE    |
+#      | RANDOM    | UPDATE    |
+      | RANDOM    | REMOVE    |

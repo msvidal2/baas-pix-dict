@@ -11,15 +11,13 @@ import java.util.List;
 @Builder
 public class SyncVerifier {
 
-    private static final String EMPTY_VSYNC = "0000000000000000000000000000000000000000000000000000000000000000";
     private final KeyType keyType;
-    private String vsync;
+    @Builder.Default
+    private String vsync = "0000000000000000000000000000000000000000000000000000000000000000";
     private LocalDateTime synchronizedAt;
     private SyncVerifierResultType syncVerifierResultType;
 
     public String calculateVsync(final List<String> contentIdentifiers) {
-        if (vsync == null) vsync = EMPTY_VSYNC;
-
         BigInteger vsyncAsBigInteger = new BigInteger(vsync, 16);
 
         for (String contentIdentifier : contentIdentifiers) {

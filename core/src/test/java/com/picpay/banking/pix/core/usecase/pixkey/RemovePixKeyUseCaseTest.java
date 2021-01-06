@@ -3,12 +3,15 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
 
 import static com.picpay.banking.pix.core.domain.RemoveReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
@@ -18,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RemovePixKeyUseCaseTest {
@@ -27,6 +31,9 @@ public class RemovePixKeyUseCaseTest {
 
     @Mock
     private RemovePixKeyBacenPort removePixKeyBacenPort;
+
+    @Mock
+    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     @InjectMocks
     private RemovePixKeyUseCase useCase;
@@ -39,10 +46,14 @@ public class RemovePixKeyUseCaseTest {
             .ispb(12345678)
             .build();
 
+        when(removePixKeyBacenPort.remove(any(), any()))
+            .thenReturn(PixKey.builder().updatedAt(LocalDateTime.now()).build());
+
         assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
 
         verify(removePixKeyBacenPort).remove(any(), any());
         verify(removePixKeyPort).remove(anyString(), anyInt());
+        verify(reconciliationSyncEventPort).eventByPixKeyRemoved(any(), any());
     }
 
     @Test
