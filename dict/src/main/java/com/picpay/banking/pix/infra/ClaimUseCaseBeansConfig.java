@@ -6,9 +6,9 @@ import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.*;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.*;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,15 +41,17 @@ public class ClaimUseCaseBeansConfig {
     @Bean
     public CancelClaimUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
                                                  FindByIdPort findByIdPort,
-                                                 CancelClaimPort cancelClaimPort) {
-        return new CancelClaimUseCase(claimCancelPort, findByIdPort, cancelClaimPort);
+                                                 CancelClaimPort cancelClaimPort,
+                                                 FindPixKeyPort findPixKeyPort,
+                                                 SavePixKeyPort savePixKeyPort) {
+        return new CancelClaimUseCase(claimCancelPort, findByIdPort, cancelClaimPort, findPixKeyPort, savePixKeyPort);
     }
 
     @Bean
     public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
                                                      CompleteClaimPort completeClaimPort,
                                                      FindClaimPort findClaimPort,
-                                                     CreatePixKeyPort createPixKeyPort) {
+                                                     SavePixKeyPort createPixKeyPort) {
         return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
     }
 

@@ -4,10 +4,9 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
@@ -44,9 +43,7 @@ class FailureReconciliationSyncUseCaseTest {
     @Mock
     private ContentIdentifierEventPort contentIdentifierEventPort;
     @Mock
-    private CreatePixKeyPort createPixKeyPort;
-    @Mock
-    private UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private SavePixKeyPort savePixKeyPort;
     @Mock
     private RemovePixKeyPort removePixKeyPort;
     @Mock
@@ -59,7 +56,7 @@ class FailureReconciliationSyncUseCaseTest {
         failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(
             bacenContentIdentifierEventsPort, bacenPixKeyByContentIdentifierPort,
             syncVerifierHistoricActionPort, contentIdentifierEventPort,
-            createPixKeyPort, updateAccountPixKeyPort,
+            savePixKeyPort,
             removePixKeyPort, findPixKeyPort);
     }
 
@@ -128,11 +125,8 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(1))
             .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
 
-        verify(createPixKeyPort, times(1))
-            .createPixKey(any(), any());
-
-        verify(updateAccountPixKeyPort, times(0))
-            .updateAccount(any(), any());
+        verify(savePixKeyPort, times(1))
+            .savePixKey(any(), any());
 
         verify(removePixKeyPort, times(0))
             .remove(any(), any());
@@ -164,11 +158,8 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(1))
             .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
 
-        verify(createPixKeyPort, times(0))
-            .createPixKey(any(), any());
-
-        verify(updateAccountPixKeyPort, times(1))
-            .updateAccount(any(), any());
+        verify(savePixKeyPort, times(1))
+            .savePixKey(any(), any());
 
         verify(removePixKeyPort, times(0))
             .remove(any(), any());
@@ -193,11 +184,8 @@ class FailureReconciliationSyncUseCaseTest {
         verify(syncVerifierHistoricActionPort, times(1))
             .saveAll(argThat(contentIdentifierActions -> contentIdentifierActions.size() == 1));
 
-        verify(createPixKeyPort, times(0))
-            .createPixKey(any(), any());
-
-        verify(updateAccountPixKeyPort, times(0))
-            .updateAccount(any(), any());
+        verify(savePixKeyPort, times(0))
+            .savePixKey(any(), any());
 
         verify(removePixKeyPort, times(1))
             .remove(any(), any());

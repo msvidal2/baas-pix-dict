@@ -7,6 +7,8 @@ import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +23,10 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CancelClaimUseCase {
 
     private final CancelClaimBacenPort cancelClaimBacenPort;
-
     private final FindByIdPort findByIdPort;
-
     private final CancelClaimPort cancelClaimPort;
+    private final FindPixKeyPort findPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
 
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
@@ -43,6 +45,10 @@ public class CancelClaimUseCase {
         var claimCanceled = cancelClaimBacenPort.cancel(claim.getClaimId(), reason, claimCancel.getIspb(), requestIdentifier);
 
         cancelClaimPort.cancel(claimCanceled, reason, requestIdentifier);
+
+        if (isPossessionClaimDonationFraud(claim, reason)) {
+            recoveryDonatedByFraudKey(claim);
+        }
 
         if (claimCanceled != null)
             log.info("Claim_canceled",
@@ -96,6 +102,24 @@ public class CancelClaimUseCase {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }
             throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
+        }
+    }
+
+    private boolean isPossessionClaimDonationFraud(Claim claim, ClaimCancelReason reason) {
+        return ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+                && ClaimSituation.CONFIRMED.equals(claim.getClaimSituation())
+                && ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())
+                && ClaimCancelReason.FRAUD.equals(reason);
+    }
+
+    private void recoveryDonatedByFraudKey(Claim claim) {
+        PixKey pixkey = findPixKeyPort
+                .findPixKey(claim.getKey())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        if (pixkey.getTaxIdWithLeftZeros().equals(claim.getDonorData().getCpfCnpjWithLeftZeros())) {
+            pixkey.setDonatedAutomatically(false);
+            savePixKeyPort.savePixKey(pixkey, Reason.FRAUD);
         }
     }
 

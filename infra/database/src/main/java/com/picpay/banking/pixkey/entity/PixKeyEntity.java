@@ -113,6 +113,7 @@ public class PixKeyEntity {
             .updateDate(pixKey.getUpdatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
             .cid(pixKey.getCid())
+            .donatedAutomatically(pixKey.isDonatedAutomatically())
             .build();
     }
 
@@ -133,6 +134,7 @@ public class PixKeyEntity {
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
             .cid(cid)
+            .donatedAutomatically(donatedAutomatically)
             .build();
     }
 

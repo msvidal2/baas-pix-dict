@@ -3,13 +3,12 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CreatePixKeyUseCase {
 
     private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
-    private final CreatePixKeyPort createPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
 
@@ -46,7 +45,7 @@ public class CreatePixKeyUseCase {
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", createdPixKey.getKey()));
 
-        createPixKeyPort.createPixKey(createdPixKey, reason);
+        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
 
         return createdPixKey;
     }

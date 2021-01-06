@@ -1,17 +1,10 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ReconciliationsException;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
@@ -36,8 +29,7 @@ public class FailureReconciliationSyncUseCase {
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
     private final ContentIdentifierEventPort contentIdentifierEventPort;
-    private final CreatePixKeyPort createPixKeyPort;
-    private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private long startCurrentTimeMillis;
@@ -103,7 +95,7 @@ public class FailureReconciliationSyncUseCase {
     }
 
     private void save(final PixKey pixKeyInBacen, final boolean generateLogEvent) {
-        createPixKeyPort.createPixKey(pixKeyInBacen, CreateReason.RECONCILIATION);
+        savePixKeyPort.savePixKey(pixKeyInBacen, Reason.RECONCILIATION);
         log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
             kv(LOG_START_TIME, startCurrentTimeMillis),
             kv("createPixKey", pixKeyInBacen.getKey()));
@@ -121,7 +113,7 @@ public class FailureReconciliationSyncUseCase {
     }
 
     private void update(final PixKey pixKeyInBacen, final PixKey pixKeyInDataBase, final boolean generateLogEvent) {
-        updateAccountPixKeyPort.updateAccount(pixKeyInBacen, UpdateReason.RECONCILIATION);
+        savePixKeyPort.savePixKey(pixKeyInBacen, Reason.RECONCILIATION);
         log.info("FailureReconciliationSync_hasInBacenAndNotHaveInDatabase {} {}",
             kv(LOG_START_TIME, startCurrentTimeMillis),
             kv("updateAccountPixKey", pixKeyInBacen.getKey()));

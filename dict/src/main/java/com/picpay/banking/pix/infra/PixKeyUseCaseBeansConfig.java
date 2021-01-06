@@ -5,11 +5,10 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
@@ -23,10 +22,10 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public CreatePixKeyUseCase createPixKeyUseCase(CreatePixKeyBacenPort createPixKeyBacenPort,
-                                                   CreatePixKeyPort createPixKeyPort,
+                                                   SavePixKeyPort savePixKeyPort,
                                                    FindPixKeyPort findPixKeyPort,
                                                    FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
-        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, savePixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
     }
 
     @Bean
@@ -47,8 +46,8 @@ public class PixKeyUseCaseBeansConfig {
     }
 
     @Bean
-    public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(UpdateAccountPixKeyPort updateAccountPixKeyPort,
+    public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase(SavePixKeyPort savePixKeyPort,
                                                                  UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort) {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort);
+        return new UpdateAccountPixKeyUseCase(savePixKeyPort, updateAccountPixKeyBacenPort);
     }
 }
