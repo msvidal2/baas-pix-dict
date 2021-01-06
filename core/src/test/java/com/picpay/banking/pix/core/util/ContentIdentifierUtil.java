@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class ContentIdentifierUtil {
 
-    public static BacenCidEvent BACEN_CID_EVENT_ADD(String cid) {
+    public static BacenCidEvent bacenCidEventAdd(String cid) {
         return BacenCidEvent.builder()
             .cid(cid)
             .action(ReconciliationAction.ADDED)
@@ -16,24 +16,8 @@ public class ContentIdentifierUtil {
             .build();
     }
 
-    public static BacenCidEvent BACEN_CID_EVENT_REMOVE(String cid) {
+    public static BacenCidEvent bacenCidEventRemove(String cid) {
         return BacenCidEvent.builder()
-            .cid(cid)
-            .action(ReconciliationAction.REMOVED)
-            .eventOnBacenAt(LocalDateTime.now())
-            .build();
-    }
-
-    public static ReconciliationEvent DATABASE_CID_EVENT_ADD(String cid) {
-        return ReconciliationEvent.builder()
-            .cid(cid)
-            .action(ReconciliationAction.ADDED)
-            .eventOnBacenAt(LocalDateTime.now())
-            .build();
-    }
-
-    public static ReconciliationEvent DATABASE_CID_EVENT_REMOVE(String cid) {
-        return ReconciliationEvent.builder()
             .cid(cid)
             .action(ReconciliationAction.REMOVED)
             .eventOnBacenAt(LocalDateTime.now())

@@ -78,15 +78,17 @@ public class PixKey {
 
         var tradeName = (PersonType.LEGAL_ENTITY.equals(personType) && !Strings.isNullOrEmpty(fantasyName) ? fantasyName : "");
 
-        final String entryAttributes = type.keyTypeNameOnBacen() + SEPARATOR +
-            key + SEPARATOR +
-            taxId + SEPARATOR +
-            name + SEPARATOR +
-            tradeName + SEPARATOR +
-            ispb + SEPARATOR +
-            branchNumber + SEPARATOR +
-            accountNumber + SEPARATOR +
-            accountType.getInitials();
+        final String entryAttributes = new StringBuilder()
+            .append(type.keyTypeNameOnBacen()).append(SEPARATOR)
+            .append(key).append(SEPARATOR)
+            .append(taxId).append(SEPARATOR)
+            .append(name).append(SEPARATOR)
+            .append(tradeName).append(SEPARATOR)
+            .append(ispb).append(SEPARATOR)
+            .append(branchNumber).append(SEPARATOR)
+            .append(accountNumber).append(SEPARATOR)
+            .append(accountType.getInitials())
+            .toString();
 
         HmacUtils hmacSHA256 = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, requestIdBytes);
         this.cid = hmacSHA256.hmacHex(entryAttributes.getBytes(StandardCharsets.UTF_8)).toLowerCase();

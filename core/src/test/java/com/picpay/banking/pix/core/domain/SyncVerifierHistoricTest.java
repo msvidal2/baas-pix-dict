@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.BACEN_CID_EVENT_ADD;
-import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.BACEN_CID_EVENT_REMOVE;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.bacenCidEventAdd;
+import static com.picpay.banking.pix.core.util.ContentIdentifierUtil.bacenCidEventRemove;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SyncVerifierHistoricTest {
@@ -18,19 +18,19 @@ class SyncVerifierHistoricTest {
         var syncVerifierHistoric = SyncVerifierHistoric.builder().build();
 
         final Set<BacenCidEvent> bacenEvents = Set.of(
-            BACEN_CID_EVENT_ADD("1"),
-            BACEN_CID_EVENT_REMOVE("1"),
-            BACEN_CID_EVENT_ADD("1"),
-            BACEN_CID_EVENT_REMOVE("2"),
-            BACEN_CID_EVENT_ADD("3"),
-            BACEN_CID_EVENT_ADD("4"),
-            BACEN_CID_EVENT_ADD("5"),
-            BACEN_CID_EVENT_REMOVE("6"),
-            BACEN_CID_EVENT_REMOVE("7"),
-            BACEN_CID_EVENT_ADD("7"),
-            BACEN_CID_EVENT_REMOVE("7"),
-            BACEN_CID_EVENT_ADD("7"),
-            BACEN_CID_EVENT_REMOVE("7"));
+            bacenCidEventAdd("1"),
+            bacenCidEventRemove("1"),
+            bacenCidEventAdd("1"),
+            bacenCidEventRemove("2"),
+            bacenCidEventAdd("3"),
+            bacenCidEventAdd("4"),
+            bacenCidEventAdd("5"),
+            bacenCidEventRemove("6"),
+            bacenCidEventRemove("7"),
+            bacenCidEventAdd("7"),
+            bacenCidEventRemove("7"),
+            bacenCidEventAdd("7"),
+            bacenCidEventRemove("7"));
 
         final Set<BacenCidEvent> latestEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
 
