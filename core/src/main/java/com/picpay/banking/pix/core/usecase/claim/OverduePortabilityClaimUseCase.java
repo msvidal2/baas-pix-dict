@@ -17,7 +17,7 @@ import static com.picpay.banking.pix.core.domain.ExecutionType.CANCEL_PORTABILIT
 
 @Slf4j
 @RequiredArgsConstructor
-public class CancelPortabilityPollingUseCase {
+public class OverduePortabilityClaimUseCase {
 
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final CancelClaimBacenPort cancelClaimBacenPort;

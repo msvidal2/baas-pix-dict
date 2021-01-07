@@ -19,33 +19,35 @@ public class PollingOverduePossessionClaimUseCase {
 
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
+
     private final Integer DAYS_TO_OVERDUE = 37;
 
-    public void execute(Integer ispb, Integer limit) {
-        List<Claim> overdueClaimsWhereIsDonor = findClaimToCancelPort.findClaimToCancelWhereIsDonor(
+    public void executeForDonor(Integer ispb, Integer limit) {
+        List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsDonor(
                 POSSESSION_CLAIM,
                 List.of(AWAITING_CLAIM),
                 ispb,
                 LocalDateTime.now(),
                 limit);
 
-        Optional.ofNullable(overdueClaimsWhereIsDonor).ifPresentOrElse(
+        Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
                     log.info("Overdue possession claims to confirm found: " + claims.size());
                     claims.forEach(sendOverduePossessionClaimPort::sendToConfirm);
                 },
                 () -> log.info("There are no overdue possession claims to confirm")
         );
+    }
 
-        // TODO remover open
-        List<Claim> overdueClaimsWhereIsClaimer = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
+    public void executeForClaimer(Integer ispb, Integer limit) {
+        List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
                 POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM, CONFIRMED, OPEN),
+                List.of(AWAITING_CLAIM, CONFIRMED),
                 ispb,
                 limit,
                 DAYS_TO_OVERDUE);
 
-        Optional.ofNullable(overdueClaimsWhereIsClaimer).ifPresentOrElse(
+        Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
                     log.info("Overdue possession claims to complete found: " + claims.size());
                     claims.forEach(sendOverduePossessionClaimPort::sendToComplete);

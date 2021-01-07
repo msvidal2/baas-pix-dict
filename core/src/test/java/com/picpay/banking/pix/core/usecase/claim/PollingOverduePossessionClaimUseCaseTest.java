@@ -37,7 +37,7 @@ public class PollingOverduePossessionClaimUseCaseTest {
         when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(List.of(new Claim(), new Claim(), new Claim()));
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
         verify(sendOverduePossessionClaimPort, times(3)).sendToConfirm(any());
     }
@@ -47,7 +47,7 @@ public class PollingOverduePossessionClaimUseCaseTest {
         when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(null);
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
         verify(sendOverduePossessionClaimPort, times(0)).sendToConfirm(any());
     }
@@ -57,7 +57,7 @@ public class PollingOverduePossessionClaimUseCaseTest {
         when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(Lists.newArrayList());
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
         verify(sendOverduePossessionClaimPort, times(0)).sendToConfirm(any());
     }

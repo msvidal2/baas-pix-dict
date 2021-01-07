@@ -20,10 +20,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CancelPortabilityPollingUseCaseTest {
+public class OverduePortabilityClaimUseCaseTest {
 
     @InjectMocks
-    private CancelPortabilityPollingUseCase useCase;
+    private OverduePortabilityClaimUseCase useCase;
 
     @Mock
     private FindClaimToCancelPort findClaimToCancelPort;
