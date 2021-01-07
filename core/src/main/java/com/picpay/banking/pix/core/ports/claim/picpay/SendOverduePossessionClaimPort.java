@@ -6,6 +6,6 @@ public interface SendOverduePossessionClaimPort {
 
     void sendToConfirm(Claim claim);
 
-    void sendToComplete(Claim claim);
+    void sendToCancel(Claim claim);
 
 }

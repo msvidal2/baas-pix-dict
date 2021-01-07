@@ -37,7 +37,7 @@ public class SendOverduePossessionClaimPortImpl implements SendOverduePossession
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "sendFallback")
-    public void sendToComplete(Claim claim) {
+    public void sendToCancel(Claim claim) {
         overduePossessionClaimClaimerOutputTopic
                 .getMessageChannel()
                 .send(MessageBuilder
