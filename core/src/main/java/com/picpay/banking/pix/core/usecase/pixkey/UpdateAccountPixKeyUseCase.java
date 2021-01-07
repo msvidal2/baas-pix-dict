@@ -6,8 +6,7 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -19,7 +18,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class UpdateAccountPixKeyUseCase {
 
-    private UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private SavePixKeyPort savePixKeyPort;
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
     private FindPixKeyPort findPixKeyPort;
     // FIXME: Em desenvolvimento
@@ -45,7 +44,7 @@ public class UpdateAccountPixKeyUseCase {
         oldPixKey.ifPresent(oldPixKeyInDatabase -> pixKeyResponse.keepCreationRequestIdentifier(oldPixKeyInDatabase.getRequestId()));
         pixKeyResponse.calculateCid();
 
-        var pixKeyUpdated = updateAccountPixKeyPort.updateAccount(pixKeyResponse, reason);
+        var pixKeyUpdated = savePixKeyPort.savePixKey(pixKeyResponse, reason.getValue());
 //        reconciliationSyncEventPort.eventByPixKeyUpdated(oldPixKey, pixKeyUpdated);
 
         log.info("PixKey_updated"

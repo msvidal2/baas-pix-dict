@@ -23,10 +23,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClaimCancelUseCaseTest {
+class CancelClaimUseCaseTest {
 
     @InjectMocks
-    private ClaimCancelUseCase useCase;
+    private CancelClaimUseCase useCase;
 
     @Mock
     private CancelClaimBacenPort cancelClaimBacenPort;

@@ -8,8 +8,7 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ public class UpdateAccountPixKeyUseCaseTest {
     private static final String randomUUID = randomUUID().toString();
 
     @Mock
-    private UpdateAccountPixKeyPort updateAccountPort;
+    private SavePixKeyPort savePixKeyPort;
 
     @Mock
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
@@ -43,7 +42,7 @@ public class UpdateAccountPixKeyUseCaseTest {
 //    private ReconciliationSyncEventPort reconciliationSyncEventPort;
 
     @InjectMocks
-    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(updateAccountPort, updateAccountPixKeyBacenPort, findPixKeyPort);
+    private UpdateAccountPixKeyUseCase useCase = new UpdateAccountPixKeyUseCase(savePixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort);
 
     @Test
     public void testUpdate() {
@@ -66,7 +65,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKeyResponse);
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
@@ -128,7 +127,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKeyResponse);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKeyResponse);
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
@@ -167,7 +166,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
-        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKey);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
@@ -260,7 +259,7 @@ public class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
-        when(updateAccountPort.updateAccount(any(), any())).thenReturn(pixKey);
+        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,
