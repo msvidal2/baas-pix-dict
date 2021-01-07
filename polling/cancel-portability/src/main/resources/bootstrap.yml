@@ -1,16 +1,17 @@
 spring:
     application:
-        name: dict-polling-claim
+        name: dict-cancel-portability
     main:
         allow-bean-definition-overriding: true
         banner-mode: off
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-cancel-portability,dict-bacen,dict-database
+            name: dict-cancel-portability,dict-bacen,dict-database,dict-messaging
     profiles:
         active:
             - ${ENV:local}
             - bacen-${ENV:local}
             - database-${ENV:local}
             - cloudtask-${ENV:local}
+            - messaging-${ENV:local}
