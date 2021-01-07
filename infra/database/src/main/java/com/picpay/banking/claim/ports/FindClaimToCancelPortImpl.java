@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +33,8 @@ public class FindClaimToCancelPortImpl implements FindClaimToCancelPort {
 
     @Override
     public List<Claim> findClaimToCancelWhereIsClaimer(ClaimType type, List<ClaimSituation> status, Integer ispb, Integer limit, Integer interval) {
-        Page<ClaimEntity> claimEntityList = claimRepository.findClaimToCancelWhereIsClaimer(type, status, ispb, interval, PageRequest.of(0, limit));
+        Page<ClaimEntity> claimEntityList = claimRepository.findClaimToCancelWhereIsClaimer(type.toString(),
+                status.stream().map(s -> s.toString()).collect(Collectors.toList()), ispb, interval,PageRequest.of(0, limit));
 
         return claimEntityList.map(ClaimEntity::toClaim).toList();
     }
