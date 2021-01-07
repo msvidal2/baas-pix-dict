@@ -1,6 +1,6 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyAutomaticallyPort;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
@@ -20,11 +20,12 @@ public class RemovePixKeyAutomaticallyPortImpl implements RemovePixKeyAutomatica
     @Override
     public void remove(String pixKey, LocalDateTime completionThresholdDate) {
         var pixKeyEntity = pixKeyRepository
-                .findByIdKey(pixKey)
+                .findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
                 .orElseThrow(ResourceNotFoundException::new);
 
         pixKeyEntity.setCompletionPeriodEnd(completionThresholdDate);
         pixKeyEntity.setDonatedAutomatically(true);
+        pixKeyEntity.setReason(Reason.INACTIVITY);
         pixKeyRepository.save(pixKeyEntity);
     }
 

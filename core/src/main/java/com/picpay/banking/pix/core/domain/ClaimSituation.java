@@ -2,7 +2,12 @@ package com.picpay.banking.pix.core.domain;
 
 import lombok.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static com.picpay.banking.pix.core.domain.ClaimType.PORTABILITY;
+import static com.picpay.banking.pix.core.domain.ClaimType.POSSESSION_CLAIM;
 
 @Getter
 @AllArgsConstructor
@@ -14,20 +19,23 @@ public enum ClaimSituation {
     CANCELED(3),
     COMPLETED(4);
 
-    private int value;
+    private final int value;
 
     public static ClaimSituation resolve(int value) {
-        for(ClaimSituation claimSituation : values()) {
-            if (claimSituation.value == value) {
-                return claimSituation;
-            }
-        }
-
-        return null;
+        return Arrays.stream(values())
+                .filter(situation -> situation.value == value)
+                .findAny()
+                .orElse(null);
     }
 
     public static List<ClaimSituation> getPending() {
         return List.of(OPEN, AWAITING_CLAIM, CONFIRMED);
+    }
+
+    public static Map<ClaimType, List<ClaimSituation>> getCancelSituationsAllowedByType() {
+        return Map.of(
+                POSSESSION_CLAIM, List.of(AWAITING_CLAIM, CONFIRMED),
+                PORTABILITY, List.of(AWAITING_CLAIM));
     }
 
 }

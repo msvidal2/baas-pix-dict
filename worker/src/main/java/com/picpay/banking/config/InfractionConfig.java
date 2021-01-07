@@ -21,7 +21,7 @@ public class InfractionConfig {
     public InfractionAcknowledgeUseCase infractionAcknowledgeUseCase(InfractionReportSavePort infractionReportSavePort,
                                                                      InfractionNotificationPort infractionNotificationPort,
                                                                      InfractionAcknowledgePort infractionAcknowledgePort,
-                                                                     @Value("{$picpay.ispb}") String ispbPicPay) {
+                                                                     @Value("${picpay.ispb}") String ispbPicPay) {
         return new InfractionAcknowledgeUseCase(infractionReportSavePort, infractionNotificationPort, infractionAcknowledgePort, ispbPicPay);
     }
 

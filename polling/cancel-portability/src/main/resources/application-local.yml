@@ -27,6 +27,7 @@ picpay:
       fixed-delay: 360000
       limit: 200
       cancel-limit: 200
+      cancel-notification-dispatcher: true
 management:
   endpoint:
     health:

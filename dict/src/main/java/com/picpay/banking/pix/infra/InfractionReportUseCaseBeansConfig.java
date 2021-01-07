@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InfractionReportUseCaseBeansConfig {
 
-    @Value("{$picpay.ispb}")
+    @Value("${picpay.ispb}")
     private String ispbPicPay;
 
     @Bean

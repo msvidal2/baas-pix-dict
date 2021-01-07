@@ -22,6 +22,7 @@ public class ClaimEntity {
     @Id
     private String id;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClaimType type;
 

@@ -6,10 +6,10 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -32,13 +32,13 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public Optional<PixKey> findPixKey(String pixKey) {
-        return pixKeyRepository.findByIdKey(pixKey)
+        return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
                 .map(PixKeyEntity::toPixKey);
     }
 
     @Override
     public List<PixKey> findByAccount(Integer ispb, String branch, String accountNUmber, AccountType accountType) {
-        return pixKeyRepository.findByAccount(ispb, branch, accountNUmber, accountType)
+        return pixKeyRepository.findByAccountAndDonatedAutomaticallyFalse(ispb, branch, accountNUmber, accountType)
                 .stream()
                 .map(PixKeyEntity::toPixKey)
                 .collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public Pagination<PixKey> findAllByKeyType(final KeyType keyType, Integer page, Integer size) {
-        final var pageResult = this.pixKeyRepository.findAllByIdType(keyType, PageRequest.of(page, size));
+        final var pageResult = this.pixKeyRepository.findAllByIdTypeAndDonatedAutomaticallyFalse(keyType, PageRequest.of(page, size));
         final List<PixKey> pixKeys = pageResult.getContent().stream().map(PixKeyEntity::toPixKey).collect(Collectors.toList());
         return Pagination.<PixKey>builder()
             .currentPage(page)
@@ -60,7 +60,13 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
 
     @Override
     public Optional<PixKey> findByCid(final String cid) {
-        return this.pixKeyRepository.findByCid(cid).map(PixKeyEntity::toPixKey);
+        return this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(cid).map(PixKeyEntity::toPixKey);
+    }
+
+    @Override
+    public boolean exists(final String key, final String taxId) {
+        final var id = PixKeyIdEntity.builder().key(key).build();
+        return this.pixKeyRepository.existsById(id);
     }
 
 }

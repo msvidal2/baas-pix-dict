@@ -2,11 +2,14 @@ package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Class comments go here...
@@ -23,12 +26,15 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
 
     @Override
     @Transactional
-    public PixKey remove(String pixKey, Integer participant) {
-
+    public Optional<PixKey> remove(String pixKey, Integer participant) {
+        var pixKeyEntity = pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey);
         pixKeyRepository.deleteByIdKeyAndParticipant(pixKey, participant);
+        return pixKeyEntity.map(PixKeyEntity::toPixKey);
+    }
 
-        return PixKey.builder().key(pixKey).build();
-
+    @Override
+    public void removeByCid(final String cid) {
+        pixKeyRepository.deleteByCid(cid);
     }
 
 }

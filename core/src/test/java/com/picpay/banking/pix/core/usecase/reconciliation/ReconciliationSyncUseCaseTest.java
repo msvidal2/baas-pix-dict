@@ -49,16 +49,16 @@ class ReconciliationSyncUseCaseTest {
     }
 
     @Test
-    @DisplayName("Quando OK não deve executar nenhuma ação")
-    void when_ok_no_action_happens() {
+    @DisplayName("Quando OK, deve ter histórico de sucesso")
+    void when_ok_must_have_a_history_of_success() {
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.empty());
 
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.empty());
 
-        when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(new ArrayList<>());
+        when(syncVerifierPort.calculateVsync(any()))
+            .thenReturn("1");
 
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder()
@@ -77,13 +77,13 @@ class ReconciliationSyncUseCaseTest {
     }
 
     @Test
-    @DisplayName("Quando NOK deve enviar mensagem de falha para reconciliação")
-    void when_NOK_send_failure_reconciliation() {
+    @DisplayName("Quando NOK, deve ter histórico de falha")
+    void when_NOK_must_have_a_history_of_failure() {
         when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
             .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
 
-        when(contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(any(), any()))
-            .thenReturn(new ArrayList<>());
+        when(syncVerifierPort.calculateVsync(any()))
+            .thenReturn("1");
 
         when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "1"))
             .thenReturn(SyncVerifierResult.builder()

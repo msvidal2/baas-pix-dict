@@ -27,12 +27,20 @@ build-polling-cancel-portability:
 
 build-polling-overdue-possession-claim:
 	@ mvn --projects com.picpay.banking.pix.dict.polling:overdue-possession-claim -am clean install
-	@ make --directory=overdue-possession-claim build-overdue-possession-claim-image
+	@ make --directory=polling build-overdue-possession-claim-image
 
 build-worker:
 	@ mvn --projects worker -am clean install
 	@ make --directory=worker build-image
 
 build-sync:
-	@ mvn --projects com.picpay.banking.pix.dict:cid-files -am clean install
+	@ mvn --projects com.picpay.banking.pix.dict.sync:cid-files -am clean install
 	@ make --directory=sync/cid-files build-image
+
+build-sync-cid-events:
+	@ mvn --projects com.picpay.banking.pix.dict.sync:cid-events -am clean install
+	@ make --directory=sync/cid-events build-image
+
+build-sync-verifier:
+	@ mvn --projects com.picpay.banking.pix.dict.sync:sync-verifier -am clean install
+	@ make --directory=sync/sync-verifier build-image
