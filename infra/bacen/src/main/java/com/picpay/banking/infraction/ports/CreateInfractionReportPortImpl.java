@@ -46,7 +46,10 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
         return CreateInfractionReportResponse.toInfractionReport(response, ispbPicPay);
     }
 
-    public InfractionReport createFallback(final InfractionReport infractionReport, final String requestIdentifier, Exception e) {
+    public InfractionReport createFallback(final InfractionReport infractionReport,
+                                           final String requestIdentifier,
+                                           final String ispbPicPay,
+                                           final Exception e) {
         throw BacenExceptionBuilder.from(e).build();
     }
 
