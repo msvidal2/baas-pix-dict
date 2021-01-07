@@ -52,7 +52,7 @@ public class InfractionReportEntity {
     private String ispbDebited;
     @Column(name = "ispb_credited")
     private String ispbCredited;
-    @Column(name = "created_dated")
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
     @Column(name = "last_updated_date")
     private LocalDateTime lastUpdatedDate;
