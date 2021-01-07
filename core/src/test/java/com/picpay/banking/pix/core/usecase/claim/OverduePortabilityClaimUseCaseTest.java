@@ -20,10 +20,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CancelPortabilityPollingUseCaseTest {
+public class OverduePortabilityClaimUseCaseTest {
 
     @InjectMocks
-    private CancelPortabilityPollingUseCase useCase;
+    private OverduePortabilityClaimUseCase useCase;
 
     @Mock
     private FindClaimToCancelPort findClaimToCancelPort;
@@ -73,12 +73,12 @@ public class CancelPortabilityPollingUseCaseTest {
 
     @Test
     void execute_success() {
-        when(findClaimToCancelPort.find(any(), any(), anyInt(), any(), anyInt())).thenReturn(claims);
+        when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt())).thenReturn(claims);
         doNothing().when(sendToCancelPortabilityPort).send(any());
 
         useCase.execute("22896431", 200);
 
-        verify(findClaimToCancelPort, times(1)).find(any(), any(), anyInt(), any(), anyInt());
+        verify(findClaimToCancelPort, times(1)).findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt());
         verify(cancelClaimBacenPort, times(0)).cancel(anyString(), any(), anyInt(), anyString());
         verify(cancelClaimPort, times(0)).cancel(any(), any(), anyString());
         verify(executionPort, times(1)).lastExecution(any());
@@ -87,11 +87,11 @@ public class CancelPortabilityPollingUseCaseTest {
 
     @Test
     void execute_no_portabilities_to_cancel() {
-        when(findClaimToCancelPort.find(any(), any(), anyInt(), any(), anyInt())).thenReturn(new ArrayList<>());
+        when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt())).thenReturn(new ArrayList<>());
 
         useCase.execute("22896431", 200);
 
-        verify(findClaimToCancelPort, times(1)).find(any(), any(), anyInt(), any(), anyInt());
+        verify(findClaimToCancelPort, times(1)).findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt());
         verify(cancelClaimBacenPort, times(0)).cancel(anyString(), any(), anyInt(), anyString());
         verify(cancelClaimPort, times(0)).cancel(any(), any(), anyString());
         verify(executionPort, times(1)).lastExecution(any());

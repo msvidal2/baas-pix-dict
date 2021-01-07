@@ -3,7 +3,7 @@ package com.picpay.banking.claim.config;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface OverduePossessionClaimInputTopic {
+public interface OverduePossessionClaimDonorInputTopic {
 
     String INPUT = "overdue-possession-claim-consumer";
 

@@ -87,6 +87,10 @@ spring:
           destination: cancel-portabilities-topic
           group: cancel-portabilities-consumer-group
           contentType: application/json
+        overdue-possession-claim-claimer-consumer:
+          destination: overdue-possession-claim-claimer
+          group: overdue-possession-claim-group
+          contentType: application/json
 
 management:
   endpoint:

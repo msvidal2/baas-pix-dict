@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.config;
 
-import com.picpay.banking.claim.ports.SendClaimNotificationPortImpl;
 import com.picpay.banking.pix.core.ports.claim.bacen.AcknowledgeClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
@@ -10,7 +9,7 @@ import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendClaimNotificationPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPort;
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
-import com.picpay.banking.pix.core.usecase.claim.CancelPortabilityPollingUseCase;
+import com.picpay.banking.pix.core.usecase.claim.OverduePortabilityClaimUseCase;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyAutomaticallyPort;
 import com.picpay.banking.pix.core.usecase.claim.OverduePossessionClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimListenerUseCase;
@@ -34,12 +33,12 @@ public class ClaimConfig {
     }
 
     @Bean
-    public CancelPortabilityPollingUseCase cancelPortabilityPollingUseCase(FindClaimToCancelPort findClaimToCancelPort,
-                                                                           CancelClaimBacenPort cancelClaimBacenPort,
-                                                                           CancelClaimPort cancelClaimPort,
-                                                                           ExecutionPort executionPort,
-                                                                           SendToCancelPortabilityPort sendToCancelPortabilityPort) {
-        return new CancelPortabilityPollingUseCase(
+    public OverduePortabilityClaimUseCase cancelPortabilityPollingUseCase(FindClaimToCancelPort findClaimToCancelPort,
+                                                                          CancelClaimBacenPort cancelClaimBacenPort,
+                                                                          CancelClaimPort cancelClaimPort,
+                                                                          ExecutionPort executionPort,
+                                                                          SendToCancelPortabilityPort sendToCancelPortabilityPort) {
+        return new OverduePortabilityClaimUseCase(
                 findClaimToCancelPort,
                 cancelClaimBacenPort,
                 cancelClaimPort,
@@ -50,8 +49,11 @@ public class ClaimConfig {
     @Bean
     public OverduePossessionClaimUseCase overduePossessionClaimUseCase(ConfirmClaimPort confirmClaimPort,
                                                                        CreateClaimPort saveClaimPort,
-                                                                       RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort) {
-        return new OverduePossessionClaimUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort);
+                                                                       RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort,
+                                                                       CancelClaimPort cancelClaimPort,
+                                                                       CancelClaimBacenPort cancelClaimBacenPort) {
+        return new OverduePossessionClaimUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort,
+                cancelClaimPort, cancelClaimBacenPort);
     }
 
 }

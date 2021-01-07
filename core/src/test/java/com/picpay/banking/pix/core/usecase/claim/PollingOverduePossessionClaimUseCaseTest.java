@@ -33,33 +33,63 @@ public class PollingOverduePossessionClaimUseCaseTest {
     private SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
 
     @Test
-    void when_findClaimPortReturnElements_expect_numElementsSendCalls() {
-        when(findClaimToCancelPort.find(any(), anyList(), anyInt(), any(), anyInt()))
+    void when_findClaimWhereIsDonorPortReturnElements_expect_numElementsSendCalls() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(List.of(new Claim(), new Claim(), new Claim()));
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
-        verify(sendOverduePossessionClaimPort, times(3)).send(any());
+        verify(sendOverduePossessionClaimPort, times(3)).sendToConfirm(any());
     }
 
     @Test
-    void when_findClaimPortReturnNull_expect_nothingHappens() {
-        when(findClaimToCancelPort.find(any(), anyList(), anyInt(), any(), anyInt()))
+    void when_findClaimWhereIsClaimerPortReturnElements_expect_numElementsSendCalls() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
+                .thenReturn(List.of(new Claim(), new Claim(), new Claim()));
+
+        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
+
+        verify(sendOverduePossessionClaimPort, times(3)).sendToCancel(any());
+    }
+
+    @Test
+    void when_findClaimWhereIsClaimerPortReturnNull_expect_nothingHappens() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(null);
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
-        verify(sendOverduePossessionClaimPort, times(0)).send(any());
+        verify(sendOverduePossessionClaimPort, times(0)).sendToConfirm(any());
     }
 
     @Test
-    void when_findClaimPortReturnEmpty_expect_nothingHappens() {
-        when(findClaimToCancelPort.find(any(), anyList(), anyInt(), any(), anyInt()))
+    void when_findClaimWhereIsDonorPortReturnNull_expect_nothingHappens() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
+                .thenReturn(null);
+
+        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
+
+        verify(sendOverduePossessionClaimPort, times(0)).sendToCancel(any());
+    }
+
+    @Test
+    void when_findClaimWhereIsDonorPortReturnEmpty_expect_nothingHappens() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(Lists.newArrayList());
 
-        assertDoesNotThrow(() -> useCase.execute(PICPAY_ISPB, LIMIT));
+        assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
-        verify(sendOverduePossessionClaimPort, times(0)).send(any());
+        verify(sendOverduePossessionClaimPort, times(0)).sendToConfirm(any());
+    }
+
+    @Test
+    void when_findClaimWhereIsClaimerPortReturnEmpty_expect_nothingHappens() {
+        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
+                .thenReturn(Lists.newArrayList());
+
+        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
+
+        verify(sendOverduePossessionClaimPort, times(0)).sendToCancel(any());
     }
 
 }
