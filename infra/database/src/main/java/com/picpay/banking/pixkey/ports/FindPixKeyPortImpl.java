@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,12 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     @Override
     public Optional<PixKey> findByCid(final String cid) {
         return this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(cid).map(PixKeyEntity::toPixKey);
+    }
+
+    @Override
+    public boolean exists(final String key, final String taxId) {
+        final var id = PixKeyIdEntity.builder().key(key).build();
+        return this.pixKeyRepository.existsById(id);
     }
 
 }

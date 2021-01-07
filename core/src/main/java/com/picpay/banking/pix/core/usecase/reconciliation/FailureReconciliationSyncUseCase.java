@@ -1,16 +1,10 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
-import com.picpay.banking.pix.core.domain.BacenCidEvent;
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
-import com.picpay.banking.pix.core.domain.UpdateReason;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
@@ -36,8 +30,7 @@ public class FailureReconciliationSyncUseCase {
     private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
     private final SyncVerifierHistoricPort syncVerifierHistoricPort;
     private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
-    private final CreatePixKeyPort createPixKeyPort;
-    private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
 
     private SyncVerifierHistoric syncVerifierHistoric;
@@ -46,13 +39,13 @@ public class FailureReconciliationSyncUseCase {
         this.syncVerifierHistoric = syncVerifierHistoric;
         long startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started: {}, {}",
-            kv(LOG_START_TIME, startCurrentTimeMillis),
-            kv("vsyncHistoric", syncVerifierHistoric));
+                kv(LOG_START_TIME, startCurrentTimeMillis),
+                kv("vsyncHistoric", syncVerifierHistoric));
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
         Set<BacenCidEvent> bacenEvents = bacenContentIdentifierEventsPort.list(syncVerifierHistoric.getKeyType(),
-            syncVerifierHistoric.getSynchronizedStart());
+                syncVerifierHistoric.getSynchronizedStart());
         Set<BacenCidEvent> latestBacenEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
         latestBacenEvents.forEach(bacenCidEvent -> {
             if (ReconciliationAction.ADDED.equals(bacenCidEvent.getAction())) {
@@ -66,8 +59,8 @@ public class FailureReconciliationSyncUseCase {
         performSyncVerifier(syncVerifierHistoric, bacenEvents);
 
         log.info("FailureReconciliationSync_ended: {}, {}",
-            kv(LOG_START_TIME, startCurrentTimeMillis),
-            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
+                kv(LOG_START_TIME, startCurrentTimeMillis),
+                kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
     private void performSyncVerifier(final SyncVerifierHistoric syncVerifierHistoric, final Set<BacenCidEvent> bacenEvents) {
@@ -79,35 +72,35 @@ public class FailureReconciliationSyncUseCase {
         syncVerifierHistoricPort.save(newSyncVerifierHistoric);
 
         log.info("FailureReconciliationSync_performSyncVerifier: {}, {}",
-            kv("vsyncHistoric", syncVerifierHistoric),
-            kv("newSyncVerifierHistoric", newSyncVerifierHistoric));
+                kv("vsyncHistoric", syncVerifierHistoric),
+                kv("newSyncVerifierHistoric", newSyncVerifierHistoric));
     }
 
     private void createOrUpdatePixKey(final BacenCidEvent bacenCidEvent) {
         bacenContentIdentifierEventsPort.getPixKey(bacenCidEvent.getCid())
-            .ifPresent(pixKey -> findPixKeyPort.findPixKey(pixKey.getKey()).ifPresentOrElse(
-                pixKeyInDatabase -> {
-                    updateAccountPixKeyPort.updateAccount(pixKey, UpdateReason.RECONCILIATION);
-                    createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
-                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                }, () -> {
-                    createPixKeyPort.createPixKey(pixKey, CreateReason.RECONCILIATION);
-                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                }));
+                .ifPresent(pixKey -> findPixKeyPort.findPixKey(pixKey.getKey()).ifPresentOrElse(
+                        pixKeyInDatabase -> {
+                            savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
+                            createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
+                            createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                        }, () -> {
+                            savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
+                            createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                        }));
     }
 
     private void createHistoricAction(final String cid, final ActionType actionType) {
         var historicAction = SyncVerifierHistoricAction.builder()
-            .cid(cid)
-            .actionType(actionType)
-            .syncVerifierHistoric(syncVerifierHistoric)
-            .build();
+                .cid(cid)
+                .actionType(actionType)
+                .syncVerifierHistoric(syncVerifierHistoric)
+                .build();
         syncVerifierHistoricActionPort.save(historicAction);
 
         log.info("FailureReconciliationSync_changePixKey: {}, {}, {}",
-            kv("cid", cid),
-            kv("actionType", actionType),
-            kv("vsyncHistoric", syncVerifierHistoric));
+                kv("cid", cid),
+                kv("actionType", actionType),
+                kv("vsyncHistoric", syncVerifierHistoric));
     }
 
     private void removePixKey(final String cid) {

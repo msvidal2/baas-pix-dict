@@ -1,12 +1,12 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +23,8 @@ public class CompleteClaimUseCase {
 
     private final CompleteClaimBacenPort completeClaimBacenPort;
     private final CompleteClaimPort completeClaimPort;
-
     private final FindClaimPort findClaimPort;
-
-    private final CreatePixKeyPort createPixKeyPort;
+    private final SavePixKeyPort createPixKeyPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
 
@@ -71,6 +69,6 @@ public class CompleteClaimUseCase {
                 .requestId(requestIdentifier)
                 .build();
 
-        return createPixKeyPort.createPixKey(pixKey, CreateReason.CLIENT_REQUEST);
+        return createPixKeyPort.savePixKey(pixKey, Reason.CLIENT_REQUEST);
     }
 }

@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
@@ -23,7 +23,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CreatePixKeyUseCase {
 
     private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
-    private final CreatePixKeyPort createPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
     // FIXME: Esta porta esta em desenvolvimento
@@ -42,7 +42,7 @@ public class CreatePixKeyUseCase {
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
-        createPixKeyPort.createPixKey(createdPixKey, reason);
+        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
 //        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
 
         log.info("PixKey_created"

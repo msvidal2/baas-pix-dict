@@ -5,11 +5,10 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.UpdateAccountPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
@@ -24,19 +23,18 @@ import org.springframework.context.annotation.Configuration;
 public class PixKeyUseCaseBeansConfig {
 
     private final CreatePixKeyBacenPort createPixKeyBacenPort;
-    private final CreatePixKeyPort createPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final RemovePixKeyBacenPort removePixKeyBacenPort;
     private final FindPixKeyBacenPort findPixKeyBacenPort;
     private final ListPixKeyPort listPixKeyPort;
-    private final UpdateAccountPixKeyPort updateAccountPixKeyPort;
     private final UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
     @Bean
     public CreatePixKeyUseCase createPixKeyUseCase() {
-        return new CreatePixKeyUseCase(createPixKeyBacenPort, createPixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
+        return new CreatePixKeyUseCase(createPixKeyBacenPort, savePixKeyPort, findPixKeyPort, findOpenClaimByKeyPort);
     }
 
     @Bean
@@ -56,7 +54,7 @@ public class PixKeyUseCaseBeansConfig {
 
     @Bean
     public UpdateAccountPixKeyUseCase updateAccountPixKeyUseCase() {
-        return new UpdateAccountPixKeyUseCase(updateAccountPixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort);
+        return new UpdateAccountPixKeyUseCase(savePixKeyPort, updateAccountPixKeyBacenPort, findPixKeyPort);
     }
 
 }

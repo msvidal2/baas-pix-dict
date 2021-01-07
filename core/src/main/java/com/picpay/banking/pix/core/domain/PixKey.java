@@ -51,6 +51,7 @@ public class PixKey {
     private Statistic statistic;
     private String cid;
     private UUID requestId;
+    private boolean donatedAutomatically;
 
     public String getOwnerName() {
         if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {

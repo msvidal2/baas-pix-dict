@@ -7,6 +7,8 @@ import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,32 +20,13 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ClaimCancelUseCase {
+public class CancelClaimUseCase {
 
     private final CancelClaimBacenPort cancelClaimBacenPort;
-
     private final FindByIdPort findByIdPort;
-
     private final CancelClaimPort cancelClaimPort;
-
-    private static final Map<ClaimType, List<ClaimSituation>> situationsAllowedByType = Map.of(
-        ClaimType.POSSESSION_CLAIM, List.of(ClaimSituation.AWAITING_CLAIM, ClaimSituation.CONFIRMED),
-        ClaimType.PORTABILITY, List.of(ClaimSituation.AWAITING_CLAIM)
-    );
-
-    private static final Map<ClaimCancelReason, List<ClaimantType>> ownershipAllowedReasons = Map.of(
-        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.CLAIMANT)
-    );
-
-    private static final Map<ClaimCancelReason, List<ClaimantType>> portabilityAllowedReasons = Map.of(
-        ClaimCancelReason.CLIENT_REQUEST, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.ACCOUNT_CLOSURE, List.of(ClaimantType.CLAIMANT),
-        ClaimCancelReason.FRAUD, List.of(ClaimantType.DONOR, ClaimantType.CLAIMANT),
-        ClaimCancelReason.DEFAULT_RESPONSE, List.of(ClaimantType.DONOR)
-    );
+    private final FindPixKeyPort findPixKeyPort;
+    private final SavePixKeyPort savePixKeyPort;
 
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
@@ -63,23 +46,29 @@ public class ClaimCancelUseCase {
 
         cancelClaimPort.cancel(claimCanceled, reason, requestIdentifier);
 
+        if (isPossessionClaimDonationFraud(claim, reason)) {
+            recoveryDonatedByFraudKey(claim);
+        }
+
         if (claimCanceled != null)
-            log.info("Claim_canceled"
-                    , kv("requestIdentifier", requestIdentifier)
-                    , kv("claimId", claimCanceled.getClaimId()));
+            log.info("Claim_canceled",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("claimId", claimCanceled.getClaimId()));
 
         return claimCanceled;
     }
 
     private void validateAllowedSituation(final Claim claim, final boolean canceledClaimant) {
-        var situationsAllowed = situationsAllowedByType.get(claim.getClaimType());
+        var situationsAllowed = ClaimSituation
+                .getCancelSituationsAllowedByType()
+                .get(claim.getClaimType());
 
         if (!situationsAllowed.contains(claim.getClaimSituation())) {
-            if(canceledClaimant) {
+            if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_SITUATION_NOT_ALLOWED);
             }
 
-            if(ClaimType.PORTABILITY.equals(claim.getClaimType())) {
+            if (ClaimType.PORTABILITY.equals(claim.getClaimType())) {
                 throw new ClaimException(ClaimError.PORTABILITY_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION);
             }
 
@@ -87,38 +76,51 @@ public class ClaimCancelUseCase {
         }
     }
 
-    private void validateAllowedReason(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
+    private void validateAllowedReason(final Claim claim,
+                                       final ClaimCancelReason reason,
+                                       final boolean canceledClaimant) {
         var allowedReasons = Map.of(
-                ClaimType.POSSESSION_CLAIM, ownershipAllowedReasons,
-                ClaimType.PORTABILITY, portabilityAllowedReasons)
-                .get(claim.getClaimType())
-                .get(reason);
+                ClaimType.POSSESSION_CLAIM, ClaimCancelReason.getOwnershipAllowedReasons(),
+                ClaimType.PORTABILITY, ClaimCancelReason.getPortabilityAllowedReasons())
+                    .get(claim.getClaimType())
+                    .get(reason);
 
         if (!allowedReasons.contains(ClaimantType.resolve(canceledClaimant))) {
-            if(canceledClaimant) {
+            if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }
-
             throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
         }
     }
 
-    private void validateExpiredResolutionPeriod(final Claim claim, final ClaimCancelReason reason, final boolean canceledClaimant) {
-        if(!ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)) {
-            return;
+    private void validateExpiredResolutionPeriod(final Claim claim,
+                                                 final ClaimCancelReason reason,
+                                                 final boolean canceledClaimant) {
+        if (ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)
+                && LocalDateTime.now().isBefore(claim.getResolutionThresholdDate())) {
+            if (canceledClaimant) {
+                throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
+            }
+            throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
         }
+    }
 
-        var currentDate = LocalDateTime.now();
+    private boolean isPossessionClaimDonationFraud(Claim claim, ClaimCancelReason reason) {
+        return ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+                && ClaimSituation.CONFIRMED.equals(claim.getClaimSituation())
+                && ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())
+                && ClaimCancelReason.FRAUD.equals(reason);
+    }
 
-        if(currentDate.isAfter(claim.getResolutionThresholdDate())) {
-            return;
+    private void recoveryDonatedByFraudKey(Claim claim) {
+        PixKey pixkey = findPixKeyPort
+                .findPixKey(claim.getKey())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        if (pixkey.getTaxIdWithLeftZeros().equals(claim.getDonorData().getCpfCnpjWithLeftZeros())) {
+            pixkey.setDonatedAutomatically(false);
+            savePixKeyPort.savePixKey(pixkey, Reason.FRAUD);
         }
-
-        if(canceledClaimant) {
-            throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
-        }
-
-        throw new ClaimException(ClaimError.DONOR_CANCEL_INVALID_REASON);
     }
 
 }

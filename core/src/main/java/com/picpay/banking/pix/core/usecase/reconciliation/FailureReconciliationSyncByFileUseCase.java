@@ -1,14 +1,10 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.common.Pagination;
-import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.CreateReason;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.Sync;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.CreatePixKeyPort;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
@@ -27,7 +23,7 @@ public class FailureReconciliationSyncByFileUseCase {
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
-    private final CreatePixKeyPort createPixKeyPort;
+    private final SavePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
 
@@ -73,7 +69,7 @@ public class FailureReconciliationSyncByFileUseCase {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
                     final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
                     var action = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey()).isPresent() ? UPDATED : ADDED;
-                    this.createPixKeyPort.createPixKey(pixKeyToInsert, CreateReason.RECONCILIATION);
+                    this.createPixKeyPort.savePixKey(pixKeyToInsert, Reason.RECONCILIATION);
 
                     this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, action);
                     log.info("Cid {} of key type {} {} in database", cid, keyType,action);
