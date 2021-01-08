@@ -17,12 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +58,15 @@ class CancelInfractionReportPortUseCaseTest {
 
     @Test
     void when_cancelInfractionsWithSuccess_expect_OkWithValidResult() {
+        var infractionReportFindMock = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
+                .infractionReportId(randomUUID().toString())
+                .endToEndId("ID_END_TO_END").ispbCredited("1").ispbDebited("2").reportedBy(ReportedBy.CREDITED_PARTICIPANT)
+                .situation(InfractionReportSituation.OPEN)
+                .infractionType(InfractionType.FRAUD)
+                .analyze(InfractionAnalyze.builder().analyzeResult(InfractionAnalyzeResult.ACCEPTED).details("details").build())
+                .build();
+
+        when(infractionReportFindPort.find(any())).thenReturn(Optional.of(infractionReportFindMock));
         when(cancelInfractionReportPort.cancel(anyString(), anyInt(),anyString())).thenReturn(infractionReport);
 
         var infractionReport = this.cancelInfractionReportUseCase.execute("1", 1, "1");
