@@ -28,13 +28,15 @@ public class CancelInfractionReportUseCase {
         var infractionReport = infractionReportFindPort.find(infractionReportId);
 
         return infractionReport.stream()
-                .filter(inf -> inf.getSituation().equals(InfractionReportSituation.OPEN))
-                .findFirst()
+                .filter(inf -> InfractionReportSituation.OPEN.equals(inf.getSituation()))
+                .findAny()
                 .orElseGet(() -> cancel(infractionReportId, ispb, requestIdentifier));
 
     }
 
     private InfractionReport cancel(final @NonNull String infractionReportId, final @NonNull Integer ispb, final @NonNull String requestIdentifier) {
+        log.info("Infraction_cancelMethod");
+
         var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
         if (infractionReportCanceled != null) {
             log.info("Infraction_canceled"
