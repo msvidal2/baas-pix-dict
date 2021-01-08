@@ -40,7 +40,7 @@ public enum BacenErrorCode {
     InfractionReportAlreadyBeingProcessedForTransaction("InfractionReportAlreadyBeingProcessedForTransaction", "Já existe um relato de infração em andamento para a transação informada."),
     InfractionReportAlreadyProcessedForTransaction("InfractionReportAlreadyProcessedForTransaction", "Já existe um relato de infração fechado para a transação informada."),
     InfractionReportPeriodExpired("InfractionReportPeriodExpired", "O prazo para o relato de infração sobre a transação expirou."),
-    InfractionReportTransactionNotSettled("InfractionReportTransactionNotSettled", "Já existe uma infração aberta e não fechada para essa transação.");
+    InfractionReportTransactionNotSettled("InfractionReportTransactionNotSettled", "A transação definida no relato de infração não foi liquidada.");
 
     private String code;
 
