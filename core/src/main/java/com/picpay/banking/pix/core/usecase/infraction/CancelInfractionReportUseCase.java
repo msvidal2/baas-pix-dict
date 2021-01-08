@@ -3,9 +3,11 @@ package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.exception.InfractionReportError;
+import com.picpay.banking.pix.core.exception.InfractionReportException;
+import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCancelPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.bacen.CancelInfractionReportPort;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +31,12 @@ public class CancelInfractionReportUseCase {
 
         return infractionReport.stream()
                 .filter(inf -> InfractionReportSituation.OPEN.equals(inf.getSituation()))
-                .findAny()
-                .orElseGet(() -> cancel(infractionReportId, ispb, requestIdentifier));
+                .findFirst().map(result -> cancel(infractionReportId, ispb, requestIdentifier))
+                .orElseThrow(() -> new InfractionReportException(InfractionReportError.INFRACTION_REPORT_NOT_FOUND));
 
     }
 
     private InfractionReport cancel(final @NonNull String infractionReportId, final @NonNull Integer ispb, final @NonNull String requestIdentifier) {
-        log.info("Infraction_cancelMethod");
 
         var infractionReportCanceled = cancelInfractionReportPort.cancel(infractionReportId, ispb, requestIdentifier);
         if (infractionReportCanceled != null) {
