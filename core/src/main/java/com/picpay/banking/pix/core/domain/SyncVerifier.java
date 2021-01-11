@@ -2,8 +2,9 @@ package com.picpay.banking.pix.core.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,14 +19,26 @@ public class SyncVerifier {
     private SyncVerifierResultType syncVerifierResultType;
 
     public String calculateVsync(final List<String> contentIdentifiers) {
-        BigInteger vsyncAsBigInteger = new BigInteger(vsync, 16);
+        try {
+            byte[] result = Hex.decodeHex(vsync);
 
-        for (String contentIdentifier : contentIdentifiers) {
-            BigInteger cidAsBigInteger = new BigInteger(contentIdentifier, 16);
-            vsyncAsBigInteger = vsyncAsBigInteger.xor(cidAsBigInteger);
+            for (String contentIdentifier : contentIdentifiers) {
+                result = xor(result, Hex.decodeHex(contentIdentifier));
+            }
+
+            return String.valueOf(Hex.encodeHex(result));
+        } catch (DecoderException e) {
+            throw new IllegalArgumentException("The Cid must be a String that represents a hexadecimal with 64 characters.", e);
         }
+    }
 
-        return vsyncAsBigInteger.toString(16);
+    public byte[] xor(byte[] a, byte[] b) {
+        int length = Math.min(a.length, b.length);
+        byte[] result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) (a[i] ^ b[i]);
+        }
+        return result;
     }
 
     public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult syncVerifierResult) {

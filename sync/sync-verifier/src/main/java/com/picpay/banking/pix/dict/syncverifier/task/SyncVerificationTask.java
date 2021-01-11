@@ -12,6 +12,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -33,16 +36,31 @@ public class SyncVerificationTask implements ApplicationRunner {
     private boolean onlySyncVerifier = false;
 
     @Override
-    public void run(final ApplicationArguments args) {
+    public void run(final ApplicationArguments args) throws InterruptedException {
         JCommander.newBuilder()
             .addObject(this)
             .build()
             .parse(args.getSourceArgs());
 
+        ExecutorService service = Executors.newFixedThreadPool(1);
+
         if (keyType != null) {
-            runByKeyType(keyType);
+            service.execute(() -> runByKeyType(keyType));
         } else {
-            Arrays.stream(KeyType.values()).forEach(this::runByKeyType);
+            Arrays.stream(KeyType.values())
+                .forEach(syncKeyType -> service.execute(() -> runByKeyType(syncKeyType)));
+        }
+
+        service.shutdown();
+        try {
+            if (!service.awaitTermination(10, TimeUnit.MINUTES)) {
+                log.error("SyncApplication took more than 10 minutes and was interrupted");
+                service.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            log.error("SyncApplication was interrupted {}", e.getMessage());
+            service.shutdownNow();
+            throw e;
         }
     }
 
