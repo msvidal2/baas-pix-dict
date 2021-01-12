@@ -25,7 +25,7 @@ public class ListPixKeyUseCase {
         if (pixKeys != null) {
             log.info("PixKey_listed"
                     , kv("requestIdentifier", requestIdentifier)
-                    , kv("size", (pixKeys != null ? pixKeys.size() : 0)));
+                    , kv("size", pixKeys.size()));
         }
 
         return pixKeys;

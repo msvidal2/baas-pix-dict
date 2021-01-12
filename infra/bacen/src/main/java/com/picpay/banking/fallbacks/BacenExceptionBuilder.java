@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
@@ -67,13 +68,18 @@ public class BacenExceptionBuilder {
 
     private BacenException handleHttpErrors(FeignException e) {
         var httpStatus = HttpStatus.resolve(e.status());
+        var reasonPhrase = "";
+
+        if(httpStatus != null) {
+            reasonPhrase = httpStatus.getReasonPhrase();
+        }
 
         var bacenError = BacenErrorBuilder.builder()
                 .withFieldResolver(fieldResolver)
-                .withBody(e.responseBody().get().array())
+                .withBody(e.responseBody().orElse(ByteBuffer.wrap(new byte[] {})).array())
                 .build();
 
-        return new BacenException(httpStatus.getReasonPhrase(), bacenError, httpStatus, e);
+        return new BacenException(reasonPhrase, bacenError, httpStatus, e);
     }
 
 }
