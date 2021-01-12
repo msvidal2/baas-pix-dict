@@ -49,7 +49,7 @@ public class CompleteClaimUseCase {
         return claimCompleted;
     }
 
-    private PixKey createPixKeyForClaimer(final Claim claim, final UUID requestIdentifier){
+    private PixKey createPixKeyForClaimer(final Claim claim, final UUID requestIdentifier) {
         PixKey pixKey = PixKey.builder()
                 .type(claim.getKeyType())
                 .key(claim.getKey())
@@ -69,6 +69,7 @@ public class CompleteClaimUseCase {
                 .requestId(requestIdentifier)
                 .build();
 
+        pixKey.calculateCid();
         return createPixKeyPort.savePixKey(pixKey, Reason.CLIENT_REQUEST);
     }
 }

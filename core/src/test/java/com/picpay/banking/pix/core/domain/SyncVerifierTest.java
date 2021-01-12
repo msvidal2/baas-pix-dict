@@ -144,8 +144,26 @@ class SyncVerifierTest {
     }
 
     @Test
+    void calculates_vsync_with_real_data_email() throws FileNotFoundException {
+        FileReader evpTxt = new FileReader("src/test/java/com/picpay/banking/pix/core/domain/email.txt");
+        Scanner fileReaderScan = new Scanner(evpTxt);
+
+        List<String> contentIdentifiers = new ArrayList<>();
+        while (fileReaderScan.hasNextLine()) {
+            contentIdentifiers.add(fileReaderScan.next());
+        }
+
+        SyncVerifier syncVerifier = SyncVerifier.builder().build();
+
+        String vsync = syncVerifier.calculateVsync(contentIdentifiers);
+
+        String expectedVsync = "067c478e7529a20ae9dba3369f89c7f594e84fb0dbc037d486279a8a0ebb0657";
+        assertThat(vsync).isEqualTo(expectedVsync);
+    }
+
+    @Test
     @DisplayName("Calcula o Vsync usando dados reais coletados via txt")
-    void calculates_vsync_with_real_data() throws FileNotFoundException {
+    void calculates_vsync_with_real_data_evp() throws FileNotFoundException {
         FileReader evpTxt = new FileReader("src/test/java/com/picpay/banking/pix/core/domain/evp.txt");
         Scanner fileReaderScan = new Scanner(evpTxt);
 

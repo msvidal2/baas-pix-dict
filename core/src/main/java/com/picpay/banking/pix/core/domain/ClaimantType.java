@@ -15,7 +15,7 @@ public enum ClaimantType {
         return Stream.of(values())
                 .filter(e -> e.value == value)
                 .findAny()
-                .get();
+                .orElse(null);
     }
 
 }
