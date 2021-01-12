@@ -72,6 +72,8 @@ public class CompleteClaimUseCaseTest {
 
         claimResponseCompleted = Claim.builder()
                 .ispb(22896431)
+                .key("28724534072")
+                .keyType(KeyType.CPF)
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .cpfCnpj("11122233300")
                 .branchNumber("0001")
