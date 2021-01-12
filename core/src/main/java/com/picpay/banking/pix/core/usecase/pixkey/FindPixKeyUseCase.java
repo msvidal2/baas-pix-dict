@@ -35,10 +35,12 @@ public class FindPixKeyUseCase {
             throw new IllegalArgumentException("The [userId] can not be empty");
         }
 
-        var validated = Stream.of(KeyType.values())
-                .anyMatch(type -> validateKey(pixKey, type.getValidator()));
+        var validatedPixKey = Stream.of(KeyType.values())
+                .filter(type -> validateKey(pixKey, type.getValidator()))
+                .findAny()
+                .orElse(null);
 
-        if(validated) {
+        if(validatedPixKey == null) {
             throw new IllegalArgumentException("Invalid key");
         }
 

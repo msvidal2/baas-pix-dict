@@ -100,6 +100,36 @@ class FindPixKeyUseCaseTest {
     }
 
     @Test
+    void when_findWithExistingLocalPixKey_expect_localPixKey() {
+        var pixKeyLocalMockResponse = PixKey.builder()
+                .accountNumber("123456")
+                .accountOpeningDate(LocalDateTime.now())
+                .accountType(AccountType.CHECKING)
+                .branchNumber("0001")
+                .claim(ClaimType.POSSESSION_CLAIM)
+                .taxId("59375566072")
+                .createdAt(LocalDateTime.now())
+                .ispb(5345343)
+                .key("59375566072")
+                .name("Dona Maria")
+                .nameIspb("PicPay Bank")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .startPossessionAt(LocalDateTime.now())
+                .type(KeyType.CPF)
+                .build();
+
+        when(findPixKeyPort.findPixKey(any()))
+                .thenReturn(Optional.of(pixKeyLocalMockResponse));
+
+        assertDoesNotThrow(() -> {
+            var pixKey = useCase.execute(randomUUID, "59375566072", "59375566072");
+
+            assertNotNull(pixKey);
+            assertEquals(pixKeyLocalMockResponse, pixKey);
+        });
+    }
+
+    @Test
     void when_findPixKeyWithoutPixKey_expect_exception() {
         assertThrows(NullPointerException.class, () ->
             useCase.execute(randomUUID, null, "59375566072"));
