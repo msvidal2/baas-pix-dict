@@ -69,6 +69,7 @@ public class CompleteClaimUseCase {
                 .requestId(requestIdentifier)
                 .build();
 
+        pixKey.calculateCid();
         return createPixKeyPort.savePixKey(pixKey, Reason.CLIENT_REQUEST);
     }
 }
