@@ -18,7 +18,7 @@ public class KeyItemValidator {
                 return;
             }
 
-            new IllegalArgumentException("Key must be null or empty");
+            throw new IllegalArgumentException("Key must be null or empty");
         }
 
         KeyValidator<String> keyValidator = Optional.ofNullable(pixKey.getType())
