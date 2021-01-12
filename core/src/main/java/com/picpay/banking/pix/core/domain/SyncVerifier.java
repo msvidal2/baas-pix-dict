@@ -32,7 +32,7 @@ public class SyncVerifier {
         }
     }
 
-    public byte[] xor(byte[] a, byte[] b) {
+    private byte[] xor(byte[] a, byte[] b) {
         int length = Math.min(a.length, b.length);
         byte[] result = new byte[length];
         for (int i = 0; i < length; i++) {
