@@ -94,7 +94,7 @@ class FailureReconciliationSyncUseCaseTest {
     @DisplayName("Criar Key quando ela existe no Bacen e não existe no database")
     void create_when_exists_in_bacen_and_not_exists_in_database() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
-            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("1")));
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("01")));
         when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey(any()))
@@ -125,19 +125,19 @@ class FailureReconciliationSyncUseCaseTest {
     @DisplayName("Atualizar Key quando ela existe no Bacen e existe no database com outros valores")
     void update_when_exists_in_bacen_and_exists_diff_in_database() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
-            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("1")));
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("01")));
         when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey(any()))
-            .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
+            .thenReturn(Optional.of(PixKey.builder().cid("02").build()));
         when(bacenContentIdentifierEventsPort.getPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder()
                 .key("1")
                 .type(KeyType.CPF)
-                .cid("1")
+                .cid("01")
                 .build()));
         when(findPixKeyPort.findPixKey(any()))
-            .thenReturn(Optional.of(PixKey.builder().cid("2").build()));
+            .thenReturn(Optional.of(PixKey.builder().cid("02").build()));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
@@ -158,11 +158,13 @@ class FailureReconciliationSyncUseCaseTest {
     @DisplayName("Remover a Key quando foi removida do Bacen e não foi removida do database")
     void remove_when_exists_in_database_and_not_exists_in_bacen() {
         when(bacenContentIdentifierEventsPort.list(any(), any()))
-            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventRemove("1")));
+            .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventRemove("01")));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
+        when(removePixKeyPort.removeByCid(any()))
+            .thenReturn(true);
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())

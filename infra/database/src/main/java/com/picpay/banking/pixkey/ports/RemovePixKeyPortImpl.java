@@ -33,8 +33,8 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     }
 
     @Override
-    public void removeByCid(final String cid) {
-        pixKeyRepository.deleteByCid(cid);
+    public boolean removeByCid(final String cid) {
+        return pixKeyRepository.deleteByCid(cid) != 0 ;
     }
 
 }
