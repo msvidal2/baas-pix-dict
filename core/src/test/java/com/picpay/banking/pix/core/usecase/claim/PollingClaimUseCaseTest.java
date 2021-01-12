@@ -18,12 +18,12 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PollingOverduePortabilityUseCaseTest {
+class PollingClaimUseCaseTest {
 
     private static final LocalDateTime NOW = LocalDateTime.now();
 
     @InjectMocks
-    private PollingOverduePortabilityUseCase useCase;
+    private PollingClaimUseCase useCase;
 
     @Mock
     private ListClaimsBacenPort listClaimsBacenPort;
