@@ -18,7 +18,7 @@ import static com.picpay.banking.pix.core.domain.ExecutionType.CLAIM_POLLING;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PollingClaimUseCase {
+public class PollingOverduePortabilityUseCase {
 
     private final ListClaimsBacenPort listClaimsBacenPort;
     private final SendToProcessClaimNotificationPort sendToProcessClaimNotificationPort;

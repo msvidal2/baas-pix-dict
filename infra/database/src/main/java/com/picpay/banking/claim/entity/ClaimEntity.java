@@ -107,7 +107,7 @@ public class ClaimEntity {
                 .claimerAccountType(claim.getAccountType())
                 .claimerBranch(claim.getBranchNumber())
                 .claimerName(claim.getOwnerName())
-                .claimerParticipant(claim.getDonorIspb())
+                .claimerParticipant(claim.getIspb())
                 .claimerTaxId(claim.getCpfCnpj())
                 .claimerType(claim.getPersonType())
                 .donorParticipant(claim.getDonorIspb())

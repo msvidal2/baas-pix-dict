@@ -92,7 +92,7 @@ public class OverduePossessionClaimUseCaseTest {
         when(saveClaimPort.saveClaim(any(), isNull())).thenReturn(claimResponse);
         doNothing().when(removePixKeyAutomaticallyPort).remove(anyString(), any());
 
-        assertDoesNotThrow(() -> useCase.execute(claimRequest, null));
+        assertDoesNotThrow(() -> useCase.confirm(claimRequest, null));
 
         verify(confirmClaimPort, times(1)).confirm(any(), any(), isNull());
         verify(saveClaimPort, times(1)).saveClaim(any(), isNull());
@@ -103,7 +103,7 @@ public class OverduePossessionClaimUseCaseTest {
     void when_executeWithBacenFail_expect_exception() {
         when(confirmClaimPort.confirm(any(), any(), anyString())).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> useCase.execute(claimRequest, null));
+        assertThrows(RuntimeException.class, () -> useCase.confirm(claimRequest, null));
 
         verify(confirmClaimPort, times(1)).confirm(any(), any(), isNull());
         verify(saveClaimPort, times(0)).saveClaim(any(), isNull());
