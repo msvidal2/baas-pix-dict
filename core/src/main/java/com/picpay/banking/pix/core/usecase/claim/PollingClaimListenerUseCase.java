@@ -7,6 +7,8 @@ import com.picpay.banking.pix.core.ports.claim.picpay.SendClaimNotificationPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @AllArgsConstructor
 @Slf4j
 public class PollingClaimListenerUseCase {
@@ -25,6 +27,8 @@ public class PollingClaimListenerUseCase {
         saveClaimPort.saveClaim(claim, null);
 
         sendClaimNotificationPort.send(claim);
+
+        log.info("claim_notification_sent_to_topic", kv("claimId", claim.getClaimId()));
     }
 
 }
