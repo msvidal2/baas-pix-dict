@@ -41,7 +41,7 @@ public class OverduePortabilityClaimUseCase {
                 LocalDateTime.now(), limit);
 
         log.debug("Portabilities to cancel found: {}", claimsToCancel.size());
-        claimsToCancel.forEach(c -> sendToCancelPortabilityPort.send(c));
+        claimsToCancel.forEach(sendToCancelPortabilityPort::send);
     }
 
     public void cancelClaim(Claim claim, final String donorParticipant){
