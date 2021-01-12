@@ -42,7 +42,7 @@ public class PollingOverduePossessionClaimUseCase {
     public void executeForClaimer(Integer ispb, Integer limit) {
         List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
                 POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM, CONFIRMED),
+                List.of(CONFIRMED),
                 ispb,
                 limit,
                 DAYS_TO_OVERDUE);
