@@ -16,7 +16,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@ConditionalOnProperty(value = "picpay.polling.claim.notification-dispatcher", havingValue = "true")
+@ConditionalOnProperty(value = "picpay.polling.claim.polling-notification-dispatcher", havingValue = "true")
 public class SendToProcessClaimNotificationPortImpl implements SendToProcessClaimNotificationPort {
 
     private static final String CIRCUIT_BREAKER = "send-to-process-claim-notification";

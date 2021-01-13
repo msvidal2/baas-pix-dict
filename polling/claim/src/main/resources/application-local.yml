@@ -32,7 +32,7 @@ picpay:
       initial-delay: 10000
       fixed-delay: 360000
       limit: 200
-      notification-dispatcher: true
+      polling-notification-dispatcher: true
 management:
   endpoint:
     health:
