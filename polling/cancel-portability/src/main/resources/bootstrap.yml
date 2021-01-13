@@ -8,6 +8,7 @@ spring:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
             name: dict-cancel-portability,dict-bacen,dict-database,dict-messaging
+            request-connect-timeout: 15
     profiles:
         active:
             - ${ENV:local}
