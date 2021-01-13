@@ -9,7 +9,8 @@ package com.picpay.banking.claim.config;
 
 import com.picpay.banking.pix.core.ports.claim.picpay.FindClaimToCancelPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.SendOverduePossessionClaimPort;
-import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimClaimerUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimDonorUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,10 +22,15 @@ import org.springframework.context.annotation.Configuration;
 public class OverduePossessionClaimConfig {
 
     @Bean
-    public PollingOverduePossessionClaimUseCase pollingOverduePossessionClaimUseCase(final FindClaimToCancelPort findClaimToCancelPort,
-                                                                                     final SendOverduePossessionClaimPort sendOverduePossessionClaimPort) {
-        return new PollingOverduePossessionClaimUseCase(findClaimToCancelPort, sendOverduePossessionClaimPort);
+    public PollingOverduePossessionClaimClaimerUseCase pollingOverduePossessionClaimClaimerUseCase(final FindClaimToCancelPort findClaimToCancelPort,
+                                                                                            final SendOverduePossessionClaimPort sendOverduePossessionClaimPort) {
+        return new PollingOverduePossessionClaimClaimerUseCase(findClaimToCancelPort, sendOverduePossessionClaimPort);
     }
 
+    @Bean
+    public PollingOverduePossessionClaimDonorUseCase pollingOverduePossessionClaimDonorUseCase(final FindClaimToCancelPort findClaimToCancelPort,
+                                                                                          final SendOverduePossessionClaimPort sendOverduePossessionClaimPort) {
+        return new PollingOverduePossessionClaimDonorUseCase(findClaimToCancelPort, sendOverduePossessionClaimPort);
+    }
 
 }

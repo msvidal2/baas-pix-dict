@@ -19,14 +19,14 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OverduePossessionClaimUseCaseTest {
+public class OverduePossessionClaimDonorUseCaseTest {
 
     private static final Integer PICPAY_ISPB = 22896431;
 
     private static final LocalDateTime NOW = LocalDateTime.now();
 
     @InjectMocks
-    private OverduePossessionClaimUseCase useCase;
+    private OverduePossessionClaimDonorUseCase useCase;
 
     @Mock
     private ConfirmClaimPort confirmClaimPort;
