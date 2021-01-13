@@ -11,7 +11,8 @@ import com.picpay.banking.pix.core.ports.claim.picpay.SendToCancelPortabilityPor
 import com.picpay.banking.pix.core.ports.execution.ExecutionPort;
 import com.picpay.banking.pix.core.usecase.claim.OverduePortabilityClaimUseCase;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyAutomaticallyPort;
-import com.picpay.banking.pix.core.usecase.claim.OverduePossessionClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.OverduePossessionClaimClaimerUseCase;
+import com.picpay.banking.pix.core.usecase.claim.OverduePossessionClaimDonorUseCase;
 import com.picpay.banking.pix.core.usecase.claim.PollingClaimListenerUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -47,13 +48,16 @@ public class ClaimConfig {
     }
 
     @Bean
-    public OverduePossessionClaimUseCase overduePossessionClaimUseCase(ConfirmClaimPort confirmClaimPort,
-                                                                       CreateClaimPort saveClaimPort,
-                                                                       RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort,
-                                                                       CancelClaimPort cancelClaimPort,
-                                                                       CancelClaimBacenPort cancelClaimBacenPort) {
-        return new OverduePossessionClaimUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort,
-                cancelClaimPort, cancelClaimBacenPort);
+    public OverduePossessionClaimDonorUseCase overduePossessionClaimDonorUseCase(ConfirmClaimPort confirmClaimPort,
+                                                                                 CreateClaimPort saveClaimPort,
+                                                                                 RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort) {
+        return new OverduePossessionClaimDonorUseCase(confirmClaimPort, saveClaimPort, removePixKeyAutomaticallyPort);
+    }
+
+    @Bean
+    public OverduePossessionClaimClaimerUseCase overduePossessionClaimClaimerUseCase(CancelClaimPort cancelClaimPort,
+                                                                                     CancelClaimBacenPort cancelClaimBacenPort) {
+        return new OverduePossessionClaimClaimerUseCase(cancelClaimPort, cancelClaimBacenPort);
     }
 
 }

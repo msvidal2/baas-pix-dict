@@ -10,17 +10,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.ClaimSituation.*;
+import static com.picpay.banking.pix.core.domain.ClaimSituation.AWAITING_CLAIM;
 import static com.picpay.banking.pix.core.domain.ClaimType.POSSESSION_CLAIM;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PollingOverduePossessionClaimUseCase {
+public class PollingOverduePossessionClaimDonorUseCase {
 
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
-
-    private final Integer DAYS_TO_OVERDUE = 37;
 
     public void executeForDonor(Integer ispb, Integer limit) {
         List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsDonor(
@@ -36,23 +34,6 @@ public class PollingOverduePossessionClaimUseCase {
                     claims.forEach(sendOverduePossessionClaimPort::sendToConfirm);
                 },
                 () -> log.info("There are no overdue possession claims to confirm")
-        );
-    }
-
-    public void executeForClaimer(Integer ispb, Integer limit) {
-        List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
-                POSSESSION_CLAIM,
-                List.of(AWAITING_CLAIM, CONFIRMED),
-                ispb,
-                limit,
-                DAYS_TO_OVERDUE);
-
-        Optional.ofNullable(overdueClaims).ifPresentOrElse(
-                claims -> {
-                    log.info("Overdue possession claims to complete found: " + claims.size());
-                    claims.forEach(sendOverduePossessionClaimPort::sendToCancel);
-                },
-                () -> log.info("There are no overdue possession claims to complete")
         );
     }
 

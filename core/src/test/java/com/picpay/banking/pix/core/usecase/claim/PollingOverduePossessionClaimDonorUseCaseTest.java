@@ -17,14 +17,14 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PollingOverduePossessionClaimUseCaseTest {
+public class PollingOverduePossessionClaimDonorUseCaseTest {
 
     private static final Integer PICPAY_ISPB = 22896431;
 
     private static final Integer LIMIT = 200;
 
     @InjectMocks
-    private PollingOverduePossessionClaimUseCase useCase;
+    private PollingOverduePossessionClaimDonorUseCase useCase;
 
     @Mock
     private FindClaimToCancelPort findClaimToCancelPort;
@@ -43,16 +43,6 @@ public class PollingOverduePossessionClaimUseCaseTest {
     }
 
     @Test
-    void when_findClaimWhereIsClaimerPortReturnElements_expect_numElementsSendCalls() {
-        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
-                .thenReturn(List.of(new Claim(), new Claim(), new Claim()));
-
-        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
-
-        verify(sendOverduePossessionClaimPort, times(3)).sendToCancel(any());
-    }
-
-    @Test
     void when_findClaimWhereIsClaimerPortReturnNull_expect_nothingHappens() {
         when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(null);
@@ -63,16 +53,6 @@ public class PollingOverduePossessionClaimUseCaseTest {
     }
 
     @Test
-    void when_findClaimWhereIsDonorPortReturnNull_expect_nothingHappens() {
-        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
-                .thenReturn(null);
-
-        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
-
-        verify(sendOverduePossessionClaimPort, times(0)).sendToCancel(any());
-    }
-
-    @Test
     void when_findClaimWhereIsDonorPortReturnEmpty_expect_nothingHappens() {
         when(findClaimToCancelPort.findClaimToCancelWhereIsDonor(any(), anyList(), anyInt(), any(), anyInt()))
                 .thenReturn(Lists.newArrayList());
@@ -80,16 +60,6 @@ public class PollingOverduePossessionClaimUseCaseTest {
         assertDoesNotThrow(() -> useCase.executeForDonor(PICPAY_ISPB, LIMIT));
 
         verify(sendOverduePossessionClaimPort, times(0)).sendToConfirm(any());
-    }
-
-    @Test
-    void when_findClaimWhereIsClaimerPortReturnEmpty_expect_nothingHappens() {
-        when(findClaimToCancelPort.findClaimToCancelWhereIsClaimer(any(), anyList(), anyInt(), anyInt(), anyInt()))
-                .thenReturn(Lists.newArrayList());
-
-        assertDoesNotThrow(() -> useCase.executeForClaimer(PICPAY_ISPB, LIMIT));
-
-        verify(sendOverduePossessionClaimPort, times(0)).sendToCancel(any());
     }
 
 }
