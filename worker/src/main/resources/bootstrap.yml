@@ -8,6 +8,7 @@ spring:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
             name: dict-infraction-worker,dict-database,dict-bacen,dict-messaging
+            request-connect-timeout: 15
     profiles:
         active:
             - ${ENV:local}

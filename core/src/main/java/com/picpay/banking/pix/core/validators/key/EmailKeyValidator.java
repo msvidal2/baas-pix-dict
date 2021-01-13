@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.validators.key;
 
 public class EmailKeyValidator implements KeyValidator<String> {
 
+    // TODO: mudar a validação de email
     @Override
     public boolean validate(final String email) {
         if(email == null || email.isBlank()) {

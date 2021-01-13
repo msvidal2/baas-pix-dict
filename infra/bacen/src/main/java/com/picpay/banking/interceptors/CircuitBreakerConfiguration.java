@@ -40,6 +40,7 @@ public class CircuitBreakerConfiguration {
         if (e instanceof FeignException) {
             return verifyHttpFeignError((FeignException) e);
         }
+
         return true;
     }
 
@@ -48,11 +49,18 @@ public class CircuitBreakerConfiguration {
             return true;
         }
 
-        switch (HttpStatus.resolve(e.status())) {
+        var httpStatus = HttpStatus.resolve(e.status());
+
+        if(httpStatus == null) {
+            return false;
+        }
+
+        switch (httpStatus) {
             case NOT_FOUND:
             case BAD_REQUEST:
                 return false;
         }
+
         return true;
     }
 

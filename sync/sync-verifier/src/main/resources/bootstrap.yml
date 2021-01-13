@@ -7,6 +7,7 @@ spring:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
             name: dict-sync-verifier,dict-bacen,dict-database
+            request-connect-timeout: 15
     profiles:
         active:
             - ${ENV:local}

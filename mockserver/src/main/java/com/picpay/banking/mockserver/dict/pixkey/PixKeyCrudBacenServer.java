@@ -182,8 +182,7 @@ public class PixKeyCrudBacenServer {
         StringBuilder buffer = new StringBuilder(targetStringLength);
         for (int i = 0; i < targetStringLength; i++) {
             if (random.nextBoolean()) {
-                int randomLimitedInt = leftLimit + (int)
-                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+                int randomLimitedInt = leftLimit + (random.nextInt() * (rightLimit - leftLimit + 1));
                 buffer.append((char) randomLimitedInt);
             } else {
                 buffer.append(random.nextInt(9));
