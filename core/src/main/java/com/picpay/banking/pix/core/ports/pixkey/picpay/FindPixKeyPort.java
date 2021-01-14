@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface FindPixKeyPort {
 
+    Optional<PixKey> findDonatedPixKey(String pixKey);
+
     Optional<PixKey> findPixKey(String pixKey);
 
     List<PixKey> findByAccount(Integer ispb, String branch, String accountNumber, AccountType accountType);

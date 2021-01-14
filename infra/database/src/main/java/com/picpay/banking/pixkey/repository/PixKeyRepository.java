@@ -23,6 +23,8 @@ import java.util.Optional;
 @Repository
 public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity>, PagingAndSortingRepository<PixKeyEntity,PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
 
+    Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyTrue(String key);
+
     Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyFalse(String key);
 
     @Query("SELECT t FROM pix_key t " +
