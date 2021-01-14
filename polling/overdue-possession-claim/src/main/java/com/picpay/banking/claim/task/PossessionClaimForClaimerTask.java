@@ -27,12 +27,12 @@ public class PossessionClaimForClaimerTask implements ApplicationRunner {
     @Value("${picpay.polling.claim.limit}")
     private Integer limit;
 
-    private final PollingOverduePossessionClaimClaimerUseCase pollingOverduePossessionClaimClaimerUseCase;
+    private final PollingOverduePossessionClaimClaimerUseCase useCase;
 
     @Override
     @Trace(dispatcher = true, metricName = "overduePossessionClaimForClaimerTask")
     public void run(final ApplicationArguments args) throws Exception {
-        pollingOverduePossessionClaimClaimerUseCase.executeForClaimer(ispb, limit);
+        useCase.executeForClaimer(ispb, limit);
     }
 
 }
