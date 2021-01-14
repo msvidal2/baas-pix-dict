@@ -11,7 +11,7 @@
         <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 
-    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="LOGSTASH_JSON" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <fieldNames>
                 <version>[ignore]</version>
