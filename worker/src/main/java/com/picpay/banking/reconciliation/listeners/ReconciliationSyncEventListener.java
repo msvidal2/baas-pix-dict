@@ -1,5 +1,6 @@
 package com.picpay.banking.reconciliation.listeners;
 
+import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent;
 import com.picpay.banking.pix.core.usecase.reconciliation.ContentIdentifierEventRecordUseCase;
 import com.picpay.banking.reconciliation.config.ReconciliationEventsInputBinding;
@@ -8,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static com.picpay.banking.pix.core.domain.ReconciliationSyncEvent.ReconciliationSyncOperation.UPDATE;
 
 @Slf4j
 @Component
@@ -23,6 +28,10 @@ public class ReconciliationSyncEventListener {
         //            kv("Headers", message.getHeaders()),
         //            kv("partition", message.getHeaders().get("partition")),
         //            kv("claimId", claim.getClaimId()));
-    }
 
+        message.getPayload().validate();
+
+        List<ReconciliationEvent> domainEvents = message.getPayload().toDomain();
+        contentIdentifierEventRecordUseCase.execute(domainEvents.toArray(ReconciliationEvent[]::new));
+    }
 }
