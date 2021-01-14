@@ -8,10 +8,7 @@
     <springProperty scope="local" name="appender" source="picpay.logging.appender" defaultValue="CONSOLE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
+        <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 
     <appender name="LOGSTASH_JSON" class="ch.qos.logback.core.ConsoleAppender">
@@ -31,10 +28,54 @@
         </encoder>
     </appender>
 
+    <appender name = "ASYNC" class = "com.newrelic.logging.logback.NewRelicAsyncAppender">
+        <appender-ref ref = "CONSOLE" />
+    </appender>
+
     <root level="${level}">
-        <appender-ref ref="${appender}"/>
+        <appender-ref ref="ASYNC"/>
     </root>
 
-    <logger name="com.picpay.social-connection" level="DEBUG"/>
+    <logger name="com.picpay.social-connection" level="INFO"/>
+
+</configuration><?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+<springProperty scope="context" name="service" source="picpay.service.name"/>
+<springProperty scope="local" name="level" source="picpay.logging.level" defaultValue="INFO"/>
+<springProperty scope="local" name="appender" source="picpay.logging.appender" defaultValue="CONSOLE"/>
+
+<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
+</appender>
+
+<appender name="LOGSTASH_JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <fieldNames>
+            <version>[ignore]</version>
+            <levelValue>[ignore]</levelValue>
+            <timestamp>[ignore]</timestamp>
+        </fieldNames>
+        <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
+            <pattern>
+                {
+                "timestamp_app": "%d{yyyy-MM-dd HH:mm:ss.SSS}"
+                }
+            </pattern>
+        </provider>
+    </encoder>
+</appender>
+
+<appender name = "ASYNC" class = "com.newrelic.logging.logback.NewRelicAsyncAppender">
+    <appender-ref ref = "CONSOLE" />
+</appender>
+
+<root level="${level}">
+    <appender-ref ref="ASYNC"/>
+</root>
+
+<logger name="com.picpay.social-connection" level="INFO"/>
 
 </configuration>
