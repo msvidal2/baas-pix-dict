@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.ownershipConfirmReasons;
 import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.portabilityConfirmReasons;
@@ -50,7 +51,7 @@ public class ConfirmClaimUseCase {
 
         Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
         if(ClaimConfirmationReason.CLIENT_REQUEST.equals(reason))
-            claimConfirmed.setCompletionThresholdDate(LocalDateTime.now());
+            claimConfirmed.setCompletionThresholdDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         log.info("Claim_confirmed",
                 kv("requestIdentifier", requestIdentifier),
@@ -92,7 +93,7 @@ public class ConfirmClaimUseCase {
     private void validateResolutionPeriod(Claim claim) {
         if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
                 && ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())
-                && LocalDateTime.now().isBefore(claim.getResolutionThresholdDate())) {
+                && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
                     throw new ClaimException(ClaimError.OWNERSHIP_DEFAULT_OPERATION_RESOLUTION_DATE_NOT_PASSED);
         }
     }

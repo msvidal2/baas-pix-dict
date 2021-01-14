@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class PollingOverduePossessionClaimDonorUseCase {
                 POSSESSION_CLAIM,
                 List.of(AWAITING_CLAIM),
                 ispb,
-                LocalDateTime.now(),
+                LocalDateTime.now(ZoneId.of("UTC")),
                 limit);
 
         Optional.ofNullable(overdueClaims).ifPresentOrElse(

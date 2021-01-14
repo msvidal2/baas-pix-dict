@@ -20,9 +20,9 @@ public class OverduePossessionClaimDonorUseCase {
 
     public void confirm(Claim claim, String requestIdentifier) {
 
-        claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
-
         claim.setConfirmationReason(DEFAULT_RESPONSE);
+
+        claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
 
         log.info("OverduePossessionClaim_confirmed",
                 kv("claimId", claim.getClaimId()));

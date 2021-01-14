@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
@@ -71,7 +72,7 @@ public class PixKeyCrudBacenServer {
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
             .append("<CreateEntryResponse>\n")
             .append("    <Signature></Signature>\n")
-            .append("    <ResponseTime>").append(formatter.format(LocalDateTime.now())).append("</ResponseTime>\n")
+            .append("    <ResponseTime>").append(formatter.format(LocalDateTime.now(ZoneId.of("UTC")))).append("</ResponseTime>\n")
             .append("    <CorrelationId>").append(generateRandomCorrelationId()).append("</CorrelationId>\n")
             .append("    <Entry>\n")
             .append("        <Key>").append(jsonNode.get("Entry").get("Key").asText()).append("</Key>\n")
@@ -89,8 +90,8 @@ public class PixKeyCrudBacenServer {
             .append("            <TaxIdNumber>").append(jsonNode.get("Entry").get("Owner").get("TaxIdNumber").asText()).append("</TaxIdNumber>\n")
             .append("            <Name>").append(jsonNode.get("Entry").get("Owner").get("Name").asText()).append("</Name>\n")
             .append("        </Owner>\n")
-            .append("        <CreationDate>").append(formatter.format(LocalDateTime.now())).append("</CreationDate>\n")
-            .append("        <KeyOwnershipDate>").append(formatter.format(LocalDateTime.now())).append("</KeyOwnershipDate>\n")
+            .append("        <CreationDate>").append(formatter.format(LocalDateTime.now(ZoneId.of("UTC")))).append("</CreationDate>\n")
+            .append("        <KeyOwnershipDate>").append(formatter.format(LocalDateTime.now(ZoneId.of("UTC")))).append("</KeyOwnershipDate>\n")
             .append("    </Entry>\n")
             .append("</CreateEntryResponse>");
         return HttpResponse.response()
@@ -163,7 +164,7 @@ public class PixKeyCrudBacenServer {
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
             .append("<DeleteEntryResponse>\n")
             .append("    <Signature></Signature>\n")
-            .append("    <ResponseTime>").append(formatter.format(LocalDateTime.now())).append("</ResponseTime>\n")
+            .append("    <ResponseTime>").append(formatter.format(LocalDateTime.now(ZoneId.of("UTC")))).append("</ResponseTime>\n")
             .append("    <CorrelationId>").append(generateRandomCorrelationId()).append("</CorrelationId>\n")
             .append("    <Key>+5561988887777</Key>\n")
             .append("</DeleteEntryResponse>");

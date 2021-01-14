@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
@@ -63,9 +64,9 @@ public class CompleteClaimUseCase {
                 .name(claim.getName())
                 .fantasyName(claim.getFantasyName())
                 .correlationId(claim.getCorrelationId())
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now(ZoneId.of("UTC")))
                 .accountOpeningDate(claim.getAccountOpeningDate())
-                .startPossessionAt(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now(ZoneId.of("UTC")))
                 .requestId(requestIdentifier)
                 .build();
 
