@@ -10,6 +10,7 @@ import net.logstash.logback.argument.StructuredArgument;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -47,7 +48,7 @@ public class ErrorDTO {
                 .error(status.getReasonPhrase())
                 .message(message)
                 .fieldErrors(fieldErrors)
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now(ZoneId.of("UTC")))
                 .apiErrorCode(apiErrorCode)
                 .build();
     }

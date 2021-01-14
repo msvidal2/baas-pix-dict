@@ -8,10 +8,7 @@
     <springProperty scope="local" name="appender" source="picpay.logging.appender" defaultValue="CONSOLE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
+        <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 
     <appender name="LOGSTASH_JSON" class="ch.qos.logback.core.ConsoleAppender">
@@ -31,8 +28,14 @@
         </encoder>
     </appender>
 
+    <appender name = "ASYNC" class = "com.newrelic.logging.logback.NewRelicAsyncAppender">
+        <appender-ref ref = "CONSOLE" />
+    </appender>
+
     <root level="${level}">
         <appender-ref ref="${appender}"/>
     </root>
+
+    <logger name="com.picpay.banking" level="INFO"/>
 
 </configuration>

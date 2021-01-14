@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class CompleteClaimValidator {
                 throw new ClaimException(ClaimError.INVALID_CLAIM_COMPLETED_SITUATION);
 
             if(ClaimType.POSSESSION_CLAIM.equals(claimResult.getClaimType()) &&
-                    claimResult.getCompletionThresholdDate().isAfter(LocalDateTime.now()))
+                    claimResult.getCompletionThresholdDate().isAfter(LocalDateTime.now(ZoneId.of("UTC"))))
                 throw new ClaimException(ClaimError.INVALID_CLAIM_COMPLETED_SITUATION);
         });
     }

@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Getter
 @Builder
@@ -64,7 +65,7 @@ public class ContentIdentifierEventEntity {
                 .cid(event.getCid())
                 .key(event.getKey())
                 .keyType(event.getKeyType())
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now(ZoneId.of("UTC")))
                 .eventOnBacenAt(event.getEventOnBacenAt())
                 .type(event.getAction())
                 .build();

@@ -31,6 +31,12 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     private final PixKeyRepository pixKeyRepository;
 
     @Override
+    public Optional<PixKey> findDonatedPixKey(String pixKey) {
+        return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyTrue(pixKey)
+                .map(PixKeyEntity::toPixKey);
+    }
+
+    @Override
     public Optional<PixKey> findPixKey(String pixKey) {
         return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
                 .map(PixKeyEntity::toPixKey);

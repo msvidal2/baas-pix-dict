@@ -18,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * @author Luis Silva
@@ -48,7 +49,7 @@ public class ContentIdentifierActionEntity {
 
     @Column(name = "creation_date")
     @Builder.Default
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDateTime creationDate = LocalDateTime.now(ZoneId.of("UTC"));
 
     @Type(type = "json")
     @Column(name = "content", columnDefinition = "json")
