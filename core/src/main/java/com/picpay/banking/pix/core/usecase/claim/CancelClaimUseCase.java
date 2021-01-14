@@ -118,10 +118,8 @@ public class CancelClaimUseCase {
                 .findDonatedPixKey(claim.getKey())
                 .orElseThrow(ResourceNotFoundException::new);
 
-        if (pixkey.getTaxIdWithLeftZeros().equals(claim.getDonorData().getCpfCnpjWithLeftZeros())) {
-            pixkey.setDonatedAutomatically(false);
-            savePixKeyPort.savePixKey(pixkey, Reason.FRAUD);
-        }
+        pixkey.setDonatedAutomatically(false);
+        savePixKeyPort.savePixKey(pixkey, Reason.FRAUD);
     }
 
 }
