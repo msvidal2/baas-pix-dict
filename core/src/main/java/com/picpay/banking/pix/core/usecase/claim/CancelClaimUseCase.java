@@ -114,7 +114,7 @@ public class CancelClaimUseCase {
 
     private void recoveryDonatedByFraudKey(Claim claim) {
         PixKey pixkey = findPixKeyPort
-                .findPixKey(claim.getKey())
+                .findDonatedPixKey(claim.getKey())
                 .orElseThrow(ResourceNotFoundException::new);
 
         if (pixkey.getTaxIdWithLeftZeros().equals(claim.getDonorData().getCpfCnpjWithLeftZeros())) {
