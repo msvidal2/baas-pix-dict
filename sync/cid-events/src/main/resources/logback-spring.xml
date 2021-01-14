@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <!--
-    https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#_environment_properties-->
+
     <springProperty scope="context" name="service" source="picpay.service.name"/>
-    <springProperty scope="local" name="level" source="picpay.logging.level"
-                    defaultValue="INFO"/>
-    <springProperty scope="local" name="appender" source="picpay.logging.appender"
-                    defaultValue="CONSOLE"/>
+    <springProperty scope="local" name="level" source="picpay.logging.level" defaultValue="INFO"/>
+    <springProperty scope="local" name="appender" source="picpay.logging.appender" defaultValue="CONSOLE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
+        <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 
     <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
@@ -23,17 +18,24 @@
                 <levelValue>[ignore]</levelValue>
                 <timestamp>[ignore]</timestamp>
             </fieldNames>
+            <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
+                <pattern>
+                    {
+                    "timestamp_app": "%d{yyyy-MM-dd HH:mm:ss.SSS}"
+                    }
+                </pattern>
+            </provider>
         </encoder>
+    </appender>
+
+    <appender name = "ASYNC" class = "com.newrelic.logging.logback.NewRelicAsyncAppender">
+        <appender-ref ref = "CONSOLE" />
     </appender>
 
     <root level="${level}">
         <appender-ref ref="${appender}"/>
     </root>
 
-    <springProfile name="test">
-        <root level="ERROR">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-        <logger name="com.picpay.api.common.client.ApiErrorDecoder" level="OFF"/>
-    </springProfile>
+    <logger name="com.picpay.banking" level="INFO"/>
+
 </configuration>
