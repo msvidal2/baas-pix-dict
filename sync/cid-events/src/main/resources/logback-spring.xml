@@ -33,9 +33,9 @@
     </appender>
 
     <root level="${level}">
-        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="${appender}"/>
     </root>
 
-    <logger name="com.picpay.social-connection" level="INFO"/>
+    <logger name="com.picpay.banking" level="INFO"/>
 
 </configuration>
