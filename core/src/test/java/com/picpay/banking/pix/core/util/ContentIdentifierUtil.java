@@ -5,6 +5,7 @@ import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class ContentIdentifierUtil {
 
@@ -12,7 +13,7 @@ public class ContentIdentifierUtil {
         return BacenCidEvent.builder()
             .cid(cid)
             .action(ReconciliationAction.ADDED)
-            .eventOnBacenAt(LocalDateTime.now())
+            .eventOnBacenAt(LocalDateTime.now(ZoneId.of("UTC")))
             .build();
     }
 
@@ -20,7 +21,7 @@ public class ContentIdentifierUtil {
         return BacenCidEvent.builder()
             .cid(cid)
             .action(ReconciliationAction.REMOVED)
-            .eventOnBacenAt(LocalDateTime.now())
+            .eventOnBacenAt(LocalDateTime.now(ZoneId.of("UTC")))
             .build();
     }
 

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -97,7 +98,7 @@ public class CancelClaimUseCase {
                                                  final ClaimCancelReason reason,
                                                  final boolean canceledClaimant) {
         if (ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)
-                && LocalDateTime.now().isBefore(claim.getResolutionThresholdDate())) {
+                && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
             if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
             }

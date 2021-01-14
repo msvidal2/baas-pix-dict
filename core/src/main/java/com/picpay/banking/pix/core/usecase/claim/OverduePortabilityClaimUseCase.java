@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class OverduePortabilityClaimUseCase {
     private void poll(final String ispb, final Integer limit) {
         log.info("Polling database for portabilities to cancel");
         List<Claim> claimsToCancel = findClaimToCancelPort.findClaimToCancelWhereIsDonor(ClaimType.PORTABILITY, List.of(ClaimSituation.AWAITING_CLAIM), Integer.parseInt(ispb),
-                LocalDateTime.now(), limit);
+                LocalDateTime.now(ZoneId.of("UTC")), limit);
 
         log.debug("Portabilities to cancel found: {}", claimsToCancel.size());
         claimsToCancel.forEach(sendToCancelPortabilityPort::send);

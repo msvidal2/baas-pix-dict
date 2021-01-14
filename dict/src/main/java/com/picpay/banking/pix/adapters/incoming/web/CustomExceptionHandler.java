@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class CustomExceptionHandler {
                 .code(BAD_REQUEST.value())
                 .error(BAD_REQUEST.getReasonPhrase())
                 .message(e.getMessage())
-                .timestamp(LocalDateTime.now());
+                .timestamp(LocalDateTime.now(ZoneId.of("UTC")));
 
         if(!Objects.isNull(e.getPixKeyError())) {
             errorBuilder.apiErrorCode(e.getPixKeyError().getCode())
@@ -84,7 +85,7 @@ public class CustomExceptionHandler {
             .code(BAD_REQUEST.value())
             .error(BAD_REQUEST.getReasonPhrase())
             .message(e.getMessage())
-            .timestamp(LocalDateTime.now());
+            .timestamp(LocalDateTime.now(ZoneId.of("UTC")));
 
         if(!Objects.isNull(e.getInfractionReportError())) {
             errorBuilder.apiErrorCode(e.getInfractionReportError().getCode())
