@@ -9,6 +9,7 @@ package com.picpay.banking.claim.task;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimClaimerUseCase;
+import com.picpay.banking.pix.core.usecase.claim.PollingOverduePossessionClaimDonorUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,12 +32,12 @@ public class PossessionClaimForDonorTask implements ApplicationRunner {
     @Value("${picpay.polling.claim.limit}")
     private Integer limit;
 
-    private final PollingOverduePossessionClaimClaimerUseCase pollingOverduePossessionClaimClaimerUseCase;
+    private final PollingOverduePossessionClaimDonorUseCase useCase;
 
     @Override
     @Trace(dispatcher = true, metricName = "overduePossessionClaimForDonorTask")
     public void run(final ApplicationArguments args) throws Exception {
-        pollingOverduePossessionClaimClaimerUseCase.executeForClaimer(ispb, limit);
+        useCase.executeForDonor(ispb, limit);
     }
 
 }
