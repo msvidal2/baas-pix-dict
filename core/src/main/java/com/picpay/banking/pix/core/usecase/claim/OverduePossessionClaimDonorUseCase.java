@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyAutomaticallyPort;
@@ -23,9 +22,8 @@ public class OverduePossessionClaimDonorUseCase {
 
         claim.setConfirmationReason(DEFAULT_RESPONSE);
 
-        //claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
+        claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
 
-        claim.setClaimSituation(ClaimSituation.CONFIRMED);
         log.info("OverduePossessionClaim_confirmed",
                 kv("claimId", claim.getClaimId()));
 
