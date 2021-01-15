@@ -45,7 +45,7 @@ public class CancelClaimUseCase {
 
         var claimCanceled = cancelClaimBacenPort.cancel(claim.getClaimId(), reason, claimCancel.getIspb(), requestIdentifier);
 
-        cancelClaimPort.cancel(claimCanceled, reason, requestIdentifier);
+        cancelClaimPort.cancel(claimCanceled, requestIdentifier);
 
         if (isPossessionClaimDonationFraud(claim, reason)) {
             recoveryDonatedByFraudKey(claim);

@@ -48,8 +48,9 @@ public class OverduePortabilityClaimUseCase {
     public void cancelClaim(Claim claim, final String donorParticipant){
         String requestIdentifier = UUID.randomUUID().toString();
         claim.setClaimSituation(ClaimSituation.CANCELED);
+        claim.setCancelReason(ClaimCancelReason.DEFAULT_RESPONSE);
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);
-        cancelClaimPort.cancel(claim, ClaimCancelReason.DEFAULT_RESPONSE, requestIdentifier);
+        cancelClaimPort.cancel(claim, requestIdentifier);
         log.debug("Portability canceled : " + claim.getClaimId());
     }
 
