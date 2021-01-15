@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.dict.syncverifier.service.SyncVerifierService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class SyncVerificationTask implements ApplicationRunner {
 
     private final SyncVerifierService syncVerifierService;
+    private final ReconciliationLockPort lockPort;
 
     @Parameter(names = "-keyType",
         description = "Type of key used for sync: CPF, CNPJ, EMAIL, CELLPHONE, RANDOM.",
@@ -37,6 +39,15 @@ public class SyncVerificationTask implements ApplicationRunner {
 
     @Override
     public void run(final ApplicationArguments args) throws InterruptedException {
+        try {
+            lockPort.lock();
+            runReconciliation(args);
+        } finally {
+            lockPort.unlock();
+        }
+    }
+
+    private void runReconciliation(final ApplicationArguments args) throws InterruptedException {
         JCommander.newBuilder()
             .addObject(this)
             .build()

@@ -4,6 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(value = "v1/keys", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
+@UnavailableWhileSyncIsActive
 public class PixKeyController {
 
     private final CreatePixKeyUseCase createPixKeyUseCase;
