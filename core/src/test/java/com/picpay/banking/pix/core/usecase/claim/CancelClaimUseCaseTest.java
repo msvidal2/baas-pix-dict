@@ -111,7 +111,7 @@ class CancelClaimUseCaseTest {
 
         verify(findByIdPort).find(anyString());
         verify(cancelClaimBacenPort).cancel(anyString(), any(), anyInt(), anyString());
-        verify(cancelClaimPort).cancel(any(), any(), anyString());
+        verify(cancelClaimPort).cancel(any(), anyString());
     }
 
     @Test

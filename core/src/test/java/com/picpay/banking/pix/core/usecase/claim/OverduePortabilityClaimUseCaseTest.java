@@ -80,7 +80,7 @@ public class OverduePortabilityClaimUseCaseTest {
 
         verify(findClaimToCancelPort, times(1)).findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt());
         verify(cancelClaimBacenPort, times(0)).cancel(anyString(), any(), anyInt(), anyString());
-        verify(cancelClaimPort, times(0)).cancel(any(), any(), anyString());
+        verify(cancelClaimPort, times(0)).cancel(any(), anyString());
         verify(executionPort, times(1)).lastExecution(any());
         verify(sendToCancelPortabilityPort, times(1)).send(any());
     }
@@ -93,7 +93,7 @@ public class OverduePortabilityClaimUseCaseTest {
 
         verify(findClaimToCancelPort, times(1)).findClaimToCancelWhereIsDonor(any(), any(), anyInt(), any(), anyInt());
         verify(cancelClaimBacenPort, times(0)).cancel(anyString(), any(), anyInt(), anyString());
-        verify(cancelClaimPort, times(0)).cancel(any(), any(), anyString());
+        verify(cancelClaimPort, times(0)).cancel(any(), anyString());
         verify(executionPort, times(1)).lastExecution(any());
     }
 }
