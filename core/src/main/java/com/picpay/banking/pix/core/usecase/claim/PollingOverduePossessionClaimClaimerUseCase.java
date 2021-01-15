@@ -20,7 +20,7 @@ public class PollingOverduePossessionClaimClaimerUseCase {
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
 
-    private final Integer DAYS_TO_OVERDUE = 37;
+    private final Integer DAYS_TO_OVERDUE = 23;
 
     public void executeForClaimer(Integer ispb, Integer limit) {
         List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
