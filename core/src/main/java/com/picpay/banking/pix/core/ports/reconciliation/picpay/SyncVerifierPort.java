@@ -11,6 +11,4 @@ public interface SyncVerifierPort {
 
     void save(SyncVerifier syncVerifier);
 
-    String calculateVsync(KeyType keyType);
-
 }

@@ -25,4 +25,4 @@ pix:
       url: http://baas-pix-proxy-bacen.ms.qa
 logging:
   level:
-    com.picpay.banking: DEBUG
+    com.picpay.banking: INFO

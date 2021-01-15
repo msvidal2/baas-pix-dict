@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -14,15 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
-@AllArgsConstructor
 @Slf4j
+@AllArgsConstructor
 public class UpdateAccountPixKeyUseCase {
 
     private SavePixKeyPort savePixKeyPort;
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
     private FindPixKeyPort findPixKeyPort;
-    // FIXME: Em desenvolvimento
-//    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+    private PixKeyEventPort pixKeyEventPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
         @NonNull final PixKey pixKey,
@@ -38,20 +38,20 @@ public class UpdateAccountPixKeyUseCase {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
-        var pixKeyResponse = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+        var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey())
+            .orElseThrow(() -> new UseCaseException(String.format("The key was not found in the database: %s", pixKey.getKey())));
 
-        var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey());
-        oldPixKey.ifPresent(oldPixKeyInDatabase -> pixKeyResponse.keepCreationRequestIdentifier(oldPixKeyInDatabase.getRequestId()));
-        pixKeyResponse.calculateCid();
+        var pixKeyUpdated = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+        pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
+        pixKeyUpdated.calculateCid();
+        var pixKeySaved = savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
+        pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeySaved);
 
-        var pixKeyUpdated = savePixKeyPort.savePixKey(pixKeyResponse, reason.getValue());
-//        reconciliationSyncEventPort.eventByPixKeyUpdated(oldPixKey, pixKeyUpdated);
-
-        log.info("PixKey_updated"
+        log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)
-            , kv("key", pixKeyUpdated.getKey()));
+            , kv("key", pixKeySaved.getKey()));
 
-        return pixKeyUpdated;
+        return pixKeySaved;
     }
 
 }

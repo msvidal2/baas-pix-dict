@@ -67,7 +67,7 @@ public class ReconciliationSyncEvent {
     public enum ReconciliationSyncOperation {
         ADD,
         UPDATE,
-        REMOVE
+        REMOVE;
     }
 
     public List<ReconciliationEvent> toDomain() {
