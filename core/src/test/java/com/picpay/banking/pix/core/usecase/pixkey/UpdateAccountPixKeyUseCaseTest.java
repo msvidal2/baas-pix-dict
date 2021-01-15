@@ -266,7 +266,6 @@ class UpdateAccountPixKeyUseCaseTest {
 
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
-        when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,

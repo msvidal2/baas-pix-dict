@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.Executors;
+
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -44,14 +46,16 @@ public class UpdateAccountPixKeyUseCase {
         var pixKeyUpdated = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
         pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
         pixKeyUpdated.calculateCid();
-        var pixKeySaved = savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
-        pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeySaved);
+
+        var executor = Executors.newFixedThreadPool(2);
+        executor.execute(() -> savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue()));
+        executor.execute(() -> pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeyUpdated));
 
         log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)
-            , kv("key", pixKeySaved.getKey()));
+            , kv("key", pixKeyUpdated.getKey()));
 
-        return pixKeySaved;
+        return pixKeyUpdated;
     }
 
 }

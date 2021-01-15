@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -41,9 +42,10 @@ public class CreatePixKeyUseCase {
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
-        // TODO: Salvar no banco e enviar o evento de forma async
-        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
-        pixKeyEventPort.pixKeyWasCreated(createdPixKey);
+
+        var executor = Executors.newFixedThreadPool(2);
+        executor.execute(() -> savePixKeyPort.savePixKey(createdPixKey, reason.getValue()));
+        executor.execute(() -> pixKeyEventPort.pixKeyWasCreated(createdPixKey));
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
