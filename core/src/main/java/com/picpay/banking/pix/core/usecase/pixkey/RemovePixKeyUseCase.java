@@ -27,7 +27,7 @@ public class RemovePixKeyUseCase {
 
         var removeAt = removePixKeyBacenPort.remove(pixKey, reason).getUpdatedAt();
         removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb())
-            .ifPresent(oldPixKey -> pixKeyEventPort.pixKeyWasDeleted(oldPixKey, removeAt));
+            .ifPresent(oldPixKey -> pixKeyEventPort.pixKeyWasRemoved(oldPixKey.toBuilder().updatedAt(removeAt).build()));
 
         log.info("PixKey_removed: {}, {}",
             kv("requestIdentifier", requestIdentifier),

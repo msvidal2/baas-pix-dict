@@ -88,7 +88,7 @@ public class FailureReconciliationSyncUseCase {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
                     createHistoricAction(pixKeyInDatabase.getCid(), ReconciliationAction.REMOVED);
                     createHistoricAction(pixKey.getCid(), ReconciliationAction.ADDED);
-                    pixKeyEventPort.pixKeyWasEditedByReconciliation(pixKeyInDatabase, pixKey);
+                    pixKeyEventPort.pixKeyWasUpdatedByReconciliation(pixKey);
                 }, () -> {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
                     createHistoricAction(pixKey.getCid(), ReconciliationAction.ADDED);
@@ -113,7 +113,7 @@ public class FailureReconciliationSyncUseCase {
     private void removePixKey(final PixKey pixKey) {
         removePixKeyPort.removeByCid(pixKey.getCid());
         createHistoricAction(pixKey.getCid(), ReconciliationAction.REMOVED);
-        pixKeyEventPort.pixKeyWasDeletedByReconciliation(pixKey, LocalDateTime.now());
+        pixKeyEventPort.pixKeyWasRemovedByReconciliation(pixKey.toBuilder().updatedAt(LocalDateTime.now()).build());
     }
 
 }

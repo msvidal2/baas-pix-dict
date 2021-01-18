@@ -7,17 +7,15 @@ import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.concurrent.Executors;
 
-import static net.logstash.logback.argument.StructuredArguments.e;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RequiredArgsConstructor

@@ -6,14 +6,12 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.Executors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -48,7 +46,7 @@ public class UpdateAccountPixKeyUseCase {
         pixKeyUpdated.calculateCid();
 
         savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
-        pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeyUpdated);
+        pixKeyEventPort.pixKeyWasUpdated(pixKeyUpdated);
 
         log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)

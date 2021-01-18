@@ -1,11 +1,11 @@
 package com.picpay.banking.pixkey.ports;
 
+import com.picpay.banking.pix.core.domain.DictAction;
 import com.picpay.banking.pix.core.domain.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
-import com.picpay.banking.pixkey.dto.PixKeyDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +45,9 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
 
     private void pixKeyWasCreated(final PixKey pixKey, final Map<String, ?> headers) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.ADD)
+            .action(DictAction.ADD)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasCreated(pixKey))
+            .data(pixKey)
             .build();
 
         var message = MessageBuilder
@@ -60,21 +60,21 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey) {
-        pixKeyWasEdited(oldPixKey, newPixKey, new HashMap<>());
+    public void pixKeyWasUpdated(final PixKey pixKey) {
+        pixKeyWasUpdated(pixKey, new HashMap<>());
     }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasEditedByReconciliation(final PixKey oldPixKey, final PixKey newPixKey) {
-        pixKeyWasEdited(oldPixKey, newPixKey, Map.of(SKIP_RECONCILIATION, true));
+    public void pixKeyWasUpdatedByReconciliation(final PixKey pixKey) {
+        pixKeyWasUpdated(pixKey, Map.of(SKIP_RECONCILIATION, true));
     }
 
-    public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey, Map<String, ?> headers) {
+    public void pixKeyWasUpdated(final PixKey pixKey, Map<String, ?> headers) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.EDIT)
+            .action(DictAction.UPDATE)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasEdited(newPixKey, oldPixKey.getCid()))
+            .data(pixKey)
             .build();
 
         var message = MessageBuilder
@@ -86,21 +86,21 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt) {
-        pixKeyWasDeleted(pixKey, removedAt, new HashMap<>());
+    public void pixKeyWasRemoved(final PixKey pixKey) {
+        pixKeyWasRemoved(pixKey, new HashMap<>());
     }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasDeletedByReconciliation(final PixKey pixKey, final LocalDateTime removeAt) {
-        pixKeyWasDeleted(pixKey, removeAt, Map.of(SKIP_RECONCILIATION, true));
+    public void pixKeyWasRemovedByReconciliation(final PixKey pixKey) {
+        pixKeyWasRemoved(pixKey, Map.of(SKIP_RECONCILIATION, true));
     }
 
-    private void pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt, Map<String, ?> headers) {
+    private void pixKeyWasRemoved(final PixKey pixKey, Map<String, ?> headers) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.DELETE)
+            .action(DictAction.REMOVE)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasDeleted(pixKey, removedAt))
+            .data(pixKey)
             .build();
 
         var message = MessageBuilder

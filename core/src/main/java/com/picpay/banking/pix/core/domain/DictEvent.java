@@ -17,19 +17,13 @@ public class DictEvent {
 
     private static final String CONTEXT = "baas_pix";
     private Domain domain;
-    private Action action;
+    private DictAction action;
     private Object data;
 
     public enum Domain {
         KEY,
         CLAIM,
         INFRACTION
-    }
-
-    public enum Action {
-        ADD,
-        EDIT,
-        DELETE
     }
 
 }
