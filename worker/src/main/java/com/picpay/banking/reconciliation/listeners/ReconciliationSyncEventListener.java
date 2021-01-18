@@ -15,6 +15,7 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -25,18 +26,19 @@ public class ReconciliationSyncEventListener {
     private final ContentIdentifierEventRecordUseCase contentIdentifierEventRecordUseCase;
     private final ContentIdentifierEventRepository contentIdentifierEventRepository;
 
-    @StreamListener(value = PixKeyEventOutputBinding.OUTPUT,
-        condition = "headers['SKIP_RECONCILIATION'] == null ? true: headers['SKIP_RECONCILIATION'] == false")
+    @StreamListener(value = PixKeyEventOutputBinding.OUTPUT)
     public void reconciliationSyncEvent(Message<DictEvent> message) {
         var dictEvent = message.getPayload();
         var pixKey = objectMapper.convertValue(dictEvent.getData(), PixKey.class);
 
-        var oldCid = contentIdentifierEventRepository.findFirstByKeyOrderByIdDesc(pixKey.getKey()).getCid();
+        final AtomicReference<String> oldCid = new AtomicReference<>();
+        contentIdentifierEventRepository.findFirstByKeyOrderByIdDesc(pixKey.getKey())
+            .ifPresent(contentIdentifierEventEntity -> oldCid.set(contentIdentifierEventEntity.getCid()));
 
         ReconciliationSyncEvent reconciliationEvent = ReconciliationSyncEvent.builder()
             .key(pixKey.getKey())
             .keyType(pixKey.getType())
-            .oldCid(oldCid)
+            .oldCid(oldCid.get())
             .newCid(pixKey.getCid())
             .action(dictEvent.getAction())
             .happenedAt(pixKey.getUpdatedAt())

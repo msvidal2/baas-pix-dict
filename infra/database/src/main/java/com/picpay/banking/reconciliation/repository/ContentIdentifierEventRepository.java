@@ -17,6 +17,6 @@ public interface ContentIdentifierEventRepository extends CrudRepository<Content
         "and e.eventOnBacenAt > :synchronizedAt")
     List<String> findAllCidsAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedAt);
 
-    ContentIdentifierEventEntity findFirstByKeyOrderByIdDesc(String key);
+    Optional<ContentIdentifierEventEntity> findFirstByKeyOrderByIdDesc(String key);
 
 }
