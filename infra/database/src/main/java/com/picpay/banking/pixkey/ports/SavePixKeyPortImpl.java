@@ -8,6 +8,7 @@ import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,6 +18,7 @@ public class SavePixKeyPortImpl implements SavePixKeyPort {
 
     private final PixKeyRepository repository;
 
+    @Async
     @Override
     public PixKey savePixKey(PixKey pixKey, Reason reason) {
         final PixKeyEntity pixKeyEntity = PixKeyEntity.from(pixKey, reason);
