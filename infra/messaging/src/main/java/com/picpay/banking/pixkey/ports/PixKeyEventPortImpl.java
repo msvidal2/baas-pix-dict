@@ -1,6 +1,6 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pixkey.dto.DictEvent;
+import com.picpay.banking.pix.core.domain.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
@@ -10,12 +10,13 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -26,19 +27,33 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class PixKeyEventPortImpl implements PixKeyEventPort {
 
     private static final String CIRCUIT_BREAKER = "pix-key-send-event";
+    private static final String SKIP_RECONCILIATION = "SKIP_RECONCILIATION";
     private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
 
     @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasCreated(final PixKey pixKey) {
+        pixKeyWasCreated(pixKey, new HashMap<>());
+    }
+
+    @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
+    public void pixKeyWasCreatedByReconciliation(final PixKey pixKey) {
+        pixKeyWasCreated(pixKey, Map.of(SKIP_RECONCILIATION, true));
+    }
+
+    private void pixKeyWasCreated(final PixKey pixKey, final Map<String, ?> headers) {
         var event = DictEvent.builder()
             .action(DictEvent.Action.ADD)
             .domain(DictEvent.Domain.KEY)
             .data(PixKeyDTO.pixKeyWasCreated(pixKey))
             .build();
 
-        var message = MessageBuilder.withPayload(event).build();
+        var message = MessageBuilder
+            .withPayload(event)
+            .copyHeaders(headers)
+            .build();
         pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
@@ -46,25 +61,53 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey) {
+        pixKeyWasEdited(oldPixKey, newPixKey, new HashMap<>());
+    }
+
+    @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
+    public void pixKeyWasEditedByReconciliation(final PixKey oldPixKey, final PixKey newPixKey) {
+        pixKeyWasEdited(oldPixKey, newPixKey, Map.of(SKIP_RECONCILIATION, true));
+    }
+
+    public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey, Map<String, ?> headers) {
         var event = DictEvent.builder()
             .action(DictEvent.Action.EDIT)
             .domain(DictEvent.Domain.KEY)
             .data(PixKeyDTO.pixKeyWasEdited(newPixKey, oldPixKey.getCid()))
             .build();
 
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(new GenericMessage<>(event));
+        var message = MessageBuilder
+            .withPayload(event)
+            .copyHeaders(headers)
+            .build();
+        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt) {
+        pixKeyWasDeleted(pixKey, removedAt, new HashMap<>());
+    }
+
+    @Override
+    @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
+    public void pixKeyWasDeletedByReconciliation(final PixKey pixKey, final LocalDateTime removeAt) {
+        pixKeyWasDeleted(pixKey, removeAt, Map.of(SKIP_RECONCILIATION, true));
+    }
+
+    private void pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt, Map<String, ?> headers) {
         var event = DictEvent.builder()
             .action(DictEvent.Action.DELETE)
             .domain(DictEvent.Domain.KEY)
             .data(PixKeyDTO.pixKeyWasDeleted(pixKey, removedAt))
             .build();
 
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(new GenericMessage<>(event));
+        var message = MessageBuilder
+            .withPayload(event)
+            .copyHeaders(headers)
+            .build();
+        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
     public void fallback(final PixKey pixKey, Exception e) {

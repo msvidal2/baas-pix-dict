@@ -1,13 +1,12 @@
 package com.picpay.banking.reconciliation.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.picpay.banking.pix.core.domain.DictEvent;
 import com.picpay.banking.pix.core.domain.ReconciliationEvent;
 import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent;
+import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent.ReconciliationSyncOperation;
 import com.picpay.banking.pix.core.usecase.reconciliation.ContentIdentifierEventRecordUseCase;
 import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
-import com.picpay.banking.pixkey.dto.DictEvent;
 import com.picpay.banking.pixkey.dto.PixKeyDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -24,54 +22,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReconciliationSyncEventListener {
 
+    private final ObjectMapper objectMapper;
     private final ContentIdentifierEventRecordUseCase contentIdentifierEventRecordUseCase;
-    private static final ObjectMapper mapper = new ObjectMapper();
 
-    @StreamListener(PixKeyEventOutputBinding.TOPIC)
+    @StreamListener(value = PixKeyEventOutputBinding.OUTPUT,
+        condition = "headers['SKIP_RECONCILIATION'] == null ? true: headers['SKIP_RECONCILIATION'] == false")
     public void reconciliationSyncEvent(Message<DictEvent> message) {
-        // TODO: Falta ignorar as mensagens que possuem o PixKey com o atribur reason RECONCILIATION
         var dictEvent = message.getPayload();
+        var pixKeyDTO = objectMapper.convertValue(dictEvent.getData(), PixKeyDTO.class);
 
-        var module = new SimpleModule();
-        module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        mapper.registerModule(module);
-
-        var pixKeyDTO = mapper.convertValue(dictEvent.getData(), PixKeyDTO.class);
-
-        ReconciliationSyncEvent.ReconciliationSyncOperation operation = null;
-        LocalDateTime happenedAt = null;
-        String oldCid = null;
+        ReconciliationSyncEvent reconciliationEvent;
         switch (dictEvent.getAction()) {
             case ADD:
-                operation = ReconciliationSyncEvent.ReconciliationSyncOperation.ADD;
-                happenedAt = pixKeyDTO.getCreatedAt();
-                oldCid = pixKeyDTO.getOldCid();
+                reconciliationEvent = buildEvent(pixKeyDTO, ReconciliationSyncOperation.ADD, pixKeyDTO.getCreatedAt(), pixKeyDTO.getOldCid());
                 break;
             case EDIT:
-                operation = ReconciliationSyncEvent.ReconciliationSyncOperation.UPDATE;
-                happenedAt = pixKeyDTO.getUpdatedAt();
-                oldCid = pixKeyDTO.getOldCid();
+                reconciliationEvent = buildEvent(pixKeyDTO, ReconciliationSyncOperation.UPDATE, pixKeyDTO.getUpdatedAt(), pixKeyDTO.getOldCid());
                 break;
             case DELETE:
-                operation = ReconciliationSyncEvent.ReconciliationSyncOperation.REMOVE;
-                happenedAt = pixKeyDTO.getRemovedAt();
-                oldCid = pixKeyDTO.getCid();
+                reconciliationEvent = buildEvent(pixKeyDTO, ReconciliationSyncOperation.REMOVE, pixKeyDTO.getRemovedAt(), pixKeyDTO.getCid());
                 break;
+            default:
+                throw new UnsupportedOperationException("The action attribute is required");
         }
-
-        var reconciliationEvent = ReconciliationSyncEvent.builder()
-            .key(pixKeyDTO.getKey())
-            .keyType(pixKeyDTO.getType())
-            .operation(operation)
-            .newCid(pixKeyDTO.getCid())
-            .oldCid(oldCid)
-            .happenedAt(happenedAt)
-            .build();
 
         reconciliationEvent.validate();
 
         List<ReconciliationEvent> domainEvents = reconciliationEvent.toDomain();
         contentIdentifierEventRecordUseCase.execute(domainEvents.toArray(ReconciliationEvent[]::new));
+    }
+
+    private ReconciliationSyncEvent buildEvent(PixKeyDTO pixKeyDTO, ReconciliationSyncOperation operation, LocalDateTime happenedAt, String oldCid) {
+        return ReconciliationSyncEvent.builder()
+            .key(pixKeyDTO.getKey())
+            .keyType(pixKeyDTO.getType())
+            .newCid(pixKeyDTO.getCid())
+            .operation(operation)
+            .happenedAt(happenedAt)
+            .oldCid(oldCid)
+            .build();
     }
 
 }

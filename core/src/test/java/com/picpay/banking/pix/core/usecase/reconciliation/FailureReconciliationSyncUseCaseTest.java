@@ -166,6 +166,7 @@ class FailureReconciliationSyncUseCaseTest {
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
+        when(findPixKeyPort.findByCid(any())).thenReturn(Optional.of(PixKey.builder().build()));
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())

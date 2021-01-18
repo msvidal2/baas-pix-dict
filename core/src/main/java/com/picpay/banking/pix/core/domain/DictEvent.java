@@ -1,6 +1,5 @@
-package com.picpay.banking.pixkey.dto;
+package com.picpay.banking.pix.core.domain;
 
-import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +29,7 @@ public class DictEvent {
     public enum Action {
         ADD,
         EDIT,
-        DELETE;
+        DELETE
     }
 
 }
