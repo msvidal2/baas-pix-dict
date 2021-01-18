@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
-    private static final String LOG_START_TIME = "startCurrentTimeMillis";
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final FindPixKeyPort findPixKeyPort;
     private final SyncVerifierPort syncVerifierPort;
@@ -46,9 +43,8 @@ public class FailureReconciliationSyncUseCase {
 
     public void execute(SyncVerifierHistoric syncVerifierHistoric) {
         this.syncVerifierHistoric = syncVerifierHistoric;
-        long startCurrentTimeMillis = System.currentTimeMillis();
-        log.info("FailureReconciliationSync_started: {}, {}",
-            kv(LOG_START_TIME, startCurrentTimeMillis),
+        var startCurrentTimeMillis = System.currentTimeMillis();
+        log.info("FailureReconciliationSync_started: {}",
             kv("vsyncHistoric", syncVerifierHistoric));
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
@@ -61,14 +57,14 @@ public class FailureReconciliationSyncUseCase {
             if (ReconciliationAction.ADDED.equals(bacenCidEvent.getAction())) {
                 if (pixKeyInDatabase.isEmpty()) createOrUpdatePixKey(bacenCidEvent);
             } else {
-                removePixKey(pixKeyInDatabase);
+                pixKeyInDatabase.ifPresent(this::removePixKey);
             }
         });
 
         performSyncVerifier(syncVerifierHistoric, bacenEvents);
 
         log.info("FailureReconciliationSync_ended: {}, {}",
-            kv(LOG_START_TIME, startCurrentTimeMillis),
+            kv("vsyncHistoric", syncVerifierHistoric),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
@@ -90,36 +86,34 @@ public class FailureReconciliationSyncUseCase {
             .ifPresent(pixKey -> findPixKeyPort.findPixKey(pixKey.getKey()).ifPresentOrElse(
                 pixKeyInDatabase -> {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
-                    createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
-                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                    pixKeyEventPort.pixKeyWasEdited(pixKeyInDatabase, pixKey);
+                    createHistoricAction(pixKeyInDatabase.getCid(), ReconciliationAction.REMOVED);
+                    createHistoricAction(pixKey.getCid(), ReconciliationAction.ADDED);
+                    pixKeyEventPort.pixKeyWasEditedByReconciliation(pixKeyInDatabase, pixKey);
                 }, () -> {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
-                    createHistoricAction(pixKey.getCid(), ActionType.ADD);
-                    pixKeyEventPort.pixKeyWasCreated(pixKey);
+                    createHistoricAction(pixKey.getCid(), ReconciliationAction.ADDED);
+                    pixKeyEventPort.pixKeyWasCreatedByReconciliation(pixKey);
                 }));
     }
 
-    private void createHistoricAction(final String cid, final ActionType actionType) {
+    private void createHistoricAction(final String cid, final ReconciliationAction action) {
         var historicAction = SyncVerifierHistoricAction.builder()
             .cid(cid)
-            .actionType(actionType)
+            .action(action)
             .syncVerifierHistoric(syncVerifierHistoric)
             .build();
         syncVerifierHistoricActionPort.save(historicAction);
 
         log.info("FailureReconciliationSync_changePixKey: {}, {}, {}",
             kv("cid", cid),
-            kv("actionType", actionType),
+            kv("action", action),
             kv("vsyncHistoric", syncVerifierHistoric));
     }
 
-    private void removePixKey(final Optional<PixKey> pixKey) {
-        pixKey.ifPresent(pixKeyInDatabase -> {
-            removePixKeyPort.removeByCid(pixKeyInDatabase.getCid());
-            createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
-            pixKeyEventPort.pixKeyWasDeleted(pixKeyInDatabase, LocalDateTime.now());
-        });
+    private void removePixKey(final PixKey pixKey) {
+        removePixKeyPort.removeByCid(pixKey.getCid());
+        createHistoricAction(pixKey.getCid(), ReconciliationAction.REMOVED);
+        pixKeyEventPort.pixKeyWasDeletedByReconciliation(pixKey, LocalDateTime.now());
     }
 
 }

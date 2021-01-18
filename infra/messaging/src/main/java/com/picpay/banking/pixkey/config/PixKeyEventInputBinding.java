@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface PixKeyEventInputBinding {
 
-    String TOPIC = "keys-changed";
+    String INPUT = "keys-changed";
 
-    @Input(TOPIC)
+    @Input(INPUT)
     SubscribableChannel receivePixKeyWasChanged();
 
 }
