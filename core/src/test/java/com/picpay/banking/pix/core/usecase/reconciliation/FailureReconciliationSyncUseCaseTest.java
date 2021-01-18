@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierResult;
 import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
@@ -51,6 +52,8 @@ class FailureReconciliationSyncUseCaseTest {
     private SavePixKeyPort savePixKeyPort;
     @Mock
     private RemovePixKeyPort removePixKeyPort;
+    @Mock
+    private PixKeyEventPort pixKeyEventPort;
 
     private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
 
@@ -58,7 +61,7 @@ class FailureReconciliationSyncUseCaseTest {
     private void beforeEach() {
         failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort,
             findPixKeyPort, syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort,
-            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort);
+            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort, pixKeyEventPort);
     }
 
     @Test
@@ -164,7 +167,7 @@ class FailureReconciliationSyncUseCaseTest {
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
         when(removePixKeyPort.removeByCid(any()))
-            .thenReturn(true);
+            .thenReturn(PixKey.builder().build());
 
         var syncVerifierHistoric = SyncVerifierHistoric.builder()
             .synchronizedStart(LocalDateTime.now())

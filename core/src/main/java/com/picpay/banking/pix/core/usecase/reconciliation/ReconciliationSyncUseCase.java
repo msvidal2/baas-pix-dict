@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -35,12 +36,10 @@ public class ReconciliationSyncUseCase {
                 .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
                 .build());
 
-        // FIXME: Alterado comportamento temporariamente até que os eventos cheguem via kafka
-//        List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
-//            syncVerifier.getKeyType(),
-//            syncVerifier.getSynchronizedAt());
-//        var vsyncCurrent = syncVerifier.calculateVsync(cids);
-        var vsyncCurrent = syncVerifierPort.calculateVsync(keyType);
+        List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
+            syncVerifier.getKeyType(),
+            syncVerifier.getSynchronizedAt());
+        var vsyncCurrent = syncVerifier.calculateVsync(cids);
 
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
         var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);

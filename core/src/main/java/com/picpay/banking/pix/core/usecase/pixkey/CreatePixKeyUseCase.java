@@ -9,12 +9,13 @@ import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -26,8 +27,7 @@ public class CreatePixKeyUseCase {
     private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-    // FIXME: Esta porta esta em desenvolvimento
-//    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
+    private final PixKeyEventPort pixKeyEventPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -42,8 +42,10 @@ public class CreatePixKeyUseCase {
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
-        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
-//        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
+
+        var executor = Executors.newFixedThreadPool(2);
+        executor.execute(() -> savePixKeyPort.savePixKey(createdPixKey, reason.getValue()));
+        executor.execute(() -> pixKeyEventPort.pixKeyWasCreated(createdPixKey));
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)

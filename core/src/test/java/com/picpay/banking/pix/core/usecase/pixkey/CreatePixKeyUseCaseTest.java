@@ -6,7 +6,7 @@ import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class CreatePixKeyUseCaseTest {
     private FindOpenClaimByKeyPort findOpenClaimByKeyPort;
 
     @Mock
-    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+    private PixKeyEventPort pixKeyEventPort;
 
     private PixKey pixKey;
 

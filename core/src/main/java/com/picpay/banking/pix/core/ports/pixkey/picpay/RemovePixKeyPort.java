@@ -9,6 +9,6 @@ public interface RemovePixKeyPort {
 
     Optional<PixKey> remove(String pixKey, Integer participant);
 
-    boolean removeByCid(String cid);
+    PixKey removeByCid(String cid);
 
 }

@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
@@ -18,6 +19,7 @@ import com.picpay.banking.pix.core.validators.reconciliation.VsyncHistoricValida
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,7 @@ public class FailureReconciliationSyncUseCase {
     private final SyncVerifierHistoricActionPort syncVerifierHistoricActionPort;
     private final SavePixKeyPort savePixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
+    private final PixKeyEventPort pixKeyEventPort;
 
     private SyncVerifierHistoric syncVerifierHistoric;
 
@@ -87,9 +90,11 @@ public class FailureReconciliationSyncUseCase {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
                     createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
                     createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                    pixKeyEventPort.pixKeyWasEdited(pixKeyInDatabase, pixKey);
                 }, () -> {
                     savePixKeyPort.savePixKey(pixKey, Reason.RECONCILIATION);
                     createHistoricAction(pixKey.getCid(), ActionType.ADD);
+                    pixKeyEventPort.pixKeyWasCreated(pixKey);
                 }));
     }
 
@@ -108,9 +113,10 @@ public class FailureReconciliationSyncUseCase {
     }
 
     private void removePixKey(final String cid) {
-        var isRemoved = removePixKeyPort.removeByCid(cid);
-        if (isRemoved) {
+        var pixKeyRemoved = removePixKeyPort.removeByCid(cid);
+        if (pixKeyRemoved != null) {
             createHistoricAction(cid, ActionType.REMOVE);
+            pixKeyEventPort.pixKeyWasDeleted(pixKeyRemoved, LocalDateTime.now());
         }
     }
 
