@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     private static final String CIRCUIT_BREAKER = "pix-key-send-event";
     private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
 
+    @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasCreated(final PixKey pixKey) {
@@ -40,6 +42,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
+    @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey) {

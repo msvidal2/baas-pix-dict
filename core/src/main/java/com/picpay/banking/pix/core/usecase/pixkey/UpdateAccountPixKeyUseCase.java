@@ -47,9 +47,8 @@ public class UpdateAccountPixKeyUseCase {
         pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
         pixKeyUpdated.calculateCid();
 
-        var executor = Executors.newFixedThreadPool(2);
-        executor.execute(() -> savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue()));
-        executor.execute(() -> pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeyUpdated));
+        savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
+        pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeyUpdated);
 
         log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)

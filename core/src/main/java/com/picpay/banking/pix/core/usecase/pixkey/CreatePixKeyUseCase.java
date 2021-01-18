@@ -44,9 +44,8 @@ public class CreatePixKeyUseCase {
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
 
-        var executor = Executors.newFixedThreadPool(2);
-        executor.execute(() -> savePixKeyPort.savePixKey(createdPixKey, reason.getValue()));
-        executor.execute(() -> pixKeyEventPort.pixKeyWasCreated(createdPixKey));
+        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+        pixKeyEventPort.pixKeyWasCreated(createdPixKey);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
