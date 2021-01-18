@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,11 +57,11 @@ public class FailureReconciliationSyncUseCase {
             syncVerifierHistoric.getSynchronizedStart());
         Set<BacenCidEvent> latestBacenEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
         latestBacenEvents.forEach(bacenCidEvent -> {
+            var pixKeyInDatabase = findPixKeyPort.findByCid(bacenCidEvent.getCid());
             if (ReconciliationAction.ADDED.equals(bacenCidEvent.getAction())) {
-                var pixKeyInDatabase = findPixKeyPort.findByCid(bacenCidEvent.getCid());
                 if (pixKeyInDatabase.isEmpty()) createOrUpdatePixKey(bacenCidEvent);
             } else {
-                removePixKey(bacenCidEvent.getCid());
+                removePixKey(pixKeyInDatabase);
             }
         });
 
@@ -112,12 +114,12 @@ public class FailureReconciliationSyncUseCase {
             kv("vsyncHistoric", syncVerifierHistoric));
     }
 
-    private void removePixKey(final String cid) {
-        var pixKeyRemoved = removePixKeyPort.removeByCid(cid);
-        if (pixKeyRemoved != null) {
-            createHistoricAction(cid, ActionType.REMOVE);
-            pixKeyEventPort.pixKeyWasDeleted(pixKeyRemoved, LocalDateTime.now());
-        }
+    private void removePixKey(final Optional<PixKey> pixKey) {
+        pixKey.ifPresent(pixKeyInDatabase -> {
+            removePixKeyPort.removeByCid(pixKeyInDatabase.getCid());
+            createHistoricAction(pixKeyInDatabase.getCid(), ActionType.REMOVE);
+            pixKeyEventPort.pixKeyWasDeleted(pixKeyInDatabase, LocalDateTime.now());
+        });
     }
 
 }
