@@ -4,6 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.RequestSyncFileUseCase;
+import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "v1/sync", produces = "application/json")
 @RequiredArgsConstructor
 @Slf4j
+@UnavailableWhileSyncIsActive
 public class ReconciliationController {
 
     private final RequestSyncFileUseCase requestSyncFileUseCase;

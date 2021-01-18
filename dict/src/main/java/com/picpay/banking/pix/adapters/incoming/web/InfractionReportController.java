@@ -15,6 +15,7 @@ import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseC
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
+import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = "/v1/infraction-report", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
+@UnavailableWhileSyncIsActive
 public class InfractionReportController {
 
     private final FindInfractionReportUseCase findInfractionReportUseCase;

@@ -1,8 +1,9 @@
 package com.picpay.banking.pix.sync.file.task;
 
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,20 +16,21 @@ import java.util.Arrays;
  * @version 1.0 10/12/2020
  */
 @Component
+@RequiredArgsConstructor
 public class SyncFileTask implements ApplicationRunner {
 
-    private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
-
-    public SyncFileTask(final FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase) {
-        this.failureReconciliationSyncByFileUseCase = failureReconciliationSyncByFileUseCase;
-    }
+    private final FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
+    private final ReconciliationLockPort lockPort;
 
     @Override
     @Transactional
     public void run(final ApplicationArguments args) throws Exception {
-        Arrays.stream(KeyType.values()).forEach(keyType -> {
-            this.failureReconciliationSyncByFileUseCase.execute(keyType);
-        });
+        try {
+            lockPort.lock();
+            Arrays.stream(KeyType.values()).forEach(this.failureReconciliationSyncByFileUseCase::execute);
+        } finally {
+            lockPort.unlock();
+        }
     }
 
 }

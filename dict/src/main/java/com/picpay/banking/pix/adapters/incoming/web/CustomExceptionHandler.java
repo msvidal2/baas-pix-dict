@@ -3,6 +3,7 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.adapters.incoming.web.dto.ErrorDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.FieldErrorDTO;
+import com.picpay.banking.pix.core.exception.UnavailableWhileSyncIsRunningException;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
@@ -28,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @Slf4j
 @RestControllerAdvice
@@ -175,6 +177,12 @@ public class CustomExceptionHandler {
         log.error("error_resourceNotFoundException", errorDTO.toLogJson(ex));
 
         return errorDTO;
+    }
+
+    @ExceptionHandler({UnavailableWhileSyncIsRunningException.class})
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    public ErrorDTO handleSyncLockedException(final UnavailableWhileSyncIsRunningException ex) {
+        return ErrorDTO.from(SERVICE_UNAVAILABLE, ex.getMessage(), String.valueOf(SERVICE_UNAVAILABLE.value()));
     }
 
 }

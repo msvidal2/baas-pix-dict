@@ -3,7 +3,6 @@ package com.picpay.banking.claim.ports;
 import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.repository.ClaimRepository;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimCancelReason;
 import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ public class CancelClaimPortImpl implements CancelClaimPort  {
     private final ClaimRepository repository;
 
     @Override
-    public void cancel(Claim claim, ClaimCancelReason reason, String requestIdentifier) {
+    public void cancel(Claim claim, String requestIdentifier) {
         try {
             repository.save(ClaimEntity.from(claim));
 

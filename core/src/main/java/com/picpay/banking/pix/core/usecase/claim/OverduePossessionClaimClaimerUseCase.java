@@ -22,8 +22,9 @@ public class OverduePossessionClaimClaimerUseCase {
         cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, claim.getIspb(), requestIdentifier);
 
         claim.setClaimSituation(ClaimSituation.CANCELED);
+        claim.setCancelReason(ClaimCancelReason.DEFAULT_RESPONSE);
 
-        cancelClaimPort.cancel(claim, ClaimCancelReason.DEFAULT_RESPONSE, requestIdentifier);
+        cancelClaimPort.cancel(claim, requestIdentifier);
 
         log.info("OverduePossessionClaim_canceled",
                 kv("claimId", claim.getClaimId()));

@@ -23,6 +23,10 @@ pix:
   bacen:
     dict:
       url: http://baas-pix-proxy-bacen.ms.qa
+      sync:
+        lockKey: dict::bacen::sync:active
+        lockDuration: 3
+
 logging:
   level:
     com.picpay.banking: INFO

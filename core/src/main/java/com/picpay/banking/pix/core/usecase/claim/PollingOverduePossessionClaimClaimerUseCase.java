@@ -20,7 +20,7 @@ public class PollingOverduePossessionClaimClaimerUseCase {
     private final FindClaimToCancelPort findClaimToCancelPort;
     private final SendOverduePossessionClaimPort sendOverduePossessionClaimPort;
 
-    private final Integer DAYS_TO_OVERDUE = 37;
+    private final Integer DAYS_TO_OVERDUE = 23;
 
     public void executeForClaimer(Integer ispb, Integer limit) {
         List<Claim> overdueClaims = findClaimToCancelPort.findClaimToCancelWhereIsClaimer(
@@ -32,10 +32,10 @@ public class PollingOverduePossessionClaimClaimerUseCase {
 
         Optional.ofNullable(overdueClaims).ifPresentOrElse(
                 claims -> {
-                    log.info("Overdue possession claims to complete found: " + claims.size());
+                    log.info("Overdue possession claims to cancel found: " + claims.size());
                     claims.forEach(sendOverduePossessionClaimPort::sendToCancel);
                 },
-                () -> log.info("There are no overdue possession claims to complete")
+                () -> log.info("There are no overdue possession claims to cancel")
         );
     }
 
