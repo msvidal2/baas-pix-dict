@@ -42,14 +42,36 @@ public class CreatePixKeyUseCase {
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
 
-        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
-        pixKeyEventPort.pixKeyWasCreated(createdPixKey);
+        save(reason, createdPixKey, requestIdentifier);
+        sendEvent(createdPixKey, requestIdentifier);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", createdPixKey.getKey()));
 
         return createdPixKey;
+    }
+
+    private void save(CreateReason reason, PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+        } catch (Exception e) {
+            log.error("PixKey_create_saveError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", createdPixKey.getKey()),
+                    kv("exception", e));
+        }
+    }
+
+    private void sendEvent(PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            pixKeyEventPort.pixKeyWasCreated(createdPixKey);
+        } catch (Exception e) {
+            log.error("PixKey_create_eventError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", createdPixKey.getKey()),
+                    kv("exception", e));
+        }
     }
 
     private List<PixKey> validateNumberKeys(final PixKey pixKey) {

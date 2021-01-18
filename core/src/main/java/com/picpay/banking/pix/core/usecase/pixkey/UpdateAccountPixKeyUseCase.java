@@ -45,14 +45,36 @@ public class UpdateAccountPixKeyUseCase {
         pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
         pixKeyUpdated.calculateCid();
 
-        savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
-        pixKeyEventPort.pixKeyWasUpdated(pixKeyUpdated);
+        save(requestIdentifier, reason, pixKeyUpdated);
+        sendEvent(requestIdentifier, pixKeyUpdated);
 
         log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", pixKeyUpdated.getKey()));
 
         return pixKeyUpdated;
+    }
+
+    private void save(String requestIdentifier, UpdateReason reason, PixKey pixKeyUpdated) {
+        try {
+            savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
+        } catch (Exception e) {
+            log.error("PixKey_update_saveError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", pixKeyUpdated.getKey()),
+                    kv("exception", e));
+        }
+    }
+
+    private void sendEvent(String requestIdentifier, PixKey pixKeyUpdated) {
+        try {
+            pixKeyEventPort.pixKeyWasUpdated(pixKeyUpdated);
+        } catch (Exception e) {
+            log.error("PixKey_update_eventError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", pixKeyUpdated.getKey()),
+                    kv("exception", e));
+        }
     }
 
 }

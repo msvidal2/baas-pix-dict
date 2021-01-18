@@ -30,7 +30,6 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     private static final String SKIP_RECONCILIATION = "SKIP_RECONCILIATION";
     private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
 
-    @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasCreated(final PixKey pixKey) {
@@ -57,7 +56,6 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
-    @Async
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasUpdated(final PixKey pixKey) {
