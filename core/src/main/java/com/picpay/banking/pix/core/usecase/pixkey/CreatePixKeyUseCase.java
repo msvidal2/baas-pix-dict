@@ -7,15 +7,14 @@ import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -43,15 +42,36 @@ public class CreatePixKeyUseCase {
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
 
-        var executor = Executors.newFixedThreadPool(2);
-        executor.execute(() -> savePixKeyPort.savePixKey(createdPixKey, reason.getValue()));
-        executor.execute(() -> pixKeyEventPort.pixKeyWasCreated(createdPixKey));
+        save(reason, createdPixKey, requestIdentifier);
+        sendEvent(createdPixKey, requestIdentifier);
 
         log.info("PixKey_created"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", createdPixKey.getKey()));
 
         return createdPixKey;
+    }
+
+    private void save(CreateReason reason, PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+        } catch (Exception e) {
+            log.error("PixKey_create_saveError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", createdPixKey.getKey()),
+                    kv("exception", e));
+        }
+    }
+
+    private void sendEvent(PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            pixKeyEventPort.pixKeyWasCreated(createdPixKey);
+        } catch (Exception e) {
+            log.error("PixKey_create_eventError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", createdPixKey.getKey()),
+                    kv("exception", e));
+        }
     }
 
     private List<PixKey> validateNumberKeys(final PixKey pixKey) {

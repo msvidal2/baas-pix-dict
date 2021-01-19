@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.entity;
 
+import com.picpay.banking.pix.core.domain.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction.ActionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class SyncVerifierHistoricActionEntity {
 
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
-    private ActionType action;
+    private ReconciliationAction action;
 
     @JoinColumn(name = "id_sync_verifier_historic", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +47,7 @@ public class SyncVerifierHistoricActionEntity {
         return SyncVerifierHistoricActionEntity.builder()
             .idSyncVerifierHistoric(syncVerifierHistoricAction.getSyncVerifierHistoric().getId())
             .cid(syncVerifierHistoricAction.getCid())
-            .action(syncVerifierHistoricAction.getActionType())
+            .action(syncVerifierHistoricAction.getAction())
             .build();
     }
 

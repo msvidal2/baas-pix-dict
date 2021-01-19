@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SyncVerifierApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SyncVerifierApplication.class, args);
+        var ctx = SpringApplication.run(SyncVerifierApplication.class, args);
+        System.exit(SpringApplication.exit(ctx));
     }
 
 }

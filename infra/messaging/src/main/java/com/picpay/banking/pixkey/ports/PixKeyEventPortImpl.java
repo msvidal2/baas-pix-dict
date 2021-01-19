@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pixkey.dto.DictEvent;
+import com.picpay.banking.pix.core.domain.DictAction;
+import com.picpay.banking.pix.core.domain.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
@@ -10,7 +11,6 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -31,37 +31,45 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void pixKeyWasCreated(final PixKey pixKey) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.ADD)
+            .action(DictAction.ADD)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasCreated(pixKey))
+            .data(PixKeyDTO.from(pixKey))
             .build();
 
-        var message = MessageBuilder.withPayload(event).build();
+        var message = MessageBuilder
+            .withPayload(event)
+            .build();
         pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasEdited(final PixKey oldPixKey, final PixKey newPixKey) {
+    public void pixKeyWasUpdated(final PixKey pixKey) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.EDIT)
+            .action(DictAction.UPDATE)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasEdited(newPixKey, oldPixKey.getCid()))
+            .data(PixKeyDTO.from(pixKey))
             .build();
 
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(new GenericMessage<>(event));
+        var message = MessageBuilder
+            .withPayload(event)
+            .build();
+        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
-    public void pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt) {
+    public void pixKeyWasRemoved(final PixKey pixKey) {
         var event = DictEvent.builder()
-            .action(DictEvent.Action.DELETE)
+            .action(DictAction.REMOVE)
             .domain(DictEvent.Domain.KEY)
-            .data(PixKeyDTO.pixKeyWasDeleted(pixKey, removedAt))
+            .data(PixKeyDTO.from(pixKey))
             .build();
 
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(new GenericMessage<>(event));
+        var message = MessageBuilder
+            .withPayload(event)
+            .build();
+        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
     }
 
     public void fallback(final PixKey pixKey, Exception e) {

@@ -44,22 +44,8 @@ public class PixKeyDTO {
     private String cid;
     private UUID requestId;
     private boolean donatedAutomatically;
-    private String oldCid;
-    private LocalDateTime removedAt;
 
-    public static PixKeyDTO pixKeyWasCreated(final PixKey pixKey) {
-        return fromDomain(pixKey, null, null);
-    }
-
-    public static PixKeyDTO pixKeyWasEdited(final PixKey pixKey, final String oldCid) {
-        return fromDomain(pixKey, oldCid, null);
-    }
-
-    public static PixKeyDTO pixKeyWasDeleted(final PixKey pixKey, final LocalDateTime removedAt) {
-        return fromDomain(pixKey, null, removedAt);
-    }
-
-    private static PixKeyDTO fromDomain(final PixKey pixKey, final String oldCid, final LocalDateTime removedAt) {
+    public static Object from(final PixKey pixKey) {
         return PixKeyDTO.builder()
             .type(pixKey.getType())
             .key(pixKey.getKey())
@@ -83,8 +69,6 @@ public class PixKeyDTO {
             .cid(pixKey.getCid())
             .requestId(pixKey.getRequestId())
             .donatedAutomatically(pixKey.isDonatedAutomatically())
-            .oldCid(oldCid)
-            .removedAt(removedAt)
             .build();
     }
 

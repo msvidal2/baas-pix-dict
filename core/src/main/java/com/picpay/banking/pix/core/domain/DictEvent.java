@@ -1,6 +1,5 @@
-package com.picpay.banking.pixkey.dto;
+package com.picpay.banking.pix.core.domain;
 
-import com.picpay.banking.pix.core.domain.ReconciliationSyncEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,19 +17,13 @@ public class DictEvent {
 
     private static final String CONTEXT = "baas_pix";
     private Domain domain;
-    private Action action;
+    private DictAction action;
     private Object data;
 
     public enum Domain {
         KEY,
         CLAIM,
         INFRACTION
-    }
-
-    public enum Action {
-        ADD,
-        EDIT,
-        DELETE;
     }
 
 }

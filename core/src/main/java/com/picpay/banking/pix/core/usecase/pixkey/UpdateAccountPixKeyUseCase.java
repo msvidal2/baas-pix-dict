@@ -6,14 +6,12 @@ import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.UpdatePixKeyValidator;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.Executors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -47,15 +45,36 @@ public class UpdateAccountPixKeyUseCase {
         pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
         pixKeyUpdated.calculateCid();
 
-        var executor = Executors.newFixedThreadPool(2);
-        executor.execute(() -> savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue()));
-        executor.execute(() -> pixKeyEventPort.pixKeyWasEdited(oldPixKey, pixKeyUpdated));
+        save(requestIdentifier, reason, pixKeyUpdated);
+        sendEvent(requestIdentifier, pixKeyUpdated);
 
         log.info("PixKey_updated: {}, {}"
             , kv("requestIdentifier", requestIdentifier)
             , kv("key", pixKeyUpdated.getKey()));
 
         return pixKeyUpdated;
+    }
+
+    private void save(String requestIdentifier, UpdateReason reason, PixKey pixKeyUpdated) {
+        try {
+            savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
+        } catch (Exception e) {
+            log.error("PixKey_update_saveError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", pixKeyUpdated.getKey()),
+                    kv("exception", e));
+        }
+    }
+
+    private void sendEvent(String requestIdentifier, PixKey pixKeyUpdated) {
+        try {
+            pixKeyEventPort.pixKeyWasUpdated(pixKeyUpdated);
+        } catch (Exception e) {
+            log.error("PixKey_update_eventError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", pixKeyUpdated.getKey()),
+                    kv("exception", e));
+        }
     }
 
 }

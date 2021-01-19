@@ -17,7 +17,7 @@ public class ReconciliationSyncEvent {
 
     private final KeyType keyType;
     private final String key;
-    private final ReconciliationSyncOperation operation;
+    private final DictAction action;
     private final LocalDateTime happenedAt;
     private final String newCid;
     private final String oldCid;
@@ -25,7 +25,7 @@ public class ReconciliationSyncEvent {
     public List<ReconciliationEvent> generateContentIdentifierEvents() {
         List<ReconciliationEvent> events = new ArrayList<>();
 
-        switch (operation) {
+        switch (action) {
             case ADD:
                 events.add(createAddReconciliationEvent());
                 break;
@@ -64,15 +64,9 @@ public class ReconciliationSyncEvent {
             .build();
     }
 
-    public enum ReconciliationSyncOperation {
-        ADD,
-        UPDATE,
-        REMOVE;
-    }
-
     public List<ReconciliationEvent> toDomain() {
         List<ReconciliationEvent> domainEvents = new ArrayList<>();
-        switch (this.getOperation()) {
+        switch (this.getAction()) {
             case ADD: domainEvents.add(createAddReconciliationEvent());
             break;
             case REMOVE: domainEvents.add(createRemoveReconciliationEvent());
@@ -93,7 +87,7 @@ public class ReconciliationSyncEvent {
             throw new InvalidReconciliationSyncEventException("Reconciliation requires the key to be informed");
         }
 
-        if (this.getOperation() == null) {
+        if (this.getAction() == null) {
             throw new InvalidReconciliationSyncEventException("Reconciliation requires the type of operation to be informed");
         }
 
@@ -101,7 +95,7 @@ public class ReconciliationSyncEvent {
             throw new InvalidReconciliationSyncEventException("Reconciliation requires that the date be informed");
         }
 
-        switch (this.getOperation()) {
+        switch (this.getAction()) {
             case ADD:
                 if (Strings.isNullOrEmpty(this.getNewCid())) {
                     throw new InvalidReconciliationSyncEventException(

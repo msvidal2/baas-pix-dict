@@ -9,6 +9,8 @@ import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
@@ -26,12 +28,35 @@ public class RemovePixKeyUseCase {
         RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         var removeAt = removePixKeyBacenPort.remove(pixKey, reason).getUpdatedAt();
-        removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb())
-            .ifPresent(oldPixKey -> pixKeyEventPort.pixKeyWasDeleted(oldPixKey, removeAt));
+
+        remove(requestIdentifier, pixKey, removeAt);
 
         log.info("PixKey_removed: {}, {}",
             kv("requestIdentifier", requestIdentifier),
             kv("key", pixKey.getKey()));
+    }
+
+    private void remove(String requestIdentifier, PixKey pixKey, java.time.LocalDateTime removeAt) {
+        try {
+            removePixKeyPort.remove(pixKey.getKey(), pixKey.getIspb())
+                .ifPresent(oldPixKey -> sendEvent(requestIdentifier, removeAt, oldPixKey));
+        } catch (Exception e) {
+            log.error("PixKey_remove_saveError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", pixKey.getKey()),
+                    kv("exception", e));
+        }
+    }
+
+    private void sendEvent(String requestIdentifier, LocalDateTime removeAt, PixKey oldPixKey) {
+        try {
+            pixKeyEventPort.pixKeyWasRemoved(oldPixKey.toBuilder().updatedAt(removeAt).build());
+        } catch (Exception e) {
+            log.error("PixKey_remove_eventError",
+                    kv("requestIdentifier", requestIdentifier),
+                    kv("key", oldPixKey.getKey()),
+                    kv("exception", e));
+        }
     }
 
 }

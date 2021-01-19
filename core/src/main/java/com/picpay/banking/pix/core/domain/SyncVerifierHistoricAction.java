@@ -8,24 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"cid", "actionType"})
+@EqualsAndHashCode(of = {"cid", "action"})
 public class SyncVerifierHistoricAction {
 
     private final SyncVerifierHistoric syncVerifierHistoric;
     private final String cid;
-    private final ActionType actionType;
-
-    public enum ActionType {
-        ADD,
-        REMOVE;
-
-        public static ActionType resolve(final ReconciliationAction action) {
-            switch (action) {
-                case ADDED: return ADD;
-                case REMOVED: return REMOVE;
-                default: throw new IllegalArgumentException();
-            }
-        }
-    }
+    private final ReconciliationAction action;
 
 }
