@@ -1,8 +1,10 @@
 package com.picpay.banking.pix.core.validators.key;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class EmailKeyValidator implements KeyValidator<String> {
 
-    // TODO: mudar a validação de email
     @Override
     public boolean validate(final String email) {
         if(email == null || email.isBlank()) {
@@ -13,11 +15,14 @@ public class EmailKeyValidator implements KeyValidator<String> {
             throw new KeyValidatorException("The maximum number of characters in the email must be 77");
         }
 
-        if(email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")) {
-            return true;
+        try {
+            var address = new InternetAddress(email);
+            address.validate();
+        } catch (AddressException e) {
+            throw new KeyValidatorException("Invalid email: "+ email, e);
         }
 
-        throw new KeyValidatorException("Invalid email: "+ email);
+        return true;
     }
 
 }
