@@ -32,7 +32,7 @@ public class CompleteClaimUseCase {
         CompleteClaimValidator.validate(requestIdentifier, claim);
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
 
-        var claimCompleted = executeClaim(claim, requestIdentifier);
+        Claim claimCompleted = executeClaim(claim, requestIdentifier);
         createPixKeyForClaimer(claimCompleted, randomUUID());
 
         return claimCompleted;
