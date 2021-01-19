@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
@@ -55,6 +56,9 @@ class FailureReconciliationSyncByFileUseCaseTest {
     @Mock
     private FindPixKeyPort findPixKeyPort;
 
+    @Mock
+    private PixKeyEventPort pixKeyEventPort;
+
     private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
     private ContentIdentifierFile cidFile;
@@ -65,7 +69,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
     public void init() {
         this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
             22896431, bacenContentIdentifierEventsPort, databaseContentIdentifierPort, bacenPixKeyByContentIdentifierPort,
-            createPixKeyPort, findPixKeyPort, removePixKeyPort
+            createPixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort
         );
 
         this.cidFile = ContentIdentifierFile.builder()
