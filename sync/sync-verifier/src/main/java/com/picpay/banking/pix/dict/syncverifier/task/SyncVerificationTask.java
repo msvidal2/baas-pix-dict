@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class SyncVerificationTask implements ApplicationRunner {
 
+    public static final int TIME = 60;
     private final SyncVerifierService syncVerifierService;
     private final ReconciliationLockPort lockPort;
 
@@ -38,7 +39,7 @@ public class SyncVerificationTask implements ApplicationRunner {
     private boolean onlySyncVerifier = false;
 
     @Override
-    public void run(final ApplicationArguments args) throws InterruptedException {
+    public void run(final ApplicationArguments args)  {
         try {
             lockPort.lock();
             runReconciliation(args);
@@ -47,7 +48,7 @@ public class SyncVerificationTask implements ApplicationRunner {
         }
     }
 
-    private void runReconciliation(final ApplicationArguments args) throws InterruptedException {
+    private void runReconciliation(final ApplicationArguments args)  {
         JCommander.newBuilder()
             .addObject(this)
             .build()
@@ -64,14 +65,14 @@ public class SyncVerificationTask implements ApplicationRunner {
 
         service.shutdown();
         try {
-            if (!service.awaitTermination(60, TimeUnit.MINUTES)) {
+            if (!service.awaitTermination(TIME, TimeUnit.MINUTES)) {
                 log.error("SyncApplication took more than 60 minutes and was interrupted");
                 service.shutdownNow();
             }
         } catch (InterruptedException e) {
             log.error("SyncApplication was interrupted {}", e.getMessage());
             service.shutdownNow();
-            throw e;
+            throw new IllegalArgumentException(e);
         }
     }
 

@@ -73,25 +73,30 @@ public class FailureReconciliationSyncByFileUseCase {
             .forEach(cid -> {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
                     final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
-
                     final var actualKey = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey());
                     this.createPixKeyPort.savePixKey(pixKeyToInsert, Reason.RECONCILIATION);
 
                     actualKey.ifPresentOrElse(keyInDatabase -> {
-                        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, UPDATED);
-                        this.pixKeyEventPort.pixKeyWasUpdated(pixKeyToInsert);
-                        log.info("Cid {} of key type {} {} in database", cid, keyType,UPDATED);
+                        updatePixKey(keyType, sync, cid, pixKeyToInsert);
                     }, () -> {
-                        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
-                        this.pixKeyEventPort.pixKeyWasCreated(pixKeyToInsert);
-                        log.info("Cid {} of key type {} {} in database", cid, keyType,ADDED);
+                        insertPixKey(keyType, sync, cid, pixKeyToInsert);
                     } );
-
-
                 }, () -> {
                     this.remove(keyType, sync, cid);
                 });
             });
+    }
+
+    private void insertPixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
+        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
+        this.pixKeyEventPort.pixKeyWasCreated(pixKeyToInsert);
+        log.info("Cid {} of key type {} {} in database", cid, keyType,ADDED);
+    }
+
+    private void updatePixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
+        this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, UPDATED);
+        this.pixKeyEventPort.pixKeyWasUpdated(pixKeyToInsert);
+        log.info("Cid {} of key type {} {} in database", cid, keyType,UPDATED);
     }
 
 

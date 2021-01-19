@@ -308,7 +308,7 @@ class CreatePixKeyUseCaseTest {
             useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST);
         }).getPixKeyError();
 
-        assertEquals(error, PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON);
+        assertEquals(PixKeyError.KEY_EXISTS_INTO_PSP_TO_SAME_PERSON,error);
 
         verify(findPixKeyPort).findByAccount(anyInt(), anyString(), anyString(), any());
         verify(findPixKeyPort).findPixKey(anyString());
