@@ -4,14 +4,16 @@ package com.picpay.banking.pix.core.validators.pixkey;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.validators.DictItemValidator;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class PixKeyValidatorComposite implements DictItemValidator<PixKey> {
 
-    private final List<DictItemValidator> validators;
+    private final Collection<DictItemValidator> validators;
 
-    public PixKeyValidatorComposite(List<DictItemValidator> validators) {
-        this.validators = validators;
+    public PixKeyValidatorComposite(Collection<DictItemValidator> validators) {
+        this.validators = Collections.unmodifiableCollection(validators);
     }
 
     @Override

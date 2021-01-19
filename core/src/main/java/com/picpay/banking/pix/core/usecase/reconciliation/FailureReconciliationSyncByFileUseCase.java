@@ -79,7 +79,7 @@ public class FailureReconciliationSyncByFileUseCase {
 
                     actualKey.ifPresentOrElse(keyInDatabase -> {
                         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, UPDATED);
-                        this.pixKeyEventPort.pixKeyWasEdited(keyInDatabase, pixKeyToInsert);
+                        this.pixKeyEventPort.pixKeyWasUpdated(pixKeyToInsert);
                         log.info("Cid {} of key type {} {} in database", cid, keyType,UPDATED);
                     }, () -> {
                         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
@@ -111,7 +111,7 @@ public class FailureReconciliationSyncByFileUseCase {
     private void removePixKey(final KeyType keyType, final Sync sync, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKey) {
         this.removePixKeyPort.remove(pixKey.getKey(), participant);
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKey, cid, REMOVED);
-        this.pixKeyEventPort.pixKeyWasDeleted(pixKey, LocalDateTime.now());
+        this.pixKeyEventPort.pixKeyWasRemoved(pixKey);
         log.info("PixKey {} type {} with Cid {} of was removed from database because don't exists in bacen"
             , pixKey.getCid(), pixKey.getKey(), keyType);
     }

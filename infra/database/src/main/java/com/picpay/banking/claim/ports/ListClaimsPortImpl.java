@@ -24,12 +24,14 @@ public class ListClaimsPortImpl implements ListClaimPort {
 
     @Override
     public ClaimIterable list(Claim claim, Integer limit, Boolean isClaimer, Boolean isDonor, LocalDateTime startDate, LocalDateTime endDate, String requestIdentifier) {
-        Page<ClaimEntity> claimEntityList = Page.empty();
+        Page<ClaimEntity> claimEntityList;
 
         if(nonNull(isClaimer)) {
             claimEntityList = claimRepository.findAllClaimsWhereIsClaimer(claim.getIspb(), startDate, endDate, PageRequest.of(0, limit));
         } else if(nonNull(isDonor)) {
             claimEntityList = claimRepository.findAllClaimsWhereIsDonor(claim.getIspb(), startDate, endDate, PageRequest.of(0, limit));
+        }else {
+            claimEntityList = Page.empty();
         }
 
         return toClaimIterable(claimEntityList);

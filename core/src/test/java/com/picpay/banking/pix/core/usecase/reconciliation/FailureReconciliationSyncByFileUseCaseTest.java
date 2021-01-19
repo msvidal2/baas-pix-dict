@@ -55,7 +55,6 @@ class FailureReconciliationSyncByFileUseCaseTest {
     private RemovePixKeyPort removePixKeyPort;
     @Mock
     private FindPixKeyPort findPixKeyPort;
-
     @Mock
     private PixKeyEventPort pixKeyEventPort;
 
@@ -195,6 +194,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         when(this.bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
         when(this.createPixKeyPort.savePixKey(any(), any())).then(this::generatePixKeyFromDomain);
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
+        doNothing().when(this.pixKeyEventPort).pixKeyWasCreated(any());
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
@@ -207,6 +207,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.createPixKeyPort, times(5)).savePixKey(any(), any());
         verify(this.databaseContentIdentifierPort, times(5)).saveAction(anyInt(), any(), anyString(),
             argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierFileAction.ADDED)));
+        verify(this.pixKeyEventPort,times(5)).pixKeyWasCreated(any());
         verify(this.databaseContentIdentifierPort).saveFile(any());
     }
 
@@ -222,6 +223,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         when(this.createPixKeyPort.savePixKey(any(), any())).then(this::generatePixKeyFromDomain);
         when(this.findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
+        doNothing().when(this.pixKeyEventPort).pixKeyWasUpdated(any());
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
@@ -235,6 +237,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.findPixKeyPort, times(5)).findPixKey(any());
         verify(this.databaseContentIdentifierPort, times(5)).saveAction(anyInt(), any(), anyString(),
             argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierFileAction.UPDATED)));
+        verify(this.pixKeyEventPort,times(5)).pixKeyWasUpdated(any());
         verify(this.databaseContentIdentifierPort).saveFile(any());
     }
 
@@ -255,6 +258,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         when(this.findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
         when(this.removePixKeyPort.remove(any(), anyInt())).thenReturn(Optional.of(PixKey.builder().build()));
         doNothing().when(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
+        doNothing().when(this.pixKeyEventPort).pixKeyWasRemoved(any());
         doNothing().when(this.databaseContentIdentifierPort).saveFile(any());
 
         this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
@@ -269,6 +273,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
         verify(this.removePixKeyPort).remove(any(), anyInt());
         verify(this.databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(),
             argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierFileAction.REMOVED)));
+        verify(this.pixKeyEventPort).pixKeyWasRemoved(any());
         verify(this.databaseContentIdentifierPort).saveFile(any());
     }
 

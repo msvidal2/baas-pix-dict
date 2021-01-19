@@ -27,6 +27,8 @@ import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRAC
 @EqualsAndHashCode
 public class InfractionReport implements Serializable {
 
+    private static final long serialVersionUID = 640888779552542875L;
+
     private static final EnumSet<InfractionReportSituation> OPEN_STATES = EnumSet.of(OPEN, ANALYZED, ACKNOWLEDGED);
 
     private String infractionReportId;

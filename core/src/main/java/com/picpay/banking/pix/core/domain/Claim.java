@@ -1,7 +1,12 @@
 package com.picpay.banking.pix.core.domain;
 
 import com.google.common.base.Strings;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;

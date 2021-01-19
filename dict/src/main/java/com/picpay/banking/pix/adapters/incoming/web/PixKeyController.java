@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -28,6 +29,7 @@ import static org.springframework.http.HttpStatus.*;
 @UnavailableWhileSyncIsActive
 public class PixKeyController {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     private final CreatePixKeyUseCase createPixKeyUseCase;
     private final RemovePixKeyUseCase removePixKeyUseCase;
     private final FindPixKeyUseCase findPixKeyUseCase;
@@ -39,14 +41,14 @@ public class PixKeyController {
     @PostMapping
     @ResponseStatus(CREATED)
     public PixKeyResponseDTO create(@RequestHeader String requestIdentifier,
-                                    @RequestBody @Validated CreatePixKeyRequestWebDTO requestDTO) {
+                                    @RequestBody @Validated @NotNull CreatePixKeyRequestWebDTO requestDTO) {
 
         //TODO temporario.
         if (requestDTO != null && requestDTO.getPersonType() != null && requestDTO.getPersonType().getValue() == 0)
             requestDTO.setFantasyName(null);
 
         log.info("PixKey_creating"
-                , kv("requestIdentifier", requestIdentifier)
+                , kv(REQUEST_IDENTIFIER, requestIdentifier)
                 , kv("key", requestDTO.getKey() != null ? requestDTO.getKey() : null)
                 , kv("NameIspb", requestDTO.getIspb())
                 , kv("AccountNumber", requestDTO.getAccountNumber())
@@ -68,7 +70,7 @@ public class PixKeyController {
                                             @Valid ListPixKeyRequestWebDTO requestDTO) {
 
         log.info("PixKey_listing"
-                , kv("requestIdentifier", requestIdentifier)
+                , kv(REQUEST_IDENTIFIER, requestIdentifier)
                 , kv("NameIspb", requestDTO.getIspb())
                 , kv("AccountNumber", requestDTO.getAccountNumber())
                 , kv("BranchNumber", requestDTO.getBranchNumber()));
@@ -85,7 +87,7 @@ public class PixKeyController {
                                   @RequestHeader String userId) {
 
         log.info("PixKey_finding"
-                , kv("requestIdentifier", requestIdentifier)
+                , kv(REQUEST_IDENTIFIER, requestIdentifier)
                 , kv("key", key)
                 , kv("userId", userId));
 
@@ -101,7 +103,7 @@ public class PixKeyController {
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
         log.info("PixKey_removing"
-                , kv("requestIdentifier", requestIdentifier)
+                , kv(REQUEST_IDENTIFIER, requestIdentifier)
                 , kv("key", key)
                 , kv("dto", dto));
 
@@ -117,7 +119,7 @@ public class PixKeyController {
         var pixKey = dto.toDomain(key);
 
         log.info("PixKey_updatingAccount"
-                , kv("requestIdentifier", requestIdentifier)
+                , kv(REQUEST_IDENTIFIER, requestIdentifier)
                 , kv("key", key)
                 , kv("dto", dto));
 

@@ -15,6 +15,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ListKeys implements Specification<PixKeyEntity> {
 
+    private static final long serialVersionUID = 4905817650008280685L;
+
     private final PixKey pixKey;
 
     @Override

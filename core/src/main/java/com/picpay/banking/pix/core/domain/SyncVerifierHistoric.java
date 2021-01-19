@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @ToString
+@AllArgsConstructor
 public class SyncVerifierHistoric {
 
     private final Integer id;
@@ -33,11 +35,11 @@ public class SyncVerifierHistoric {
     }
 
     public boolean isNOK() {
-        return syncVerifierResultType.equals(SyncVerifierResultType.NOK);
+        return syncVerifierResultType == SyncVerifierResultType.NOK;
     }
 
     public boolean isOK() {
-        return syncVerifierResultType.equals(SyncVerifierResultType.OK);
+        return syncVerifierResultType == SyncVerifierResultType.OK;
     }
 
 }

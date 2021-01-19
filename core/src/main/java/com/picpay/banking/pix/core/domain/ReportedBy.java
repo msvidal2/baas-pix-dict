@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
-public enum ReportedBy implements Serializable {
+public enum ReportedBy {
 
     DEBITED_PARTICIPANT (0),
     CREDITED_PARTICIPANT (1);

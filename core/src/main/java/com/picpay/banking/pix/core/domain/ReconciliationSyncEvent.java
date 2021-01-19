@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.domain;
 
 import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.exception.InvalidReconciliationSyncEventException;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Builder
 @ToString
+@AllArgsConstructor
 public class ReconciliationSyncEvent {
 
     private final KeyType keyType;
@@ -39,6 +41,8 @@ public class ReconciliationSyncEvent {
                 if (oldCid != null) {
                     events.add(createRemoveReconciliationEvent());
                 }
+                break;
+            default:
         }
 
         return events;
@@ -74,6 +78,8 @@ public class ReconciliationSyncEvent {
             case UPDATE:
                 domainEvents.add(createRemoveReconciliationEvent());
                 domainEvents.add(createAddReconciliationEvent());
+                break;
+            default:
         }
         return domainEvents;
     }
@@ -103,23 +109,22 @@ public class ReconciliationSyncEvent {
                 }
                 break;
             case UPDATE:
-                if (Strings.isNullOrEmpty(this.getOldCid())) {
-                    throw new InvalidReconciliationSyncEventException("An UPDATE reconciliation event did not inform oldCid");
-                }
-                if (Strings.isNullOrEmpty(this.getNewCid())) {
-                    throw new InvalidReconciliationSyncEventException(
-                            "An UPDATE reconciliation event requires newCid to be informed");
-                }
+                validateAction("An UPDATE reconciliation event did not inform oldCid","An UPDATE reconciliation event requires newCid to be informed");
                 break;
             case REMOVE:
-                if (Strings.isNullOrEmpty(this.getOldCid())) {
-                    throw new InvalidReconciliationSyncEventException("A REMOVE reconciliation event did not inform oldCid");
-                }
-                if (Strings.isNullOrEmpty(this.getNewCid())) {
-                    throw new InvalidReconciliationSyncEventException(
-                            "A REMOVE reconciliation event should not inform newCid");
-                }
+                validateAction("A REMOVE reconciliation event did not inform oldCid", "A REMOVE reconciliation event should not inform newCid");
                 break;
+            default:
+        }
+    }
+
+    private void validateAction(final String s, final String s2) {
+        if (Strings.isNullOrEmpty(this.getOldCid())) {
+            throw new InvalidReconciliationSyncEventException(s);
+        }
+        if (Strings.isNullOrEmpty(this.getNewCid())) {
+            throw new InvalidReconciliationSyncEventException(
+                s2);
         }
     }
 

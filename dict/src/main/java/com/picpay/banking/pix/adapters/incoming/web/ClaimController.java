@@ -48,6 +48,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 @UnavailableWhileSyncIsActive
 public class ClaimController {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
+    public static final String CLAIM_ID = "claimId";
     private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
     private final CancelClaimUseCase cancelClaimUseCase;
@@ -63,7 +65,7 @@ public class ClaimController {
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
         log.info("Claim_creating",
-                kv("requestIdentifier", requestIdentifier),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("Key", requestDTO.getKey()),
                 kv("NameIspb", requestDTO.getIspb()),
                 kv("AccountNumber", requestDTO.getAccountNumber()),
@@ -82,8 +84,8 @@ public class ClaimController {
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
 
         log.info("Claim_confirming",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimId),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
         var claim = Claim.builder()
@@ -105,7 +107,7 @@ public class ClaimController {
                               @Valid ListClaimRequestWebDTO requestDTO) {
 
         log.info("Claim_listing",
-                kv("requestIdentifier", requestIdentifier),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("dto", requestDTO));
 
         var claim = Claim.builder()
@@ -131,8 +133,8 @@ public class ClaimController {
                         @RequestBody @Validated ClaimCancelDTO dto) {
 
         log.info("Claim_canceling",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimId),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
         var claim = Claim.builder()
@@ -153,8 +155,8 @@ public class ClaimController {
                           @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
 
         log.info("Claim_completing",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimId),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
         return completeClaimUseCase.execute(Claim.builder()
@@ -172,7 +174,7 @@ public class ClaimController {
                                  @RequestParam("ispb") String ispb,
                                  @RequestParam("reivindicador") boolean reivindicador) {
 
-        log.info("Claim_finding", kv("claimId", claimId));
+        log.info("Claim_finding", kv(CLAIM_ID, claimId));
 
         var claim = findClaimUseCase.execute(claimId, ispb, reivindicador);
 

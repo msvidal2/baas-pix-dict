@@ -13,9 +13,11 @@ import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 @Builder(toBuilder = true)
@@ -26,9 +28,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @Slf4j
 @EqualsAndHashCode(of = {"type", "key", "ispb", "branchNumber", "accountType", "accountNumber", "personType", "taxId"})
-public class PixKey {
+public class PixKey implements Serializable {
+
+    private static final long serialVersionUID = -6450851575119416890L;
 
     private static final String SEPARATOR = "&";
+    public static final int CID_BYTES_SIZE = 16;
+    public static final int CPF_SIZE = 11;
+    public static final int CNPJ_SIZE = 14;
 
     private KeyType type;
     private String key;
@@ -54,7 +61,7 @@ public class PixKey {
     private boolean donatedAutomatically;
 
     public String getOwnerName() {
-        if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
+        if (PersonType.INDIVIDUAL_PERSON == personType) {
             return name;
         }
 
@@ -62,17 +69,17 @@ public class PixKey {
     }
 
     public String getTaxIdWithLeftZeros() {
-        int size = 11;
+        int size = CPF_SIZE;
 
-        if (PersonType.LEGAL_ENTITY.equals(personType)) {
-            size = 14;
+        if (PersonType.LEGAL_ENTITY == personType) {
+            size = CNPJ_SIZE;
         }
 
         return Strings.padStart(taxId, size, '0');
     }
 
     public void calculateCid() {
-        byte[] requestIdBytes = new byte[16];
+        byte[] requestIdBytes = new byte[CID_BYTES_SIZE];
         ByteBuffer.wrap(requestIdBytes)
             .putLong(requestId.getMostSignificantBits())
             .putLong(requestId.getLeastSignificantBits());
@@ -92,7 +99,7 @@ public class PixKey {
             .toString();
 
         HmacUtils hmacSHA256 = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, requestIdBytes);
-        this.cid = hmacSHA256.hmacHex(entryAttributes.getBytes(StandardCharsets.UTF_8)).toLowerCase();
+        this.cid = hmacSHA256.hmacHex(entryAttributes.getBytes(StandardCharsets.UTF_8)).toLowerCase(Locale.getDefault());
     }
 
     public String recalculateCid() {

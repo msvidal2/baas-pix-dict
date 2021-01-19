@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;

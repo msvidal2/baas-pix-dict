@@ -17,12 +17,13 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class BacenExceptionBuilder {
 
-    private final Exception exception;
+    public static final String EXCEPTION = "exception";
+    private final Exception exceptionValue;
 
     private FieldResolver fieldResolver;
 
-    public BacenExceptionBuilder(Exception exception) {
-        this.exception = exception;
+    public BacenExceptionBuilder(Exception exceptionValue) {
+        this.exceptionValue = exceptionValue;
         this.fieldResolver = new DefaultFieldResolver();
     }
 
@@ -36,8 +37,8 @@ public class BacenExceptionBuilder {
     }
 
     public BacenException build() {
-        if(exception instanceof FeignException) {
-            return handleFeignException((FeignException) exception);
+        if(exceptionValue instanceof FeignException) {
+            return handleFeignException((FeignException) exceptionValue);
         }
 
         return new BacenException(INTERNAL_SERVER_ERROR.getReasonPhrase(), INTERNAL_SERVER_ERROR);
@@ -53,16 +54,16 @@ public class BacenExceptionBuilder {
 
     private BacenException handleConnectionErrors(FeignException e) {
         if (e.getCause() instanceof UnknownHostException) {
-            log.error("client-unknownHost", kv("exception", e.getCause()));
+            log.error("client-unknownHost", kv(EXCEPTION, e.getCause()));
             return new BacenException(BAD_GATEWAY.getReasonPhrase(), BAD_GATEWAY);
         }
 
         if (e.getCause() instanceof SocketTimeoutException) {
-            log.error("client-timeout", kv("exception", e.getCause()));
+            log.error("client-timeout", kv(EXCEPTION, e.getCause()));
             return new BacenException("Timeout", BAD_GATEWAY);
         }
 
-        log.error("unknown-error", kv("exception", e.getCause()));
+        log.error("unknown-error", kv(EXCEPTION, e.getCause()));
         return new BacenException(BAD_GATEWAY.getReasonPhrase(), BAD_GATEWAY);
     }
 
