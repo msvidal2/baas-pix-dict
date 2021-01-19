@@ -6,7 +6,7 @@ spring:
     cloud:
         config:
             uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-            name: dict-sync-cid-file,dict-bacen,dict-database
+            name: dict-sync-cid-file,dict-bacen,dict-database,dict-messaging
             request-connect-timeout: 15
     profiles:
         active:
@@ -14,4 +14,5 @@ spring:
             - bacen-${ENV:local}
             - database-${ENV:local}
             - cloudtask-${ENV:local}
+            - messaging-${ENV:local}
 
