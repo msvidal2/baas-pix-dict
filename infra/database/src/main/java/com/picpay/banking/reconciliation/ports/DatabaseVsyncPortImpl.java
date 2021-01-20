@@ -27,9 +27,4 @@ public class DatabaseVsyncPortImpl implements SyncVerifierPort {
         syncVerifierRepository.save(SyncVerifierEntity.from(syncVerifier));
     }
 
-    @Override
-    public String calculateVsync(final KeyType keyType) {
-        return syncVerifierRepository.calculateVsync(keyType.name());
-    }
-
 }

@@ -14,6 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class OverduePossessionClaimDonorUseCase {
 
+    public static final String CLAIM_ID = "claimId";
     private final ConfirmClaimPort confirmClaimPort;
     private final CreateClaimPort saveClaimPort;
     private final RemovePixKeyAutomaticallyPort removePixKeyAutomaticallyPort;
@@ -25,17 +26,17 @@ public class OverduePossessionClaimDonorUseCase {
         claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
 
         log.info("OverduePossessionClaim_confirmed",
-                kv("claimId", claim.getClaimId()));
+                kv(CLAIM_ID, claim.getClaimId()));
 
         saveClaimPort.saveClaim(claim, requestIdentifier);
 
         log.info("OverduePossessionClaim_confirmed_saved",
-                kv("claimId", claim.getClaimId()));
+                kv(CLAIM_ID, claim.getClaimId()));
 
         removePixKeyAutomaticallyPort.remove(claim.getKey(), claim.getCompletionThresholdDate());
 
         log.info("OverduePossessionClaim_key_removed",
-                kv("claimId", claim.getClaimId()),
+                kv(CLAIM_ID, claim.getClaimId()),
                 kv("key", claim.getKey()));
     }
 

@@ -1,12 +1,20 @@
 spring:
     main:
         allow-bean-definition-overriding: true
+    cloud:
+        stream:
+            bindings:
+                keys-changed:
+                    destination: keys-changed
+                    binder: kafka
 picpay:
     ispb: 22896431
     logging:
         appender: CONSOLE
         level: INFO
-server:
+    dict:
+        pixkey:
+            notification-dispatcher: true
     compression:
         enabled: true
 

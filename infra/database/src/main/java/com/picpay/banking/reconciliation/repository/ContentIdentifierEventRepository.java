@@ -12,13 +12,11 @@ import java.util.Set;
 
 public interface ContentIdentifierEventRepository extends CrudRepository<ContentIdentifierEventEntity, Integer> {
 
-    Set<ContentIdentifierEventEntity> findByKeyTypeAndEventOnBacenAtGreaterThanEqual(KeyType keyType, LocalDateTime keyOwnershipDate);
-
-    Optional<ContentIdentifierEventEntity> findByCid(String cid);
-
     @Query("select e.cid from content_identifier_event e " +
         "where e.keyType = :keyType " +
         "and e.eventOnBacenAt > :synchronizedAt")
     List<String> findAllCidsAfterLastSuccessfulVsync(KeyType keyType, LocalDateTime synchronizedAt);
+
+    Optional<ContentIdentifierEventEntity> findFirstByKeyOrderByIdDesc(String key);
 
 }

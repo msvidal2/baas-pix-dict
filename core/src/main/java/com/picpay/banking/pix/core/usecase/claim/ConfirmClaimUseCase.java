@@ -26,6 +26,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ConfirmClaimUseCase {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
+    public static final String CLAIM_ID = "claimId";
+
     private final ConfirmClaimPort confirmClaimPort;
 
     private final FindClaimPort findClaimPort;
@@ -50,24 +53,24 @@ public class ConfirmClaimUseCase {
         validateResolutionPeriod(claim);
 
         Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
-        if(ClaimConfirmationReason.CLIENT_REQUEST.equals(reason))
+        if(ClaimConfirmationReason.CLIENT_REQUEST == reason)
             claimConfirmed.setCompletionThresholdDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         log.info("Claim_confirmed",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimConfirmed.getClaimId()));
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimConfirmed.getClaimId()));
 
         saveClaimPort.saveClaim(claimConfirmed, requestIdentifier);
 
         log.info("Claim_confirmed_saved",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimConfirmed.getClaimId()));
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimConfirmed.getClaimId()));
 
         removePixKeyPort.remove(claimConfirmed.getKey(), claimConfirmed.getIspb());
 
         log.info("Claim_confirmed_key_removed",
-                kv("requestIdentifier", requestIdentifier),
-                kv("claimId", claimConfirmed.getClaimId()),
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(CLAIM_ID, claimConfirmed.getClaimId()),
                 kv("key", claimConfirmed.getKey()));
 
         return claimConfirmed;
@@ -80,19 +83,19 @@ public class ConfirmClaimUseCase {
     }
 
     private void validateClaimReason(Claim claim) {
-        if (ClaimType.PORTABILITY.equals(claim.getClaimType())
+        if (ClaimType.PORTABILITY == claim.getClaimType()
                 && !portabilityConfirmReasons().contains(claim.getConfirmationReason())) {
             throw new ClaimException(ClaimError.INVALID_CLAIM_REASON);
         }
-        if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+        if (ClaimType.POSSESSION_CLAIM == claim.getClaimType()
                 && !ownershipConfirmReasons().contains(claim.getConfirmationReason())) {
             throw new ClaimException(ClaimError.INVALID_CLAIM_REASON);
         }
     }
 
     private void validateResolutionPeriod(Claim claim) {
-        if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
-                && ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())
+        if (ClaimType.POSSESSION_CLAIM == claim.getClaimType()
+                && ClaimConfirmationReason.DEFAULT_RESPONSE == claim.getConfirmationReason()
                 && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
                     throw new ClaimException(ClaimError.OWNERSHIP_DEFAULT_OPERATION_RESOLUTION_DATE_NOT_PASSED);
         }

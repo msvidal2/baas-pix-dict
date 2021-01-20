@@ -1,33 +1,36 @@
 spring:
-  application:
-    name: sync
-  cloud:
-    task:
-      name: SYNC_VERIFIER
+    application:
+        name: sync
+    cloud:
+        task:
+            name: SYNC_VERIFIER
 
 server:
-  tomcat:
-    threads:
-      max: 400
-      min-spare: 50
+    tomcat:
+        threads:
+            max: 400
+            min-spare: 50
 
 picpay:
-  ispb: 22896431
-  service.name: ${spring.application.name}
+    ispb: 22896431
+    service.name: ${spring.application.name}
+    dict:
+        pixkey:
+            notification-dispatcher: true
 
 logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
 
 management:
-  health:
-    diskspace:
-      enabled: false
-  endpoint:
     health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: prometheus, health
-      base-path: '/'
-      path-mapping:
-        prometheus: 'metrics'
+        diskspace:
+            enabled: false
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: prometheus, health
+            base-path: '/'
+            path-mapping:
+                prometheus: 'metrics'

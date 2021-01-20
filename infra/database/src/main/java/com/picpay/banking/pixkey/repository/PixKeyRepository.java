@@ -41,7 +41,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     Page<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType, Pageable pageable);
 
-    long deleteByCid(String cid);
+    void deleteByCid(String cid);
 
 }
 

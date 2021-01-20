@@ -3,13 +3,14 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +23,14 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class CreatePixKeyUseCase {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
+    public static final String KEY = "key";
+    public static final String EXCEPTION = "exception";
     private final CreatePixKeyBacenPort createPixKeyBacenPortBacen;
     private final SavePixKeyPort savePixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-    // FIXME: Esta porta esta em desenvolvimento
-//    private final ReconciliationSyncEventPort reconciliationSyncEventPort;
+    private final PixKeyEventPort pixKeyEventPort;
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
@@ -42,14 +45,37 @@ public class CreatePixKeyUseCase {
 
         var createdPixKey = createPixKeyBacenPortBacen.create(requestIdentifier, pixKey, reason);
         createdPixKey.calculateCid();
-        savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
-//        reconciliationSyncEventPort.eventByPixKeyCreated(createdPixKey);
+
+        save(reason, createdPixKey, requestIdentifier);
+        sendEvent(createdPixKey, requestIdentifier);
 
         log.info("PixKey_created"
-            , kv("requestIdentifier", requestIdentifier)
-            , kv("key", createdPixKey.getKey()));
+            , kv(REQUEST_IDENTIFIER, requestIdentifier)
+            , kv(KEY, createdPixKey.getKey()));
 
         return createdPixKey;
+    }
+
+    private void save(CreateReason reason, PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+        } catch (Exception e) {
+            log.error("PixKey_create_saveError",
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
+                    kv(KEY, createdPixKey.getKey()),
+                    kv(EXCEPTION, e));
+        }
+    }
+
+    private void sendEvent(PixKey createdPixKey, final String requestIdentifier) {
+        try {
+            pixKeyEventPort.pixKeyWasCreated(createdPixKey);
+        } catch (Exception e) {
+            log.error("PixKey_create_eventError",
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
+                    kv(KEY, createdPixKey.getKey()),
+                    kv(EXCEPTION, e));
+        }
     }
 
     private List<PixKey> validateNumberKeys(final PixKey pixKey) {

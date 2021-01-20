@@ -69,7 +69,7 @@ public class CancelClaimUseCase {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_SITUATION_NOT_ALLOWED);
             }
 
-            if (ClaimType.PORTABILITY.equals(claim.getClaimType())) {
+            if (ClaimType.PORTABILITY == claim.getClaimType()) {
                 throw new ClaimException(ClaimError.PORTABILITY_CLAIM_SITUATION_NOT_ALLOW_CANCELLATION);
             }
 
@@ -97,7 +97,7 @@ public class CancelClaimUseCase {
     private void validateExpiredResolutionPeriod(final Claim claim,
                                                  final ClaimCancelReason reason,
                                                  final boolean canceledClaimant) {
-        if (ClaimCancelReason.DEFAULT_RESPONSE.equals(reason)
+        if (ClaimCancelReason.DEFAULT_RESPONSE == reason
                 && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
             if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
@@ -107,10 +107,10 @@ public class CancelClaimUseCase {
     }
 
     private boolean isPossessionClaimDonationFraud(Claim claim, ClaimCancelReason reason) {
-        return ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
-                && ClaimSituation.CONFIRMED.equals(claim.getClaimSituation())
-                && ClaimConfirmationReason.DEFAULT_RESPONSE.equals(claim.getConfirmationReason())
-                && ClaimCancelReason.FRAUD.equals(reason);
+        return ClaimType.POSSESSION_CLAIM == claim.getClaimType()
+                && ClaimSituation.CONFIRMED == claim.getClaimSituation()
+                && ClaimConfirmationReason.DEFAULT_RESPONSE == claim.getConfirmationReason()
+                && ClaimCancelReason.FRAUD == reason;
     }
 
     private void recoveryDonatedByFraudKey(Claim claim) {

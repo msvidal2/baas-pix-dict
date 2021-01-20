@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
@@ -20,9 +21,9 @@ public class ReconciliationUseCaseBeansConfig {
             @Value("${picpay.ispb}") Integer participant,
             BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort,
             DatabaseContentIdentifierPort databaseContentIdentifierPort, BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort,
-            SavePixKeyPort savePixKeyPort, RemovePixKeyPort removePixKeyPort, FindPixKeyPort findPixKeyPort) {
+            SavePixKeyPort savePixKeyPort, RemovePixKeyPort removePixKeyPort, FindPixKeyPort findPixKeyPort, PixKeyEventPort pixKeyEventPort) {
         return new FailureReconciliationSyncByFileUseCase(participant, bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
-            bacenPixKeyByContentIdentifierPort, savePixKeyPort, findPixKeyPort, removePixKeyPort);
+            bacenPixKeyByContentIdentifierPort, savePixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort);
     }
 
     @Bean

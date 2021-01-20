@@ -31,10 +31,12 @@
             **/config/**,
             **/*Config.java,
             **/exception/**,
-            **/*Application.java
+            **/*Application.java,
+            **/mockserver/**
         </sonar.coverage.exclusions>
         <sonar.exclusions>
-            **/dto/*.java
+            **/dto/*.java,
+            mockserver/**
         </sonar.exclusions>
         <sonar.organization>nxgbiqstumcjehqxdrnhyefpsycaavryialkxzjevbfqjzdzsgilzwwgezkpsswareusxfgyqggwwmccvcohbsvxtegwdvrrldwc</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>

@@ -3,7 +3,9 @@ package com.picpay.banking.pix.dict.syncverifier.task;
 import com.beust.jcommander.IStringConverter;
 import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.KeyType;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CommandLineKeyTypeConverter implements IStringConverter<KeyType> {
 
     @Override
@@ -17,6 +19,7 @@ public class CommandLineKeyTypeConverter implements IStringConverter<KeyType> {
         try {
             return KeyType.valueOf(value.toUpperCase());
         } catch (IllegalStateException e) {
+            log.debug("Error to convert command line key type ",e);
             throw new IllegalArgumentException(errorMessage);
         }
     }

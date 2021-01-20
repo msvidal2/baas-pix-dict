@@ -1,6 +1,6 @@
 server:
   compression_enabled: true
-  port: 8080
+  port: 8081
 
 logging:
   level:
@@ -34,7 +34,9 @@ picpay:
         entries:
           url: http://baas-pix-proxy-bacen.ms.qa/dict/api
       url: http://baas-pix-proxy-bacen.ms.qa
-
+  dict:
+    pixkey:
+      notification-dispatcher: false
 spring:
   profiles:
     active:
@@ -50,6 +52,17 @@ spring:
   cloud:
     stream:
       bindings:
+        keys-changed:
+          destination: keys-changed
+          group: dict
+          contentType: application/json
+          consumer:
+            maxAttemps: 2
+            configuration:
+              max.poll.records: 1
+              max.poll.interval.ms: 1
+            partitionCount: 1
+            concurrency: 1
         new-infraction-reports:
           destination: new-infraction-reports
           group: dict

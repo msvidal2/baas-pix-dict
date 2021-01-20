@@ -59,6 +59,7 @@ public class CircuitBreakerConfiguration {
             case NOT_FOUND:
             case BAD_REQUEST:
                 return false;
+            default:
         }
 
         return true;

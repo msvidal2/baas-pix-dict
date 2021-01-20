@@ -57,9 +57,6 @@ class ReconciliationSyncUseCaseTest {
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.empty());
 
-        when(syncVerifierPort.calculateVsync(any()))
-            .thenReturn("1");
-
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder()
                 .syncVerifierLastModified(LocalDateTime.now())
@@ -80,12 +77,9 @@ class ReconciliationSyncUseCaseTest {
     @DisplayName("Quando NOK, deve ter histórico de falha")
     void when_NOK_must_have_a_history_of_failure() {
         when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
-            .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("1").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
+            .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("01").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
 
-        when(syncVerifierPort.calculateVsync(any()))
-            .thenReturn("1");
-
-        when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "1"))
+        when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "01"))
             .thenReturn(SyncVerifierResult.builder()
                 .syncVerifierLastModified(LocalDateTime.now())
                 .syncVerifierResultType(SyncVerifierResultType.NOK)

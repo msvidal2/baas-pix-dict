@@ -19,6 +19,8 @@ import java.io.Serializable;
 @Embeddable
 public class PixKeyIdEntity implements Serializable {
 
+    private static final long serialVersionUID = 3978395424254919264L;
+
     @Column(name = "pix_key")
     private String key;
 

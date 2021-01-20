@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.ReconciliationSyncEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ public class RemovePixKeyUseCaseTest {
     private RemovePixKeyBacenPort removePixKeyBacenPort;
 
     @Mock
-    private ReconciliationSyncEventPort reconciliationSyncEventPort;
+    private PixKeyEventPort pixKeyEventPort;
 
     @InjectMocks
     private RemovePixKeyUseCase useCase;

@@ -49,7 +49,7 @@ public class Execution {
             .build();
     }
 
-    public static Execution fail(LocalDateTime startTime, LocalDateTime endTime, ExecutionType type, Exception e) {
+    public static Execution fail(LocalDateTime startTime, LocalDateTime endTime, ExecutionType type, Throwable e) {
         Optional<String> message = Optional.ofNullable(e.getMessage());
         var finalMessage = message.map(mes -> StringUtils.substring(mes, START, MAXIMUM_SIZE)).orElse("FAILED");
 
