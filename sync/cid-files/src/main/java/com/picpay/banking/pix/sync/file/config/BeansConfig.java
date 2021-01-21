@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeansConfig {
 
+
     @Bean
     public FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase(
             @Value("${picpay.ispb}") Integer participant,
