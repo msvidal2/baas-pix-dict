@@ -6,6 +6,8 @@ import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ConfirmClaimUseCaseTest {
+class ConfirmClaimUseCaseTest {
 
     private static final LocalDateTime NOW = LocalDateTime.now();
 
@@ -44,6 +46,12 @@ public class ConfirmClaimUseCaseTest {
 
     @Mock
     private RemovePixKeyPort removePixKeyPort;
+
+    @Mock
+    private FindPixKeyPort findPixKeyPort;
+
+    @Mock
+    private PixKeyEventPort pixKeyEventPort;
 
     private Claim claim;
 
@@ -77,6 +85,7 @@ public class ConfirmClaimUseCaseTest {
         when(confirmClaimPort.confirm(any(), any(), anyString())).thenReturn(claim);
         when(saveClaimPort.saveClaim(any(), anyString())).thenReturn(claim);
         when(removePixKeyPort.remove(any(), anyInt())).thenReturn(null);
+        when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(PixKey.builder().build()));
 
         Claim claimConfirmed = useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, UUID.randomUUID().toString());
 
@@ -87,6 +96,7 @@ public class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(1)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(1)).remove(any(), anyInt());
+        verify(pixKeyEventPort, times(1)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -101,6 +111,7 @@ public class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
+        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -115,6 +126,7 @@ public class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
+        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -129,6 +141,7 @@ public class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
+        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -144,6 +157,7 @@ public class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
+        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
 

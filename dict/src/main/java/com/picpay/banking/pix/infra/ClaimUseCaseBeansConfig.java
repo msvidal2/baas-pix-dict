@@ -1,58 +1,76 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.*;
-import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.*;
+import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.usecase.claim.CancelClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class ClaimUseCaseBeansConfig {
 
+    private final CreateClaimBacenPort createClaimPort;
+    private final CreateClaimPort saveClaimPort;
+    private final FindOpenClaimByKeyPort findClaimByKeyPort;
+    private final FindPixKeyPort findPixKeyPort;
+    private final ConfirmClaimPort claimConfirmationPort;
+    private final FindClaimPort findClaimPort;
+    private final RemovePixKeyPort removePixKeyPort;
+    private final PixKeyEventPort pixKeyEventPort;
+    private final ListPendingClaimPort listPendingClaimPort;
+    private final ListClaimPort listClaimPort;
+    private final CancelClaimBacenPort claimCancelPort;
+    private final FindByIdPort findByIdPort;
+    private final CancelClaimPort cancelClaimPort;
+    private final SavePixKeyPort savePixKeyPort;
+    private final CompleteClaimBacenPort completeClaimBacenPort;
+    private final CompleteClaimPort completeClaimPort;
+    private final SavePixKeyPort createPixKeyPort;
+
     @Bean
-    public CreateClaimUseCase createClaimUseCase(CreateClaimBacenPort createClaimPort,
-                                                 CreateClaimPort saveClaimPort,
-                                                 FindOpenClaimByKeyPort findClaimByKeyPort,
-                                                 FindPixKeyPort findPixKeyPort) {
+    public CreateClaimUseCase createClaimUseCase() {
         return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort);
     }
 
     @Bean
-    public ConfirmClaimUseCase claimConfirmationUseCase(ConfirmClaimPort claimConfirmationPort,
-                                                        FindClaimPort findClaimPort,
-                                                        CreateClaimPort saveClaimPort,
-                                                        RemovePixKeyPort removePixKeyPort) {
-        return new ConfirmClaimUseCase(claimConfirmationPort, findClaimPort, saveClaimPort, removePixKeyPort);
+    public ConfirmClaimUseCase claimConfirmationUseCase() {
+        return new ConfirmClaimUseCase(claimConfirmationPort, findClaimPort, saveClaimPort, removePixKeyPort, pixKeyEventPort, findPixKeyPort);
     }
 
     @Bean
-    public ListClaimUseCase listClaimUseCase(ListPendingClaimPort listPendingClaimPort,
-                                             ListClaimPort listClaimPort) {
-        return new ListClaimUseCase(listPendingClaimPort,listClaimPort);
+    public ListClaimUseCase listClaimUseCase() {
+        return new ListClaimUseCase(listPendingClaimPort, listClaimPort);
     }
-    
+
     @Bean
-    public CancelClaimUseCase claimCancelUseCase(CancelClaimBacenPort claimCancelPort,
-                                                 FindByIdPort findByIdPort,
-                                                 CancelClaimPort cancelClaimPort,
-                                                 FindPixKeyPort findPixKeyPort,
-                                                 SavePixKeyPort savePixKeyPort) {
+    public CancelClaimUseCase claimCancelUseCase() {
         return new CancelClaimUseCase(claimCancelPort, findByIdPort, cancelClaimPort, findPixKeyPort, savePixKeyPort);
     }
 
     @Bean
-    public CompleteClaimUseCase completeClaimUseCase(CompleteClaimBacenPort completeClaimBacenPort,
-                                                     CompleteClaimPort completeClaimPort,
-                                                     FindClaimPort findClaimPort,
-                                                     SavePixKeyPort createPixKeyPort) {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
+    public CompleteClaimUseCase completeClaimUseCase() {
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort, pixKeyEventPort);
     }
 
     @Bean

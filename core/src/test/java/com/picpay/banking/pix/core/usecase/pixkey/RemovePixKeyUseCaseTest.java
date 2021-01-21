@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.picpay.banking.pix.core.domain.RemoveReason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RemovePixKeyUseCaseTest {
+class RemovePixKeyUseCaseTest {
 
     @Mock
     private RemovePixKeyPort removePixKeyPort;
@@ -48,11 +49,13 @@ public class RemovePixKeyUseCaseTest {
 
         when(removePixKeyBacenPort.remove(any(), any()))
             .thenReturn(PixKey.builder().updatedAt(LocalDateTime.now()).build());
+        when(removePixKeyPort.remove(any(), any())).thenReturn(Optional.of(pixKey));
 
         assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
 
         verify(removePixKeyBacenPort).remove(any(), any());
         verify(removePixKeyPort).remove(anyString(), anyInt());
+        verify(pixKeyEventPort).pixKeyWasRemoved(any());
     }
 
     @Test
