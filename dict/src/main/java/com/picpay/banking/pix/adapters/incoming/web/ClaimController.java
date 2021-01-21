@@ -142,7 +142,7 @@ public class ClaimController {
 
         var claimCancelled = cancelClaimUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
 
-        return ClaimResponse.from(claim);
+        return ClaimResponse.from(claimCancelled);
     }
 
     @Trace
