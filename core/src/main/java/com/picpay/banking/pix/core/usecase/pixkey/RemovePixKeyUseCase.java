@@ -32,7 +32,7 @@ public class RemovePixKeyUseCase {
 
         remove(requestIdentifier, pixKey, removeAt);
 
-        log.info("PixKey_removed: {}, {}",
+        log.info("PixKey_removed",
             kv(REQUEST_IDENTIFIER, requestIdentifier),
             kv("key", pixKey.getKey()));
     }
