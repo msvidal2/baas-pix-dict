@@ -49,7 +49,7 @@ public class UpdateAccountPixKeyUseCase {
         save(requestIdentifier, reason, pixKeyUpdated);
         sendEvent(requestIdentifier, pixKeyUpdated);
 
-        log.info("PixKey_updated: {}, {}"
+        log.info("PixKey_updated"
             , kv(REQUEST_IDENTIFIER, requestIdentifier)
             , kv("key", pixKeyUpdated.getKey()));
 
