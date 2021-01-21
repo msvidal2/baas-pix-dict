@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
 import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.PersonType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.lang.NonNull;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 @Builder
 @Getter
@@ -68,9 +71,7 @@ public class ListClaimRequestWebDTO {
             return null;
         }
 
-        var dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-        return LocalDateTime.from(dateTimeFormatter.parse(startDate));
+        return LocalDateTime.from(ISO_LOCAL_DATE_TIME.parse(startDate));
     }
 
     public LocalDateTime getEndDateAsLocalDateTime() {
@@ -78,9 +79,18 @@ public class ListClaimRequestWebDTO {
             return null;
         }
 
-        var dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        return LocalDateTime.from(ISO_LOCAL_DATE_TIME.parse(endDate));
+    }
 
-        return LocalDateTime.from(dateTimeFormatter.parse(endDate));
+    public Claim toDomain() {
+        return Claim.builder()
+                .ispb(ispb)
+                .personType(personType)
+                .cpfCnpj(cpfCnpj)
+                .branchNumber(branchNumber)
+                .accountNumber(accountNumber)
+                .accountType(accountType)
+                .build();
     }
 
 }

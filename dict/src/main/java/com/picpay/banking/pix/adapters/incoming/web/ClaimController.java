@@ -1,21 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.claim.dto.response.ClaimResponse;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimCancelDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ClaimConfirmationDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.ListClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimIterable;
-import com.picpay.banking.pix.core.usecase.claim.CancelClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,17 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -71,15 +51,13 @@ public class ClaimController {
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
-        var claim = createAddressKeyUseCase.execute(requestDTO.toDomain(), requestIdentifier);
-
-        return ClaimResponseDTO.from(claim);
+        return ClaimResponseDTO.from(createAddressKeyUseCase.execute(requestDTO.toDomain(), requestIdentifier));
     }
 
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
-    public Claim confirm(@RequestHeader String requestIdentifier,
+    public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
 
@@ -88,47 +66,34 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        var claim = Claim.builder()
-                .claimId(claimId)
-                .confirmationReason(dto.getReason())
-                .ispb(dto.getIspb())
-                .build();
-
-        return confirmClaimUseCase.execute(claim,
-                dto.getReason(),
-                requestIdentifier);
+        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
+                        dto.getReason(),
+                        requestIdentifier));
     }
 
     @Trace
     @ApiOperation(value = "List Claim.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ClaimIterable list(@RequestHeader String requestIdentifier,
+    public ClaimIterableResponseDTO list(@RequestHeader String requestIdentifier,
                               @Valid ListClaimRequestWebDTO requestDTO) {
 
         log.info("Claim_listing",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("dto", requestDTO));
 
-        var claim = Claim.builder()
-            .ispb(requestDTO.getIspb())
-            .personType(requestDTO.getPersonType())
-            .cpfCnpj(requestDTO.getCpfCnpj())
-            .branchNumber(requestDTO.getBranchNumber())
-            .accountNumber(requestDTO.getAccountNumber())
-            .accountType(requestDTO.getAccountType())
-            .build();
-
-        return listClaimUseCase.execute(claim,
+        var claim = listClaimUseCase.execute(requestDTO.toDomain(),
                 requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaim(), requestDTO.getDonor(),
                 requestDTO.getStartDateAsLocalDateTime(), requestDTO.getEndDateAsLocalDateTime(),
                 requestIdentifier);
+
+        return ClaimIterableResponseDTO.from(claim);
     }
 
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
-    public ClaimResponse cancel(@RequestHeader String requestIdentifier,
+    public ClaimResponseDTO cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
 
@@ -142,15 +107,14 @@ public class ClaimController {
                 .ispb(dto.getIspb())
                 .build();
 
-        var claimCancelled = cancelClaimUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier);
-
-        return ClaimResponse.from(claimCancelled);
+        return ClaimResponseDTO.from(
+                cancelClaimUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier));
     }
 
     @Trace
     @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
-    public Claim complete(@RequestHeader String requestIdentifier,
+    public ClaimResponseDTO complete(@RequestHeader String requestIdentifier,
                           @PathVariable String claimId,
                           @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
 
@@ -159,11 +123,12 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        return completeClaimUseCase.execute(Claim.builder()
-                        .claimId(claimId)
-                        .ispb(dto.getIspb())
-                        .build(),
-                requestIdentifier);
+        var claim = Claim.builder()
+                .claimId(claimId)
+                .ispb(dto.getIspb())
+                .build();
+
+        return ClaimResponseDTO.from(completeClaimUseCase.execute(claim, requestIdentifier));
     }
 
     @Trace
@@ -176,9 +141,7 @@ public class ClaimController {
 
         log.info("Claim_finding", kv(CLAIM_ID, claimId));
 
-        var claim = findClaimUseCase.execute(claimId, ispb, reivindicador);
-
-        return ClaimResponseDTO.from(claim);
+        return ClaimResponseDTO.from(findClaimUseCase.execute(claimId, ispb, reivindicador));
     }
 
 }
