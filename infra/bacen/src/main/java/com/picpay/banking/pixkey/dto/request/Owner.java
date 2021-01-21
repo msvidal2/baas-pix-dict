@@ -34,7 +34,7 @@ public class Owner {
         return Owner.builder()
             .type(PersonType.resolve(pixKey.getPersonType()))
             .taxIdNumber(pixKey.getTaxId())
-            .name(pixKey.getOwnerName())
+            .name(pixKey.getName())
             .tradeName(pixKey.getFantasyName())
             .build();
     }
@@ -43,7 +43,7 @@ public class Owner {
         return Owner.builder()
             .type(PersonType.resolve(claim.getPersonType()))
             .taxIdNumber(claim.getCpfCnpj())
-            .name(claim.getOwnerName())
+            .name(claim.getName())
             .tradeName(claim.getFantasyName())
             .build();
     }

@@ -92,6 +92,8 @@ public class PixKeyEntity {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime completionPeriodEnd;
 
+    private String fantasyName;
+
     public static PixKeyEntity from(final PixKey pixKey, final Reason reason) {
         return PixKeyEntity.builder()
             .id(PixKeyIdEntity.builder()
@@ -114,6 +116,7 @@ public class PixKeyEntity {
             .ownershipDate(pixKey.getStartPossessionAt())
             .cid(pixKey.getCid())
             .donatedAutomatically(pixKey.isDonatedAutomatically())
+            .fantasyName(pixKey.getFantasyName())
             .build();
     }
 
@@ -136,6 +139,7 @@ public class PixKeyEntity {
             .cid(cid)
             .updatedAt(updateDate)
             .donatedAutomatically(donatedAutomatically)
+            .fantasyName(fantasyName)
             .build();
     }
 

@@ -46,7 +46,7 @@ public class CreateEntryResponse {
     @XmlElement(name = "Entry")
     private Entry entry;
 
-    public PixKey toDomain(String requestIdentifier, Reason resolve) {
+    public PixKey toDomain(String requestIdentifier) {
         return PixKey.builder()
             .key(entry.getKey())
             .type(entry.getKeyType().getType())

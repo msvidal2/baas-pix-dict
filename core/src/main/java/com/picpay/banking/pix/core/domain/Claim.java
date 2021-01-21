@@ -46,11 +46,8 @@ public class Claim {
     private LocalDateTime endDate;
     private String correlationId;
 
-    public String getOwnerName() {
-        if (PersonType.INDIVIDUAL_PERSON.equals(personType)) {
-            return name;
-        }
-        return ObjectUtils.firstNonNull(fantasyName, name);
+    public String getName() {
+        return ObjectUtils.firstNonNull(name, fantasyName);
     }
 
     public String getTaxIdWithLeftZeros() {

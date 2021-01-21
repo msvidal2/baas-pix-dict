@@ -97,6 +97,7 @@ public class ClaimResponse {
                 .accountOpeningDate(claimerAccount.getOpeningDate())
                 .cpfCnpj(claimer.getTaxIdNumber())
                 .name(claimer.getName())
+                .fantasyName(claimer.getTradeName())
                 .donorIspb(Integer.parseInt(donorParticipant))
                 .claimSituation(status.getClaimSituation())
                 .completionThresholdDate(completionPeriodEnd)
