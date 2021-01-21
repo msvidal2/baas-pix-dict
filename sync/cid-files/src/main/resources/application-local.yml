@@ -1,13 +1,16 @@
 spring:
-  application:
-    name: dict-sync-cid-file
-  cloud:
-    task:
-      name: SYNC_CID_FILE
-    config:
-      enabled: false
+    application:
+        name: dict-sync-cid-file
+    cloud:
+        task:
+            name: SYNC_CID_FILE
+        config:
+            enabled: false
 picpay:
     ispb: 22896431
     logging:
         appender: CONSOLE
         level: INFO
+    dict:
+        pixkey:
+            notification-dispatcher: true

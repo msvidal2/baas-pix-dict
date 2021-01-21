@@ -2,6 +2,7 @@ package com.picpay.banking.pix.sync.file;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @author Luis Silva
@@ -11,7 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SyncFileApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SyncFileApplication.class);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(SyncFileApplication.class, args);
+        System.exit(SpringApplication.exit(applicationContext));
     }
 
 }
