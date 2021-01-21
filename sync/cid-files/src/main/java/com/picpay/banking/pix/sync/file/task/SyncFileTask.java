@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.sync.file.task;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -20,17 +19,11 @@ import java.util.Arrays;
 public class SyncFileTask implements ApplicationRunner {
 
     private final FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
-    private final ReconciliationLockPort lockPort;
 
     @Override
     @Transactional
     public void run(final ApplicationArguments args) throws Exception {
-        try {
-            lockPort.lock();
-            Arrays.stream(KeyType.values()).forEach(this.failureReconciliationSyncByFileUseCase::execute);
-        } finally {
-            lockPort.unlock();
-        }
+        Arrays.stream(KeyType.values()).forEach(this.failureReconciliationSyncByFileUseCase::execute);
     }
 
 }

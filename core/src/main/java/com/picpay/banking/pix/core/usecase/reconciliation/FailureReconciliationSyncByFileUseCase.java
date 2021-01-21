@@ -9,6 +9,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,9 +32,17 @@ public class FailureReconciliationSyncByFileUseCase {
     private final FindPixKeyPort findPixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final PixKeyEventPort pixKeyEventPort;
+    private final ReconciliationLockPort lockPort;
 
     public void execute(KeyType keyType) {
-        this.databaseContentIdentifierPort.findLastFileRequested(keyType).ifPresent(this::processFile);
+        this.databaseContentIdentifierPort.findLastFileRequested(keyType)
+            .ifPresent(contentIdentifierFile -> {
+                try {
+                    this.processFile(contentIdentifierFile);
+                } finally {
+                    this.lockPort.unlock();
+                }
+            });
     }
 
     private void processFile(final ContentIdentifierFile contentIdentifierFile) {
@@ -42,6 +51,8 @@ public class FailureReconciliationSyncByFileUseCase {
         if (availableFile == null || availableFile.getStatus().isNotAvaliable()) {
             return;
         }
+
+        this.lockPort.lock();
 
         final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
         final var keyType = availableFile.getKeyType();
@@ -59,8 +70,8 @@ public class FailureReconciliationSyncByFileUseCase {
         var actualPage = 0;
         Pagination<PixKey> pagination = null;
 
-        do{
-            pagination = this.findPixKeyPort.findAllByKeyType(keyType,actualPage,10);
+        do {
+            pagination = this.findPixKeyPort.findAllByKeyType(keyType, actualPage, 10);
             sync.verify(cids, pagination.getResult());
             actualPage = pagination.nextPage();
         } while (pagination.getHasNext());
@@ -80,7 +91,7 @@ public class FailureReconciliationSyncByFileUseCase {
                         updatePixKey(keyType, sync, cid, pixKeyToInsert);
                     }, () -> {
                         insertPixKey(keyType, sync, cid, pixKeyToInsert);
-                    } );
+                    });
                 }, () -> {
                     this.remove(keyType, sync, cid);
                 });
@@ -90,25 +101,27 @@ public class FailureReconciliationSyncByFileUseCase {
     private void insertPixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
         this.pixKeyEventPort.pixKeyWasCreated(pixKeyToInsert);
-        log.info("Cid {} of key type {} {} in database", cid, keyType,ADDED);
+        log.info("Cid {} of key type {} {} in database", cid, keyType, ADDED);
     }
 
     private void updatePixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, UPDATED);
         this.pixKeyEventPort.pixKeyWasUpdated(pixKeyToInsert);
-        log.info("Cid {} of key type {} {} in database", cid, keyType,UPDATED);
+        log.info("Cid {} of key type {} {} in database", cid, keyType, UPDATED);
     }
 
 
     private void remove(final KeyType keyType, final Sync sync, final String cid) {
         final var cidInDatabase = this.findPixKeyPort.findByCid(cid);
         cidInDatabase.ifPresent(pixKey -> {
-            final var calculatedCid = pixKey.recalculateCid();;
+            final var calculatedCid = pixKey.recalculateCid();
+            ;
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
             if (valueInBacen.isEmpty()) {
                 this.removePixKey(keyType, sync, cid, pixKey);
-            }else {
-                log.info("PixKey {} - Type {} with Cid {} was update from database because cid don't exists in bacen but key exists", pixKey.getKey(),pixKey.getType(), cid);
+            } else {
+                log.info("PixKey {} - Type {} with Cid {} was update from database because cid don't exists in bacen but key exists", pixKey.getKey(),
+                    pixKey.getType(), cid);
             }
         });
     }
