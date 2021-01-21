@@ -29,6 +29,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
+    public static final String VSYNC_HISTORIC = "vsyncHistoric";
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final FindPixKeyPort findPixKeyPort;
     private final SyncVerifierPort syncVerifierPort;
@@ -45,7 +46,7 @@ public class FailureReconciliationSyncUseCase {
         this.syncVerifierHistoric = syncVerifierHistoric;
         var startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started: {}",
-            kv("vsyncHistoric", syncVerifierHistoric));
+            kv(VSYNC_HISTORIC, syncVerifierHistoric));
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
@@ -64,7 +65,7 @@ public class FailureReconciliationSyncUseCase {
         performSyncVerifier(syncVerifierHistoric, bacenEvents);
 
         log.info("FailureReconciliationSync_ended: {}, {}",
-            kv("vsyncHistoric", syncVerifierHistoric),
+            kv(VSYNC_HISTORIC, syncVerifierHistoric),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
@@ -77,7 +78,7 @@ public class FailureReconciliationSyncUseCase {
         syncVerifierHistoricPort.save(newSyncVerifierHistoric);
 
         log.info("FailureReconciliationSync_performSyncVerifier: {}, {}",
-            kv("vsyncHistoric", syncVerifierHistoric),
+            kv(VSYNC_HISTORIC, syncVerifierHistoric),
             kv("newSyncVerifierHistoric", newSyncVerifierHistoric));
     }
 
@@ -107,7 +108,7 @@ public class FailureReconciliationSyncUseCase {
         log.info("FailureReconciliationSync_changePixKey: {}, {}, {}",
             kv("cid", cid),
             kv("action", action),
-            kv("vsyncHistoric", syncVerifierHistoric));
+            kv(VSYNC_HISTORIC, syncVerifierHistoric));
     }
 
     private void removePixKey(final PixKey pixKey) {

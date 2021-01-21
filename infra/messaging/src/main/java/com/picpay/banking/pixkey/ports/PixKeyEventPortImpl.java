@@ -25,6 +25,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class PixKeyEventPortImpl implements PixKeyEventPort {
 
     private static final String CIRCUIT_BREAKER = "pix-key-send-event";
+    public static final String ERROR = "error";
     private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
 
     @Override
@@ -75,7 +76,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
     public void fallback(final PixKey pixKey, Exception e) {
         log.error("PixKeySendEventPort_fallback: {}, {}",
             kv("pixKey", pixKey),
-            kv("error", e));
+            kv(ERROR, e));
         throw new PortException(e);
     }
 
@@ -83,7 +84,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         log.error("PixKeySendEventPort_fallback: {}, {}, {}",
             kv("oldPixKey", oldPixKey),
             kv("newPixKey", newPixKey),
-            kv("error", e));
+            kv(ERROR, e));
         throw new PortException(e);
     }
 
@@ -91,7 +92,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         log.error("ReconciliationEventsPort_fallback: {}, {}, {}",
             kv("pixKey", pixKey),
             kv("removedAt", removedAt),
-            kv("error", e));
+            kv(ERROR, e));
         throw new PortException(e);
     }
 

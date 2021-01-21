@@ -24,7 +24,7 @@ class ClaimCancelValidatorTest {
 
     @Test
     void when_validateWithClaimantSuccess_expect_noExceptions() {
-        assertDoesNotThrow(() -> validate(claim, true, CLIENT_REQUEST, randomUUID().toString()));
+        assertDoesNotThrow(() -> validate(claim, true, CLIENT_REQUEST, random()));
     }
 
     @Test
@@ -49,7 +49,7 @@ class ClaimCancelValidatorTest {
                 .ispb(24323434)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, random()));
     }
 
     @Test
@@ -59,7 +59,7 @@ class ClaimCancelValidatorTest {
                 .ispb(0)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, CLIENT_REQUEST, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, CLIENT_REQUEST, random()));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ClaimCancelValidatorTest {
                 .ispb(0)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, random()));
     }
 
     @Test
@@ -79,7 +79,11 @@ class ClaimCancelValidatorTest {
                 .ispb(24323434)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, null, randomUUID().toString()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, null, random()));
+    }
+
+    private String random() {
+        return randomUUID().toString();
     }
 
 }

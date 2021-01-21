@@ -17,6 +17,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class RemovePixKeyUseCase {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     private final RemovePixKeyPort removePixKeyPort;
     private final RemovePixKeyBacenPort removePixKeyBacenPort;
     private final PixKeyEventPort pixKeyEventPort;
@@ -32,7 +33,7 @@ public class RemovePixKeyUseCase {
         remove(requestIdentifier, pixKey, removeAt);
 
         log.info("PixKey_removed: {}, {}",
-            kv("requestIdentifier", requestIdentifier),
+            kv(REQUEST_IDENTIFIER, requestIdentifier),
             kv("key", pixKey.getKey()));
     }
 
@@ -42,7 +43,7 @@ public class RemovePixKeyUseCase {
                 .ifPresent(oldPixKey -> sendEvent(requestIdentifier, removeAt, oldPixKey));
         } catch (Exception e) {
             log.error("PixKey_remove_saveError",
-                    kv("requestIdentifier", requestIdentifier),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
                     kv("key", pixKey.getKey()),
                     kv("exception", e));
         }
@@ -53,7 +54,7 @@ public class RemovePixKeyUseCase {
             pixKeyEventPort.pixKeyWasRemoved(oldPixKey.toBuilder().updatedAt(removeAt).build());
         } catch (Exception e) {
             log.error("PixKey_remove_eventError",
-                    kv("requestIdentifier", requestIdentifier),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
                     kv("key", oldPixKey.getKey()),
                     kv("exception", e));
         }

@@ -17,6 +17,10 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @AllArgsConstructor
 public class TimeLimiterExecutor {
 
+    public static final String TIMER_LIMITER_NAME = "timerLimiterName";
+    public static final String TIMEOUT_TIME = "timeoutTime";
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
+    public static final String EXCEPTION = "exception";
     private final TimeLimiterRegistry timeLimiterRegistry;
 
     public <T> T execute(final String timerLimiterName, final Supplier<T> supplier, final String requestIdentifier) {
@@ -28,28 +32,28 @@ public class TimeLimiterExecutor {
             return timeLimiter.executeFutureSupplier(() -> completableFuture);
         } catch (FeignException e) {
             log.error("TimeLimiterExecutor_feignException",
-                    kv("timerLimiterName", timerLimiterName),
-                    kv("requestIdentifier", requestIdentifier),
-                    kv("exception", e));
+                    kv(TIMER_LIMITER_NAME, timerLimiterName),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
+                    kv(EXCEPTION, e));
 
             throw e;
         } catch (TimeoutException e) {
             log.error("TimeLimiterExecutor_timeoutException",
-                    kv("timeoutTime", timeLimiter.getTimeLimiterConfig().getTimeoutDuration()),
-                    kv("timerLimiterName", timerLimiterName),
-                    kv("requestIdentifier", requestIdentifier),
-                    kv("exception", e));
+                    kv(TIMEOUT_TIME, timeLimiter.getTimeLimiterConfig().getTimeoutDuration()),
+                    kv(TIMER_LIMITER_NAME, timerLimiterName),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
+                    kv(EXCEPTION, e));
 
             log.error("client-timeout",
-                    kv("requestIdentifier", requestIdentifier));
+                    kv(REQUEST_IDENTIFIER, requestIdentifier));
 
             throw new RuntimeException("TimeoutException", e);
         } catch (Exception e) {
             log.error("TimeLimiterExecutor_exception",
-                    kv("timeoutTime", timeLimiter.getTimeLimiterConfig().getTimeoutDuration()),
-                    kv("timerLimiterName", timerLimiterName),
-                    kv("requestIdentifier", requestIdentifier),
-                    kv("exception", e));
+                    kv(TIMEOUT_TIME, timeLimiter.getTimeLimiterConfig().getTimeoutDuration()),
+                    kv(TIMER_LIMITER_NAME, timerLimiterName),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
+                    kv(EXCEPTION, e));
 
             throw new RuntimeException(e.getMessage(), e);
         }

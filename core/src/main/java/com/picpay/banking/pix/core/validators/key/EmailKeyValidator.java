@@ -5,13 +5,15 @@ import javax.mail.internet.InternetAddress;
 
 public class EmailKeyValidator implements KeyValidator<String> {
 
+    public static final int EMAIL_LENGHT = 77;
+
     @Override
     public boolean validate(final String email) {
         if(email == null || email.isBlank()) {
             throw new KeyValidatorException("The email can not be empty");
         }
 
-        if(email.trim().length() > 77) {
+        if(email.trim().length() > EMAIL_LENGHT) {
             throw new KeyValidatorException("The maximum number of characters in the email must be 77");
         }
 

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class BacenErrorBuilder {
     }
 
     public BacenErrorBuilder withBody(final byte[] responseBody) {
-        this.responseBody = responseBody;
+        this.responseBody = Arrays.copyOf(responseBody,responseBody.length);
         return this;
     }
 

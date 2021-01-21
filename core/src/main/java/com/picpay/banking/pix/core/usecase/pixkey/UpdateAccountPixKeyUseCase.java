@@ -19,6 +19,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @AllArgsConstructor
 public class UpdateAccountPixKeyUseCase {
 
+    public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     private SavePixKeyPort savePixKeyPort;
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
     private FindPixKeyPort findPixKeyPort;
@@ -49,7 +50,7 @@ public class UpdateAccountPixKeyUseCase {
         sendEvent(requestIdentifier, pixKeyUpdated);
 
         log.info("PixKey_updated: {}, {}"
-            , kv("requestIdentifier", requestIdentifier)
+            , kv(REQUEST_IDENTIFIER, requestIdentifier)
             , kv("key", pixKeyUpdated.getKey()));
 
         return pixKeyUpdated;
@@ -60,7 +61,7 @@ public class UpdateAccountPixKeyUseCase {
             savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
         } catch (Exception e) {
             log.error("PixKey_update_saveError",
-                    kv("requestIdentifier", requestIdentifier),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
                     kv("key", pixKeyUpdated.getKey()),
                     kv("exception", e));
         }
@@ -71,7 +72,7 @@ public class UpdateAccountPixKeyUseCase {
             pixKeyEventPort.pixKeyWasUpdated(pixKeyUpdated);
         } catch (Exception e) {
             log.error("PixKey_update_eventError",
-                    kv("requestIdentifier", requestIdentifier),
+                    kv(REQUEST_IDENTIFIER, requestIdentifier),
                     kv("key", pixKeyUpdated.getKey()),
                     kv("exception", e));
         }

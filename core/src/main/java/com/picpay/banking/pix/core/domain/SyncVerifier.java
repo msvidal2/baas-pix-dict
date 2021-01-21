@@ -62,11 +62,11 @@ public class SyncVerifier {
     }
 
     public boolean isNOk() {
-        return syncVerifierResultType.equals(SyncVerifierResultType.NOK);
+        return syncVerifierResultType == SyncVerifierResultType.NOK;
     }
 
     public boolean isOK() {
-        return syncVerifierResultType.equals(SyncVerifierResultType.OK);
+        return syncVerifierResultType == SyncVerifierResultType.OK;
     }
 
 }

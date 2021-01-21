@@ -1,7 +1,11 @@
 package com.picpay.banking.pix.core.domain;
 
 import com.google.common.base.Strings;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DonorData {
+
+    public static final int CPF_SIZE = 11;
+    public static final int CNPJ_SIZE = 14;
 
     private String branchNumber;
     private AccountType accountType;
@@ -22,10 +29,10 @@ public class DonorData {
     private LocalDateTime notificationDate;
 
     public String getCpfCnpjWithLeftZeros() {
-        int size = 11;
+        int size = CPF_SIZE;
 
-        if(PersonType.LEGAL_ENTITY.equals(personType)) {
-            size = 14;
+        if(PersonType.LEGAL_ENTITY == personType) {
+            size = CNPJ_SIZE;
         }
 
         return Strings.padStart(String.valueOf(cpfCnpj), size, '0');
