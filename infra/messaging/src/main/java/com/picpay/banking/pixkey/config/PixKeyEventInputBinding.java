@@ -2,7 +2,6 @@ package com.picpay.banking.pixkey.config;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
-import org.springframework.stereotype.Component;
 
 public interface PixKeyEventInputBinding {
 
