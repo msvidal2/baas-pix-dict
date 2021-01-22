@@ -55,7 +55,7 @@ public class UpdateEntryResponse {
             .personType(PersonType.resolve(entry.getOwner().getType().getValue()))
             .taxId(entry.getOwner().getTaxIdNumber())
             .name(entry.getOwner().getName())
-            .fantasyName(entry.getOwner().getName())
+            .fantasyName(entry.getOwner().getTradeName())
             .createdAt(entry.getCreationDate())
             .updatedAt(responseTime)
             .startPossessionAt(entry.getKeyOwnershipDate())
