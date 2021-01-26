@@ -49,7 +49,7 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
 
     public Optional<InfractionReport> analyzeFallback(final String infractionReportId, final Integer ispb,
                                                       final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
-        log.error("Infraction_fallback_analyzeBacen -> {} {} {} {}",
+        log.error("Infraction_fallback_analyzeBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),

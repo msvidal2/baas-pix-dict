@@ -54,7 +54,7 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
                                            final String requestIdentifier,
                                            final String ispbPicPay,
                                            final Exception e) {
-        log.error("Infraction_fallback_createBacen -> {} {} {} {}",
+        log.error("Infraction_fallback_createBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("infractionReportId", infractionReport.getInfractionReportId()),
                 kv("ispb", ispbPicPay),
