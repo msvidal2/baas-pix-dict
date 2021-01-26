@@ -28,9 +28,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  * @author rafael.braga
  * @version 1.0 25/11/2020
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzePort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "analyze-infraction";
@@ -49,8 +49,10 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
 
     public Optional<InfractionReport> analyzeFallback(final String infractionReportId, final Integer ispb,
                                                       final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
-        log.error("Infraction_fallback_analyzingBacen",
+        log.error("Infraction_fallback_analyzeBacen",
                 kv("requestIdentifier", requestIdentifier),
+                kv("infractionReportId", infractionReportId),
+                kv("ispb", ispb),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 

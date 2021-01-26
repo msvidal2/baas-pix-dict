@@ -28,9 +28,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  * @author rafael.braga
  * @version 1.0 07/12/2020
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ListInfractionPortImpl implements ListInfractionPort {
 
     private final InfractionBacenClient infractionBacenClient;
@@ -53,7 +53,8 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     }
 
     public ListInfractionReports fallback(String ispb, Integer limit, LocalDateTime startDate, LocalDateTime endDate, Exception e) {
-        log.error("Infraction_fallback_listingBacen",
+        log.error("Infraction_fallback_listBacen",
+                kv("ispb", ispb),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 

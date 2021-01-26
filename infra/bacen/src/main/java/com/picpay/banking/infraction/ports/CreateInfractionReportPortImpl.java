@@ -28,9 +28,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  * @author rafael.braga
  * @version 1.0 25/11/2020
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CreateInfractionReportPortImpl implements CreateInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
@@ -54,8 +54,10 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
                                            final String requestIdentifier,
                                            final String ispbPicPay,
                                            final Exception e) {
-        log.error("Infraction_fallback_creatingBacen",
+        log.error("Infraction_fallback_createBacen",
                 kv("requestIdentifier", requestIdentifier),
+                kv("infractionReportId", infractionReport.getInfractionReportId()),
+                kv("ispb", ispbPicPay),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
