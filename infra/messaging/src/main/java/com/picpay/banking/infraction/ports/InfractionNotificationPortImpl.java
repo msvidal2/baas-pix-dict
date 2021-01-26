@@ -29,7 +29,11 @@ public class InfractionNotificationPortImpl implements InfractionNotificationPor
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void notify(InfractionReport infractionReport) {
+        log.info("Infraction_sendingInfractionNotification" );
+
         infractionAlertNotificationOutputStream.sendAlertNotification().send(new GenericMessage<>(infractionReport));
+
+        log.info("Infraction_sentInfractionNotification" );
         log.debug("Dispatched {} to infractionAlertNotificationOutputStream", infractionReport);
     }
 

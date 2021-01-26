@@ -17,14 +17,18 @@ import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * @author rafael.braga
  * @version 1.0 25/11/2020
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzePort {
@@ -45,6 +49,11 @@ public class InfractionReportAnalyzePortImpl implements InfractionReportAnalyzeP
 
     public Optional<InfractionReport> analyzeFallback(final String infractionReportId, final Integer ispb,
                                                       final InfractionAnalyze analyze, final String requestIdentifier, Exception e) {
+        log.error("Infraction_fallback_analyzingBacen",
+                kv("requestIdentifier", requestIdentifier),
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
         throw BacenExceptionBuilder.from(e).build();
     }
 

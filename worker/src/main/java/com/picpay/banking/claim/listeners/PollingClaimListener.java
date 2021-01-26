@@ -23,7 +23,7 @@ public class PollingClaimListener {
 
         var claim = message.getPayload();
 
-        log.info("new_claim_notification_received",
+        log.info("Claim_newClaimNotificationReceived",
                 kv("msg_id", message.getHeaders().getId()),
                 kv("Headers", message.getHeaders()),
                 kv("partition", message.getHeaders().get("partition")),
