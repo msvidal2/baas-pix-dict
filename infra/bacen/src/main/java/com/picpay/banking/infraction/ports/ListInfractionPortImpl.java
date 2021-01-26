@@ -53,7 +53,7 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     }
 
     public ListInfractionReports fallback(String ispb, Integer limit, LocalDateTime startDate, LocalDateTime endDate, Exception e) {
-        log.error("Infraction_fallback_listBacen -> {} {} {} {}",
+        log.error("Infraction_fallback_listBacen",
                 kv("ispb", ispb),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));

@@ -44,7 +44,7 @@ public class InfractionAcknowledgePortImpl implements InfractionAcknowledgePort 
     }
 
     public void fallback(final String infractionReportId, final String ispb, Exception e) {
-        log.error("Infraction_fallback_acknowledgeBacen -> {} {} {} {}",
+        log.error("Infraction_fallback_acknowledgeBacen",
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),
                 kv("exceptionMessage", e.getMessage()),

@@ -40,7 +40,7 @@ public class CancelInfractionReportPortImpl implements CancelInfractionReportPor
     }
 
     public InfractionReport fallBack(String infractionReportId, Integer ispb, String requestIdentifier, Exception e) {
-        log.error("Infraction_fallback_cancelBacen -> {} {} {} {}",
+        log.error("Infraction_fallback_cancelBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),
