@@ -65,7 +65,7 @@ public class InfractionReportController {
             , kv(REQUEST_IDENTIFIER, requestIdentifier)
             , kv("endToEndId", createInfractionReportRequestWebDTO.getEndToEndId())
             , kv(INFRACTION_TYPE, createInfractionReportRequestWebDTO.getInfractionType())
-            , kv("iIspbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
+            , kv("ispbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
 
         final var infractionReport = createInfractionReportUseCase.execute(
             CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO),

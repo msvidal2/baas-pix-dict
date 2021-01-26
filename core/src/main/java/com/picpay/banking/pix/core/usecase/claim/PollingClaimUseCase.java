@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.picpay.banking.pix.core.domain.ExecutionType.CLAIM_POLLING;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +36,9 @@ public class PollingClaimUseCase {
                         .endTime(endDate.minusHours(24))
                         .build())
                 .getEndTime();
+
+        log.info("Claim_newClaimNotificationReceiving",
+                kv("claimId", claim.getClaimId()));
 
         log.info("Start: {}, End: {}", startDate, endDate);
 

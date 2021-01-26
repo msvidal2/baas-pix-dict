@@ -32,6 +32,10 @@ public class InfractionAcknowledgePortImpl implements InfractionAcknowledgePort 
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void acknowledge(String infractionReportId, String ispb) {
 
+        log.info("Infraction_acknowledgeBacenSending",
+                kv("infractionReportId", infractionReportId),
+                kv("ispb", ispb));
+
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
                 () -> infractionBacenClient.acknowledge(infractionReportId, AcknowledgeInfractionReportRequest.from(infractionReportId, ispb)),
                 null);

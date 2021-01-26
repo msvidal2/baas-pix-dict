@@ -40,6 +40,10 @@ public class AcknowledgeClaimPortImpl implements AcknowledgeClaimPort {
     }
 
     public Claim acknowledgeFallback(String claimId, Integer ispb, Exception e) {
+        log.error("Claim_fallback_acknowledgeBacen",
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
         throw BacenExceptionBuilder.from(e).build();
     }
 

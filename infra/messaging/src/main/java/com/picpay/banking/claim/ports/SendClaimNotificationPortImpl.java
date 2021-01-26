@@ -32,7 +32,7 @@ public class SendClaimNotificationPortImpl implements SendClaimNotificationPort 
     }
 
     public void sendFallback(final Claim claim, final Exception e) {
-        log.error("SendNewClaimNotificationFallback",
+        log.error("Claim_sendNewClaimNotification_fallback",
                 kv("claimId", claim.getClaimId()),
                 kv("exception", e));
     }
