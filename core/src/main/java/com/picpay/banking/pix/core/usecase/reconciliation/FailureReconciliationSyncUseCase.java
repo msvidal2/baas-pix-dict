@@ -29,7 +29,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncUseCase {
 
-    public static final String VSYNC_HISTORIC = "vsyncHistoric";
+    public static final String SYNC_VERIFIER_HISTORIC = "syncVerifierHistoric";
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final FindPixKeyPort findPixKeyPort;
     private final SyncVerifierPort syncVerifierPort;
@@ -46,7 +46,7 @@ public class FailureReconciliationSyncUseCase {
         this.syncVerifierHistoric = syncVerifierHistoric;
         var startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started: {}",
-            kv(VSYNC_HISTORIC, syncVerifierHistoric));
+            kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric));
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
@@ -65,7 +65,7 @@ public class FailureReconciliationSyncUseCase {
         performSyncVerifier(syncVerifierHistoric, bacenEvents);
 
         log.info("FailureReconciliationSync_ended: {}, {}",
-            kv(VSYNC_HISTORIC, syncVerifierHistoric),
+            kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
     }
 
@@ -78,7 +78,7 @@ public class FailureReconciliationSyncUseCase {
         syncVerifierHistoricPort.save(newSyncVerifierHistoric);
 
         log.info("FailureReconciliationSync_performSyncVerifier: {}, {}",
-            kv(VSYNC_HISTORIC, syncVerifierHistoric),
+            kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric),
             kv("newSyncVerifierHistoric", newSyncVerifierHistoric));
     }
 
@@ -108,7 +108,7 @@ public class FailureReconciliationSyncUseCase {
         log.info("FailureReconciliationSync_changePixKey: {}, {}, {}",
             kv("cid", cid),
             kv("action", action),
-            kv(VSYNC_HISTORIC, syncVerifierHistoric));
+            kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric));
     }
 
     private void removePixKey(final PixKey pixKey) {
