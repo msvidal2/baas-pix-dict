@@ -26,5 +26,4 @@ Funcionalidade: Verificar Sincronismo após operações de CRUD
       | EMAIL     | UPDATE    |
       | EMAIL     | REMOVE    |
       | RANDOM    | CREATE    |
-#      | RANDOM    | UPDATE    |
       | RANDOM    | REMOVE    |

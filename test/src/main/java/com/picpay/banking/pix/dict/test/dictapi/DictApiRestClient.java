@@ -3,6 +3,7 @@ package com.picpay.banking.pix.dict.test.dictapi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,32 +18,33 @@ import java.util.UUID;
 @Service
 public class DictApiRestClient {
 
-    private static final String DICT_BASE_URL = "http://localhost:8080/v1/keys";
-
     private final RestTemplate restTemplate = new RestTemplateBuilder().build();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Value("${picpay.dict.url}")
+    private String dictUrl;
+
     public void clearAllDataForTheTest() {
         try {
-            restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.CPF,
+            restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.CPF,
                 HttpMethod.DELETE, createHttpEntity(PixKeyJsonHelper.removeByType("CPF")), String.class);
         } catch (HttpClientErrorException e) {
             log.info(e.getResponseBodyAsString());
         }
         try {
-            restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.CNPJ,
+            restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.CNPJ,
                 HttpMethod.DELETE, createHttpEntity(PixKeyJsonHelper.removeByType("CNPJ")), String.class);
         } catch (HttpClientErrorException e) {
             log.info(e.getResponseBodyAsString());
         }
         try {
-            restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.CELLPHONE,
+            restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.CELLPHONE,
                 HttpMethod.DELETE, createHttpEntity(PixKeyJsonHelper.removeByType("CELLPHONE")), String.class);
         } catch (HttpClientErrorException e) {
             log.info(e.getResponseBodyAsString());
         }
         try {
-            restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.EMAIL,
+            restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.EMAIL,
                 HttpMethod.DELETE, createHttpEntity(PixKeyJsonHelper.removeByType("EMAIL")), String.class);
         } catch (HttpClientErrorException e) {
             log.info(e.getResponseBodyAsString());
@@ -51,7 +53,7 @@ public class DictApiRestClient {
 
     @SneakyThrows
     public String cretePixKey(final String keyType) {
-        var result = restTemplate.postForObject(DICT_BASE_URL, createHttpEntity(PixKeyJsonHelper.createBody(keyType)), String.class);
+        var result = restTemplate.postForObject(dictUrl, createHttpEntity(PixKeyJsonHelper.createBody(keyType)), String.class);
         var keyValue = mapper.readTree(result).get("key").textValue();
         if ("RANDOM".equals(keyType)) PixKeyJsonHelper.RANDOM = keyValue;
         return keyValue;
@@ -59,13 +61,13 @@ public class DictApiRestClient {
 
     @SneakyThrows
     public String updatePixKey(final String keyType) {
-        var result = restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.keyByKeyType(keyType),
+        var result = restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.keyByKeyType(keyType),
             HttpMethod.PUT, createHttpEntity(PixKeyJsonHelper.updateBody(keyType)), String.class);
         return mapper.readTree(result.getBody()).get("key").textValue();
     }
 
     public String removePixKey(final String keyType) {
-        restTemplate.exchange(DICT_BASE_URL + "/" + PixKeyJsonHelper.keyByKeyType(keyType),
+        restTemplate.exchange(dictUrl + "/" + PixKeyJsonHelper.keyByKeyType(keyType),
             HttpMethod.DELETE, createHttpEntity(PixKeyJsonHelper.removeByType(keyType)), String.class);
         return PixKeyJsonHelper.keyByKeyType(keyType);
     }

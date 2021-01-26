@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,9 +52,10 @@ public class BacenErrorBuilder {
 
         var errorCode = BacenErrorCode.resolve(typeParts[typeParts.length - 1]);
 
+        // FIXME: Quando tento deletar uma chave que não existe, o errorcode ta vindo nulo
         return BacenError.builder()
-                .message(errorCode.getCode())
-                .detail(errorCode.getMessage())
+                .message(errorCode == null ? null : errorCode.getCode())
+                .detail(errorCode == null ? null : errorCode.getMessage())
                 .correlationId(problem.getCorrelationId())
                 .fields(fields)
                 .build();
