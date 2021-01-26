@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 
 @Slf4j
 @Component
@@ -39,7 +41,7 @@ public class SyncVerificationTask implements ApplicationRunner {
     private boolean onlySyncVerifier = false;
 
     @Override
-    public void run(final ApplicationArguments args)  {
+    public void run(final ApplicationArguments args) {
         try {
             lockPort.lock();
             runReconciliation(args);
@@ -48,7 +50,7 @@ public class SyncVerificationTask implements ApplicationRunner {
         }
     }
 
-    private void runReconciliation(final ApplicationArguments args)  {
+    private void runReconciliation(final ApplicationArguments args) {
         JCommander.newBuilder()
             .addObject(this)
             .build()
@@ -77,14 +79,14 @@ public class SyncVerificationTask implements ApplicationRunner {
     }
 
     private void runByKeyType(KeyType syncKeyType) {
-        log.info("SyncApplication start: {}", syncKeyType.name());
+        log.info("SyncApplication start: {}", kv("keyType", syncKeyType.name()));
         SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(syncKeyType);
 
         if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {
             syncVerifierService.failureReconciliationSync(syncVerifierHistoric);
         }
 
-        log.info("SyncApplication end: {}", syncVerifierHistoric);
+        log.info("SyncApplication end: {}, {}", kv("keyType", syncKeyType.name()), kv("syncVerifierHistoric", syncVerifierHistoric));
     }
 
 }

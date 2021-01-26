@@ -59,6 +59,9 @@ public class ClaimEntity {
     @Column(nullable = false, name = "claimer_name")
     private String claimerName;
 
+    @Column(name = "claimer_fantasy_name")
+    private String claimerFantasyName;
+
     @Column(name = "donor_participant")
     private Integer donorParticipant;
 
@@ -106,7 +109,8 @@ public class ClaimEntity {
                 .claimerAccountOpeningDate(claim.getAccountOpeningDate())
                 .claimerAccountType(claim.getAccountType())
                 .claimerBranch(claim.getBranchNumber())
-                .claimerName(claim.getOwnerName())
+                .claimerName(claim.getName())
+                .claimerFantasyName(claim.getFantasyName())
                 .claimerParticipant(claim.getIspb())
                 .claimerTaxId(claim.getCpfCnpj())
                 .claimerType(claim.getPersonType())
@@ -136,6 +140,7 @@ public class ClaimEntity {
                 .personType(claimerType)
                 .cpfCnpj(claimerTaxId)
                 .name(claimerName)
+                .fantasyName(claimerFantasyName)
                 .claimSituation(status)
                 .completionThresholdDate(completionPeriodEnd)
                 .resolutionThresholdDate(resolutionPeriodEnd)

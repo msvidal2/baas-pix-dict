@@ -31,6 +31,27 @@ class PixKeyTest {
     }
 
     @Test
+    void calculateCidByCPFAnotherScenario() {
+        var pixKey = PixKey.builder()
+            .ispb(22896431)
+            .key("11660117046")
+            .type(KeyType.CPF)
+            .branchNumber("0004")
+            .accountNumber("0001098200")
+            .accountType(AccountType.CHECKING)
+            .taxId("11660117046")
+            .name("Rodrigo Argentato")
+            .personType(PersonType.INDIVIDUAL_PERSON)
+            .requestId(UUID.fromString("8a8864b6-4d97-42e3-aa9c-bab921b730c2"))
+            .build();
+
+        pixKey.calculateCid();
+
+        final String expectedCid = "8756c87a19b85b192e4d6ea8f8747851befdbeae3474242c3580612b0743f2f8";
+        assertThat(pixKey.getCid()).isEqualTo(expectedCid);
+    }
+
+    @Test
     void calculateCidByCNPJ() {
         var pixKey = PixKey.builder()
             .ispb(22896431)

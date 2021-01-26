@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 @Builder(toBuilder = true)
@@ -60,12 +61,8 @@ public class PixKey implements Serializable {
     private UUID requestId;
     private boolean donatedAutomatically;
 
-    public String getOwnerName() {
-        if (PersonType.INDIVIDUAL_PERSON == personType) {
-            return name;
-        }
-
-        return ObjectUtils.firstNonNull(fantasyName, name);
+    public String getName() {
+        return ObjectUtils.firstNonNull(name, fantasyName);
     }
 
     public String getTaxIdWithLeftZeros() {
@@ -84,14 +81,15 @@ public class PixKey implements Serializable {
             .putLong(requestId.getMostSignificantBits())
             .putLong(requestId.getLeastSignificantBits());
 
-        var tradeName = (PersonType.LEGAL_ENTITY.equals(personType) && !Strings.isNullOrEmpty(fantasyName) ? fantasyName : "");
-
         final String entryAttributes = new StringBuilder()
             .append(type.keyTypeNameOnBacen()).append(SEPARATOR)
             .append(key).append(SEPARATOR)
             .append(taxId).append(SEPARATOR)
             .append(name).append(SEPARATOR)
-            .append(tradeName).append(SEPARATOR)
+            .append(Optional
+                    .ofNullable(fantasyName)
+                    .orElse(""))
+                .append(SEPARATOR)
             .append(ispb).append(SEPARATOR)
             .append(branchNumber).append(SEPARATOR)
             .append(accountNumber).append(SEPARATOR)

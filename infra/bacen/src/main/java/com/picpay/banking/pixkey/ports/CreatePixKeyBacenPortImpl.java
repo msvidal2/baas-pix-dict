@@ -36,7 +36,7 @@ public class CreatePixKeyBacenPortImpl implements CreatePixKeyBacenPort {
                 () -> bacenKeyClient.createPixKey(createEntryRequest),
                 requestIdentifier);
 
-        return response.toDomain(requestIdentifier, Reason.resolve(reason));
+        return response.toDomain(requestIdentifier);
     }
 
     public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, CreateReason reason, Exception e) {
