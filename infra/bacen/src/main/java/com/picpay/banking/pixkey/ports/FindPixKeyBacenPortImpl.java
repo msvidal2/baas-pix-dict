@@ -50,7 +50,7 @@ public class FindPixKeyBacenPortImpl implements FindPixKeyBacenPort {
     }
 
     public PixKey fallbackMethod(String requestIdentifier, String pixKey, String userId, Exception e) {
-        log.error("PixKey_fallback_creatingBacen",
+        log.error("PixKey_fallback_findBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
