@@ -41,7 +41,7 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
     }
 
     public PixKey fallbackMethod(PixKey pixKey, RemoveReason reason, Exception e) {
-        log.error("PixKey_fallback_removeAccountBacen: {}, {}, {}, {}",
+        log.error("PixKey_fallback_removeAccountBacen",
             kv("pixKey", pixKey.getKey()),
             kv("reason", reason),
             kv("exceptionMessage", e.getMessage()),
