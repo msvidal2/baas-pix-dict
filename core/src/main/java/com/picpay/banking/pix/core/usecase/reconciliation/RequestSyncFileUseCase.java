@@ -7,6 +7,8 @@ import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentId
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @AllArgsConstructor
 @Slf4j
 public class RequestSyncFileUseCase {
@@ -15,10 +17,10 @@ public class RequestSyncFileUseCase {
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
 
     public ContentIdentifierFile execute(KeyType keyType){
-        log.info("Requesting CID files from BACEN for key type", keyType);
+        log.info("RequestSyncFile_started {}", kv("keyType", keyType));
         final var contentIdentifierFile = this.bacenContentIdentifierEventsPort.requestContentIdentifierFile(keyType);
         this.databaseContentIdentifierPort.saveFile(contentIdentifierFile);
-        log.info("CID files from BACEN requested succesfull {} {}", contentIdentifierFile.getId(),contentIdentifierFile.getKeyType());
+        log.info("RequestSyncFile_ended {} {} ", kv("keyType", keyType), kv("contentIdentifierFileId",contentIdentifierFile.getId()));
         return contentIdentifierFile;
     }
 
