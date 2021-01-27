@@ -19,6 +19,7 @@ import java.util.Optional;
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.ADDED;
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.REMOVED;
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.UPDATED;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
 @Slf4j
@@ -52,6 +53,7 @@ public class FailureReconciliationSyncByFileUseCase {
             return;
         }
 
+        log.info("ReconciliationSyncByFile_started {}", kv("keyType", contentIdentifierFile.getKeyType()));
         this.lockPort.lock();
 
         final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
@@ -59,9 +61,11 @@ public class FailureReconciliationSyncByFileUseCase {
 
         var sync = this.verifyCidsInDatabase(contentIdentifierFile, cids, keyType);
 
-        this.synchronizeCids(keyType, sync);
+        this.synchronizeCids(contentIdentifierFile.getId() ,keyType, sync);
 
         this.databaseContentIdentifierPort.saveFile(availableFile);
+
+        log.info("ReconciliationSyncByFile_ended {}", kv("keyType", contentIdentifierFile.getKeyType()));
     }
 
     private Sync verifyCidsInDatabase(final ContentIdentifierFile contentIdentifierFile, final java.util.List<String> cids, final KeyType keyType) {
@@ -79,7 +83,7 @@ public class FailureReconciliationSyncByFileUseCase {
         return sync;
     }
 
-    private void synchronizeCids(final KeyType keyType, final Sync sync) {
+    private void synchronizeCids(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync) {
         sync.getCidsNotSyncronized().stream()
             .forEach(cid -> {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
@@ -88,50 +92,64 @@ public class FailureReconciliationSyncByFileUseCase {
                     this.createPixKeyPort.savePixKey(pixKeyToInsert, Reason.RECONCILIATION);
 
                     actualKey.ifPresentOrElse(keyInDatabase -> {
-                        updatePixKey(keyType, sync, cid, pixKeyToInsert);
+                        updatePixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
                     }, () -> {
-                        insertPixKey(keyType, sync, cid, pixKeyToInsert);
+                        insertPixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
                     });
                 }, () -> {
-                    this.remove(keyType, sync, cid);
+                    this.remove(contentIdentifierFileId, keyType, sync, cid);
                 });
             });
     }
 
-    private void insertPixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
+    private void insertPixKey(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
         this.pixKeyEventPort.pixKeyWasCreated(pixKeyToInsert);
-        log.info("Cid {} of key type {} {} in database", cid, keyType, ADDED);
+        log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}",
+            kv("key", pixKeyToInsert.getKey()),
+            kv("keyType", keyType),
+            kv("action", ADDED),
+            kv("contentIdentifierFileId", contentIdentifierFileId));
     }
 
-    private void updatePixKey(final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
+    private void updatePixKey(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, UPDATED);
         this.pixKeyEventPort.pixKeyWasUpdated(pixKeyToInsert);
-        log.info("Cid {} of key type {} {} in database", cid, keyType, UPDATED);
+        log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}, {}",
+            kv("key", pixKeyToInsert.getKey()),
+            kv("keyType", keyType),
+            kv("action", UPDATED),
+            kv("contentIdentifierFileId", contentIdentifierFileId));
     }
 
 
-    private void remove(final KeyType keyType, final Sync sync, final String cid) {
+    private void remove(final Integer contentIdentifierFileId, final KeyType keyType, final Sync sync, final String cid) {
         final var cidInDatabase = this.findPixKeyPort.findByCid(cid);
         cidInDatabase.ifPresent(pixKey -> {
             final var calculatedCid = pixKey.recalculateCid();
             ;
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
             if (valueInBacen.isEmpty()) {
-                this.removePixKey(keyType, sync, cid, pixKey);
+                this.removePixKey(contentIdentifierFileId,keyType, sync, cid, pixKey);
             } else {
-                log.info("PixKey {} - Type {} with Cid {} was update from database because cid don't exists in bacen but key exists", pixKey.getKey(),
-                    pixKey.getType(), cid);
+                log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}, {}",
+                    kv("key", pixKey.getKey()),
+                    kv("keyType", keyType),
+                    kv("action", UPDATED),
+                    kv("contentIdentifierFileId", contentIdentifierFileId));
             }
         });
     }
 
-    private void removePixKey(final KeyType keyType, final Sync sync, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKey) {
+    private void removePixKey(final Integer contentIdentifierFileId, final KeyType keyType, final Sync sync, final String cid, final com.picpay.banking.pix.core.domain.PixKey pixKey) {
         this.removePixKeyPort.remove(pixKey.getKey(), participant);
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKey, cid, REMOVED);
         this.pixKeyEventPort.pixKeyWasRemoved(pixKey);
-        log.info("PixKey {} type {} with Cid {} of was removed from database because don't exists in bacen"
-            , pixKey.getCid(), pixKey.getKey(), keyType);
+        log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}, {}",
+            kv("key", pixKey.getKey()),
+            kv("keyType", keyType),
+            kv("action", REMOVED),
+            kv("contentIdentifierFileId", contentIdentifierFileId));
     }
 
 }
