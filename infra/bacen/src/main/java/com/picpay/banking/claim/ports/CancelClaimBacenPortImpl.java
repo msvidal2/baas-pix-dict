@@ -49,6 +49,11 @@ public class CancelClaimBacenPortImpl implements CancelClaimBacenPort {
     }
 
     public Claim cancelFallback(String claimId, ClaimCancelReason reason, int ispb, String requestIdentifier, Exception e) {
+        log.error("Claim_fallback_cancelingBacen",
+                kv("requestIdentifier", requestIdentifier),
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
         throw BacenExceptionBuilder.from(e).build();
     }
 

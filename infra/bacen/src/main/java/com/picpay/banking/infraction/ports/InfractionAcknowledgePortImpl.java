@@ -32,14 +32,15 @@ public class InfractionAcknowledgePortImpl implements InfractionAcknowledgePort 
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
     public void acknowledge(String infractionReportId, String ispb) {
 
-        //TODO timeLimiterExecutor lancando excecao
-//        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
-//                () -> infractionBacenClient.acknowledge(infractionReportId, AcknowledgeInfractionReportRequest.from(infractionReportId, ispb)),
-//                null);
+        log.info("Infraction_acknowledgeBacenSending",
+                kv("infractionReportId", infractionReportId),
+                kv("ispb", ispb));
 
-        var response = infractionBacenClient.acknowledge(infractionReportId, AcknowledgeInfractionReportRequest.from(infractionReportId, ispb));
+        var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER,
+                () -> infractionBacenClient.acknowledge(infractionReportId, AcknowledgeInfractionReportRequest.from(infractionReportId, ispb)),
+                null);
 
-        log.info("Claim_acknowledgeBacen",
+        log.info("InfractionAcknowledgeBacen",
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),
                 kv("response", response));
@@ -47,10 +48,10 @@ public class InfractionAcknowledgePortImpl implements InfractionAcknowledgePort 
     }
 
     public void fallback(final String infractionReportId, final String ispb, Exception e) {
-        log.error(e.getMessage(), e);
-        log.error("InfractionAcknowledge_fallback {} {} {}",
+        log.error("Infraction_fallback_acknowledgeBacen",
                 kv("infractionReportId", infractionReportId),
                 kv("ispb", ispb),
-                kv("error", e));
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
     }
 }

@@ -13,11 +13,15 @@ import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionNotificatio
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import com.picpay.banking.pix.core.validators.infraction.WorkInfractionValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * @author rafael.braga
  * @version 1.0 07/12/2020
  */
+@Slf4j
 @RequiredArgsConstructor
 public class InfractionAcknowledgeUseCase {
 
@@ -27,8 +31,11 @@ public class InfractionAcknowledgeUseCase {
     private final String ispbPicpay;
 
     public void execute(InfractionReport infractionReport) {
-
         WorkInfractionValidator.validateIspbLength(infractionReport);
+
+        log.info("Infraction_newInfractionReceived",
+                 kv("endToEndId", infractionReport.getEndToEndId()),
+                 kv("infractionReportId", infractionReport.getInfractionReportId()));
 
         infractionReportSavePort.save(infractionReport);
         infractionNotificationPort.notify(infractionReport);

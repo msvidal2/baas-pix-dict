@@ -4,6 +4,11 @@ spring:
     cloud:
         task:
             name: SYNC_VERIFIER
+        stream:
+            bindings:
+                keys-changed:
+                    destination: keys-changed
+                    binder: kafka
 
 server:
     tomcat:

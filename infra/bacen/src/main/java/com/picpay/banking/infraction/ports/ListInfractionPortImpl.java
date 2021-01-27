@@ -15,11 +15,14 @@ import com.picpay.banking.pix.core.domain.infraction.ListInfractionReports;
 import com.picpay.banking.pix.core.ports.infraction.bacen.ListInfractionPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * @author rafael.braga
@@ -27,6 +30,7 @@ import java.util.UUID;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ListInfractionPortImpl implements ListInfractionPort {
 
     private final InfractionBacenClient infractionBacenClient;
@@ -49,6 +53,11 @@ public class ListInfractionPortImpl implements ListInfractionPort {
     }
 
     public ListInfractionReports fallback(String ispb, Integer limit, LocalDateTime startDate, LocalDateTime endDate, Exception e) {
+        log.error("Infraction_fallback_listBacen",
+                kv("ispb", ispb),
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
         throw BacenExceptionBuilder.from(e).build();
     }
 

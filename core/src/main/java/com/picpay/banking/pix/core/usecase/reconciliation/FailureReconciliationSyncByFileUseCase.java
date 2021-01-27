@@ -105,8 +105,6 @@ public class FailureReconciliationSyncByFileUseCase {
     private void insertPixKey(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync, final String cid, final PixKey pixKeyToInsert) {
         this.databaseContentIdentifierPort.saveAction(sync.getContentIdentifierFile().getId(), pixKeyToInsert, cid, ADDED);
         this.pixKeyEventPort.pixKeyWasCreated(pixKeyToInsert);
-        log.info("Cid {} of key type {} {} in database", cid, keyType, ADDED);
-
         log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}",
             kv("key", pixKeyToInsert.getKey()),
             kv("keyType", keyType),

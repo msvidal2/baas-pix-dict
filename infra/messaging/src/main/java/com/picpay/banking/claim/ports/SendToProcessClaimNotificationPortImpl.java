@@ -34,7 +34,7 @@ public class SendToProcessClaimNotificationPortImpl implements SendToProcessClai
     }
 
     public void sendFallback(final Claim claim, final Exception e) {
-        log.error("SendToProcessClaimNotification_fallback",
+        log.error("Claim_fallback_sendToProcessClaimNotification",
                 kv("claimId", claim.getClaimId()));
     }
 

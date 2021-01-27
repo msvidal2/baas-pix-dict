@@ -5,6 +5,7 @@ import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CompleteClaimUseCaseTest {
+class CompleteClaimUseCaseTest {
 
     @InjectMocks
     private CompleteClaimUseCase useCase;
@@ -41,6 +42,9 @@ public class CompleteClaimUseCaseTest {
     @Mock
     private SavePixKeyPort createPixKeyPort;
 
+    @Mock
+    private PixKeyEventPort pixKeyEventPort;
+
     private Claim claimRequest;
 
     private Claim claimResponseConfirmed;
@@ -52,6 +56,7 @@ public class CompleteClaimUseCaseTest {
     private Claim possessionClaim;
 
     private PixKey pixKeyCreated;
+
 
     @BeforeEach
     public void setup() {
@@ -119,7 +124,7 @@ public class CompleteClaimUseCaseTest {
                 .fantasyName("Nome Fantasia")
                 .endToEndId("endToEndId").build();
 
-        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
+        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort, pixKeyEventPort);
     }
 
     @Test

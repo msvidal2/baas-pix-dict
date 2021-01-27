@@ -19,7 +19,10 @@ import com.picpay.banking.pix.core.validators.idempotency.annotation.Idempotency
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * @author rafael.braga
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CreateInfractionReportPortImpl implements CreateInfractionReportPort {
 
     private static final String CIRCUIT_BREAKER_CREATE_NAME = "create-infraction";
@@ -50,6 +54,13 @@ public class CreateInfractionReportPortImpl implements CreateInfractionReportPor
                                            final String requestIdentifier,
                                            final String ispbPicPay,
                                            final Exception e) {
+        log.error("Infraction_fallback_createBacen",
+                kv("requestIdentifier", requestIdentifier),
+                kv("infractionReportId", infractionReport.getInfractionReportId()),
+                kv("ispb", ispbPicPay),
+                kv("exceptionMessage", e.getMessage()),
+                kv("exception", e));
+
         throw BacenExceptionBuilder.from(e).build();
     }
 

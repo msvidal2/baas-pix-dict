@@ -26,9 +26,7 @@ public class ReconciliationSyncUseCase {
 
     public SyncVerifierHistoric execute(KeyType keyType) {
         var startCurrentTimeMillis = System.currentTimeMillis();
-        log.info("ReconciliationSync_started {} {}",
-            kv("keyType", keyType),
-            kv("startCurrentTimeMillis", startCurrentTimeMillis));
+        log.info("ReconciliationSync_started {}", kv("keyType", keyType));
 
         var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
             .orElseGet(() -> SyncVerifier.builder()
@@ -47,10 +45,10 @@ public class ReconciliationSyncUseCase {
         syncVerifierPort.save(syncVerifier);
         vsyncHistoric = syncVerifierHistoricPort.save(vsyncHistoric);
 
-        log.info("ReconciliationSync_ended {} {} {}",
+        log.info("ReconciliationSync_ended {}, {}, {}",
             kv("keyType", keyType),
-            kv("startCurrentTimeMillis", startCurrentTimeMillis),
-            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
+            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000),
+            kv("syncVerifierHistoric", vsyncHistoric));
 
         return vsyncHistoric;
     }

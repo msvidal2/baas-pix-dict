@@ -20,15 +20,23 @@ public class PollingClaimListenerUseCase {
 
     public void execute(Claim claim) {
         if (claim.isOpen(participant)) {
+            log.info("Claim_acknowledgeBacenReceiving",
+                    kv("claimId", claim.getClaimId()),
+                    kv("ispb", claim.getDonorIspb()));
+
             claim = acknowledgeClaimPort.acknowledge(
                     claim.getClaimId(),
                     claim.getDonorIspb());
         }
         saveClaimPort.saveClaim(claim, null);
 
+        log.info("Claim_sendingClaimNotificationToTopic",
+                kv("claimId", claim.getClaimId()),
+                kv("ispb", claim.getDonorIspb()));
+
         sendClaimNotificationPort.send(claim);
 
-        log.info("claim_notification_sent_to_topic", kv("claimId", claim.getClaimId()));
+        log.info("Claim_claimNotificationSentToTopic", kv("claimId", claim.getClaimId()));
     }
 
 }
