@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @version 1.0 11/12/20
  */
 @ExtendWith(MockitoExtension.class)
-public class InfractionAcknowledgeUseCaseTest {
+class InfractionAcknowledgeUseCaseTest {
 
     @Mock
     private InfractionReportSavePort infractionReportSavePort;

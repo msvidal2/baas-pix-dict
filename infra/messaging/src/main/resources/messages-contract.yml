@@ -1,0 +1,551 @@
+# para visualizar o contrato, acessar o link:  https://playground.asyncapi.io/ e colar o conteúdo desse arquivo
+
+asyncapi: 2.0.0
+info:
+  title: baas-pix-dict
+  version: '2.0.0'
+  description: |
+    Microserviço responsável pela comunicação com o DICT-BACEN
+servers:
+  production:
+    url: baas.infra.kafka-broker:{port}
+    protocol: kafka
+    description: Test broker
+    variables:
+      port:
+        description: Conexão segura (TLS) disponivel na porta 9092.
+        default: '9092'
+
+defaultContentType: application/json
+
+channels:
+  #claim:
+  cancel-portabilities-topic:
+    description: Tópico para onde são enviadas portabilidades para cancelar.
+    publish:
+      operationId: publishPortabilityToCancel
+      message:
+        $ref: '#/components/messages/ClaimDTO'
+
+  send-new-claim-notification:
+    description: Tópico para onde são enviadas notificações quando existe uma nova reinvidicação proveniente do BACEN
+    publish:
+      operationId: publishNewClaimNotification
+      message:
+        $ref: '#/components/messages/Claim'
+
+  send-to-process-claim-notification:
+    description: Tópico para onde são enviadas novas reinvindicações para serem processadas
+    publish:
+      operationId: publishNewClaimToProcess
+      message:
+        $ref: '#/components/messages/ClaimDTO'
+
+  overdue-possession-claim-claimer:
+    description: Tópico para onde são enviadas reinvidicações que já estouraram o prazo de serem concluídas pelo reinvindicador
+    publish:
+      operationId: publishOverduePossesionClaimer
+      message:
+        $ref: '#/components/messages/ClaimDTO'
+
+  overdue-possession-claim-donor:
+    description: Tópico para onde são enviadas reinvidicações que já estouraram o prazo de serem concluídas pelo doador
+    publish:
+      operationId: publishOverduePossesionDonor
+      message:
+        $ref: '#/components/messages/ClaimDTO'
+
+  #infraction:
+  new-infraction-reports:
+    description: Tópico que recebe as infrações novas ou atualizadas, após polling no BACEN
+    subscribe:
+      operationId: publishNewInfractionReports
+      message:
+        $ref: '#/components/messages/Infraction'
+
+  new-infractions:
+    description: Tópico que recebe as infrações para as quais é devido ACK ao BACEN.
+    publish:
+      operationId: publishAcknowledgeInfractionReport
+      message:
+        $ref: '#/components/messages/Infraction'
+
+  alert-notifications:
+    description: Tópico que recebe infrações para as quais é necessário disparar alerta para os interessados.
+    publish:
+      operationId: publishInfractionAlert
+      message:
+        $ref: '#/components/messages/Infraction'
+
+  #keys:
+  keys-changed-outbound:
+    description: Tópico que recebe eventos quando há mudança numa PixKey
+    publish:
+      operationId: publishPixKeyUpdate
+      message:
+        $ref: '#/components/messages/PixKey'
+
+  keys-changed-inbound:
+    description: Consome eventos de mudança numa PixKey
+    subscribe:
+      operationId: receivePixKeyUpdate
+      message:
+        $ref: '#/components/messages/PixKey'
+
+components:
+  messages:
+    ClaimDTO:
+      name: ClaimDTO
+      title: Revindicação de posse de chave PIX
+      summary: Mensagem enviada em eventos baseados na revindicação (confirmação, cancelamento)
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/ClaimDTO"
+
+    Claim:
+      name: Claim
+      title: Revindicação de posse de chave PIX
+      summary: Mensagem enviada em eventos baseados na revindicação (criação)
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/Claim"
+
+    PixKey:
+      name: PixKey
+      title: Chave PIX
+      summary: Mensagens relacionadas às chaves PIX, para eventos de criação e atualização
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PixKeyDTO"
+
+    Infraction:
+      name: InfractionReport
+      title: Relato de infração
+      summary: Mensagens relacionadas aos relatos de infração (criação, cancelamento, mudança de estado)
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/InfractionReport"
+                    
+  schemas:
+    ClaimDTO:
+      type: object
+      title: ClaimDTO
+      properties:
+        claimId:
+          type: string
+          description: ID da Claim, retornado pelo BACEN
+        claimSituation:
+          type: string
+          description: Situação atual da reinvindicação
+          enum:
+            - OPEN
+            - AWAITING_CLAIM
+            - CONFIRMED
+            - CANCELED
+            - COMPLETED
+        claimType:
+          type: string
+          description: Tipo da reinvindicação
+          enum:
+            - PORTABILITY
+            - POSSESSION_CLAIM
+        participationFlow:
+          type: integer
+          description: N/A
+        key:
+          type: string
+          description: Chave DICT
+        keyType:
+          type: string
+          description: Tipo de chave pix
+          enum:
+            - CPF
+            - CNPJ
+            - EMAIL
+            - CELLPHONE
+            - RANDOM
+        ispb:
+          type: integer
+          description: Código ISPB ao qual a chave se refere
+        branchNumber:
+          type: string
+          description: Código da agência
+        accountType:
+          type: string
+          description: Tipo da conta que a chave se refere
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        accountNumber:
+          type: string
+          description: Número da conta da chave
+        accountOpeningDate:
+          type: string
+          format: date-time
+          description: Data de abertura da conta
+        persontType:
+          type: string
+          description: Tipo de pessoa de cadastro da conta
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+        name:
+          type: string
+          description: Nome do titular da chave
+        fantasyName:
+          type: string
+          description: Nome fantasia caso seja LEGAL_ENTITY
+        cpfCnpj:
+          type: string
+          description: CNPJ ou CPF do titular da chave
+        donorIspb:
+          type: string
+          description: ISPB do PSP que está doando a chave
+        donorData:
+          type: object
+          $ref: '#/components/schemas/DonorData'
+        isClaim:
+          type: boolean
+          description: Indica se é uma reinvindicação de posse
+        resolutionThresholdDate:
+          type: string
+          format: date-time
+        completionThresholdDate:
+          type: string
+          format: date-time
+        lastModifiedDate:
+          type: string
+          format: date-time
+        cancelReason:
+          type: string
+          enum:
+            - CLIENT_REQUEST
+            - ACCOUNT_CLOSURE
+            - DEFAULT_RESPONSE
+        confirmationReason:
+          type: string
+          enum:
+            - CLIENT_REQUEST
+            - ACCOUNT_CLOSURE
+            - FRAUD
+            - DEFAULT_RESPONSE
+        correlationId:
+          type: string
+          description: GUID v4 para fins de debug
+
+    PixKeyDTO:
+      type: object
+      title: PixKeyDTO
+      properties:
+        type:
+          type: string
+          description: Tipo da chave
+          enum:
+            - CPF
+            - CNPJ
+            - EMAIL
+            - CELLPHONE
+            - RANDOM
+        key:
+          type: string
+          description: Chave PIX
+        ispb:
+          type: integer
+          description: Código ISPB ao qual a chave se refere
+        nameIspb:
+          type: string
+          description: Nome do ISPB da chave
+        branchNumber:
+          type: string
+          description: Código da agência
+        accountType:
+          type: string
+          description: Tipo da conta que a chave se refere
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        accountNumber:
+          type: string
+          description: Número da conta da chave
+        accountOpeningDate:
+          type: string
+          format: date-time
+          description: Data de abertura da conta
+        persontType:
+          type: string
+          description: Tipo de pessoa de cadastro da conta
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+        taxId:
+          type: string
+          description: CNPJ ou CPF do titular da chave
+        name:
+          type: string
+          description: Nome do titular da chave
+        fantasyName:
+          type: string
+          description: Nome fantasia caso seja LEGAL_ENTITY
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação da chave no BACEN.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de atualização da chave no BACEN
+        startPossessionAt:
+          type: string
+          format: date-time
+          description: Data em que foi iniciada a posse dessa chave
+        endToEndId:
+          type: string
+          description: end-to-end id gerado ao criar essa chave no DICT
+        correlationId:
+          type: string
+          description: GUID v4 para fins de debug
+        claim:
+          type: string
+          enum:
+            - PORTABILITY
+            - POSSESSION_CLAIM
+        statistic:
+          $ref: '#/components/schemas/Statistic'
+        cid:
+          type: string
+          description: CID calculado para essa chave
+        requestId:
+          type: string
+          description: GUID v4 que identifica a requisição. Usado no controle de idempotência na criação da chave
+        donatedAutomatically:
+          type: boolean
+          description: Indica se a chave foi doada automaticamente por exceder o prazo de resposta
+
+    Statistic:
+      type: object
+      properties:
+        accountants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accountant'
+        lastUpdateDateAntiFraud:
+          type: string
+          format: date-time
+      title: Statistic
+
+    Accountant:
+      type: object
+      properties:
+        aggregate:
+          type: string
+          enum:
+            - KEY
+            - OWNER
+            - ACCOUNT
+        lastSixMonths:
+          type: integer
+          format: int32
+        lastThirtyDays:
+          type: integer
+          format: int32
+        lastThreeDays:
+          type: integer
+          format: int32
+        type:
+          type: string
+          enum:
+            - DONE_TRANSACTIONS
+            - FRAUDS_REPORT
+            - PREVENTION_LAUNDERING
+            - FRAUDS_CONFIRMATION
+            - PREVENTION_LAUNDERING_CONFIRMATION
+      title: Accountant
+
+    InfractionReport:
+      type: object
+      properties:
+        infractionReportId:
+          type: string
+        infractionType:
+          type: string
+          enum:
+            - FRAUD
+            - PLD_FT
+        endToEndId:
+          type: string
+        reportedBy:
+          type: string
+          enum:
+            - DEBITED_PARTICIPANT
+            - CREDITED_PARTICIPANT
+        situation:
+          type: string
+          enum:
+            - OPEN
+            - ACKNOWLEDGED
+            - CANCELLED
+            - ANALYZED
+        ispbDebited:
+          type: string
+        ispbCredited:
+          type: string
+        dateCreate:
+          format: date-time
+          type: string
+        dateLastUpdate:
+          format: date-time
+          type: string
+        details:
+          type: string
+        analyze:
+          infractionAnalyze:
+            $ref: '#/components/schemas/InfractionAnalyze'
+
+    InfractionAnalyze:
+      type: object
+      properties:
+        analyzeResult:
+          type: string
+          enum:
+            - ACCEPTED
+            - REJECTED
+        details:
+          type: string
+      title: InfractionAnalyze
+
+    Claim:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+        accountOpeningDate:
+          type: string
+          format: date-time
+        accountType:
+          type: string
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        branchNumber:
+          type: string
+        claimId:
+          type: string
+        claimSituation:
+          type: string
+          enum:
+            - OPEN
+            - AWAITING_CLAIM
+            - CONFIRMED
+            - CANCELED
+            - COMPLETED
+        claimType:
+          type: string
+          enum:
+            - PORTABILITY
+            - POSSESION_CLAIM
+        completionThresholdDate:
+          type: string
+          format: date-time
+        cpfCnpj:
+          type: integer
+          format: int64
+        donorData:
+          $ref: '#/components/schemas/DonorData'
+        donorIspb:
+          type: integer
+          format: int32
+        fantasyName:
+          type: string
+        isClaim:
+          type: boolean
+        ispb:
+          type: integer
+          format: int32
+        key:
+          type: string
+        keyType:
+          type: string
+          enum:
+            - CPF
+            - CNPJ
+            - EMAIL
+            - CELLPHONE
+            - RANDOM
+        lastModifiedDate:
+          type: string
+          format: date-time
+        name:
+          type: string
+        participationFlow:
+          type: integer
+          format: int32
+        personType:
+          type: string
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+        resolutionThresholdDate:
+          type: string
+          format: date-time
+        cancelReason:
+          type: string
+          enum:
+            - CLIENT_REQUEST
+            - ACCOUNT_CLOSURE
+            - DEFAULT_RESPONSE
+        confirmationReason:
+          type: string
+          enum:
+            - CLIENT_REQUEST
+            - ACCOUNT_CLOSURE
+            - FRAUD
+            - DEFAULT_RESPONSE
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        correlationId:
+          type: string
+      title: Claim
+
+    DonorData:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          description: Número da conta do cliente.
+        accountType:
+          type: string
+          description: Tipo da conta do cliente.
+          enum:
+            - CHECKING
+            - SALARY
+            - SAVINGS
+        branchNumber:
+          type: string
+          description: Número da agência do cliente.
+        cpfCnpj:
+          type: integer
+          format: int64
+          description: CPF/CNPJ do cliente.
+        fantasyName:
+          type: string
+          description: Nome fantasia do cliente.
+        name:
+          type: string
+          description: Razão Social/Nome completo do cliente.
+        notificationDate:
+          type: string
+          format: date-time
+        personType:
+          type: string
+          description: Tipo de pessoa Física ou Jurídica.
+          enum:
+            - INDIVIDUAL_PERSON
+            - LEGAL_ENTITY
+      title: DonorData

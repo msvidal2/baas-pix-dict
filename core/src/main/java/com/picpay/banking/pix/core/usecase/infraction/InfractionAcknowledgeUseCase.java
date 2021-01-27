@@ -31,12 +31,11 @@ public class InfractionAcknowledgeUseCase {
     private final String ispbPicpay;
 
     public void execute(InfractionReport infractionReport) {
+        WorkInfractionValidator.validateIspbLength(infractionReport);
 
         log.info("Infraction_newInfractionReceived",
-                kv("endToEndId", infractionReport.getEndToEndId()),
-                kv("infractionReportId", infractionReport.getInfractionReportId()));
-
-        WorkInfractionValidator.validateIspbLength(infractionReport);
+                 kv("endToEndId", infractionReport.getEndToEndId()),
+                 kv("infractionReportId", infractionReport.getInfractionReportId()));
 
         infractionReportSavePort.save(infractionReport);
         infractionNotificationPort.notify(infractionReport);
