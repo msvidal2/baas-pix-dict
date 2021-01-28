@@ -10,11 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -45,7 +43,7 @@ public class ListClaimRequestWebDTO {
     @ApiModelProperty(value = "Account type of client")
     private AccountType accountType;
 
-    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)")
+    @ApiModelProperty(value = "Start date: ISO Format (yyyy-MM-dd'T'HH:mm:ss.SSS)", required = true)
     @NotNull
     private String startDate;
 
@@ -61,10 +59,7 @@ public class ListClaimRequestWebDTO {
     private Boolean pending;
 
     @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
-    private Boolean donor;
-
-    @ApiModelProperty(value = "Return is pending records", dataType="java.lang.boolean")
-    private Boolean claim;
+    private Boolean claimer;
 
     public LocalDateTime getStartDateAsLocalDateTime() {
         if(startDate == null) {

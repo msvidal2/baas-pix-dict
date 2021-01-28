@@ -18,21 +18,15 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ListClaimUseCase {
 
-    ListClaimPort listClaimPort;
+    private final ListClaimPort listClaimPort;
 
-    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean isClaimer, final Boolean isDonor,
+    public ClaimIterable execute(final Claim claim, final Boolean isPending, final Integer limit, final Boolean isClaimer,
                                  final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier) {
 
         ListClaimValidator.validate(requestIdentifier, claim, limit);
 
-        ClaimIterable claimIterable = null;
-
-        if (isPending) {
-            claimIterable = listClaimPort.list(claim, limit, requestIdentifier);
-        } else {
-            claimIterable = listClaimPort.list(claim, limit, isClaimer, isDonor, startDate,
-                    isNull(endDate) ? LocalDateTime.now(ZoneId.of("UTC")) : endDate, requestIdentifier);
-        }
+        ClaimIterable claimIterable = listClaimPort.list(claim, limit, isClaimer, isPending, startDate,
+                    isNull(endDate) ? LocalDateTime.now(ZoneId.of("UTC")) : endDate);
 
         if (claimIterable != null)
             log.info("Claim_listed",

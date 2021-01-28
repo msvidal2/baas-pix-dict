@@ -30,24 +30,32 @@ public class ListClaims implements Specification<ClaimEntity> {
     public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
         var predicates = new ArrayList<Predicate>();
 
-        predicates.add(criteriaBuilder.equal(root.get("endDate"), endDate));
-        predicates.add(criteriaBuilder.equal(root.get("startDate"), startDate));
-
         if(isClaimer) {
             predicates.add(criteriaBuilder.equal(root.get("claimerParticipant"), claim.getIspb()));
+
+            //TODO: adicionar null check
             predicates.add(criteriaBuilder.equal(root.get("claimerType"), claim.getPersonType()));
             predicates.add(criteriaBuilder.equal(root.get("claimerTaxId"), claim.getCpfCnpj()));
             predicates.add(criteriaBuilder.equal(root.get("claimerBranch"), claim.getBranchNumber()));
             predicates.add(criteriaBuilder.equal(root.get("claimerAccountNumber"), claim.getAccountNumber()));
             predicates.add(criteriaBuilder.equal(root.get("claimerAccountType"), claim.getAccountType()));
         } else {
-            predicates.add(criteriaBuilder.equal(root.get("donorParticipant"), claim.getDonorIspb()));
-            predicates.add(criteriaBuilder.equal(root.get("personType"), claim.getDonorData().getPersonType()));
-            predicates.add(criteriaBuilder.equal(root.get("cpfCnpj"), claim.getDonorData().getCpfCnpj()));
-            predicates.add(criteriaBuilder.equal(root.get("branchNumber"), claim.getDonorData().getBranchNumber()));
-            predicates.add(criteriaBuilder.equal(root.get("accountNumber"), claim.getDonorData().getAccountNumber()));
-            predicates.add(criteriaBuilder.equal(root.get("accountType"), claim.getDonorData().getAccountType()));
+            //TODO: precisamos fazer um join com key,
+            // para poder filtrar reivindicacoes pelos campos das chaves
+            // porem key não é uma entidade, falta resolver isso aqui
+            var keyPath = root.get("key");
+            predicates.add(criteriaBuilder.equal(keyPath.get("participant"), claim.getIspb()));
+
+            //TODO: adicionar null check
+            predicates.add(criteriaBuilder.equal(keyPath.get("personType"), claim.getPersonType()));
+            predicates.add(criteriaBuilder.equal(keyPath.get("taxId"), claim.getCpfCnpj()));
+            predicates.add(criteriaBuilder.equal(keyPath.get("branch"), claim.getBranchNumber()));
+            predicates.add(criteriaBuilder.equal(keyPath.get("accountNumber"), claim.getAccountNumber()));
+            predicates.add(criteriaBuilder.equal(keyPath.get("accountType"), claim.getAccountType()));
         }
+
+        predicates.add(criteriaBuilder.equal(root.get("endDate"), endDate)); //TODO: before
+        predicates.add(criteriaBuilder.equal(root.get("startDate"), startDate)); //TODO: after
 
         if(!Objects.isNull(isPending) && isPending) {
             CriteriaBuilder.In<ClaimSituation> claimSituation = criteriaBuilder.in(root.get("claimSituation"));
