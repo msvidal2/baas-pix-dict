@@ -29,17 +29,13 @@ public class Sync {
         this.cidsNotSyncronized = new HashSet<>();
     }
 
-    public void verify(final List<String> cidsInBacen, final Collection<PixKey> contentIdentifiers) {
-        final var cidsInDatabase = contentIdentifiers.stream()
-            .map(PixKey::getCid)
-            .collect(Collectors.toList());
-
+    public void verify(final List<String> cidsInBacen, final List<String> cidsInDatabase) {
         final var listOfSyncronized = cidsInDatabase.stream()
             .filter(cidsInBacen::contains)
             .collect(Collectors.toList());
 
         this.cidsSyncronized.addAll(listOfSyncronized);
-        log.info("Verifying Keys {} syncronized with Bacen- cids size {}", contentIdentifierFile.getKeyType() ,cidsSyncronized.size());
+        log.info("ReconciliationSyncByFile_Verifying Keys {} syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType() ,cidsSyncronized.size());
 
         final var listOfcidsNotSyncronized = cidsInDatabase.stream()
             .filter(cid -> !cidsInBacen.contains(cid))
@@ -52,7 +48,7 @@ public class Sync {
         this.cidsNotSyncronized.addAll(cidsNotSyncronizedAtDatabaseAndNeedToInsert);
         this.cidsNotSyncronized.addAll(listOfcidsNotSyncronized);
 
-        log.info("Verifying Keys  {} not syncronized with Bacen - cids size {}",contentIdentifierFile.getKeyType() , this.cidsNotSyncronized.size());
+        log.info("ReconciliationSyncByFile_Verifying Keys {} not syncronized with Bacen - cids size {}",contentIdentifierFile.getKeyType() , this.cidsNotSyncronized.size());
     }
 
 }
