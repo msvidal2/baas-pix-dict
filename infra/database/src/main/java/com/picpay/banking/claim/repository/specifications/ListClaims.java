@@ -55,6 +55,8 @@ public class ListClaims implements Specification<ClaimEntity> {
         }
 
         predicates.add(criteriaBuilder.equal(root.get("endDate"), endDate)); //TODO: before
+
+        //TODO: adicionar null check
         predicates.add(criteriaBuilder.equal(root.get("startDate"), startDate)); //TODO: after
 
         if(!Objects.isNull(isPending) && isPending) {
