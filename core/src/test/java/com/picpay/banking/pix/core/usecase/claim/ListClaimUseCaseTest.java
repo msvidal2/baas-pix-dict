@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +27,6 @@ class ListClaimUseCaseTest {
 
     @Mock
     private ListClaimPort listClaimPort;
-
-    @Mock
-    private ListPendingClaimPort listPendingClaimPort;
 
     private Claim claimRequest;
 
@@ -86,7 +82,7 @@ class ListClaimUseCaseTest {
                 .build();
     }
 
-    @Test
+    /*@Test
     void when_listPendentClaimsWithSuccess_expect_claimIterable() {
         when(listPendingClaimPort.list(any(), anyInt(), anyString())).thenReturn(claimIterablePending);
 
@@ -95,7 +91,7 @@ class ListClaimUseCaseTest {
         assertEquals(1, claimList.getCount());
 
         verify(listPendingClaimPort, times(1)).list(any(), anyInt(), anyString());
-    }
+    }*/
 
     @Test
     void when_listClaimsWhereIsDonorWithSuccess_expect_claimIterable() {

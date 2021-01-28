@@ -4,6 +4,7 @@ import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.repository.ClaimRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimIterable;
+import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,14 @@ public class ListClaimsPortImpl implements ListClaimPort {
         }else {
             claimEntityList = Page.empty();
         }
+
+        return toClaimIterable(claimEntityList);
+    }
+
+    @Override
+    public ClaimIterable list(Claim claim, Integer limit, String requestIdentifier) {
+        Page<ClaimEntity> claimEntityList = claimRepository.findAllPendingClaims(claim.getIspb(),
+                ClaimSituation.getPending(), PageRequest.of(0, limit));
 
         return toClaimIterable(claimEntityList);
     }
