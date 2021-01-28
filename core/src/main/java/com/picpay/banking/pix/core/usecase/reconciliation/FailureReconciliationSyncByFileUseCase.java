@@ -14,7 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.ADDED;
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.REMOVED;
@@ -74,13 +77,24 @@ public class FailureReconciliationSyncByFileUseCase {
         var actualPage = 0;
         Pagination<PixKey> pagination = null;
 
+        var cidsInDatabase = this.extractCidsInDatabaseByPagination(keyType, actualPage);
+
+        sync.verify(cids, cidsInDatabase);
+
+        return sync;
+    }
+
+    private List<String> extractCidsInDatabaseByPagination(final KeyType keyType, int actualPage) {
+        Pagination<PixKey> pagination;
+        List<String> cidsInDatabase = new ArrayList<>();
         do {
             pagination = this.findPixKeyPort.findAllByKeyType(keyType, actualPage, 10);
-            sync.verify(cids, pagination.getResult());
+            final var cidsAlreadyInDatabase = pagination.getResult().stream().map(PixKey::getCid).collect(Collectors.toList());
+            cidsInDatabase.addAll(cidsAlreadyInDatabase);
             actualPage = pagination.nextPage();
         } while (pagination.getHasNext());
 
-        return sync;
+        return cidsInDatabase;
     }
 
     private void synchronizeCids(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync) {
