@@ -127,16 +127,9 @@ public class FailureReconciliationSyncByFileUseCase {
         final var cidInDatabase = this.findPixKeyPort.findByCid(cid);
         cidInDatabase.ifPresent(pixKey -> {
             final var calculatedCid = pixKey.recalculateCid();
-            ;
             final var valueInBacen = this.bacenPixKeyByContentIdentifierPort.getPixKey(calculatedCid);
             if (valueInBacen.isEmpty()) {
                 this.removePixKey(contentIdentifierFileId,keyType, sync, cid, pixKey);
-            } else {
-                log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}, {}",
-                    kv("key", pixKey.getKey()),
-                    kv("keyType", keyType),
-                    kv("action", UPDATED),
-                    kv("contentIdentifierFileId", contentIdentifierFileId));
             }
         });
     }
