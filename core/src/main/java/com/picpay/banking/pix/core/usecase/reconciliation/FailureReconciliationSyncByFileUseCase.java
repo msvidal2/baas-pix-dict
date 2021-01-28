@@ -50,42 +50,43 @@ public class FailureReconciliationSyncByFileUseCase {
     }
 
     private void processFile(final ContentIdentifierFile contentIdentifierFile) {
-        final var availableFile = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFile.getId());
+        final var contentIdentifierFileId = contentIdentifierFile.getId();
+        final var availableFile = this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(contentIdentifierFileId);
 
         if (availableFile == null || availableFile.getStatus().isNotAvaliable()) {
             return;
         }
 
-        log.info("ReconciliationSyncByFile_started {}", kv("keyType", contentIdentifierFile.getKeyType()));
+        final var keyType = availableFile.getKeyType();
+
+        log.info("ReconciliationSyncByFile_started {} {}", kv("contentIdentifierFileId", contentIdentifierFileId), kv("keyType",keyType));
+
         this.lockPort.lock();
 
         final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
-        final var keyType = availableFile.getKeyType();
 
         var sync = this.verifyCidsInDatabase(contentIdentifierFile, cids, keyType);
 
-        this.synchronizeCids(contentIdentifierFile.getId() ,keyType, sync);
+        this.synchronizeCids(contentIdentifierFileId,keyType, sync);
 
         this.databaseContentIdentifierPort.saveFile(availableFile);
 
-        log.info("ReconciliationSyncByFile_ended {}", kv("keyType", contentIdentifierFile.getKeyType()));
+        log.info("ReconciliationSyncByFile_ended {} {}", kv("contentIdentifierFileId", contentIdentifierFileId),kv("keyType",keyType));
     }
 
     private Sync verifyCidsInDatabase(final ContentIdentifierFile contentIdentifierFile, final java.util.List<String> cids, final KeyType keyType) {
         final var sync = new Sync(contentIdentifierFile);
 
-        var actualPage = 0;
-        Pagination<PixKey> pagination = null;
-
-        var cidsInDatabase = this.extractCidsInDatabaseByPagination(keyType, actualPage);
+        var cidsInDatabase = this.extractCidsInDatabaseByPagination(keyType);
 
         sync.verify(cids, cidsInDatabase);
 
         return sync;
     }
 
-    private List<String> extractCidsInDatabaseByPagination(final KeyType keyType, int actualPage) {
+    private List<String> extractCidsInDatabaseByPagination(final KeyType keyType) {
         Pagination<PixKey> pagination;
+        var actualPage = 0;
         List<String> cidsInDatabase = new ArrayList<>();
         do {
             pagination = this.findPixKeyPort.findAllByKeyType(keyType, actualPage, 10);
