@@ -1,8 +1,5 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-//TODO: DESCOMENTAR
-
-/*
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +14,7 @@ import java.util.List;
 
 import static com.picpay.banking.pix.core.domain.ClaimSituation.OPEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,51 +82,34 @@ class ListClaimUseCaseTest {
 
     @Test
     void when_listPendentClaimsWithSuccess_expect_claimIterable() {
-        when(listPendingClaimPort.list(any(), anyInt(), anyString())).thenReturn(claimIterablePending);
+        when(listClaimPort.list(any(), anyInt(), anyBoolean(), any(), any(), any())).thenReturn(claimIterablePending);
 
-        ClaimIterable claimList = useCase.execute(claimRequest, true, 5, true, false, LocalDateTime.now(), null, "12345");
+        ClaimIterable claimList = useCase.execute(claimRequest, true, 5, true, LocalDateTime.now(), null, "12345");
 
         assertEquals(1, claimList.getCount());
 
-        verify(listPendingClaimPort, times(1)).list(any(), anyInt(), anyString());
+        verify(listClaimPort, times(1)).list(any(), anyInt(), anyBoolean(), anyBoolean(), any(), any());
     }
 
     @Test
     void when_listClaimsWhereIsDonorWithSuccess_expect_claimIterable() {
-        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(), any(), anyString())).thenReturn(claimIterableIsDonor);
+        when(listClaimPort.list(any(), anyInt(), (Boolean) isNull(), anyBoolean(), any(), any())).thenReturn(claimIterableIsDonor);
 
-        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, null, true, LocalDateTime.now(), null, "12345");
+        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, null, LocalDateTime.now(), null, "12345");
 
         assertEquals(1, claimList.getCount());
 
-        verify(listClaimPort, times(1)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
+        verify(listClaimPort, times(1)).list(any(), anyInt(), (Boolean) isNull(), anyBoolean(), any(), any());
     }
 
     @Test
     void when_listClaimsWhereIsClaimerWithSuccess_expect_claimIterable() {
-        when(listClaimPort.list(any(), anyInt(), any(), any(), any(), any(), anyString())).thenReturn(claimIterableIsClaimer);
+        when(listClaimPort.list(any(), anyInt(), anyBoolean(), any(), any(), any())).thenReturn(claimIterableIsClaimer);
 
-        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, true, null, LocalDateTime.now(), null, "12345");
+        ClaimIterable claimList = useCase.execute(claimRequest, false, 5, true, LocalDateTime.now(), null, "12345");
 
         assertEquals(1, claimList.getCount());
 
-        verify(listClaimPort, times(1)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
-    }
-
-    @Test
-    void when_listClaimsWithoutIsClaimerAndWithoutIsDonor_expect_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest, false, 5, null, null, LocalDateTime.now(), null, "12345"));
-
-        verify(listClaimPort, times(0)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
-    }
-
-    @Test
-    void when_listClaimsWithIsClaimerAndWithIsDonor_expect_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimRequest, false, 5, true, true, LocalDateTime.now(), null, "12345"));
-
-        verify(listClaimPort, times(0)).list(any(), anyInt(), any(), any(), any(), any(), anyString());
+        verify(listClaimPort, times(1)).list(any(), anyInt(), anyBoolean(), anyBoolean(), any(), any());
     }
 }
-
-
- */
