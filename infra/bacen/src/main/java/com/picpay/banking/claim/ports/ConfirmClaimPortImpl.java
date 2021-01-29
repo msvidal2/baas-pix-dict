@@ -46,7 +46,7 @@ public class ConfirmClaimPortImpl implements ConfirmClaimPort {
         log.error("Claim_fallback_confirmBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),
-                kv("key", claim.getKey()),
+                kv("key", claim.getPixKey().getKey()),
                 kv("cpfCnpf", claim.getCpfCnpj()),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));

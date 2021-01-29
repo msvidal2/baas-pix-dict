@@ -23,8 +23,7 @@ public class Claim {
     private ClaimSituation claimSituation;
     private ClaimType claimType;
     private int participationFlow;
-    private String key;
-    private KeyType keyType;
+    private PixKey pixKey;
     private int ispb;
     private String branchNumber;
     private AccountType accountType;

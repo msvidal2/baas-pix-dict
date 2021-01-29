@@ -41,7 +41,7 @@ public class CreateClaimPortBacenImpl implements CreateClaimBacenPort {
         log.error("Claim_fallback_creatingBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),
-                kv("key", claim.getKey()),
+                kv("key", claim.getPixKey().getKey()),
                 kv("cpfCnpf", claim.getCpfCnpj()),
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));

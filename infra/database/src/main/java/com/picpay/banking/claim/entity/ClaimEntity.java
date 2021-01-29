@@ -1,10 +1,12 @@
 package com.picpay.banking.claim.entity;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -32,6 +34,10 @@ public class ClaimEntity {
     @Column(nullable = false, name = "key_type")
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
+
+    @Type(type = "json")
+    @Column(name = "pix_key_content", columnDefinition = "json")
+    private PixKeyEntity pixKey;
 
     @Column(nullable = false, name = "claimer_participant")
     private Integer claimerParticipant;
@@ -103,8 +109,9 @@ public class ClaimEntity {
         return ClaimEntity.builder()
                 .id(claim.getClaimId())
                 .type(claim.getClaimType())
-                .key(claim.getKey())
-                .keyType(claim.getKeyType())
+                .key(claim.getPixKey().getKey())
+                .keyType(claim.getPixKey().getType())
+                .pixKey(PixKeyEntity.from(claim.getPixKey(), null))
                 .claimerAccountNumber(claim.getAccountNumber())
                 .claimerAccountOpeningDate(claim.getAccountOpeningDate())
                 .claimerAccountType(claim.getAccountType())
@@ -130,8 +137,7 @@ public class ClaimEntity {
         return Claim.builder()
                 .claimId(id)
                 .claimType(type)
-                .key(key)
-                .keyType(keyType)
+                .pixKey(new PixKey(key, keyType))
                 .donorIspb(donorParticipant)
                 .branchNumber(claimerBranch)
                 .accountNumber(claimerAccountNumber)

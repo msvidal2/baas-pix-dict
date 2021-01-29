@@ -2,6 +2,7 @@ package com.picpay.banking.pix.converters;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.PixKey;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +18,7 @@ public class CreateClaimWebConverter implements DataConverter<CreateClaimRequest
             .claimType(from.getClaimType())
             .cpfCnpj(from.getCpfCnpj())
             .ispb(from.getIspb())
-            .key(from.getKey())
-            .keyType(from.getKeyType())
+            .pixKey(new PixKey(from.getKey(), from.getKeyType()))
             .personType(from.getPersonType())
             .name(from.getName())
             .fantasyName(from.getFantasyName())

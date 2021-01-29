@@ -4,6 +4,7 @@ import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.claim.dto.ClaimReason;
 import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Account;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.pixkey.dto.request.Owner;
@@ -73,8 +74,8 @@ public class ClaimResponse {
     public static ClaimResponse from(Claim claim) {
         return ClaimResponse.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
-                .key(claim.getKey())
-                .keyType(KeyTypeBacen.resolve(claim.getKeyType()))
+                .key(claim.getPixKey().getKey())
+                .keyType(KeyTypeBacen.resolve(claim.getPixKey().getType()))
                 .claimerAccount(Account.from(claim))
                 .claimer(Owner.from(claim))
                 .build();
@@ -88,8 +89,7 @@ public class ClaimResponse {
         return Claim.builder()
                 .claimId(id)
                 .claimType(type.getClaimType())
-                .key(key)
-                .keyType(keyType.getType())
+                .pixKey(new PixKey(key, keyType.getType()))
                 .ispb(Integer.parseInt(claimerAccount.getParticipant()))
                 .branchNumber(claimerAccount.getBranch())
                 .accountNumber(claimerAccount.getAccountNumber())

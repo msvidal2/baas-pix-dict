@@ -76,19 +76,19 @@ public class ConfirmClaimUseCase {
         log.info("Claim_confirmed_key_removed",
             kv(REQUEST_IDENTIFIER, requestIdentifier),
             kv(CLAIM_ID, claimConfirmed.getClaimId()),
-            kv(KEY, claimConfirmed.getKey()));
+            kv(KEY, claimConfirmed.getPixKey().getKey()));
 
         return claimConfirmed;
     }
 
     private Optional<PixKey> remove(Claim claimConfirmed, String requestIdentifier) {
-        var pixKey = findPixKeyPort.findPixKey(claimConfirmed.getKey());
+        var pixKey = findPixKeyPort.findPixKey(claimConfirmed.getPixKey().getKey());
         try {
-            removePixKeyPort.remove(claimConfirmed.getKey(), claimConfirmed.getIspb());
+            removePixKeyPort.remove(claimConfirmed.getPixKey().getKey(), claimConfirmed.getIspb());
         } catch (Exception e) {
             log.error("Claim_confirmed_key_removedError",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
-                kv(KEY, claimConfirmed.getKey()),
+                kv(KEY, claimConfirmed.getPixKey().getKey()),
                 kv(EXCEPTION, e));
         }
         return pixKey;

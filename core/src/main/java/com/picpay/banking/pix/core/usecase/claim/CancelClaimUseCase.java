@@ -115,7 +115,7 @@ public class CancelClaimUseCase {
 
     private void recoveryDonatedByFraudKey(Claim claim) {
         PixKey pixkey = findPixKeyPort
-                .findDonatedPixKey(claim.getKey())
+                .findDonatedPixKey(claim.getPixKey().getKey())
                 .orElseThrow(ResourceNotFoundException::new);
 
         pixkey.setDonatedAutomatically(false);

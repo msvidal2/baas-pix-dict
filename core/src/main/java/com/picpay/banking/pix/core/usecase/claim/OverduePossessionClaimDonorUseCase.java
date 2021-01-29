@@ -33,11 +33,11 @@ public class OverduePossessionClaimDonorUseCase {
         log.info("OverduePossessionClaim_confirmed_saved",
                 kv(CLAIM_ID, claim.getClaimId()));
 
-        removePixKeyAutomaticallyPort.remove(claim.getKey(), claim.getCompletionThresholdDate());
+        removePixKeyAutomaticallyPort.remove(claim.getPixKey().getKey(), claim.getCompletionThresholdDate());
 
         log.info("OverduePossessionClaim_key_removed",
                 kv(CLAIM_ID, claim.getClaimId()),
-                kv("key", claim.getKey()));
+                kv("key", claim.getPixKey().getKey()));
     }
 
 }

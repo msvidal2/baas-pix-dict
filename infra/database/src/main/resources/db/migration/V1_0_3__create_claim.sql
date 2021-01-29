@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS claim
     type varchar(20) NOT NULL,
     pix_key varchar(100) NOT NULL,
     key_type varchar(20) NOT NULL,
+    pix_key_content json NULL,
     claimer_participant integer NOT NULL,
     claimer_branch varchar(4),
     claimer_account_number varchar(20) NOT NULL,
