@@ -38,16 +38,17 @@ public class ListClaims implements Specification<ClaimEntity> {
             if(!Objects.isNull(claim.getAccountNumber())) predicates.add(criteriaBuilder.equal(root.get("claimerAccountNumber"), claim.getAccountNumber()));
             if(!Objects.isNull(claim.getAccountType())) predicates.add(criteriaBuilder.equal(root.get("claimerAccountType"), claim.getAccountType()));
         } else {
-            //TODO: precisamos fazer um join com key,
-            // para poder filtrar reivindicacoes pelos campos das chaves
-            // porem key não é uma entidade, falta resolver isso aqui
-            var keyPath = root.get("key");
-            predicates.add(criteriaBuilder.equal(keyPath.get("participant"), claim.getIspb()));
+            var keyPath = root.get("pixKey");
+            predicates.add(criteriaBuilder.equal(root.get("donorParticipant"), claim.getIspb()));
             if(!Objects.isNull(claim.getPersonType())) predicates.add(criteriaBuilder.equal(keyPath.get("personType"), claim.getPersonType()));
             if(!Objects.isNull(claim.getCpfCnpj())) predicates.add(criteriaBuilder.equal(keyPath.get("taxId"), claim.getCpfCnpj()));
             if(!Objects.isNull(claim.getBranchNumber())) predicates.add(criteriaBuilder.equal(keyPath.get("branch"), claim.getBranchNumber()));
             if(!Objects.isNull(claim.getAccountNumber())) predicates.add(criteriaBuilder.equal(keyPath.get("accountNumber"), claim.getAccountNumber()));
             if(!Objects.isNull(claim.getAccountType())) predicates.add(criteriaBuilder.equal(keyPath.get("accountType"), claim.getAccountType()));
+
+            // TODO nao precisa dos IFS
+            // TODO montar consulta nativa dinamicamente
+            // TODO repetir os dados da chave dentro da claim (json) - ContentIdentifierActionEntity
         }
 
         predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate));
