@@ -1,6 +1,7 @@
 spring:
     main:
         banner-mode: off
+        allow-bean-definition-overriding: true
     application:
         name: dict-sync-verifier
     cloud:
@@ -14,3 +15,4 @@ spring:
             - bacen-${ENV:local}
             - database-${ENV:local}
             - messaging-${ENV:local}
+            - cloudtask-${ENV:local}
