@@ -62,6 +62,7 @@ public class OverduePortabilityClaimUseCase {
 
     private void rollbackCancel(Claim claim, String requestIdentifier){
         claim.setClaimSituation(ClaimSituation.AWAITING_CLAIM);
+        claim.setCancelReason(null);
         cancelClaimPort.cancel(claim, requestIdentifier);
     }
 
