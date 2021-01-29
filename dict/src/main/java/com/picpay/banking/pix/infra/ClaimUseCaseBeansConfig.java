@@ -15,11 +15,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.usecase.claim.CancelClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +49,11 @@ public class ClaimUseCaseBeansConfig {
     @Bean
     public ConfirmClaimUseCase claimConfirmationUseCase() {
         return new ConfirmClaimUseCase(claimConfirmationPort, findClaimPort, saveClaimPort, removePixKeyPort, pixKeyEventPort, findPixKeyPort);
+    }
+
+    @Bean
+    public ListClaimUseCase listClaimUseCase() {
+        return new ListClaimUseCase(listClaimPort);
     }
 
     @Bean
