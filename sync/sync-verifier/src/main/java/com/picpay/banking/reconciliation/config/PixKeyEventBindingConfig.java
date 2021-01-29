@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.dict.syncverifier.config;
+package com.picpay.banking.reconciliation.config;
 
 import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
 import org.springframework.cloud.stream.annotation.EnableBinding;
