@@ -35,7 +35,7 @@ public class CreateInfractionReportUseCase {
         var infractionReportCreated = infractionReportPort.create(infractionReport, requestIdentifier, ispbPicPay);
 
         if (infractionReportCreated != null) {
-            log.info("Infraction_created -> identifier: {} endToEndId: {} infractionReportId: {}"
+            log.info("Infraction_created"
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("endToEndId", infractionReportCreated.getEndToEndId())
                 , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
