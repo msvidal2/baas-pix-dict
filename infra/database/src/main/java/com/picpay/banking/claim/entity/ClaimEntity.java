@@ -35,8 +35,10 @@ public class ClaimEntity {
     @Enumerated(EnumType.STRING)
     private KeyType keyType;
 
-    @Type(type = "json")
-    @Column(name = "pix_key_content", columnDefinition = "json")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns(value = {
+            @JoinColumn(name = "pix_key_fk", referencedColumnName = "pix_key"),
+            @JoinColumn(name = "key_type_fk", referencedColumnName = "type") })
     private PixKeyEntity pixKey;
 
     @Column(nullable = false, name = "claimer_participant")

@@ -38,26 +38,22 @@ public class ListClaims implements Specification<ClaimEntity> {
             if(!Objects.isNull(claim.getAccountNumber())) predicates.add(criteriaBuilder.equal(root.get("claimerAccountNumber"), claim.getAccountNumber()));
             if(!Objects.isNull(claim.getAccountType())) predicates.add(criteriaBuilder.equal(root.get("claimerAccountType"), claim.getAccountType()));
         } else {
-            // TODO -> erro abaixo quando adiciona os filtros que usam a pixKey
-            // Illegal attempt to dereference path source [null.pixKey] of basic type; nested exception is java.lang.IllegalStateException:
-            // Illegal attempt to dereference path source [null.pixKey] of basic type
             var keyPath = root.get("pixKey");
+
             predicates.add(criteriaBuilder.equal(root.get("donorParticipant"), claim.getIspb()));
             if(!Objects.isNull(claim.getPersonType())) predicates.add(criteriaBuilder.equal(keyPath.get("personType"), claim.getPersonType()));
             if(!Objects.isNull(claim.getCpfCnpj())) predicates.add(criteriaBuilder.equal(keyPath.get("taxId"), claim.getCpfCnpj()));
             if(!Objects.isNull(claim.getBranchNumber())) predicates.add(criteriaBuilder.equal(keyPath.get("branch"), claim.getBranchNumber()));
             if(!Objects.isNull(claim.getAccountNumber())) predicates.add(criteriaBuilder.equal(keyPath.get("accountNumber"), claim.getAccountNumber()));
             if(!Objects.isNull(claim.getAccountType())) predicates.add(criteriaBuilder.equal(keyPath.get("accountType"), claim.getAccountType()));
-
-            // TODO nao precisa dos IFS
-            // TODO montar consulta nativa dinamicamente
-            // TODO repetir os dados da chave dentro da claim (json) - ContentIdentifierActionEntity
         }
 
         predicates.add(criteriaBuilder.between(root.get("lastModified"), startDate, endDate));
 
-        if(!Objects.isNull(isPending) && isPending) {
+        if(isPending){
             predicates.add(root.get("status").in(ClaimSituation.getPending()));
+        } else {
+            predicates.add(root.get("status").in(ClaimSituation.getNotPending()));
         }
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));

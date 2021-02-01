@@ -33,6 +33,10 @@ public enum ClaimSituation {
         return List.of(OPEN, AWAITING_CLAIM, CONFIRMED);
     }
 
+    public static List<ClaimSituation> getNotPending() {
+        return List.of(COMPLETED, CANCELED);
+    }
+
     public static Map<ClaimType, List<ClaimSituation>> getCancelSituationsAllowedByType() {
         return Map.of(
                 POSSESSION_CLAIM, List.of(AWAITING_CLAIM, CONFIRMED),
