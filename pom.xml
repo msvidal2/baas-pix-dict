@@ -53,6 +53,7 @@
         <module>notifier</module>
         <module>mockserver</module>
         <module>polling</module>
+        <module>monitoring</module>
     </modules>
 
     <distributionManagement>

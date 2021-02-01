@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "spring.redis", value = "enabled", havingValue = "true", matchIfMissing = true)
 public class InfractionReportCacheSavePortImpl implements InfractionReportCacheSavePort {
 
     private final RedisTemplate<String, Object> redisTemplate;

@@ -7,6 +7,8 @@ spring:
                 keys-changed:
                     destination: keys-changed
                     binder: kafka
+    redis:
+      enabled: true
 picpay:
     ispb: 22896431
     logging:
