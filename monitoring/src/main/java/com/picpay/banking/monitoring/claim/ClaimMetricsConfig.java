@@ -10,9 +10,11 @@ import com.picpay.banking.claim.repository.ClaimMetricRepository;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.domain.metrics.MetricEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,19 +26,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimMetricsConfig {
 
+    private static final LocalDateTime YESTERDAY = LocalDateTime.now().minusDays(1);
+    private static final Integer DAYS_TO_OVERDUE = 24;
+
     private final ClaimMetricRepository claimMetricRepository;
+
+    @Value("${picpay.ispb}")
+    private Integer ispb;
 
     @Bean
     public List<MetricEvent> claimMetricEvents() {
-        return Arrays.asList(MetricEvent.builder()
-                                 .description("open-claims")
-                                 .value(() -> claimMetricRepository.countByStatus(ClaimSituation.OPEN))
-                                 .build(),
-                             MetricEvent.builder()
-                                 .description("awaiting-claims")
-                                 .value(() -> claimMetricRepository.countByStatus(ClaimSituation.AWAITING_CLAIM))
-                                 .build()
-                            );
+        return Arrays.asList(
+                MetricEvent.builder()
+                        .description("open-claims-without-acknowledge")
+                        .value(() -> claimMetricRepository.countByStatus(ClaimSituation.OPEN))
+                        .build(),
+                MetricEvent.builder()
+                        .description("awaiting-possession-claims-donor")
+                        .value(() -> claimMetricRepository.findAwaitingPossessionClaimsForDonor(ispb, YESTERDAY))
+                        .build(),
+                MetricEvent.builder()
+                        .description("awaiting-portability-claims-donor")
+                        .value(() -> claimMetricRepository.findAwaitingPortabilityClaimsForDonor(ispb, YESTERDAY))
+                        .build(),
+                MetricEvent.builder()
+                        .description("awaiting-possession-claims-claimer")
+                        .value(() -> claimMetricRepository.findAwaitingClaimToCancelForClaimer(ispb, DAYS_TO_OVERDUE))
+                        .build()
+        );
     }
 
 }
