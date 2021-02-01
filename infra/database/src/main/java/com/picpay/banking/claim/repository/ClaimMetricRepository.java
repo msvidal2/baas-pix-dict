@@ -22,10 +22,10 @@ public interface ClaimMetricRepository extends JpaRepository<ClaimEntity, String
     @Query("SELECT count(*) FROM claim c WHERE c.type = 'POSSESSION_CLAIM' AND c.status = 'AWAITING_CLAIM' AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
     Long findAwaitingPossessionClaimsForDonor(Integer donorParticipant, LocalDateTime resolutionPeriodEnd);
 
-    @Query("SELECT count(*) FROM claim c WHERE c.type = 'PORTABILITY' AND c.status 'AWAITING_CLAIM' AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
+    @Query("SELECT count(*) FROM claim c WHERE c.type = 'PORTABILITY' AND c.status = 'AWAITING_CLAIM' AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
     Long findAwaitingPortabilityClaimsForDonor(Integer donorParticipant, LocalDateTime resolutionPeriodEnd);
 
-    @Query(value = "SELECT count(*) FROM claim c WHERE c.type = 'POSSESSION_CLAIM' AND c.status = :CONFIRMED: AND c.claimer_participant = :claimerParticipant " +
+    @Query(value = "SELECT count(*) FROM claim c WHERE c.type = 'POSSESSION_CLAIM' AND c.status = 'CONFIRMED' AND c.claimer_participant = :claimerParticipant " +
             "AND datediff(now() , c.resolution_period_end) > :interval", nativeQuery = true)
     Long findAwaitingClaimToCancelForClaimer(Integer claimerParticipant, Integer interval);
 

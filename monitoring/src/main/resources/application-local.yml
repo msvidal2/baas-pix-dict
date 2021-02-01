@@ -13,3 +13,4 @@ spring:
 picpay:
   monitoring:
     delay: 30000
+  ispb: 22896431
