@@ -6,6 +6,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile.*;
+
 /**
  * @author Luis Silva
  * @version 1.0 25/11/2020
@@ -24,10 +26,19 @@ public class ContentIdentifierFile {
     private Long length;
     private String sha256;
 
+    public void done(){
+        this.status = DONE;
+    }
+
+    public boolean isNotProcessed() {
+        return status != DONE;
+    }
+
     public enum StatusContentIdentifierFile{
         REQUESTED,
         AVAILABLE,
-        PROCESSING;
+        PROCESSING,
+        DONE;
 
         public boolean isNotAvaliable() {
             return this != AVAILABLE;

@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,24 +66,24 @@ class DataBaseContentIdentifierPortTest {
 
     @Test
     void shouldFindLastFileRequestedToProcess(){
-       when(this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList()))
+       when(this.contentIdentifierFileRepository.findFirstByKeyTypeOrderByRequestTimeDesc(any()))
            .thenReturn(Optional.of(ContentIdentifierFileEntity.from(cidFile)));
 
         final var lastFileRequested = this.databaseContentIdentifierPort.findLastFileRequested(KeyType.CPF);
         assertThat(lastFileRequested).isPresent();
 
-        verify(this.contentIdentifierFileRepository).findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList());
+        verify(this.contentIdentifierFileRepository).findFirstByKeyTypeOrderByRequestTimeDesc(any());
     }
 
     @Test
     void notShouldFindLastFileRequestedToProcess(){
-       when(this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList()))
+       when(this.contentIdentifierFileRepository.findFirstByKeyTypeOrderByRequestTimeDesc(any()))
            .thenReturn(Optional.empty());
 
         final var lastFileRequested = this.databaseContentIdentifierPort.findLastFileRequested(KeyType.CPF);
         assertThat(lastFileRequested).isEmpty();
 
-        verify(this.contentIdentifierFileRepository).findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(any(),anyList());
+        verify(this.contentIdentifierFileRepository).findFirstByKeyTypeOrderByRequestTimeDesc(any());
     }
 
 

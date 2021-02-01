@@ -161,6 +161,24 @@ class FailureReconciliationSyncByFileUseCaseTest {
     }
 
     @Test
+    void dontInsertKeysFromBacenWhenFileIsAlreadyProcessed() {
+        final var doneFile = cidFile.toBuilder().status(
+            ContentIdentifierFile.StatusContentIdentifierFile.DONE).build();
+        when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(doneFile));
+
+        this.failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+
+        verify(this.databaseContentIdentifierPort).findLastFileRequested(any());
+        verify(this.bacenContentIdentifierEventsPort,never()).getContentIdentifierFileInBacen(anyInt());
+        verify(this.bacenContentIdentifierEventsPort, never()).downloadCidsFromBacen(anyString());
+        verify(this.findPixKeyPort, never()).findAllByKeyType(any(),any(),anyInt());
+        verify(this.databaseContentIdentifierPort, never()).saveFile(any());
+        verify(lockPort,never()).lock();
+        verify(lockPort).unlock();
+
+    }
+
+    @Test
     void dontInsertKeysFromBacenWhenFileNotAvailable() {
         when(this.databaseContentIdentifierPort.findLastFileRequested(any())).thenReturn(Optional.of(cidFile));
         when(this.bacenContentIdentifierEventsPort.getContentIdentifierFileInBacen(anyInt())).thenReturn(cidFile);

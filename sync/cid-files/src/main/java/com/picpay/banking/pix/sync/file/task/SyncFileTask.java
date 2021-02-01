@@ -21,7 +21,6 @@ public class SyncFileTask implements ApplicationRunner {
     private final FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
     @Override
-    @Transactional
     public void run(final ApplicationArguments args) throws Exception {
         Arrays.stream(KeyType.values()).forEach(this.failureReconciliationSyncByFileUseCase::execute);
     }
