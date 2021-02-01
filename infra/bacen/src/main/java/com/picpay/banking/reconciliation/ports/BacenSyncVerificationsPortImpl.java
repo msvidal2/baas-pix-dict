@@ -35,7 +35,7 @@ public class BacenSyncVerificationsPortImpl implements BacenSyncVerificationsPor
         var response = bacenReconciliationClient.syncVerifications(request);
 
         return SyncVerifierResult.builder()
-            .syncVerifierLastModified(response.getResponseTime())
+            .syncVerifierLastModified(response.getSyncVerification().getSyncVerifierLastModified())
             .syncVerifierResultType(SyncVerifierResultType.valueOf(response.getSyncVerification().getResult().name()))
             .build();
     }

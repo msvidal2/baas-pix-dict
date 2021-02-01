@@ -6,14 +6,8 @@ spring:
             name: SYNC_CID_FILE
         config:
             enabled: false
-#   jpa:
-#       properties:
-#           hibernate:
-#               jdbc:
-#                   batch_size: 100
-#               order_inserts: true
-#               order_updates: true
-#               generate_statistics: true
+    redis:
+        enabled: true
 picpay:
     ispb: 22896431
     logging:

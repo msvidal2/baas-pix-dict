@@ -55,7 +55,7 @@ public class BacenErrorBuilder {
         // FIXME: Quando tento deletar uma chave que não existe, o errorcode ta vindo nulo
         return BacenError.builder()
                 .message(errorCode == null ? null : errorCode.getCode())
-                .detail(errorCode == null ? null : errorCode.getMessage())
+                .detail(errorCode == null ? problem.getDetail() : errorCode.getMessage())
                 .correlationId(problem.getCorrelationId())
                 .fields(fields)
                 .build();
