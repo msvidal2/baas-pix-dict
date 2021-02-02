@@ -61,6 +61,11 @@ public class PixKey implements Serializable {
     private UUID requestId;
     private boolean donatedAutomatically;
 
+    public PixKey(String key, KeyType keyType){
+        this.key = key;
+        this.type = keyType;
+    }
+
     public String getName() {
         return ObjectUtils.firstNonNull(name, fantasyName);
     }

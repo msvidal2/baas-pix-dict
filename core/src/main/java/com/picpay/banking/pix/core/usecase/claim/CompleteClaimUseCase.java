@@ -53,8 +53,8 @@ public class CompleteClaimUseCase {
 
     private void createPixKeyForClaimer(final Claim claim, final String requestIdentifier) {
         PixKey pixKey = PixKey.builder()
-            .type(claim.getKeyType())
-            .key(claim.getKey())
+            .type(claim.getPixKey().getType())
+            .key(claim.getPixKey().getKey())
             .ispb(claim.getIspb())
             .branchNumber(claim.getBranchNumber())
             .accountType(claim.getAccountType())

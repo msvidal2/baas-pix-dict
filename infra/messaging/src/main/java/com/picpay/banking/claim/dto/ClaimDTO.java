@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.dto;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pixkey.dto.PixKeyDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,8 +17,7 @@ public class ClaimDTO {
     private ClaimSituation claimSituation;
     private ClaimType claimType;
     private int participationFlow;
-    private String key;
-    private KeyType keyType;
+    private PixKeyDTO pixKey;
     private int ispb;
     private String branchNumber;
     private AccountType accountType;
@@ -43,8 +43,7 @@ public class ClaimDTO {
                 .claimSituation(claim.getClaimSituation())
                 .claimType(claim.getClaimType())
                 .participationFlow(claim.getParticipationFlow())
-                .key(claim.getKey())
-                .keyType(claim.getKeyType())
+                .pixKey((PixKeyDTO) PixKeyDTO.from(claim.getPixKey()))
                 .ispb(claim.getIspb())
                 .branchNumber(claim.getBranchNumber())
                 .accountType(claim.getAccountType())
@@ -72,8 +71,7 @@ public class ClaimDTO {
                 .claimSituation(claimSituation)
                 .claimType(claimType)
                 .participationFlow(participationFlow)
-                .key(key)
-                .keyType(keyType)
+                .pixKey(PixKeyDTO.toDomain(pixKey))
                 .ispb(ispb)
                 .branchNumber(branchNumber)
                 .accountType(accountType)

@@ -72,4 +72,31 @@ public class PixKeyDTO {
             .build();
     }
 
+    public static PixKey toDomain(PixKeyDTO pixKeyDTO){
+        return PixKey.builder()
+                .type(pixKeyDTO.getType())
+                .key(pixKeyDTO.getKey())
+                .ispb(pixKeyDTO.getIspb())
+                .nameIspb(pixKeyDTO.getNameIspb())
+                .branchNumber(pixKeyDTO.getBranchNumber())
+                .accountType(pixKeyDTO.getAccountType())
+                .accountNumber(pixKeyDTO.getAccountNumber())
+                .accountOpeningDate(pixKeyDTO.getAccountOpeningDate())
+                .personType(pixKeyDTO.getPersonType())
+                .taxId(pixKeyDTO.getTaxId())
+                .name(pixKeyDTO.getName())
+                .fantasyName(pixKeyDTO.getFantasyName())
+                .createdAt(pixKeyDTO.getCreatedAt())
+                .updatedAt(pixKeyDTO.getUpdatedAt())
+                .startPossessionAt(pixKeyDTO.getStartPossessionAt())
+                .endToEndId(pixKeyDTO.getEndToEndId())
+                .correlationId(pixKeyDTO.getCorrelationId())
+                .claim(pixKeyDTO.getClaim())
+                .statistic(pixKeyDTO.getStatistic())
+                .cid(pixKeyDTO.getCid())
+                .requestId(pixKeyDTO.getRequestId())
+                .donatedAutomatically(pixKeyDTO.isDonatedAutomatically())
+                .build();
+    }
+
 }

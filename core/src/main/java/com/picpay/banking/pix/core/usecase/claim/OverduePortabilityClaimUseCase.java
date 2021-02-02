@@ -45,13 +45,25 @@ public class OverduePortabilityClaimUseCase {
         claimsToCancel.forEach(sendToCancelPortabilityPort::send);
     }
 
-    public void cancelClaim(Claim claim, final String donorParticipant){
+    public void cancelClaim(Claim claim, final String donorParticipant) {
         String requestIdentifier = UUID.randomUUID().toString();
         claim.setClaimSituation(ClaimSituation.CANCELED);
         claim.setCancelReason(ClaimCancelReason.DEFAULT_RESPONSE);
-        cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt(donorParticipant), requestIdentifier);
+
         cancelClaimPort.cancel(claim, requestIdentifier);
+        try {
+            cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt("22896431"), requestIdentifier);
+        } catch (Exception e){
+            rollbackCancel(claim, requestIdentifier);
+        }
+
         log.debug("Portability canceled : " + claim.getClaimId());
+    }
+
+    private void rollbackCancel(Claim claim, String requestIdentifier){
+        claim.setClaimSituation(ClaimSituation.AWAITING_CLAIM);
+        claim.setCancelReason(null);
+        cancelClaimPort.cancel(claim, requestIdentifier);
     }
 
 }

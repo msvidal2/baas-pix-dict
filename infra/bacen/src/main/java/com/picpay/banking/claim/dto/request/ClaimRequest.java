@@ -38,8 +38,8 @@ public class ClaimRequest {
     public static ClaimRequest from(Claim claim) {
         return ClaimRequest.builder()
                 .type(ClaimType.resolve(claim.getClaimType()))
-                .key(claim.getKey())
-                .keyType(KeyTypeBacen.resolve(claim.getKeyType()))
+                .key(claim.getPixKey().getKey())
+                .keyType(KeyTypeBacen.resolve(claim.getPixKey().getType()))
                 .claimerAccount(Account.from(claim))
                 .claimer(Owner.from(claim))
                 .build();

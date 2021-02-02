@@ -47,8 +47,7 @@ public class PollingClaimListenerUseCaseTest {
 
         claimRequest = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
-                .key("+5561988887777")
-                .keyType(KeyType.CELLPHONE)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .ispb(12345678)
                 .branchNumber("0001")
                 .accountNumber("0007654321")
@@ -68,8 +67,7 @@ public class PollingClaimListenerUseCaseTest {
 
         claimResponse = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
-                .key("+5561988887777")
-                .keyType(KeyType.CELLPHONE)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .ispb(12345678)
                 .branchNumber("0001")
                 .accountNumber("0007654321")

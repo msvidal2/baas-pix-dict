@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS claim
     type varchar(20) NOT NULL,
     pix_key varchar(100) NOT NULL,
     key_type varchar(20) NOT NULL,
+    pix_key_fk varchar(100) NULL,
+    key_type_fk varchar(10) NULL,
     claimer_participant integer NOT NULL,
     claimer_branch varchar(4),
     claimer_account_number varchar(20) NOT NULL,
@@ -23,5 +25,7 @@ CREATE TABLE IF NOT EXISTS claim
     confirm_reason varchar(20) NULL,
     cancelled_by_claimant varchar(20) NULL,
     correlation_id varchar(32) NULL,
-    CONSTRAINT claim_pkey PRIMARY KEY (id)
+    CONSTRAINT claim_pkey PRIMARY KEY (id),
+    FOREIGN KEY (pix_key_fk, key_type_fk) REFERENCES pix_key(pix_key, type)
+    );
 );

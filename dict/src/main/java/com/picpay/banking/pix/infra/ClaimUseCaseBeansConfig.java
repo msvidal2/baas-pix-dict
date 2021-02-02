@@ -11,17 +11,11 @@ import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListPendingClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.usecase.claim.CancelClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
-import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +32,6 @@ public class ClaimUseCaseBeansConfig {
     private final FindClaimPort findClaimPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final PixKeyEventPort pixKeyEventPort;
-    private final ListPendingClaimPort listPendingClaimPort;
     private final ListClaimPort listClaimPort;
     private final CancelClaimBacenPort claimCancelPort;
     private final FindByIdPort findByIdPort;
@@ -60,7 +53,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ListClaimUseCase listClaimUseCase() {
-        return new ListClaimUseCase(listPendingClaimPort, listClaimPort);
+        return new ListClaimUseCase(listClaimPort);
     }
 
     @Bean

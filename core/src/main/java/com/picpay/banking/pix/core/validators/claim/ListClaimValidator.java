@@ -25,14 +25,4 @@ public class ListClaimValidator {
         ClaimIspbItemValidator.validate(claim.getIspb());
     }
 
-    public static void validateClient(final Boolean isClaim, final Boolean isDonor) {
-        if(isClaim == null && isDonor == null){
-            throw new IllegalArgumentException("Donor or Claim is required.");
-        }
-
-        if(isClaim != null && isDonor != null){
-            throw new IllegalArgumentException("Donor or Claim is required.");
-        }
-    }
-
 }

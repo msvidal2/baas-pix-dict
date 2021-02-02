@@ -32,8 +32,7 @@ public class FindClaimUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .branchNumber("0001")
                 .claimType(ClaimType.POSSESSION_CLAIM)
-                .key("+5511998765499")
-                .keyType(KeyType.CELLPHONE)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .name("Deutonio Celso da Silva")
                 .ispb(92894922)
                 .cpfCnpj("12345678902")
@@ -49,8 +48,8 @@ public class FindClaimUseCaseTest {
             assertEquals(response.getAccountNumber(), claim.getAccountNumber());
             assertEquals(response.getAccountType(), claim.getAccountType());
             assertEquals(response.getClaimType(), claim.getClaimType());
-            assertEquals(response.getKey(), claim.getKey());
-            assertEquals(response.getKeyType(), claim.getKeyType());
+            assertEquals(response.getPixKey().getKey(), claim.getPixKey().getKey());
+            assertEquals(response.getPixKey().getType(), claim.getPixKey().getType());
             assertEquals(response.getName(), claim.getName());
             assertEquals(response.getIspb(), claim.getIspb());
             assertEquals(response.getCpfCnpj(), claim.getCpfCnpj());

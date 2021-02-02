@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 public interface ListClaimPort {
 
-    ClaimIterable list(final Claim claim, final Integer limit, final Boolean isClaimer, final Boolean isDonor,
-                       final LocalDateTime startDate, final LocalDateTime endDate, final String requestIdentifier);
+    ClaimIterable list(final Claim claim, final Integer limit, final Boolean isClaimer,
+                       final Boolean isPending,
+                       final LocalDateTime startDate, final LocalDateTime endDate);
+
 }

@@ -2,7 +2,6 @@ package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ClaimException;
-import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
@@ -59,8 +58,7 @@ class ConfirmClaimUseCaseTest {
     public void setup() {
         claim = Claim.builder()
                 .claimType(ClaimType.POSSESSION_CLAIM)
-                .key("+5561988887777")
-                .keyType(KeyType.CELLPHONE)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .ispb(12345678)
                 .branchNumber("0001")
                 .accountNumber("0007654321")

@@ -83,7 +83,7 @@ public class ClaimController {
                 kv("dto", requestDTO));
 
         var claim = listClaimUseCase.execute(requestDTO.toDomain(),
-                requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaim(), requestDTO.getDonor(),
+                requestDTO.getPending(), requestDTO.getLimit(), requestDTO.getClaimer(),
                 requestDTO.getStartDateAsLocalDateTime(), requestDTO.getEndDateAsLocalDateTime(),
                 requestIdentifier);
 

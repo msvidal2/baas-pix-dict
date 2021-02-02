@@ -77,8 +77,7 @@ class CompleteClaimUseCaseTest {
 
         claimResponseCompleted = Claim.builder()
                 .ispb(22896431)
-                .key("28724534072")
-                .keyType(KeyType.CPF)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .personType(PersonType.INDIVIDUAL_PERSON)
                 .cpfCnpj("11122233300")
                 .branchNumber("0001")

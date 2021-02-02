@@ -50,8 +50,7 @@ public class OverduePortabilityClaimUseCaseTest {
 
         claim = Claim.builder()
                 .claimType(ClaimType.PORTABILITY)
-                .key("+5561988887777")
-                .keyType(KeyType.CELLPHONE)
+                .pixKey(new PixKey("+5561988887777", KeyType.CELLPHONE))
                 .ispb(22896431)
                 .branchNumber("0001")
                 .accountNumber("0007654321")
