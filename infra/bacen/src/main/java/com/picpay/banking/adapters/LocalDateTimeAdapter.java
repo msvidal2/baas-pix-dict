@@ -28,7 +28,7 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
         try {
             return LocalDateTime.from(formatter.parse(value));
         }catch (Exception e){
-            log.debug("Invalid Format {} - {}", PATTERN, value);
+            log.trace("Invalid Format {} - {}", PATTERN, value);
             return LocalDateTime.from(formatterNano.parse(value));
         }
     }
@@ -42,7 +42,7 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
         try {
             return formatter.format(value);
         }catch (Exception e){
-            log.debug("Invalid Format {} - {}", PATTERN, value);
+            log.trace("Invalid Format {} - {}", PATTERN, value);
             return formatterNano.format(value);
         }
     }

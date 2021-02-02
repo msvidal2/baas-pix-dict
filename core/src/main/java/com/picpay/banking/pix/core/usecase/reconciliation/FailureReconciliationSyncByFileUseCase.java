@@ -1,7 +1,11 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.common.Pagination;
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.domain.Sync;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -13,10 +17,8 @@ import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLoc
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.ADDED;
@@ -42,7 +44,12 @@ public class FailureReconciliationSyncByFileUseCase {
         this.databaseContentIdentifierPort.findLastFileRequested(keyType)
             .ifPresent(contentIdentifierFile -> {
                 try {
-                    this.processFile(contentIdentifierFile);
+
+                    if(contentIdentifierFile.isNotProcessed())
+                        this.processFile(contentIdentifierFile);
+
+                } catch (Exception e){
+                    log.error("Error while executing sync by file" , e);
                 } finally {
                     this.lockPort.unlock();
                 }
@@ -69,6 +76,8 @@ public class FailureReconciliationSyncByFileUseCase {
 
         this.synchronizeCids(contentIdentifierFileId,keyType, sync);
 
+        availableFile.done();
+
         this.databaseContentIdentifierPort.saveFile(availableFile);
 
         log.info("ReconciliationSyncByFile_ended {} {}", kv("contentIdentifierFileId", contentIdentifierFileId),kv("keyType",keyType));
@@ -89,7 +98,7 @@ public class FailureReconciliationSyncByFileUseCase {
         var actualPage = 0;
         List<String> cidsInDatabase = new ArrayList<>();
         do {
-            pagination = this.findPixKeyPort.findAllByKeyType(keyType, actualPage, 10);
+            pagination = this.findPixKeyPort.findAllByKeyType(keyType, actualPage, 1000);
             final var cidsAlreadyInDatabase = pagination.getResult().stream().map(PixKey::getCid).collect(Collectors.toList());
             cidsInDatabase.addAll(cidsAlreadyInDatabase);
             actualPage = pagination.nextPage();
@@ -101,19 +110,20 @@ public class FailureReconciliationSyncByFileUseCase {
     private void synchronizeCids(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync) {
         sync.getCidsNotSyncronized().stream()
             .forEach(cid -> {
-                this.bacenPixKeyByContentIdentifierPort.getPixKey(cid).ifPresentOrElse(pixKey -> {
-                    final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
-                    final var actualKey = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey());
-                    this.createPixKeyPort.savePixKey(pixKeyToInsert, Reason.RECONCILIATION);
+                this.bacenPixKeyByContentIdentifierPort.getPixKey(cid)
+                    .ifPresentOrElse(pixKey -> {
+                        final var pixKeyToInsert = pixKey.toBuilder().cid(cid).build();
+                        final var actualKey = this.findPixKeyPort.findPixKey(pixKeyToInsert.getKey());
+                        this.createPixKeyPort.savePixKey(pixKeyToInsert, Reason.RECONCILIATION);
 
-                    actualKey.ifPresentOrElse(keyInDatabase -> {
-                        updatePixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
+                        actualKey.ifPresentOrElse(keyInDatabase -> {
+                            updatePixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
+                        }, () -> {
+                            insertPixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
+                        });
                     }, () -> {
-                        insertPixKey(contentIdentifierFileId, keyType, sync, cid, pixKeyToInsert);
+                        this.remove(contentIdentifierFileId, keyType, sync, cid);
                     });
-                }, () -> {
-                    this.remove(contentIdentifierFileId, keyType, sync, cid);
-                });
             });
     }
 

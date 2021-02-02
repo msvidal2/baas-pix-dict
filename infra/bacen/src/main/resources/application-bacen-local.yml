@@ -8,7 +8,7 @@ feign:
   client:
     config:
       default:
-        logger-level: FULL
+        logger-level: NONE
         connect-timeout: 105000
         read-timeout: 105000
   compression:
@@ -29,4 +29,4 @@ pix:
 
 logging:
   level:
-    com.picpay.banking: DEBUG
+    com.picpay.banking: INFO

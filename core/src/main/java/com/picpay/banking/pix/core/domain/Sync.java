@@ -3,6 +3,7 @@ package com.picpay.banking.pix.core.domain;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -19,34 +20,35 @@ public class Sync {
 
     private final ContentIdentifierFile contentIdentifierFile;
 
-    private Set<String> cidsSyncronized;
+    private List<String> cidsSyncronized;
 
-    private Set<String> cidsNotSyncronized;
+    private List<String> cidsNotSyncronized;
 
     public Sync(final ContentIdentifierFile contentIdentifierFile) {
         this.contentIdentifierFile = contentIdentifierFile;
-        this.cidsSyncronized = new HashSet<>();
-        this.cidsNotSyncronized = new HashSet<>();
+        this.cidsSyncronized = new ArrayList<>();
+        this.cidsNotSyncronized = new ArrayList<>();
     }
 
     public void verify(final List<String> cidsInBacen, final List<String> cidsInDatabase) {
-        final var listOfSyncronized = cidsInDatabase.stream()
+        final var listOfSyncronized =  cidsInDatabase.parallelStream()
             .filter(cidsInBacen::contains)
             .collect(Collectors.toList());
 
         this.cidsSyncronized.addAll(listOfSyncronized);
         log.info("ReconciliationSyncByFile_Verifying Keys {} syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType() ,cidsSyncronized.size());
 
-        final var listOfcidsNotSyncronized = cidsInDatabase.stream()
-            .filter(cid -> !cidsInBacen.contains(cid))
-            .collect(Collectors.toList());
 
-        final var cidsNotSyncronizedAtDatabaseAndNeedToInsert = cidsInBacen.stream()
+        final var cidsInBacenWeNeedInsert = cidsInBacen.parallelStream()
             .filter(cid -> !cidsInDatabase.contains(cid))
             .collect(Collectors.toList());
 
-        this.cidsNotSyncronized.addAll(cidsNotSyncronizedAtDatabaseAndNeedToInsert);
-        this.cidsNotSyncronized.addAll(listOfcidsNotSyncronized);
+        final var listOfcidsInDatabaseWeNeedRemoveButCanBeUpdatedWithCorrectCIDInBacen = cidsInDatabase.parallelStream()
+            .filter(cid -> !cidsInBacen.contains(cid))
+            .collect(Collectors.toList());
+
+        this.cidsNotSyncronized.addAll(cidsInBacenWeNeedInsert);
+        this.cidsNotSyncronized.addAll(listOfcidsInDatabaseWeNeedRemoveButCanBeUpdatedWithCorrectCIDInBacen);
 
         log.info("ReconciliationSyncByFile_Verifying Keys {} not syncronized with Bacen - cids size {}",contentIdentifierFile.getKeyType() , this.cidsNotSyncronized.size());
     }

@@ -10,7 +10,6 @@ import com.picpay.banking.reconciliation.repository.ContentIdentifierFileReposit
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -27,8 +26,7 @@ public class DatabaseContentIdentifierPortImpl implements DatabaseContentIdentif
 
     @Override
     public Optional<ContentIdentifierFile> findLastFileRequested(final KeyType keyType) {
-        return this.contentIdentifierFileRepository.findFirstByKeyTypeAndStatusInOrderByRequestTimeDesc(keyType, List.of(
-            ContentIdentifierFile.StatusContentIdentifierFile.PROCESSING, ContentIdentifierFile.StatusContentIdentifierFile.REQUESTED))
+        return this.contentIdentifierFileRepository.findFirstByKeyTypeOrderByRequestTimeDesc(keyType)
             .map(ContentIdentifierFileEntity::toDomain);
     }
 
