@@ -1,0 +1,16 @@
+server:
+  compression:
+    enabled: true
+
+spring:
+  application:
+    name: dict-monitoring
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+  redis:
+    enabled: false
+picpay:
+  monitoring:
+    delay: 30000
+  ispb: 22896431

@@ -9,6 +9,8 @@ spring:
                 keys-changed:
                     destination: keys-changed
                     binder: kafka
+    redis:
+      enabled: true
 
 server:
     tomcat:

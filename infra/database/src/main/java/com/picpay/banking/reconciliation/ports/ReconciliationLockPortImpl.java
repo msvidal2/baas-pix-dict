@@ -9,6 +9,7 @@ import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLoc
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
+@ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
 public class ReconciliationLockPortImpl implements ReconciliationLockPort {
 
     private final RedisTemplate<String, Object> redisTemplate;
