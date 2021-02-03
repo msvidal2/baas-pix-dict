@@ -24,10 +24,17 @@ resource "aws_api_gateway_rest_api" "dict_api" {
   }
 }
 
-resource "aws_api_gateway_resource" "dict_api_v1" {
+resource "aws_api_gateway_resource" "dict_api_v2" {
   rest_api_id = aws_api_gateway_rest_api.dict_api.id
   parent_id   = aws_api_gateway_rest_api.dict_api.root_resource_id
-  path_part   = "v1"
+  path_part   = "v2"
+}
+
+resource "aws_api_gateway_authorizer" "dict_auth" {
+  name          = "DictApiV2Authorizer"
+  rest_api_id   = aws_api_gateway_rest_api.dict_api.id
+  type          = "COGNITO_USER_POOLS"
+  provider_arns = [aws_cognito_user_pool.dict_api.arn]
 }
 
 # deployment to dev environment

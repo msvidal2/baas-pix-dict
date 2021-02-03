@@ -34,14 +34,14 @@ resource "aws_cognito_resource_server" "dict_api" {
     scope_description = "To delete"
   }
 
-  user_pool_id = aws_cognito_user_pool.pool.id
+  user_pool_id = aws_cognito_user_pool.dict_api.id
 }
 
 # clients
 
 resource "aws_cognito_user_pool_client" "client" {
   name                          = "client-test"
-  user_pool_id                  = aws_cognito_user_pool.pool.id
+  user_pool_id                  = aws_cognito_user_pool.dict_api.id
   supported_identity_providers  = ["COGNITO"]
   prevent_user_existence_errors = "ENABLED"
 
@@ -51,12 +51,12 @@ resource "aws_cognito_user_pool_client" "client" {
   allowed_oauth_flows                  = ["client_credentials"]
   explicit_auth_flows                  = ["ALLOW_REFRESH_TOKEN_AUTH"]
   allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_scopes                 = [
-      "${aws_cognito_user_pool_domain.dict_api.domain}/read",
-      "${aws_cognito_user_pool_domain.dict_api.domain}/create",
-      "${aws_cognito_user_pool_domain.dict_api.domain}/edit",
-      "${aws_cognito_user_pool_domain.dict_api.domain}/delete"
-    ]
+  allowed_oauth_scopes = [
+    "${aws_cognito_user_pool_domain.dict_api.domain}/read",
+    "${aws_cognito_user_pool_domain.dict_api.domain}/create",
+    "${aws_cognito_user_pool_domain.dict_api.domain}/edit",
+    "${aws_cognito_user_pool_domain.dict_api.domain}/delete"
+  ]
 
   depends_on = [
     aws_cognito_resource_server.dict_api
