@@ -54,7 +54,7 @@ resource "aws_cognito_user_pool_client" "client" {
   allowed_oauth_scopes                 = [
       "${aws_cognito_user_pool_domain.dict_api.domain}/read",
       "${aws_cognito_user_pool_domain.dict_api.domain}/create",
-      "${aws_cognito_user_pool_domain.dict_api.domain}/update",
+      "${aws_cognito_user_pool_domain.dict_api.domain}/edit",
       "${aws_cognito_user_pool_domain.dict_api.domain}/delete"
     ]
 
