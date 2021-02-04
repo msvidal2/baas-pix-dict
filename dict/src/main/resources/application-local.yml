@@ -9,6 +9,7 @@ spring:
                     binder: kafka
     redis:
       enabled: true
+      password: none
 picpay:
     ispb: 22896431
     logging:

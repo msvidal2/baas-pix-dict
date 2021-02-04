@@ -13,5 +13,6 @@ public class SyncVerifierResult {
 
     private final SyncVerifierResultType syncVerifierResultType;
     private final LocalDateTime syncVerifierLastModified;
+    private final LocalDateTime responseTime;
 
 }

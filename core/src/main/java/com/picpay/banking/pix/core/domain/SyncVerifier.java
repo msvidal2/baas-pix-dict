@@ -47,7 +47,7 @@ public class SyncVerifier {
             .vsyncStart(vsync)
             .vsyncEnd(vsyncCurrent)
             .synchronizedStart(synchronizedAt)
-            .synchronizedEnd(syncVerifierResult.getSyncVerifierLastModified())
+            .synchronizedEnd(syncVerifierResult.getResponseTime())
             .syncVerifierResultType(syncVerifierResult.getSyncVerifierResultType())
             .build();
 
@@ -55,7 +55,7 @@ public class SyncVerifier {
 
         if (syncVerifierResultType.equals(SyncVerifierResultType.OK)) {
             this.vsync = vsyncCurrent;
-            this.synchronizedAt = syncVerifierResult.getSyncVerifierLastModified();
+            this.synchronizedAt = syncVerifierResult.getResponseTime();
         }
 
         return syncVerifierHistoric;
