@@ -25,7 +25,7 @@ resource "aws_cognito_resource_server" "dict_api" {
   }
 
   scope {
-    scope_name        = "update"
+    scope_name        = "edit"
     scope_description = "To update"
   }
 
