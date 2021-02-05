@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface ClaimMetricRepository extends JpaRepository<ClaimEntity, String> {
 
+    @Query(value = "SELECT count(*) FROM claim c WHERE c.status = :situation AND c.last_modified >= DATE_ADD(NOW(), INTERVAL 1 HOUR)",
+            nativeQuery = true)
     Long countByStatus(ClaimSituation situation);
 
     @Query("SELECT count(*) FROM claim c WHERE c.type = 'POSSESSION_CLAIM' AND c.status = 'AWAITING_CLAIM' AND c.donorParticipant = :donorParticipant AND c.resolutionPeriodEnd <= :resolutionPeriodEnd")
