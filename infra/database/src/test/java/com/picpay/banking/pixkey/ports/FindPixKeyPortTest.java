@@ -56,7 +56,7 @@ public class FindPixKeyPortTest {
 
     @Test
     void shouldFindCid(){
-        when(this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(any()))
+        when(this.pixKeyRepository.findByCidAndReasonNot(any(), any()))
             .thenReturn(Optional.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)));
 
         final var cidDomain = this.findPixKeyPort.findByCid(
@@ -64,53 +64,53 @@ public class FindPixKeyPortTest {
         assertThat(cidDomain).isPresent();
 
 
-        verify(this.pixKeyRepository).findByCidAndDonatedAutomaticallyFalse(any());
+        verify(this.pixKeyRepository).findByCidAndReasonNot(any(), any());
     }
 
     @Test
     void notShouldFindCid(){
-        when(this.pixKeyRepository.findByCidAndDonatedAutomaticallyFalse(any()))
+        when(this.pixKeyRepository.findByCidAndReasonNot(any(), any()))
             .thenReturn(Optional.empty());
 
         final var cidDomain = this.findPixKeyPort.findByCid(
             "ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a");
         assertThat(cidDomain).isEmpty();
 
-        verify(this.pixKeyRepository).findByCidAndDonatedAutomaticallyFalse(any());
+        verify(this.pixKeyRepository).findByCidAndReasonNot(any(), any());
     }
 
 
     @Test
     void shouldListAllCids(){
-        when(this.pixKeyRepository.findAllByIdTypeAndDonatedAutomaticallyFalse(any(),any()))
-                .thenReturn(new PageImpl<PixKeyEntity>(List.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)), PageRequest.of(0,10),1));
+        when(this.pixKeyRepository.findAllByIdTypeAndReasonNot(any(), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)), PageRequest.of(0,10),1));
 
         final var cids = this.findPixKeyPort.findAllByKeyType(KeyType.EMAIL,0,10);
         assertThat(cids.getHasNext()).isFalse();
 
-        verify(this.pixKeyRepository).findAllByIdTypeAndDonatedAutomaticallyFalse(any(), any());
+        verify(this.pixKeyRepository).findAllByIdTypeAndReasonNot(any(), any(), any());
     }
 
     @Test
     void shouldFindByKey(){
-        when(this.pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(any()))
+        when(this.pixKeyRepository.findByIdKeyAndReasonNot(any(), any()))
             .thenReturn(Optional.of(PixKeyEntity.from(pixKey, Reason.RECONCILIATION)));
 
         final var cid = this.findPixKeyPort.findPixKey("teste@gmail.com");
         assertThat(cid).isPresent();
 
-        verify(this.pixKeyRepository).findByIdKeyAndDonatedAutomaticallyFalse(any());
+        verify(this.pixKeyRepository).findByIdKeyAndReasonNot(any(), any());
     }
 
     @Test
     void notShouldFindByKey(){
-        when(this.pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(any()))
+        when(this.pixKeyRepository.findByIdKeyAndReasonNot(any(), any()))
             .thenReturn(Optional.empty());
 
         final var cid = this.findPixKeyPort.findPixKey("teste@gmail.com");
         assertThat(cid).isEmpty();
 
-        verify(this.pixKeyRepository).findByIdKeyAndDonatedAutomaticallyFalse(any());
+        verify(this.pixKeyRepository).findByIdKeyAndReasonNot(any(), any());
     }
 
 

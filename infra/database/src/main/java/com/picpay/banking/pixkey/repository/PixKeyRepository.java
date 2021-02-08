@@ -7,6 +7,7 @@ package com.picpay.banking.pixkey.repository;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.domain.Page;
@@ -25,23 +26,23 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyTrue(String key);
 
-    Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyFalse(String key);
+    Optional<PixKeyEntity> findByIdKeyAndReasonNot(String key, Reason inactivity);
 
     @Query("SELECT t FROM pix_key t " +
         "WHERE t.participant = :participant " +
         "   AND t.branch = :branch " +
         "   AND t.accountNumber = :accountNumber " +
         "   AND t.accountType = :accountType" +
-        "   AND t.donatedAutomatically = false")
-    List<PixKeyEntity> findByAccountAndDonatedAutomaticallyFalse(Integer participant, String branch, String accountNumber, AccountType accountType);
+        "   AND t.reason = :reason")
+    List<PixKeyEntity> findByAccountAndReasonNot(Integer participant,
+                                                                 String branch,
+                                                                 String accountNumber,
+                                                                 AccountType accountType,
+                                                                 Reason reason);
 
-    void deleteByIdKeyAndParticipant(String key, Integer participant);
+    Optional<PixKeyEntity> findByCidAndReasonNot(String cid, Reason inactivity);
 
-    Optional<PixKeyEntity> findByCidAndDonatedAutomaticallyFalse(String cid);
-
-    Page<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType, Pageable pageable);
-
-    void deleteByCid(String cid);
+    Page<PixKeyEntity> findAllByIdTypeAndReasonNot(KeyType keyType, Reason inactivity, Pageable pageable);
 
 }
 

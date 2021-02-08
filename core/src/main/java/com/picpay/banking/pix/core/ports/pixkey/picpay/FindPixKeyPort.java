@@ -21,6 +21,4 @@ public interface FindPixKeyPort {
 
     Optional<PixKey> findByCid(String cid);
 
-    boolean exists(String key, String taxId);
-
 }

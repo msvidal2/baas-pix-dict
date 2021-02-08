@@ -28,7 +28,7 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     @Override
     @Transactional
     public Optional<PixKey> remove(String pixKey, Integer participant) {
-        var optPixKeyEntity = pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey);
+        var optPixKeyEntity = pixKeyRepository.findByIdKeyAndReasonNot(pixKey, Reason.INACTIVITY);
 
         optPixKeyEntity.ifPresent(pixKeyEntity -> {
             pixKeyEntity.setReason(Reason.INACTIVITY);
@@ -41,7 +41,12 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     @Override
     @Transactional
     public void removeByCid(final String cid) {
-        pixKeyRepository.deleteByCid(cid);
+        var optPixKeyEntity = pixKeyRepository.findByCidAndReasonNot(cid, Reason.INACTIVITY);
+
+        optPixKeyEntity.ifPresent(pixKeyEntity -> {
+            pixKeyEntity.setReason(Reason.INACTIVITY);
+            pixKeyRepository.save(pixKeyEntity);
+        });
     }
 
 }
