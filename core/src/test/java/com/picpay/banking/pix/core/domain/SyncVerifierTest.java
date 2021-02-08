@@ -226,6 +226,7 @@ class SyncVerifierTest {
         var resultNOK = SyncVerifierResult.builder()
             .syncVerifierLastModified(LocalDateTime.now())
             .syncVerifierResultType(SyncVerifierResultType.NOK)
+            .responseTime(LocalDateTime.now())
             .build();
         var syncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncEnd, resultNOK);
 

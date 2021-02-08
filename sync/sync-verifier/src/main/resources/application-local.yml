@@ -11,6 +11,7 @@ spring:
                     binder: kafka
     redis:
       enabled: true
+      password: none
 
 server:
     tomcat:

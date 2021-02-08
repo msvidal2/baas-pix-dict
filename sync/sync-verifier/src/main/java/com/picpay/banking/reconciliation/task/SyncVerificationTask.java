@@ -68,7 +68,7 @@ public class SyncVerificationTask implements ApplicationRunner {
         service.shutdown();
         try {
             if (!service.awaitTermination(TIME, TimeUnit.MINUTES)) {
-                log.error("SyncApplication took more than 60 minutes and was interrupted");
+                log.error("SyncApplication took more than {} minutes and was interrupted", TIME);
                 service.shutdownNow();
             }
         } catch (InterruptedException e) {
