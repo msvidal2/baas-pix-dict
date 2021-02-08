@@ -28,7 +28,11 @@ public class OverduePossessionClaimDonorUseCase {
         log.info("OverduePossessionClaim_confirmed",
                 kv(CLAIM_ID, claim.getClaimId()));
 
-        saveClaimPort.saveClaim(claim, requestIdentifier);
+        try{
+            saveClaimPort.saveClaim(claim, requestIdentifier);
+        } catch (Exception e){
+            log.error("Error saving in the database: {} ", e);
+        }
 
         log.info("OverduePossessionClaim_confirmed_saved",
                 kv(CLAIM_ID, claim.getClaimId()));
