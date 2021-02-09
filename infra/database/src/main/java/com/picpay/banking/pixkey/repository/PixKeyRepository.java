@@ -15,7 +15,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +44,10 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
     Page<PixKeyEntity> findAllByIdTypeAndDonatedAutomaticallyFalse(KeyType keyType, Pageable pageable);
 
     void deleteByCid(String cid);
+
+    @Query(value = "select lower(hex(bit_xor(UNHEX(p.cid)))) from pix_key p where p.type = :keyType", nativeQuery = true)
+    @Transactional(readOnly = true)
+    String computeVsync(@Param("keyType") String keyType);
 
 }
 

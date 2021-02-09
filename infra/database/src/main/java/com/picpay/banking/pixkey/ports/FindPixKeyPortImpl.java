@@ -75,4 +75,9 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
         return this.pixKeyRepository.existsById(id);
     }
 
+    @Override
+    public String computeVsync(final KeyType key) {
+        return this.pixKeyRepository.computeVsync(key.name());
+    }
+
 }

@@ -8,7 +8,7 @@ spring:
         database: mysql
         hibernate:
             ddl-auto: none
-        show-sql: false
+        show-sql: true
     main:
         allow-bean-definition-overriding: true
     redis:

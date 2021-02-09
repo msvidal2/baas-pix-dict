@@ -23,4 +23,6 @@ public interface FindPixKeyPort {
 
     boolean exists(String key, String taxId);
 
+    String computeVsync(KeyType key);
+
 }

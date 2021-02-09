@@ -38,7 +38,6 @@ public class Sync {
         this.cidsSyncronized.addAll(listOfSyncronized);
         log.info("ReconciliationSyncByFile_Verifying Keys {} syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType() ,cidsSyncronized.size());
 
-
         final var cidsInBacenWeNeedInsert = cidsInBacen.parallelStream()
             .filter(cid -> !cidsInDatabase.contains(cid))
             .collect(Collectors.toList());
