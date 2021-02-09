@@ -65,7 +65,11 @@ public class ConfirmClaimUseCase {
             kv(REQUEST_IDENTIFIER, requestIdentifier),
             kv(CLAIM_ID, claimConfirmed.getClaimId()));
 
-        saveClaimPort.saveClaim(claimConfirmed, requestIdentifier);
+        try {
+            saveClaimPort.saveClaim(claimConfirmed, requestIdentifier);
+        } catch (Exception e){
+            log.error("Error saving in the database: {} ", e);
+        }
 
         log.info("Claim_confirmed_saved",
             kv(REQUEST_IDENTIFIER, requestIdentifier),

@@ -50,20 +50,10 @@ public class OverduePortabilityClaimUseCase {
         claim.setClaimSituation(ClaimSituation.CANCELED);
         claim.setCancelReason(ClaimCancelReason.DEFAULT_RESPONSE);
 
+        cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt("22896431"), requestIdentifier);
         cancelClaimPort.cancel(claim, requestIdentifier);
-        try {
-            cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, Integer.parseInt("22896431"), requestIdentifier);
-        } catch (Exception e){
-            rollbackCancel(claim, requestIdentifier);
-        }
 
         log.debug("Portability canceled : " + claim.getClaimId());
-    }
-
-    private void rollbackCancel(Claim claim, String requestIdentifier){
-        claim.setClaimSituation(ClaimSituation.AWAITING_CLAIM);
-        claim.setCancelReason(null);
-        cancelClaimPort.cancel(claim, requestIdentifier);
     }
 
 }

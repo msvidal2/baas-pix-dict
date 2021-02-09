@@ -21,21 +21,11 @@ public class OverduePossessionClaimClaimerUseCase {
         claim.setClaimSituation(ClaimSituation.CANCELED);
         claim.setCancelReason(ClaimCancelReason.DEFAULT_RESPONSE);
 
+        cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, claim.getIspb(), requestIdentifier);
         cancelClaimPort.cancel(claim, requestIdentifier);
-        try {
-            cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimCancelReason.DEFAULT_RESPONSE, claim.getIspb(), requestIdentifier);
-        } catch (Exception e){
-            rollbackCancel(claim, requestIdentifier);
-        }
 
         log.info("OverduePossessionClaim_canceled",
                 kv("claimId", claim.getClaimId()));
-    }
-
-    private void rollbackCancel(Claim claim, String requestIdentifier){
-        claim.setClaimSituation(ClaimSituation.CONFIRMED);
-        claim.setCancelReason(null);
-        cancelClaimPort.cancel(claim, requestIdentifier);
     }
 
 }
