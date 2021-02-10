@@ -6,8 +6,11 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.RequestSyncFileUseCase;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +26,11 @@ public class ReconciliationUseCaseBeansConfig {
         BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort,
         DatabaseContentIdentifierPort databaseContentIdentifierPort, BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort,
         SavePixKeyPort savePixKeyPort, RemovePixKeyPort removePixKeyPort, FindPixKeyPort findPixKeyPort, PixKeyEventPort pixKeyEventPort,
-        ReconciliationLockPort reconciliationLockPort) {
+        ReconciliationLockPort reconciliationLockPort,
+        SyncVerifierPort syncVerifierPort, BacenSyncVerificationsPort bacenSyncVerificationsPort, SyncVerifierHistoricPort syncVerifierHistoricPort) {
         return new FailureReconciliationSyncByFileUseCase(participant, bacenContentIdentifierEventsPort, databaseContentIdentifierPort,
-            bacenPixKeyByContentIdentifierPort, savePixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort, reconciliationLockPort);
+            bacenPixKeyByContentIdentifierPort, savePixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort, reconciliationLockPort,
+            syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort);
     }
 
     @Bean
