@@ -12,6 +12,16 @@ spring:
     redis:
       enabled: true
       password: none
+    jpa:
+        properties:
+            hibernate.jdbc.batch_versioned_data: true
+            hibernate.jdbc.batch_size: 1000
+            hibernate.order_inserts: true
+            hibernate.order_updates: true
+    datasource:
+        hikari:
+            maximum-pool-size: 100
+            minimum-idle: 10
 
 server:
     tomcat:
