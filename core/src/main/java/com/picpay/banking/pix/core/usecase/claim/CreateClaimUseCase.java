@@ -41,7 +41,15 @@ public class CreateClaimUseCase {
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimId", claimCreated.getClaimId()));
 
-        return saveClaimPort.saveClaim(claimCreated, requestIdentifier);
+        Claim savedClaim = Claim.builder().build();
+
+        try{
+            savedClaim = saveClaimPort.saveClaim(claimCreated, requestIdentifier);
+        } catch (Exception e){
+            log.error("Error saving in the database: {} ", e);
+        }
+
+        return savedClaim;
     }
 
     private void validateClaimAlreadyExistsForKey(String key) {

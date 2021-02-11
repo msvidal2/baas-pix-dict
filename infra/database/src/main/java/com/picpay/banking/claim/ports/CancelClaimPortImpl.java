@@ -18,11 +18,14 @@ public class CancelClaimPortImpl implements CancelClaimPort  {
 
     @Override
     public void cancel(Claim claim, String requestIdentifier){
+        try {
             repository.save(ClaimEntity.from(claim));
-
             log.info("Claim_updated",
                     StructuredArguments.kv("requestIdentifier", requestIdentifier),
                     StructuredArguments.kv("claimId", claim.getClaimId()));
+        } catch (Exception e){
+            log.error("Error canceling in the database: {} ", e);
+        }
     }
 
 }
