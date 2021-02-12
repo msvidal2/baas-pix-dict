@@ -78,11 +78,11 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
     @BeforeEach
     public void init() {
-        this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
-            22896431, bacenContentIdentifierEventsPort, databaseContentIdentifierPort, bacenPixKeyByContentIdentifierPort,
-            createPixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort,lockPort, syncVerifierPort, bacenSyncVerificationsPort,
-            syncVerifierHistoricPort
-        );
+//        this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
+//            22896431, bacenContentIdentifierEventsPort, databaseContentIdentifierPort, bacenPixKeyByContentIdentifierPort,
+//            createPixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort,lockPort, syncVerifierPort, bacenSyncVerificationsPort,
+//            syncVerifierHistoricPort
+//        );
 
         this.cidFile = ContentIdentifierFile.builder()
             .id(1)

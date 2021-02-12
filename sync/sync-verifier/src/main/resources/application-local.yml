@@ -22,6 +22,9 @@ server:
 picpay:
     ispb: 22896431
     service.name: ${spring.application.name}
+    logging:
+        appender: CONSOLE
+        level: INFO
     dict:
         pixkey:
             notification-dispatcher: true

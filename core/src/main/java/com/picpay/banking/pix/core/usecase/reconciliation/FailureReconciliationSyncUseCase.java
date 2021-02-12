@@ -42,7 +42,7 @@ public class FailureReconciliationSyncUseCase {
 
     private SyncVerifierHistoric syncVerifierHistoric;
 
-    public void execute(SyncVerifierHistoric syncVerifierHistoric) {
+    public SyncVerifierHistoric execute(SyncVerifierHistoric syncVerifierHistoric) {
         this.syncVerifierHistoric = syncVerifierHistoric;
         var startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started: {}",
@@ -62,14 +62,16 @@ public class FailureReconciliationSyncUseCase {
             }
         });
 
-        performSyncVerifier(syncVerifierHistoric, bacenEvents);
+        SyncVerifierHistoric executedHistoric = performSyncVerifier(syncVerifierHistoric, bacenEvents);
 
         log.info("FailureReconciliationSync_ended: {}, {}",
             kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000));
+
+        return executedHistoric;
     }
 
-    private void performSyncVerifier(final SyncVerifierHistoric syncVerifierHistoric, final Set<BacenCidEvent> bacenEvents) {
+    private SyncVerifierHistoric performSyncVerifier(final SyncVerifierHistoric syncVerifierHistoric, final Set<BacenCidEvent> bacenEvents) {
         var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(syncVerifierHistoric.getKeyType()).orElseThrow();//TODO EXCECAO ESPECIFICA
         var vsyncCurrent = syncVerifier.calculateVsync(bacenEvents.stream().map(BacenCidEvent::getCid).collect(Collectors.toList()));
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(syncVerifierHistoric.getKeyType(), vsyncCurrent);
@@ -80,6 +82,8 @@ public class FailureReconciliationSyncUseCase {
         log.info("FailureReconciliationSync_performSyncVerifier: {}, {}",
             kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric),
             kv("newSyncVerifierHistoric", newSyncVerifierHistoric));
+
+        return newSyncVerifierHistoric;
     }
 
     private void createOrUpdatePixKey(final BacenCidEvent bacenCidEvent) {

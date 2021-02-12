@@ -21,8 +21,8 @@ public class SyncVerifierService {
     }
 
     @Trace(dispatcher = true, metricName = "failureReconciliationSync")
-    public void failureReconciliationSync(final SyncVerifierHistoric syncVerifierHistoric) {
-        failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
+    public SyncVerifierHistoric failureReconciliationSync(final SyncVerifierHistoric syncVerifierHistoric) {
+        return failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
     }
 
 }

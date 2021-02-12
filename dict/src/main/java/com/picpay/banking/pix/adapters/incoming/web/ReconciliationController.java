@@ -25,7 +25,7 @@ public class ReconciliationController {
     @Trace
     @GetMapping("/{keyType}")
     public ResponseEntity<ContentIdentifierFile> updateAccount(@PathVariable("keyType")KeyType keyType) {
-        final var contentIdentifierFile = this.requestSyncFileUseCase.execute(keyType);
+        final var contentIdentifierFile = this.requestSyncFileUseCase.request(keyType);
         return ResponseEntity.ok(contentIdentifierFile);
     }
 
