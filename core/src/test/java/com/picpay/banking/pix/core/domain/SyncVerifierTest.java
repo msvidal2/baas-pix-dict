@@ -1,5 +1,8 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

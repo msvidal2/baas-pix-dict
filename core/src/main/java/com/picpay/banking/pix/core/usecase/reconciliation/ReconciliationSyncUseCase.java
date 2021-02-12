@@ -1,8 +1,8 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifier;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
@@ -45,9 +45,10 @@ public class ReconciliationSyncUseCase {
         syncVerifierPort.save(syncVerifier);
         vsyncHistoric = syncVerifierHistoricPort.save(vsyncHistoric);
 
+        final int MILLISECONDS_TO_SECONDS = 1000;
         log.info("ReconciliationSync_ended {}, {}, {}",
             kv("keyType", keyType),
-            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / 1000),
+            kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / MILLISECONDS_TO_SECONDS),
             kv("syncVerifierHistoric", vsyncHistoric));
 
         return vsyncHistoric;

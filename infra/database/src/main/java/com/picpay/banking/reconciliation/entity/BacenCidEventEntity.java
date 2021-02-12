@@ -1,8 +1,8 @@
 package com.picpay.banking.reconciliation.entity;
 
+import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,21 +16,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "content_identifier_event")
-public class ContentIdentifierEventEntity {
+@Entity(name = "bacen_cid_events")
+public class BacenCidEventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "pix_key", nullable = false)
-    private String key;
 
     @Column(name = "key_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -39,9 +35,6 @@ public class ContentIdentifierEventEntity {
     @Column(name = "cid", nullable = false)
     private String cid;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "event_on_bacen_at", nullable = false)
     private LocalDateTime eventOnBacenAt;
 
@@ -49,27 +42,21 @@ public class ContentIdentifierEventEntity {
     @Enumerated(EnumType.STRING)
     private ReconciliationAction type;
 
-    public ReconciliationEvent toDomain() {
-        return ReconciliationEvent.builder()
-                .cid(this.cid)
-                .key(this.key)
-                .keyType(this.keyType)
-                .action(this.type)
-                .eventOnBacenAt(this.eventOnBacenAt)
-                .build();
+    public static BacenCidEventEntity from(final BacenCidEvent bacenCidEvent, final KeyType keyType) {
+        return BacenCidEventEntity.builder()
+            .keyType(keyType)
+            .cid(bacenCidEvent.getCid())
+            .eventOnBacenAt(bacenCidEvent.getEventOnBacenAt())
+            .type(bacenCidEvent.getAction())
+            .build();
     }
 
-    public static ContentIdentifierEventEntity fromDomain(ReconciliationEvent event) {
-        return ContentIdentifierEventEntity.builder()
-                .cid(event.getCid())
-                .key(event.getKey())
-                .keyType(event.getKeyType())
-                .createdAt(LocalDateTime.now(ZoneId.of("UTC")))
-                .eventOnBacenAt(event.getEventOnBacenAt())
-                .type(event.getAction())
-                .build();
+    public BacenCidEvent toDomain() {
+        return BacenCidEvent.builder()
+            .cid(cid)
+            .action(type)
+            .eventOnBacenAt(eventOnBacenAt)
+            .build();
     }
 
 }
-
-
