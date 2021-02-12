@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifier;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import com.picpay.banking.reconciliation.entity.SyncVerifierEntity;
 import com.picpay.banking.reconciliation.repository.SyncVerifierRepository;

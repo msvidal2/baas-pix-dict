@@ -1,5 +1,7 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +69,7 @@ class SyncVerifierHistoricTest {
 
         final Set<BacenCidEvent> differences = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
 
-        assertThat(differences.size()).isEqualTo(0);
+        assertThat(differences.size()).isZero();
     }
 
 }

@@ -3,15 +3,16 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoricAction;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncBacenCidEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
@@ -40,6 +41,7 @@ public class FailureReconciliationSyncUseCase {
     private final SavePixKeyPort savePixKeyPort;
     private final RemovePixKeyPort removePixKeyPort;
     private final PixKeyEventPort pixKeyEventPort;
+    private final SyncBacenCidEventsPort syncBacenCidEventsPort;
 
     private SyncVerifierHistoric syncVerifierHistoric;
 
@@ -51,7 +53,7 @@ public class FailureReconciliationSyncUseCase {
 
         VsyncHistoricValidator.validate(syncVerifierHistoric);
 
-        Set<BacenCidEvent> bacenEvents = bacenContentIdentifierEventsPort.list(syncVerifierHistoric.getKeyType(),
+        Set<BacenCidEvent> bacenEvents = syncBacenCidEventsPort.listAfterLastSyncronized(syncVerifierHistoric.getKeyType(),
             syncVerifierHistoric.getSynchronizedStart());
         Set<BacenCidEvent> latestBacenEvents = syncVerifierHistoric.groupBacenEventsByCidMaxByDate(bacenEvents);
 

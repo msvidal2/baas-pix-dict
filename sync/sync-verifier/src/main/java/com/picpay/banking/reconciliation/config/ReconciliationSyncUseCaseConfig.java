@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncBacenCidEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
@@ -30,6 +31,7 @@ public class ReconciliationSyncUseCaseConfig {
     private final ContentIdentifierPort contentIdentifierPort;
     private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
     private final PixKeyEventPort pixKeyEventPort;
+    private final SyncBacenCidEventsPort syncBacenCidEventsPort;
 
     @Bean
     public ReconciliationSyncUseCase reconciliationSyncUseCase() {
@@ -41,7 +43,7 @@ public class ReconciliationSyncUseCaseConfig {
     public FailureReconciliationSyncUseCase failureReconciliationSyncUseCase() {
         return new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort,
             findPixKeyPort, syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort,
-            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort, pixKeyEventPort);
+            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort, pixKeyEventPort, syncBacenCidEventsPort);
     }
 
 }

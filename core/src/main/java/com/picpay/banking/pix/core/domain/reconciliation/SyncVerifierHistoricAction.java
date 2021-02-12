@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.reconciliation;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
