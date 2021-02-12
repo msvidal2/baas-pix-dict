@@ -3,8 +3,9 @@ package com.picpay.banking.reconciliation.task;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
+import com.picpay.banking.reconciliation.service.SincronizeCidEventsScheduler;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
 import com.picpay.banking.reconciliation.service.SyncVerifierService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class SyncVerificationTask implements ApplicationRunner {
     public static final int TIME = 60;
     private final SyncVerifierService syncVerifierService;
     private final ReconciliationLockPort lockPort;
+    private final SincronizeCidEventsScheduler sincronizeCidEventsScheduler;
     private final FailureReconciliationSyncByFileUseCase syncByFileUseCase;
 
     @Parameter(names = "-keyType",
@@ -41,7 +43,7 @@ public class SyncVerificationTask implements ApplicationRunner {
     @Parameter(names = "-onlySyncVerifier",
         description = "Defines that only the sync check will be done and no data correction will be applied: True or False"
     )
-    private final boolean onlySyncVerifier = false;
+    private boolean onlySyncVerifier = false;
 
     @Override
     public void run(final ApplicationArguments args) {
@@ -83,6 +85,8 @@ public class SyncVerificationTask implements ApplicationRunner {
     }
 
     private void runByKeyType(KeyType syncKeyType) {
+        sincronizeCidEventsScheduler.runByKeyType(syncKeyType);
+
         SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(syncKeyType);
 
         if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {

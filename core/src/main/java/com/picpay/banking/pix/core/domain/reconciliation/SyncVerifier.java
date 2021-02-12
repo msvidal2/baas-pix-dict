@@ -1,24 +1,30 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.reconciliation;
 
+import com.picpay.banking.pix.core.domain.KeyType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class SyncVerifier {
 
-    private final KeyType keyType;
+    private KeyType keyType;
     @Builder.Default
     private String vsync = "0000000000000000000000000000000000000000000000000000000000000000";
     private LocalDateTime synchronizedAt;
     private SyncVerifierResultType syncVerifierResultType;
 
-    public String calculateVsync(final List<String> contentIdentifiers) {
+    public String calculateVsync(final Iterable<String> contentIdentifiers) {
         try {
             byte[] result = Hex.decodeHex(vsync);
 
@@ -32,7 +38,7 @@ public class SyncVerifier {
         }
     }
 
-    private byte[] xor(byte[] a, byte[] b) {
+    private static byte[] xor(byte[] a, byte[] b) {
         int length = Math.min(a.length, b.length);
         byte[] result = new byte[length];
         for (int i = 0; i < length; i++) {
@@ -53,7 +59,7 @@ public class SyncVerifier {
 
         this.syncVerifierResultType = syncVerifierResult.getSyncVerifierResultType();
 
-        if (syncVerifierResultType.equals(SyncVerifierResultType.OK)) {
+        if (syncVerifierResultType == SyncVerifierResultType.OK) {
             this.vsync = vsyncCurrent;
             this.synchronizedAt = syncVerifierResult.getResponseTime();
         }

@@ -1,8 +1,8 @@
 package com.picpay.banking.reconciliation.ports;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifierResult;
-import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;

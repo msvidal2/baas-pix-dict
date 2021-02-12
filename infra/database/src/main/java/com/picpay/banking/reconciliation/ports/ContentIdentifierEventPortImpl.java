@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierEventRepository;
 import lombok.RequiredArgsConstructor;

@@ -2,16 +2,17 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.SyncVerifier;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
-import com.picpay.banking.pix.core.domain.SyncVerifierResult;
-import com.picpay.banking.pix.core.domain.SyncVerifierResultType;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResult;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncBacenCidEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
@@ -54,6 +55,8 @@ class FailureReconciliationSyncUseCaseTest {
     private RemovePixKeyPort removePixKeyPort;
     @Mock
     private PixKeyEventPort pixKeyEventPort;
+    @Mock
+    private SyncBacenCidEventsPort syncBacenCidEventsPort;
 
     private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
 
@@ -61,7 +64,7 @@ class FailureReconciliationSyncUseCaseTest {
     private void beforeEach() {
         failureReconciliationSyncUseCase = new FailureReconciliationSyncUseCase(bacenContentIdentifierEventsPort,
             findPixKeyPort, syncVerifierPort, bacenSyncVerificationsPort, syncVerifierHistoricPort,
-            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort, pixKeyEventPort);
+            syncVerifierHistoricActionPort, savePixKeyPort, removePixKeyPort, pixKeyEventPort, syncBacenCidEventsPort);
     }
 
     @Test
@@ -96,7 +99,7 @@ class FailureReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Criar Key quando ela existe no Bacen e não existe no database")
     void create_when_exists_in_bacen_and_not_exists_in_database() {
-        when(bacenContentIdentifierEventsPort.list(any(), any()))
+        when(syncBacenCidEventsPort.listAfterLastSyncronized(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("01")));
         when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
@@ -127,7 +130,7 @@ class FailureReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Atualizar Key quando ela existe no Bacen e existe no database com outros valores")
     void update_when_exists_in_bacen_and_exists_diff_in_database() {
-        when(bacenContentIdentifierEventsPort.list(any(), any()))
+        when(syncBacenCidEventsPort.listAfterLastSyncronized(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventAdd("01")));
         when(findPixKeyPort.findByCid(any()))
             .thenReturn(Optional.empty());
@@ -160,7 +163,7 @@ class FailureReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Remover a Key quando foi removida do Bacen e não foi removida do database")
     void remove_when_exists_in_database_and_not_exists_in_bacen() {
-        when(bacenContentIdentifierEventsPort.list(any(), any()))
+        when(syncBacenCidEventsPort.listAfterLastSyncronized(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventRemove("01")));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
             .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));

@@ -2,7 +2,7 @@ package com.picpay.banking.reconciliation.service;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import lombok.RequiredArgsConstructor;

@@ -2,9 +2,7 @@ package com.picpay.banking.reconciliation.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,6 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.reconciliation;
 
+import com.picpay.banking.pix.core.domain.KeyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

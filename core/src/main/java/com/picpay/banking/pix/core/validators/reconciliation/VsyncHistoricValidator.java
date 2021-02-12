@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.core.validators.reconciliation;
 
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

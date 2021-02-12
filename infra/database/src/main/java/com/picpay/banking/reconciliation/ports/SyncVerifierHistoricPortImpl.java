@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.reconciliation.entity.SyncVerifierHistoricEntity;
 import com.picpay.banking.reconciliation.repository.SyncVerifierHistoricRepository;
