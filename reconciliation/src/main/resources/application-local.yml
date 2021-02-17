@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: dict-sync-verifier
+    stream:
+      bindings:
+        keys-changed:
+          destination: keys-changed
+          binder: kafka
+  redis:
+    enabled: true
+    password: none
+  jpa:
+    properties:
+      hibernate.jdbc.batch_versioned_data: true
+      hibernate.jdbc.batch_size: 1000
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+  datasource:
+    hikari:
+      maximum-pool-size: 100
+      minimum-idle: 10
+
+server:
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
+
+picpay:
+  ispb: 22896431
+  service.name: ${spring.application.name}
+  logging:
+    appender: CONSOLE
+    level: INFO
+  dict:
+    pixkey:
+      notification-dispatcher: true
+    sync:
+      schedule: 0 0 2 1/1 * ?
+
+logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
+
+management:
+  health:
+    diskspace:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      base-path: '/'
+      path-mapping:
+        prometheus: 'metrics'

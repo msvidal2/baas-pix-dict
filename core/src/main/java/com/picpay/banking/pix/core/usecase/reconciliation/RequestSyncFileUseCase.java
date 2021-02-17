@@ -31,7 +31,7 @@ public class RequestSyncFileUseCase {
         return contentIdentifierFile;
     }
 
-    public ContentIdentifierFile request(KeyType keyType) {
+    private ContentIdentifierFile request(KeyType keyType) {
         log.info("RequestSyncFile_started {}", kv("keyType", keyType));
         final var contentIdentifierFile = this.bacenContentIdentifierEventsPort.requestContentIdentifierFile(keyType);
         this.databaseContentIdentifierPort.saveFile(contentIdentifierFile);

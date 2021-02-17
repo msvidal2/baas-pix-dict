@@ -14,6 +14,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.AllArgsConstructor;
@@ -46,16 +47,22 @@ public class FailureReconciliationSyncByFileUseCase {
     private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
     private final SyncVerifierHistoricPort syncVerifierHistoricPort;
     private final RequestSyncFileUseCase requestSyncFileUseCase;
+    private final ReconciliationLockPort reconciliationLockPort;
 
     public void execute(KeyType keyType) {
-        var resultCidFile = requestSyncFileUseCase.requestAwaitFile(keyType);
+        try {
+            reconciliationLockPort.lock();
+            var resultCidFile = requestSyncFileUseCase.requestAwaitFile(keyType);
 
-        if (!CollectionUtils.isEmpty(resultCidFile.getContent()) && resultCidFile.isNotProcessed()) {
-            try {
-                processFile(resultCidFile);
-            } catch (Exception e) {
-                log.error("Error while executing sync by file", e);
+            if (!CollectionUtils.isEmpty(resultCidFile.getContent()) && resultCidFile.isNotProcessed()) {
+                try {
+                    processFile(resultCidFile);
+                } catch (Exception e) {
+                    log.error("Error while executing sync by file", e);
+                }
             }
+        } finally {
+            reconciliationLockPort.unlock();
         }
     }
 

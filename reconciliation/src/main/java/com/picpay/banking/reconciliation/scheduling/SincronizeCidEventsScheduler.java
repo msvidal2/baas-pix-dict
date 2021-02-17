@@ -1,4 +1,4 @@
-package com.picpay.banking.reconciliation.service;
+package com.picpay.banking.reconciliation.scheduling;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
@@ -22,12 +22,6 @@ public class SincronizeCidEventsScheduler {
     @Trace(dispatcher = true, metricName = "sincronizeCidEventsScheduler_all")
     public void run() {
         Arrays.stream(KeyType.values()).forEach(sincronizeCIDEventsUseCase::syncByKeyType);
-    }
-
-    @Transactional
-    @Trace(dispatcher = true, metricName = "sincronizeCidEventsScheduler_keyType")
-    public void runByKeyType(KeyType keyType) {
-        sincronizeCIDEventsUseCase.syncByKeyType(keyType);
     }
 
 }

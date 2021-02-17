@@ -44,7 +44,7 @@ class RequestSyncFileUseCaseTest {
         when(bacenContentIdentifierEventsPort.requestContentIdentifierFile(any())).thenReturn(contentIdentifierFile);
        doNothing().when(databaseContentIdentifierPort).saveFile(any());
 
-        this.requestSyncFileUseCase.request(KeyType.CPF);
+//        this.requestSyncFileUseCase.request(KeyType.CPF);
 
         verify(bacenContentIdentifierEventsPort).requestContentIdentifierFile(any());
        verify(databaseContentIdentifierPort).saveFile(any());
