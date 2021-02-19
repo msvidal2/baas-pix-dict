@@ -24,7 +24,6 @@ public class FetchCidFileCallablePort implements SafeCallable<Optional<ResultCid
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final Integer fileId;
 
-
     @Override
     public Optional<ResultCidFile> call() {
         log.info("Verificando se o arquivo {} ja esta disponivel...", fileId);

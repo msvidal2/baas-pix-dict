@@ -40,8 +40,8 @@ public class RequestSyncFileUseCase {
     }
 
     private Optional<ResultCidFile> pollCidFile(ContentIdentifierFile contentIdentifierFile) {
-        var fetchCidFileUseCase = new FetchCidFileCallablePort(bacenContentIdentifierEventsPort, contentIdentifierFile.getId());
-        return pollCidFilePort.poll(fetchCidFileUseCase, 1, TimeUnit.HOURS, 10, TimeUnit.SECONDS);
+        var fetchCidFileCallablePort = new FetchCidFileCallablePort(bacenContentIdentifierEventsPort, contentIdentifierFile.getId());
+        return pollCidFilePort.poll(fetchCidFileCallablePort, 1, TimeUnit.HOURS, 10, TimeUnit.SECONDS);
     }
 
 }
