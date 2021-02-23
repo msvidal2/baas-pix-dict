@@ -37,6 +37,8 @@ picpay:
       notification-dispatcher: true
     sync:
       schedule: 0 0 2 1/1 * ?
+      timeoutPollingBacenFile: 1
+      pollingBacenFilePeriod: 10
 
 logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
 

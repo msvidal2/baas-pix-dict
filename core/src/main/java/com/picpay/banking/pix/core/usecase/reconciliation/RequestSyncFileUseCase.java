@@ -23,6 +23,8 @@ public class RequestSyncFileUseCase {
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final PollCidFilePort pollCidFilePort;
+    private final Integer timeoutPeriod;
+    private final Integer pollingAwaitingPeriod;
 
     public ContentIdentifierFile requestAwaitFile(KeyType keyType) {
         ContentIdentifierFile contentIdentifierFile = request(keyType);
@@ -41,7 +43,7 @@ public class RequestSyncFileUseCase {
 
     private Optional<ResultCidFile> pollCidFile(ContentIdentifierFile contentIdentifierFile) {
         var fetchCidFileCallablePort = new FetchCidFileCallablePort(bacenContentIdentifierEventsPort, contentIdentifierFile.getId());
-        return pollCidFilePort.poll(fetchCidFileCallablePort, 1, TimeUnit.HOURS, 10, TimeUnit.SECONDS);
+        return pollCidFilePort.poll(fetchCidFileCallablePort, timeoutPeriod, TimeUnit.SECONDS, pollingAwaitingPeriod, TimeUnit.HOURS);
     }
 
 }

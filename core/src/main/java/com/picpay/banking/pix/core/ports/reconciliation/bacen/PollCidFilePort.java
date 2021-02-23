@@ -8,13 +8,14 @@
 package com.picpay.banking.pix.core.ports.reconciliation.bacen;
 
 import com.picpay.banking.pix.core.domain.ResultCidFile;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,17 +23,17 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0 11/02/2021
  */
 @Slf4j
+@RequiredArgsConstructor
 public class PollCidFilePort {
 
     private final BlockingQueue<ResultCidFile> resultQueue = new ArrayBlockingQueue<>(1, true);
-    private final ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1);
     private ScheduledFuture<?> future;
 
     public Optional<ResultCidFile> poll(SafeCallable<Optional<ResultCidFile>> pollee,
                                         int period, TimeUnit periodTimeUnit,
                                         int timeout, TimeUnit timeoutTimeUnit) {
-        future = threadPoolExecutor.scheduleAtFixedRate(() -> poll(pollee), 0, period, periodTimeUnit);
         log.info("Iniciando polling de arquivo do BACEN com intervalo de {} {}", period, periodTimeUnit);
+        future = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> poll(pollee), 0, period, periodTimeUnit);
         final Optional<ResultCidFile> resultOpt = Optional.ofNullable(get(timeout, timeoutTimeUnit));
         if (resultOpt.isEmpty()) {
             log.error("Time out ao buscar aquivo no bacen. Tempo limite excedido. ");
@@ -78,9 +79,7 @@ public class PollCidFilePort {
         if (future != null) {
             future.cancel(true);
         }
-        threadPoolExecutor.shutdown();
         log.info("Encerrando polling");
     }
-
 
 }

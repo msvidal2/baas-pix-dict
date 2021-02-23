@@ -101,8 +101,10 @@ public class ReconciliationUseCaseConfig {
     public RequestSyncFileUseCase requestSyncFileUseCase(
         final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort,
         final DatabaseContentIdentifierPort databaseContentIdentifierPort,
-        final PollCidFilePort pollCidFilePort) {
-        return new RequestSyncFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort, pollCidFilePort);
+        final PollCidFilePort pollCidFilePort,
+        @Value("${picpay.dict.sync.timeoutPollingBacenFile}") Integer timeoutPeriod,
+        @Value("${picpay.dict.sync.pollingBacenFilePeriod}") Integer period) {
+        return new RequestSyncFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort, pollCidFilePort, timeoutPeriod, period);
     }
 
     @Bean
