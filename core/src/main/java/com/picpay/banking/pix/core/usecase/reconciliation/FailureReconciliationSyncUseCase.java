@@ -45,7 +45,7 @@ public class FailureReconciliationSyncUseCase {
 
     private SyncVerifierHistoric syncVerifierHistoric;
 
-    public void execute(SyncVerifierHistoric syncVerifierHistoric) {
+    public SyncVerifierHistoric execute(SyncVerifierHistoric syncVerifierHistoric) {
         this.syncVerifierHistoric = syncVerifierHistoric;
         var startCurrentTimeMillis = System.currentTimeMillis();
         log.info("FailureReconciliationSync_started: {}",
@@ -81,6 +81,8 @@ public class FailureReconciliationSyncUseCase {
             kv(SYNC_VERIFIER_HISTORIC, syncVerifierHistoric),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / MILLISECONDS_TO_SECONDS),
             kv("countBacenCidEvents", bacenEvents.size()));
+
+        return syncVerifierHistoric;
     }
 
     private void insertPixKey(final PixKey pixKey) {
