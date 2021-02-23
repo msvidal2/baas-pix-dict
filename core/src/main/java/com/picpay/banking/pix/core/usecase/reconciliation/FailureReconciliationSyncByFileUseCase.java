@@ -5,18 +5,23 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.domain.Sync;
+import com.picpay.banking.pix.core.domain.reconciliation.Sync;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +44,9 @@ public class FailureReconciliationSyncByFileUseCase {
     private final RemovePixKeyPort removePixKeyPort;
     private final PixKeyEventPort pixKeyEventPort;
     private final ReconciliationLockPort lockPort;
+    private final SyncVerifierPort syncVerifierPort;
+    private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
+    private final SyncVerifierHistoricPort syncVerifierHistoricPort;
 
     public void execute(KeyType keyType) {
         this.databaseContentIdentifierPort.findLastFileRequested(keyType)
@@ -80,6 +88,17 @@ public class FailureReconciliationSyncByFileUseCase {
 
         this.databaseContentIdentifierPort.saveFile(availableFile);
 
+        final var vsyncCurrent = this.findPixKeyPort.computeVsync(keyType);
+        var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
+        var lstSyncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType).orElseGet(() -> SyncVerifier.builder()
+            .keyType(keyType)
+            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .build());
+        var newSyncVerifierHistoric = lstSyncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
+
+        syncVerifierPort.save(lstSyncVerifier);
+        syncVerifierHistoricPort.save(newSyncVerifierHistoric);
+
         log.info("ReconciliationSyncByFile_ended {} {}", kv("contentIdentifierFileId", contentIdentifierFileId),kv("keyType",keyType));
     }
 
@@ -108,7 +127,7 @@ public class FailureReconciliationSyncByFileUseCase {
     }
 
     private void synchronizeCids(final Integer contentIdentifierFileId,final KeyType keyType, final Sync sync) {
-        sync.getCidsNotSyncronized().stream()
+        sync.getCidsNotSyncronized().parallelStream()
             .forEach(cid -> {
                 this.bacenPixKeyByContentIdentifierPort.getPixKey(cid)
                     .ifPresentOrElse(pixKey -> {

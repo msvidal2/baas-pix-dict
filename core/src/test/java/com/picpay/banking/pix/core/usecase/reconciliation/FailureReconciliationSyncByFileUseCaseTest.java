@@ -13,8 +13,11 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,9 +61,14 @@ class FailureReconciliationSyncByFileUseCaseTest {
     private FindPixKeyPort findPixKeyPort;
     @Mock
     private PixKeyEventPort pixKeyEventPort;
-
     @Mock
     private ReconciliationLockPort lockPort;
+    @Mock
+    private SyncVerifierPort syncVerifierPort;
+    @Mock
+    private BacenSyncVerificationsPort bacenSyncVerificationsPort;
+    @Mock
+    private SyncVerifierHistoricPort syncVerifierHistoricPort;
 
     private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
 
@@ -72,7 +80,8 @@ class FailureReconciliationSyncByFileUseCaseTest {
     public void init() {
         this.failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
             22896431, bacenContentIdentifierEventsPort, databaseContentIdentifierPort, bacenPixKeyByContentIdentifierPort,
-            createPixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort,lockPort
+            createPixKeyPort, findPixKeyPort, removePixKeyPort, pixKeyEventPort,lockPort, syncVerifierPort, bacenSyncVerificationsPort,
+            syncVerifierHistoricPort
         );
 
         this.cidFile = ContentIdentifierFile.builder()

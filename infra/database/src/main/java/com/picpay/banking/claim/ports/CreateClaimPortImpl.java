@@ -17,9 +17,7 @@ public class CreateClaimPortImpl implements CreateClaimPort {
 
     @Override
     public Claim saveClaim(Claim claim, String requestIdentifier) {
-
         ClaimEntity entity = ClaimEntity.from(claim);
-
         ClaimEntity savedEntity = claimRepository.save(entity);
 
         return savedEntity.toClaim();

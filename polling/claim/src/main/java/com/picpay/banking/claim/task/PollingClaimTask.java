@@ -24,7 +24,7 @@ public class PollingClaimTask implements ApplicationRunner {
 
     @Override
     @Trace(dispatcher = true, metricName = "claimPollingTask")
-    public void run(final ApplicationArguments args) throws Exception {
+    public void run(final ApplicationArguments args) {
         pollingClaimUseCase.execute(ispb, limit);
     }
 

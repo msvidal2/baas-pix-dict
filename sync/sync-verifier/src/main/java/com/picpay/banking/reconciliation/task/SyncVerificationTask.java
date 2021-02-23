@@ -3,8 +3,9 @@ package com.picpay.banking.reconciliation.task;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
+import com.picpay.banking.reconciliation.service.SincronizeCidEventsScheduler;
 import com.picpay.banking.reconciliation.service.SyncVerifierService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class SyncVerificationTask implements ApplicationRunner {
     public static final int TIME = 60;
     private final SyncVerifierService syncVerifierService;
     private final ReconciliationLockPort lockPort;
+    private final SincronizeCidEventsScheduler sincronizeCidEventsScheduler;
 
     @Parameter(names = "-keyType",
         description = "Type of key used for sync: CPF, CNPJ, EMAIL, CELLPHONE, RANDOM.",
@@ -74,11 +76,14 @@ public class SyncVerificationTask implements ApplicationRunner {
         } catch (InterruptedException e) {
             log.error("SyncApplication was interrupted {}", e.getMessage());
             service.shutdownNow();
+            Thread.currentThread().interrupt();
             throw new IllegalArgumentException(e);
         }
     }
 
     private void runByKeyType(KeyType syncKeyType) {
+        sincronizeCidEventsScheduler.runByKeyType(syncKeyType);
+
         SyncVerifierHistoric syncVerifierHistoric = syncVerifierService.syncVerifier(syncKeyType);
 
         if (!onlySyncVerifier && syncVerifierHistoric.isNOK()) {

@@ -8,7 +8,7 @@ spring:
         database: mysql
         hibernate:
             ddl-auto: none
-        show-sql: false
+        show-sql: true
     main:
         allow-bean-definition-overriding: true
     redis:
@@ -16,3 +16,4 @@ spring:
         keyTtl: 24
         port: 6379
         timeout: 5000
+        password: none

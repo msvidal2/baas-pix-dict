@@ -18,9 +18,14 @@ public class CompleteClaimPortImpl implements CompleteClaimPort {
 
     @Override
     public Claim complete(Claim claim, String requestIdentifier) {
-        ClaimEntity entity = claimRepository.findClaimerClaimById(claim.getClaimId(), claim.getIspb());
-        entity.setStatus(ClaimSituation.COMPLETED);
-        claimRepository.save(entity);
+        ClaimEntity entity = ClaimEntity.builder().build();
+        try{
+            entity = claimRepository.findClaimerClaimById(claim.getClaimId(), claim.getIspb());
+            entity.setStatus(ClaimSituation.COMPLETED);
+            claimRepository.save(entity);
+        } catch (Exception e){
+            log.error("Error completing in the database: {} ", e);
+        }
 
         return entity.toClaim();
     }

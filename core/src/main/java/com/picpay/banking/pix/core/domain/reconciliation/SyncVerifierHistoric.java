@@ -1,11 +1,14 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.reconciliation;
 
+import com.picpay.banking.pix.core.domain.BacenCidEvent;
+import com.picpay.banking.pix.core.domain.KeyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
@@ -26,8 +29,10 @@ public class SyncVerifierHistoric {
     private final LocalDateTime synchronizedEnd;
     private final SyncVerifierResultType syncVerifierResultType;
 
-    public Set<BacenCidEvent> groupBacenEventsByCidMaxByDate(final Set<BacenCidEvent> bacenEvents) {
-        if (bacenEvents.isEmpty()) return new HashSet<>();
+    public Set<BacenCidEvent> groupBacenEventsByCidMaxByDate(final Collection<BacenCidEvent> bacenEvents) {
+        if (bacenEvents.isEmpty()) {
+            return new HashSet<>();
+        }
 
         return bacenEvents.stream()
             .collect(Collectors.groupingBy(BacenCidEvent::getCid, Collectors.maxBy(Comparator.comparing(BacenCidEvent::getEventOnBacenAt))))

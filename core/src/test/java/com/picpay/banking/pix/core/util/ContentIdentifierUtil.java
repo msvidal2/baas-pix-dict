@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.core.util;
 
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

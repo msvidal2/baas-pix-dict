@@ -1,9 +1,8 @@
 package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.ReconciliationEvent;
-import com.picpay.banking.pixkey.entity.PixKeyEntity;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

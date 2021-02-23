@@ -1,13 +1,11 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.domain.reconciliation;
 
+import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,13 +29,13 @@ public class Sync {
     }
 
     public void verify(final List<String> cidsInBacen, final List<String> cidsInDatabase) {
-        final var listOfSyncronized =  cidsInDatabase.parallelStream()
+        final var listOfSyncronized = cidsInDatabase.parallelStream()
             .filter(cidsInBacen::contains)
             .collect(Collectors.toList());
 
         this.cidsSyncronized.addAll(listOfSyncronized);
-        log.info("ReconciliationSyncByFile_Verifying Keys {} syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType() ,cidsSyncronized.size());
-
+        log.info("ReconciliationSyncByFile_Verifying Keys {} syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType(),
+            cidsSyncronized.size());
 
         final var cidsInBacenWeNeedInsert = cidsInBacen.parallelStream()
             .filter(cid -> !cidsInDatabase.contains(cid))
@@ -50,7 +48,8 @@ public class Sync {
         this.cidsNotSyncronized.addAll(cidsInBacenWeNeedInsert);
         this.cidsNotSyncronized.addAll(listOfcidsInDatabaseWeNeedRemoveButCanBeUpdatedWithCorrectCIDInBacen);
 
-        log.info("ReconciliationSyncByFile_Verifying Keys {} not syncronized with Bacen - cids size {}",contentIdentifierFile.getKeyType() , this.cidsNotSyncronized.size());
+        log.info("ReconciliationSyncByFile_Verifying Keys {} not syncronized with Bacen - cids size {}", contentIdentifierFile.getKeyType(),
+            this.cidsNotSyncronized.size());
     }
 
 }

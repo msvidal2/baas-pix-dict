@@ -70,4 +70,9 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
                 .map(PixKeyEntity::toPixKey);
     }
 
+    @Override
+    public String computeVsync(final KeyType key) {
+        return this.pixKeyRepository.computeVsync(key.name());
+    }
+
 }

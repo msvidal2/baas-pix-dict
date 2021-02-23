@@ -21,4 +21,6 @@ public interface FindPixKeyPort {
 
     Optional<PixKey> findByCid(String cid);
 
+    String computeVsync(KeyType key);
+
 }
