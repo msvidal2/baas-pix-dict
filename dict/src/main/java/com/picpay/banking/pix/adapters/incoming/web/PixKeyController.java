@@ -30,6 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 public class PixKeyController {
 
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
+
     private final CreatePixKeyUseCase createPixKeyUseCase;
     private final RemovePixKeyUseCase removePixKeyUseCase;
     private final FindPixKeyUseCase findPixKeyUseCase;
@@ -47,12 +48,12 @@ public class PixKeyController {
         if (requestDTO != null && requestDTO.getPersonType() != null && requestDTO.getPersonType().getValue() == 0)
             requestDTO.setFantasyName(null);
 
-        log.info("PixKey_creating"
-                , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("key", requestDTO.getKey() != null ? requestDTO.getKey() : null)
-                , kv("NameIspb", requestDTO.getIspb())
-                , kv("AccountNumber", requestDTO.getAccountNumber())
-                , kv("BranchNumber", requestDTO.getBranchNumber()));
+        log.info("PixKey_creating",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("key", requestDTO.getKey() != null ? requestDTO.getKey() : null),
+                kv("NameIspb", requestDTO.getIspb()),
+                kv("AccountNumber", requestDTO.getAccountNumber()),
+                kv("BranchNumber", requestDTO.getBranchNumber()));
 
         var pixKey = createPixKeyUseCase.execute(
                 requestIdentifier,
@@ -69,11 +70,11 @@ public class PixKeyController {
     public List<ListKeyResponseWebDTO> list(@RequestHeader String requestIdentifier,
                                             @Valid ListPixKeyRequestWebDTO requestDTO) {
 
-        log.info("PixKey_listing"
-                , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("NameIspb", requestDTO.getIspb())
-                , kv("AccountNumber", requestDTO.getAccountNumber())
-                , kv("BranchNumber", requestDTO.getBranchNumber()));
+        log.info("PixKey_listing",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("NameIspb", requestDTO.getIspb()),
+                kv("AccountNumber", requestDTO.getAccountNumber()),
+                kv("BranchNumber", requestDTO.getBranchNumber()));
 
         return ListKeyResponseWebDTO.from(listPixKeyUseCase.execute(requestIdentifier, requestDTO.toDomain()));
     }
@@ -86,10 +87,10 @@ public class PixKeyController {
                                   @PathVariable String key,
                                   @RequestHeader String userId) {
 
-        log.info("PixKey_finding"
-                , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("key", key)
-                , kv("userId", userId));
+        log.info("PixKey_finding",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("key", key),
+                kv("userId", userId));
 
         return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, key, userId));
     }
@@ -102,10 +103,10 @@ public class PixKeyController {
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
-        log.info("PixKey_removing"
-                , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("key", key)
-                , kv("dto", dto));
+        log.info("PixKey_removing",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("key", key),
+                kv("dto", dto));
 
         removePixKeyUseCase.execute(requestIdentifier, dto.toDomain(key), dto.getReason());
     }
@@ -118,10 +119,10 @@ public class PixKeyController {
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
-        log.info("PixKey_updatingAccount"
-                , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("key", key)
-                , kv("dto", dto));
+        log.info("PixKey_updatingAccount",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("key", key),
+                kv("dto", dto));
 
         updateAccountUseCase.execute(requestIdentifier, pixKey, dto.getReason());
 

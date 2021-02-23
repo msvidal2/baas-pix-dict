@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
@@ -27,15 +28,25 @@ public class RemovePixKeyPortImpl implements RemovePixKeyPort {
     @Override
     @Transactional
     public Optional<PixKey> remove(String pixKey, Integer participant) {
-        var pixKeyEntity = pixKeyRepository.findByIdKeyAndDonatedAutomaticallyFalse(pixKey);
-        pixKeyRepository.deleteByIdKeyAndParticipant(pixKey, participant);
-        return pixKeyEntity.map(PixKeyEntity::toPixKey);
+        var optPixKeyEntity = pixKeyRepository.findByIdKeyAndReasonNot(pixKey, Reason.INACTIVITY);
+
+        optPixKeyEntity.ifPresent(pixKeyEntity -> {
+            pixKeyEntity.setReason(Reason.INACTIVITY);
+            pixKeyRepository.save(pixKeyEntity);
+        });
+
+        return optPixKeyEntity.map(PixKeyEntity::toPixKey);
     }
 
     @Override
     @Transactional
     public void removeByCid(final String cid) {
-        pixKeyRepository.deleteByCid(cid);
+        var optPixKeyEntity = pixKeyRepository.findByCidAndReasonNot(cid, Reason.INACTIVITY);
+
+        optPixKeyEntity.ifPresent(pixKeyEntity -> {
+            pixKeyEntity.setReason(Reason.INACTIVITY);
+            pixKeyRepository.save(pixKeyEntity);
+        });
     }
 
 }

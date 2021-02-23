@@ -49,6 +49,7 @@ public class InfractionReportController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String INFRACTION_TYPE = "infractionType";
     public static final String INFRACTION_REPORT_ID = "infractionReportId";
+
     private final FindInfractionReportUseCase findInfractionReportUseCase;
     private final CreateInfractionReportUseCase createInfractionReportUseCase;
     private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
@@ -61,11 +62,11 @@ public class InfractionReportController {
     @ResponseStatus(CREATED)
     public InfractionReportCreatedDTO report(@RequestHeader String requestIdentifier,
                                              @RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
-        log.info("Infraction_reporting"
-            , kv(REQUEST_IDENTIFIER, requestIdentifier)
-            , kv("endToEndId", createInfractionReportRequestWebDTO.getEndToEndId())
-            , kv(INFRACTION_TYPE, createInfractionReportRequestWebDTO.getInfractionType())
-            , kv("ispbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
+        log.info("Infraction_reporting",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv("endToEndId", createInfractionReportRequestWebDTO.getEndToEndId()),
+                kv(INFRACTION_TYPE, createInfractionReportRequestWebDTO.getInfractionType()),
+                kv("ispbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
 
         final var infractionReport = createInfractionReportUseCase.execute(
             CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO),
@@ -94,10 +95,10 @@ public class InfractionReportController {
                                               @PathVariable(INFRACTION_REPORT_ID) String infractionReportId,
                                               @Valid @RequestBody CancelInfractionDTO dto) {
 
-        log.info("Infraction_canceling"
-            , kv(REQUEST_IDENTIFIER, requestIdentifier)
-            , kv(INFRACTION_REPORT_ID, infractionReportId)
-            , kv(INFRACTION_TYPE, dto.getIspb()));
+        log.info("Infraction_canceling",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(INFRACTION_REPORT_ID, infractionReportId),
+                kv(INFRACTION_TYPE, dto.getIspb()));
 
         var infractionReport = this.cancelInfractionReportUseCase
             .execute(infractionReportId, dto.getIspb(), requestIdentifier);
@@ -112,10 +113,10 @@ public class InfractionReportController {
     public CancelResponseInfractionDTO analyze(@RequestHeader String requestIdentifier,
                                                @PathVariable(INFRACTION_REPORT_ID) String infractionReportId,
                                                @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
-        log.info("Infraction_analyzing"
-            , kv(REQUEST_IDENTIFIER, requestIdentifier)
-            , kv(INFRACTION_REPORT_ID, infractionReportId)
-            , kv(INFRACTION_TYPE, dto.getIspb()));
+        log.info("Infraction_analyzing",
+                kv(REQUEST_IDENTIFIER, requestIdentifier),
+                kv(INFRACTION_REPORT_ID, infractionReportId),
+                kv(INFRACTION_TYPE, dto.getIspb()));
 
         var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.toInfractionAnalyze(), requestIdentifier);
         return CancelResponseInfractionDTO.from(infractionReport);

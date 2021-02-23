@@ -20,7 +20,7 @@ public class RemovePixKeyAutomaticallyPortImpl implements RemovePixKeyAutomatica
     @Override
     public void remove(String pixKey, LocalDateTime completionThresholdDate) {
         var pixKeyEntity = pixKeyRepository
-                .findByIdKeyAndDonatedAutomaticallyFalse(pixKey)
+                .findByIdKeyAndReasonNot(pixKey, Reason.INACTIVITY)
                 .orElseThrow(ResourceNotFoundException::new);
 
         pixKeyEntity.setCompletionPeriodEnd(completionThresholdDate);
