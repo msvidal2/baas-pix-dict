@@ -75,4 +75,11 @@ public class SyncVerifier {
         return syncVerifierResultType == SyncVerifierResultType.OK;
     }
 
+    public static SyncVerifier defaultValue(KeyType keyType) {
+        return SyncVerifier.builder()
+            .keyType(keyType)
+            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .build();
+    }
+
 }

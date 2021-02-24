@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile.*;
+import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile.DONE;
 
 /**
  * @author Luis Silva
@@ -17,17 +18,22 @@ import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusCon
 @Getter
 public class ContentIdentifierFile {
 
-    private Integer id;
     private StatusContentIdentifierFile status;
-    private KeyType keyType;
-    private LocalDateTime requestTime;
+    private final Integer id;
+    private final KeyType keyType;
+    private final LocalDateTime requestTime;
 
-    private String url;
-    private Long length;
-    private String sha256;
+    private final String url;
+    private final Long length;
+    private final String sha256;
+    private List<String> content;
 
     public void done(){
         this.status = DONE;
+    }
+
+    public void addContent(List<String> content) {
+        this.content = content;
     }
 
     public boolean isNotProcessed() {
@@ -40,7 +46,7 @@ public class ContentIdentifierFile {
         PROCESSING,
         DONE;
 
-        public boolean isNotAvaliable() {
+        public boolean isNotAvailable() {
             return this != AVAILABLE;
         }
     }

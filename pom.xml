@@ -24,15 +24,19 @@
 
         <sonar.scm.provider>git</sonar.scm.provider>
 
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
             **/dto/**,
             **/entity/*.java,
             **/config/**,
             **/*Config.java,
+            **/*Configuration.java,
             **/exception/**,
             **/*Application.java,
-            **/mockserver/**
+            **/main/java/com/picpay/banking/pix/infra/**,
+            **/main/java/com/picpay/banking/pix/converters/**
+            **/main/java/com/picpay/banking/pix/infra/**
+            **/mockserver/**,
+            **/polling/**,
         </sonar.coverage.exclusions>
         <sonar.exclusions>
             **/dto/*.java,
@@ -42,6 +46,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.login>8a223db1cbef745be8e616249f701821a7dccb46</sonar.login>
         <spring.version>5.2.4.RELEASE</spring.version>
+        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <modules>
@@ -49,11 +54,11 @@
         <module>infra</module>
         <module>dict</module>
         <module>worker</module>
-        <module>sync</module>
-        <module>notifier</module>
+        <module>reconciliation</module>
         <module>mockserver</module>
         <module>polling</module>
         <module>monitoring</module>
+        <module>jacoco-coverage</module>
     </modules>
 
     <distributionManagement>
@@ -105,21 +110,20 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.6</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
             </plugin>
         </plugins>
         <pluginManagement>
