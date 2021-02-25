@@ -7,6 +7,7 @@ import com.picpay.banking.pix.core.exception.CidFileNotReadyException;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.PollCidFilePort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,8 +39,13 @@ class RequestSyncFileUseCaseTest {
     @Mock
     private PollCidFilePort pollCidFilePort;
 
-    @InjectMocks
     private RequestSyncFileUseCase requestSyncFileUseCase;
+
+    @BeforeEach
+    public void setupUseCase() {
+        requestSyncFileUseCase = new RequestSyncFileUseCase(bacenContentIdentifierEventsPort,
+            databaseContentIdentifierPort, pollCidFilePort, 60, 10);
+    }
 
     @Test
     void when_file_is_requested_from_bacen_then_wait_for_it() {

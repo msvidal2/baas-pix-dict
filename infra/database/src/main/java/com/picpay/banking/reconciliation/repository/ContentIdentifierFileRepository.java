@@ -2,13 +2,9 @@ package com.picpay.banking.reconciliation.repository;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierFileEntity;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
 import java.util.Optional;
-
-import static com.picpay.banking.pix.core.domain.ContentIdentifierFile.StatusContentIdentifierFile;
 
 /**
  * @author Luis Silva

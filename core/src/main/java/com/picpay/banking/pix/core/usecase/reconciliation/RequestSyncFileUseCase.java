@@ -28,7 +28,8 @@ public class RequestSyncFileUseCase {
 
     public ContentIdentifierFile requestAwaitFile(KeyType keyType) {
         ContentIdentifierFile contentIdentifierFile = request(keyType);
-        ResultCidFile resultCidFile = pollCidFile(contentIdentifierFile).orElseThrow(() -> new CidFileNotReadyException(contentIdentifierFile.getId()));
+        ResultCidFile resultCidFile = pollCidFile(contentIdentifierFile).orElseThrow(
+            () -> new CidFileNotReadyException(contentIdentifierFile.getId()));
         contentIdentifierFile.addContent(resultCidFile.getCids());
         return contentIdentifierFile;
     }
@@ -43,7 +44,7 @@ public class RequestSyncFileUseCase {
 
     private Optional<ResultCidFile> pollCidFile(ContentIdentifierFile contentIdentifierFile) {
         var fetchCidFileCallablePort = new FetchCidFileCallablePort(bacenContentIdentifierEventsPort, contentIdentifierFile.getId());
-        return pollCidFilePort.poll(fetchCidFileCallablePort, timeoutPeriod, TimeUnit.SECONDS, pollingAwaitingPeriod, TimeUnit.HOURS);
+        return pollCidFilePort.poll(fetchCidFileCallablePort, pollingAwaitingPeriod, TimeUnit.SECONDS, timeoutPeriod, TimeUnit.HOURS);
     }
 
 }

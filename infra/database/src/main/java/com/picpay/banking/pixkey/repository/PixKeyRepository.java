@@ -12,7 +12,6 @@ import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyIdEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEntity>, PagingAndSortingRepository<PixKeyEntity,PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
+public interface PixKeyRepository extends PagingAndSortingRepository<PixKeyEntity,PixKeyIdEntity>, JpaSpecificationExecutor<PixKeyEntity> {
 
     Optional<PixKeyEntity> findByIdKeyAndDonatedAutomaticallyTrue(String key);
 
@@ -46,7 +45,7 @@ public interface PixKeyRepository extends JpaRepository<PixKeyEntity, PixKeyIdEn
 
     Page<PixKeyEntity> findAllByIdTypeAndReasonNot(KeyType keyType, Reason inactivity, Pageable pageable);
 
-    @Query(value = "select lower(hex(bit_xor(UNHEX(p.cid)))) from pix_key p where p.type = :keyType", nativeQuery = true)
+    @Query(value = "select lower(hex(bit_xor(UNHEX(p.cid)))) from pix_key p where p.type = :keyType and p.reason != 'INACTIVITY'", nativeQuery = true)
     @Transactional(readOnly = true)
     String computeVsync(@Param("keyType") String keyType);
 

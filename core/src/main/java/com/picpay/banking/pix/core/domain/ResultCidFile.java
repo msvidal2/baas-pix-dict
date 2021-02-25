@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author rafael.braga
@@ -21,10 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ResultCidFile {
 
-    private final List<String> cids;
+    private final Set<String> cids;
 
     public static ResultCidFile emptyCidFile() {
-        return new ResultCidFile(Collections.emptyList());
+        return new ResultCidFile(Collections.emptySet());
     }
 
 }

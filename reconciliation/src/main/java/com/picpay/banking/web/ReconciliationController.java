@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 /**
  * @author rafael.braga
  * @version 1.0 17/02/2021
@@ -47,6 +49,20 @@ public class ReconciliationController {
     public void startFullSync(@PathVariable("keyType") KeyType keyType) {
         log.info("Iniciando processo de sincronizacao completo por chave {}. Chamada MANUAL", keyType);
         reconciliationUseCase.execute(keyType);
+    }
+
+    @Trace(dispatcher = true, metricName = "manual_file_sync")
+    @PostMapping("full")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void runFullSync() {
+        Arrays.stream(KeyType.values()).forEach(reconciliationUseCase::execute);
+    }
+
+    @Trace(dispatcher = true, metricName = "manual_file_sync")
+    @PostMapping("onlyVerifier/{keyType}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void runOnlySyncVerifier(@PathVariable("keyType") KeyType keyType) {
+        syncByCidsFileUseCase.execute(keyType);
     }
 
 

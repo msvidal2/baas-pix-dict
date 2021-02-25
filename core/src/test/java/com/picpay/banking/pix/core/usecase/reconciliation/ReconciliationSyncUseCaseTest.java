@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,17 +49,15 @@ class ReconciliationSyncUseCaseTest {
     @Test
     @DisplayName("Quando OK, deve ter histórico de sucesso")
     void when_ok_must_have_a_history_of_success() {
-        when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.empty());
-
-        when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.empty());
-
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder()
                 .syncVerifierLastModified(LocalDateTime.now())
                 .syncVerifierResultType(SyncVerifierResultType.OK)
                 .build());
+        when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
+            .keyType(KeyType.CPF)
+            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .build());
 
         when(syncVerifierHistoricPort.save(any()))
             .thenAnswer(invocation -> invocation.getArgument(0));
@@ -76,7 +73,7 @@ class ReconciliationSyncUseCaseTest {
     @DisplayName("Quando NOK, deve ter histórico de falha")
     void when_NOK_must_have_a_history_of_failure() {
         when(syncVerifierPort.getLastSuccessfulVsync(KeyType.CPF))
-            .thenReturn(Optional.ofNullable(SyncVerifier.builder().vsync("01").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build()));
+            .thenReturn(SyncVerifier.builder().vsync("01").keyType(KeyType.CPF).synchronizedAt(LocalDateTime.now()).build());
 
         when(bacenSyncVerificationsPort.syncVerification(KeyType.CPF, "01"))
             .thenReturn(SyncVerifierResult.builder()
