@@ -33,14 +33,10 @@ build-worker:
 	@ mvn --projects worker -am clean install
 	@ make --directory=worker build-image
 
-build-sync:
-	@ mvn --projects com.picpay.banking.pix.dict.sync:cid-files -am clean install
-	@ make --directory=sync/cid-files build-image
-
-build-sync-cid-events:
-	@ mvn --projects com.picpay.banking.pix.dict.sync:cid-events -am clean install
-	@ make --directory=sync/cid-events build-image
-
 build-sync-verifier:
-	@ mvn --projects com.picpay.banking.pix.dict.sync:sync-verifier -am clean install
-	@ make --directory=sync/sync-verifier build-image
+	@ mvn --projects com.picpay.banking.pix.dict.sync:reconciliation -am clean install
+	@ make --directory=reconciliation build-image
+
+build-monitoring:
+	@ mvn --projects com.picpay.banking.pix.dict:monitoring -am clean install
+	@ make --directory=monitoring build-image
