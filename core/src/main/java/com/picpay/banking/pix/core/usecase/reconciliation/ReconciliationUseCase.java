@@ -38,6 +38,7 @@ public class ReconciliationUseCase {
         }
     }
 
+    // TODO: discutir com Rodrigo retornos no controller e possibilidade de termos endpoint para consultar vsync.
     private SyncVerifierHistoric run(final KeyType syncKeyType) {
         log.info("Inicio da sync por: {}", kv("keyType", syncKeyType.name()));
         sincronizeCIDEventsUseCase.syncByKeyType(syncKeyType);
@@ -45,11 +46,11 @@ public class ReconciliationUseCase {
         SyncVerifierHistoric syncVerifierHistoric = reconciliationSyncUseCase.execute(syncKeyType);
 
         if (syncVerifierHistoric.isNOK()) {
-            SyncVerifierHistoric executedHistoric = failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
+            syncVerifierHistoric = failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
 
-            if (executedHistoric.isNOK()) {
+            if (syncVerifierHistoric.isNOK()) {
                 log.warn("Sync por eventos: NOK. Iniciando tratamento por arquivos. KeyType: {}", syncKeyType);
-                syncByFileUseCase.execute(syncKeyType);
+                syncVerifierHistoric = syncByFileUseCase.execute(syncKeyType);
             }
         }
 

@@ -9,10 +9,7 @@ import com.picpay.banking.pix.core.ports.reconciliation.bacen.PollCidFilePort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -29,22 +26,20 @@ import static org.mockito.Mockito.when;
  * @author Luis Silva
  * @version 1.0 26/11/2020
  */
-@ExtendWith(MockitoExtension.class)
 class RequestSyncFileUseCaseTest {
 
-    @Mock
     private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    @Mock
     private DatabaseContentIdentifierPort databaseContentIdentifierPort;
-    @Mock
     private PollCidFilePort pollCidFilePort;
 
     private RequestSyncFileUseCase requestSyncFileUseCase;
 
     @BeforeEach
-    public void setupUseCase() {
-        requestSyncFileUseCase = new RequestSyncFileUseCase(bacenContentIdentifierEventsPort,
-            databaseContentIdentifierPort, pollCidFilePort, 60, 10);
+    void init() {
+        bacenContentIdentifierEventsPort = Mockito.mock(BacenContentIdentifierEventsPort.class);
+        databaseContentIdentifierPort = Mockito.mock(DatabaseContentIdentifierPort.class);
+        pollCidFilePort = Mockito.mock(PollCidFilePort.class);
+        requestSyncFileUseCase = new RequestSyncFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort, pollCidFilePort, 1, 10);
     }
 
     @Test

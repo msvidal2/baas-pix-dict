@@ -6,6 +6,7 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationFixByCidFile;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -47,8 +48,9 @@ public class FailureReconciliationSyncByFileUseCase {
 
     private ReconciliationFixByCidFile reconciliationFixByCidFile;
 
-    public void execute(KeyType keyType) {
+    public SyncVerifierHistoric execute(KeyType keyType) {
         var startCurrentTimeMillis = System.currentTimeMillis();
+        SyncVerifierHistoric syncVerifierHistoric;
         try {
             reconciliationLockPort.lock();
 
@@ -63,7 +65,7 @@ public class FailureReconciliationSyncByFileUseCase {
             reconciliationFixByCidFile.computeCidsThatMustBeRemoved(cidsInDatabase).parallelStream()
                 .forEach(this::remove);
 
-            performSyncVerifier();
+            syncVerifierHistoric = performSyncVerifier();
 
             contentIdentifierFile.done();
             databaseContentIdentifierPort.saveFile(contentIdentifierFile);
@@ -77,6 +79,8 @@ public class FailureReconciliationSyncByFileUseCase {
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / MILLISECONDS_TO_SECONDS),
             kv("countCidInFile", reconciliationFixByCidFile.getContentIdentifierFile().getContent().size()),
             kv("keyType", keyType));
+
+        return syncVerifierHistoric;
     }
 
     private void createPixKey1000by1000(final List<String> cidsThatMustBeCreated) {
@@ -97,7 +101,7 @@ public class FailureReconciliationSyncByFileUseCase {
         }
     }
 
-    private void performSyncVerifier() {
+    private SyncVerifierHistoric performSyncVerifier() {
         var keyType = reconciliationFixByCidFile.getKeyType();
         final var vsyncCurrent = findPixKeyPort.computeVsync(keyType);
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
@@ -106,6 +110,7 @@ public class FailureReconciliationSyncByFileUseCase {
 
         syncVerifierPort.save(lastSyncVerifier);
         syncVerifierHistoricPort.save(newSyncVerifierHistoric);
+        return newSyncVerifierHistoric;
     }
 
     private List<String> extractCidsInDatabaseByPagination(KeyType keyType) {

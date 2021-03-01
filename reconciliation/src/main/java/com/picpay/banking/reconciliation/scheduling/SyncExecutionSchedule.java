@@ -2,6 +2,7 @@ package com.picpay.banking.reconciliation.scheduling;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.exception.ReconciliationException;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class SyncExecutionSchedule {
             log.error("SyncApplication was interrupted {}", e.getMessage());
             Thread.currentThread().interrupt();
             service.shutdownNow();
-            throw new IllegalArgumentException(e);
+            throw new ReconciliationException("Sincronismo agendado foi interrompido", e);
         }
     }
 
