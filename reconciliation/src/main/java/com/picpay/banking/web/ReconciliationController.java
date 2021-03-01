@@ -9,6 +9,7 @@ package com.picpay.banking.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -36,6 +37,7 @@ public class ReconciliationController {
 
     private final FailureReconciliationSyncByFileUseCase syncByCidsFileUseCase;
     private final ReconciliationUseCase reconciliationUseCase;
+    private final ReconciliationSyncUseCase reconciliationSyncUseCase;
     private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
 
     @Trace(dispatcher = true, metricName = "manual_syncByFile")
@@ -66,6 +68,7 @@ public class ReconciliationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void startOnlySyncVerifier(@PathVariable("keyType") KeyType keyType) {
         sincronizeCIDEventsUseCase.syncByKeyType(keyType);
+        reconciliationSyncUseCase.execute(keyType);
     }
 
 }

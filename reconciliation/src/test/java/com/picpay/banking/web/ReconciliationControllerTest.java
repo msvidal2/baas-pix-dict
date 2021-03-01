@@ -8,6 +8,7 @@ package com.picpay.banking.web;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,8 @@ class ReconciliationControllerTest {
 
     @Mock
     private FailureReconciliationSyncByFileUseCase syncByCidsFileUseCase;
+    @Mock
+    private ReconciliationSyncUseCase reconciliationSyncUseCase;
     @Mock
     private SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
     @Mock
@@ -93,6 +96,7 @@ class ReconciliationControllerTest {
             .andExpect(status().isAccepted());
 
         verify(sincronizeCIDEventsUseCase).syncByKeyType(KeyType.CPF);
+        verify(reconciliationSyncUseCase).execute(KeyType.CPF);
     }
 
 }
