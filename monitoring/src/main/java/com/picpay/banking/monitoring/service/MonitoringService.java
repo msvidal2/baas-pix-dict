@@ -3,6 +3,7 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.monitoring.service;
 
 import com.newrelic.api.agent.NewRelic;
@@ -25,17 +26,20 @@ import java.util.List;
 public class MonitoringService {
 
     private final List<Metric> metrics;
+    private static final String EVENT_FORMAT = "/%s";
 
     @Trace(dispatcher = true, metricName = "baas-pix-dict-monitoring-service")
     @Scheduled(fixedDelayString = "${picpay.monitoring.delay}")
     public void sendEvents() {
         log.info("Executando monitoramento baas-pix-dict...");
-        NewRelic.setTransactionName("baas-pix-monitoring", "/events");
         metrics.parallelStream()
-            .forEach(domain -> domain.getMetricEvents().forEach(metric -> {
-                log.info("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain);
-                NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
-            }));
+            .forEach(domain -> {
+                NewRelic.setTransactionName("baas-pix-monitoring", String.format(EVENT_FORMAT, domain.getDomain()));
+                domain.getMetricEvents().forEach(metric -> {
+                    log.info("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain.getDomain());
+                    NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
+                });
+            });
         log.info("Execução de monitoramento finalizada.");
     }
 
