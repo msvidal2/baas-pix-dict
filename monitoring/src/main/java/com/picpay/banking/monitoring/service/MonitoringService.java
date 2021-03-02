@@ -25,24 +25,22 @@ import java.util.List;
 @Slf4j
 public class MonitoringService {
 
-    private static final String CATEGORY = "baas-pix-monitoring";
     private final List<Metric> metrics;
-    private static final String EVENT_FORMAT = "/%s";
+    private static final String CATEGORY = "baas-pix-monitoring";
+    private static final String EVENTS = "/events";
 
     @Trace(dispatcher = true, metricName = "baas-pix-dict-monitoring-service")
     @Scheduled(fixedDelayString = "${picpay.monitoring.delay}")
     public void sendEvents() {
-        log.info("Executando monitoramento baas-pix-dict...");
+        log.debug("Executando monitoramento baas-pix-dict...");
+        NewRelic.setTransactionName(CATEGORY, EVENTS);
+        metrics.forEach(domain -> domain.getMetricEvents().forEach(metric -> addCustomParameter(domain, metric)));
+        log.debug("Execução de monitoramento finalizada.");
+    }
 
-        metrics.forEach(domain -> {
-            NewRelic.setTransactionName(CATEGORY, String.format(EVENT_FORMAT, domain.getDomain()));
-            domain.getMetricEvents().forEach(metric -> {
-                log.info("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain.getDomain());
-                NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
-            });
-        });
-
-        log.info("Execução de monitoramento finalizada.");
+    private void addCustomParameter(final Metric domain, final com.picpay.banking.pix.core.domain.metrics.MetricEvent metric) {
+        log.debug("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain.getDomain());
+        NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
     }
 
 }

@@ -38,7 +38,7 @@ public class ClaimMetricsConfig {
 
     @Bean
     public Metric claimMetricEvents() {
-        log.info("Construindo eventos de metricas para reinvidicacao");
+        log.trace("Construindo eventos de metricas para reinvidicacao");
         return Metric.builder()
             .domain("Claim")
             .metricEvents(Arrays.asList(

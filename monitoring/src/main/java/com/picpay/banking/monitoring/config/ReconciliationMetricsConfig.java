@@ -28,7 +28,7 @@ public class ReconciliationMetricsConfig {
 
     @Bean
     public Metric reconciliationMetricEvents() {
-        log.info("Construindo eventos para monitoramento de reconciliacao...");
+        log.trace("Construindo eventos para monitoramento de reconciliacao...");
         return Metric.builder()
             .domain("Reconciliation")
             .metricEvents(Collections.singletonList(MetricEvent.builder()

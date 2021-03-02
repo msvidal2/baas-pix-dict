@@ -31,7 +31,7 @@ public class InfractionMetricsConfig {
 
     @Bean
     public Metric infractionMetricEvents() {
-        log.info("Construindo eventos de monitoramento de infraction...");
+        log.trace("Construindo eventos de monitoramento de infraction...");
         return Metric.builder()
             .domain("Infraction")
             .metricEvents(
