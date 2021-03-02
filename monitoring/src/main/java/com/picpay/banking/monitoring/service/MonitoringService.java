@@ -25,6 +25,7 @@ import java.util.List;
 @Slf4j
 public class MonitoringService {
 
+    private static final String CATEGORY = "baas-pix-monitoring";
     private final List<Metric> metrics;
     private static final String EVENT_FORMAT = "/%s";
 
@@ -32,14 +33,15 @@ public class MonitoringService {
     @Scheduled(fixedDelayString = "${picpay.monitoring.delay}")
     public void sendEvents() {
         log.info("Executando monitoramento baas-pix-dict...");
-        metrics.parallelStream()
-            .forEach(domain -> {
-                NewRelic.setTransactionName("baas-pix-monitoring", String.format(EVENT_FORMAT, domain.getDomain()));
-                domain.getMetricEvents().forEach(metric -> {
-                    log.info("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain.getDomain());
-                    NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
-                });
+
+        metrics.forEach(domain -> {
+            NewRelic.setTransactionName(CATEGORY, String.format(EVENT_FORMAT, domain.getDomain()));
+            domain.getMetricEvents().forEach(metric -> {
+                log.info("Enviando metrica {} do dominio {} para New Relic", metric.getDescription(), domain.getDomain());
+                NewRelic.addCustomParameter(metric.getDescription(), metric.getValue().get());
             });
+        });
+
         log.info("Execução de monitoramento finalizada.");
     }
 
