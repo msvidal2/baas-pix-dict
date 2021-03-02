@@ -11,11 +11,11 @@ import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResult;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import com.picpay.banking.pix.core.exception.CidFileNotReadyException;
+import com.picpay.banking.pix.core.exception.ReconciliationException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -168,37 +169,24 @@ class FailureReconciliationSyncByFileUseCaseTest {
             "69db9b861be66f434f8ef722f480195b56aaadb7135b9089c53e161000af41da");
     }
 
-    // TODO: Acho que não deveria ter esse teste
-    //       Pois o bacen pode ter um tipo de chave zerada. Altamente improvável, mas pode ter.
-    //    @Test
-    //    void when_file_is_empty_dont_process() {
-    //        when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(contentFile(Collections.emptySet()));
-    //
-    //        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
-    //
-    //        verify(lockPort).lock();
-    //        verify(requestSyncFileUseCase).requestAwaitFile(KeyType.CPF);
-    //        verify(bacenContentIdentifierEventsPort, never()).getContentIdentifierFileInBacen(anyInt());
-    //        verify(bacenContentIdentifierEventsPort, never()).downloadCidsFromBacen(anyString());
-    //        verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
-    //        verify(databaseContentIdentifierPort, never()).saveFile(any());
-    //        verify(lockPort).unlock();
-    //    }
+    @Test
+    void when_file_is_empty_dont_process() {
+        when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(contentFile(Collections.emptySet()));
 
-    // TODO: Não temos mais esse controle. Pensar melhor em como lidar com isso
-    //        @Test
-    //        void when_file_is_already_processed_dont_reprocess() {
-    //            final var doneFile = cidFile.toBuilder().status(
-    //                ContentIdentifierFile.StatusContentIdentifierFile.DONE).content(cids).build();
-    //
-    //            when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(doneFile);
-    //            failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
-    //
-    //            verify(lockPort).lock();
-    //            verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
-    //            verify(databaseContentIdentifierPort, never()).saveFile(any());
-    //            verify(lockPort).unlock();
-    //        }
+        assertThatThrownBy(() -> failureReconciliationSyncByFileUseCase.execute(KeyType.CPF))
+            .isInstanceOf(ReconciliationException.class)
+            .hasMessageContaining("The CID file is empty.");
+
+        verify(lockPort).lock();
+        verify(requestSyncFileUseCase).requestAwaitFile(KeyType.CPF);
+        verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
+        verify(bacenPixKeyByContentIdentifierPort, never()).getPixKey(any());
+        verify(databaseContentIdentifierPort, never()).saveFile(any());
+        verify(pixKeyEventPort, never()).pixKeyWasCreated(any());
+        verify(pixKeyEventPort, never()).pixKeyWasUpdated(any());
+        verify(pixKeyEventPort, never()).pixKeyWasRemoved(any());
+        verify(lockPort).unlock();
+    }
 
     @Test
     void when_file_is_unavailable_dont_insert_keys() {
@@ -213,20 +201,6 @@ class FailureReconciliationSyncByFileUseCaseTest {
         verify(databaseContentIdentifierPort, never()).saveFile(any());
         verify(lockPort).unlock();
     }
-
-    // TODO: Acho que não deveria ter esse teste, mas não tenho certeza.
-    //       Ele é muito parecido com o teste do arquivo vazio
-    //    @Test
-    //    void when_file_has_empty_content_dont_insert_keys() {
-    //        when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(cidFile);
-    //
-    //        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
-    //
-    //        verify(lockPort).lock();
-    //        verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
-    //        verify(databaseContentIdentifierPort, never()).saveFile(any());
-    //        verify(lockPort).unlock();
-    //    }
 
     @Test
     void when_valid_file_then_insert_keys_from_bacen() {
@@ -357,49 +331,6 @@ class FailureReconciliationSyncByFileUseCaseTest {
         verify(databaseContentIdentifierPort).saveFile(any());
         verify(lockPort).unlock();
     }
-
-    // TODO: Alterei o algorítimo para não ter mais esse cenário.
-    //       Agora temos uma lista para remover e outra para inserir. O update ainda pode acontecer, mas não da forma que era antes.
-    //       O teste de update acontece em outro cenário já coberto mais acima:
-    //    @Test
-    //    void removeOnlyCidFromDatabaseWhenKeyIsAlreadyUpdatedAndCIDInvalidsInOrphan() {
-    //        final var availableFile = cidFile.toBuilder()
-    //            .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
-    //            .content(cids)
-    //            .build();
-    //        final var contentIdentifiersToRemove = pixKey.toBuilder().cid("a").build();
-    //        final var pixKeys = cids.stream().map(cid -> PixKey.builder()
-    //            .cid(cid)
-    //            .type(KeyType.CPF).key(UUID.randomUUID().toString()).build()).collect(Collectors.toList());
-    //        pixKeys.add(contentIdentifiersToRemove);
-    //
-    //        when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(availableFile);
-    //        when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
-    //            .keyType(KeyType.CPF)
-    //            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-    //            .build());
-    //        when(bacenSyncVerificationsPort.syncVerification(any(), any())).thenReturn(SyncVerifierResult.builder().build());
-    //
-    //        doNothing().when(lockPort).lock();
-    //        when(findPixKeyPort.findAllByKeyType(any(), any(), anyInt())).thenReturn(
-    //            Pagination.<PixKey>builder().currentPage(1).hasNext(false).result(pixKeys).build());
-    //        when(bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).thenReturn(Optional.empty(), Optional.of(pixKey));
-    //        when(findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
-    //        doNothing().when(databaseContentIdentifierPort).saveFile(any());
-    //        doNothing().when(lockPort).unlock();
-    //
-    //        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
-    //
-    //        verify(lockPort).lock();
-    //        verify(findPixKeyPort).findAllByKeyType(any(), any(), anyInt());
-    //        verify(bacenPixKeyByContentIdentifierPort, times(2)).getPixKey(anyString());
-    //        verify(createPixKeyPort, never()).savePixKey(any(), any());
-    //        verify(findPixKeyPort).findByCid(anyString());
-    //        verify(removePixKeyPort, never()).remove(any(), anyInt());
-    //        verify(databaseContentIdentifierPort, never()).saveAction(anyInt(), any(), anyString(), any());
-    //        verify(databaseContentIdentifierPort).saveFile(any());
-    //        verify(lockPort).unlock();
-    //    }
 
     private Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var cid = (String) invocationOnMock.getArgument(0);

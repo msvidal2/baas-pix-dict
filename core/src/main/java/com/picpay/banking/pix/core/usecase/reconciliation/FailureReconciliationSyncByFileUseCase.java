@@ -1,12 +1,14 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.common.Pagination;
+import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationFixByCidFile;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.exception.ReconciliationException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -34,6 +36,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class FailureReconciliationSyncByFileUseCase {
 
+    private static final String LOG_CONTENT_IDENTIFIER_FIELD_ID = "contentIdentifierFileId";
+
     private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     private final SavePixKeyPort createPixKeyPort;
@@ -54,7 +58,7 @@ public class FailureReconciliationSyncByFileUseCase {
         try {
             reconciliationLockPort.lock();
 
-            var contentIdentifierFile = requestSyncFileUseCase.requestAwaitFile(keyType);
+            ContentIdentifierFile contentIdentifierFile = requestAwaitContentIdentifierFile(keyType);
             var cidsInDatabase = extractCidsInDatabaseByPagination(keyType);
 
             reconciliationFixByCidFile = new ReconciliationFixByCidFile(keyType, contentIdentifierFile);
@@ -75,12 +79,23 @@ public class FailureReconciliationSyncByFileUseCase {
 
         final int MILLISECONDS_TO_SECONDS = 1000;
         log.info("ReconciliationSyncByFile_ended {} {} {} {}",
-            kv("contentIdentifierFileId", reconciliationFixByCidFile.getContentIdentifierFile().getId()),
+            kv(LOG_CONTENT_IDENTIFIER_FIELD_ID, reconciliationFixByCidFile.getContentIdentifierFile().getId()),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / MILLISECONDS_TO_SECONDS),
             kv("countCidInFile", reconciliationFixByCidFile.getContentIdentifierFile().getContent().size()),
             kv("keyType", keyType));
 
         return syncVerifierHistoric;
+    }
+
+    private ContentIdentifierFile requestAwaitContentIdentifierFile(final KeyType keyType) {
+        var contentIdentifierFile = requestSyncFileUseCase.requestAwaitFile(keyType);
+        if (contentIdentifierFile.getContent().isEmpty()) {
+            log.error("ReconciliationSyncByFile_error: The CID file is empty. {}, {}",
+                kv(LOG_CONTENT_IDENTIFIER_FIELD_ID, contentIdentifierFile.getId()),
+                kv("contentIdentifierFileUrl", contentIdentifierFile.getUrl()));
+            throw new ReconciliationException("The CID file is empty.");
+        }
+        return contentIdentifierFile;
     }
 
     private void createPixKey1000by1000(final List<String> cidsThatMustBeCreated) {
@@ -158,7 +173,7 @@ public class FailureReconciliationSyncByFileUseCase {
             kv("key", pixKey.getKey()),
             kv("keyType", pixKey.getType()),
             kv("action", action),
-            kv("contentIdentifierFileId", reconciliationFixByCidFile.getContentIdentifierFile().getId()));
+            kv(LOG_CONTENT_IDENTIFIER_FIELD_ID, reconciliationFixByCidFile.getContentIdentifierFile().getId()));
     }
 
 }
