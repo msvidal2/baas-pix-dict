@@ -34,7 +34,6 @@
             **/*Application.java,
             **/main/java/com/picpay/banking/pix/infra/**,
             **/main/java/com/picpay/banking/pix/converters/**
-            **/main/java/com/picpay/banking/pix/infra/**
             **/mockserver/**,
             **/polling/**,
         </sonar.coverage.exclusions>

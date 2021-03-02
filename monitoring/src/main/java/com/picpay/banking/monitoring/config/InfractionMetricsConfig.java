@@ -5,10 +5,11 @@
  */
 
 
-package com.picpay.banking.monitoring.infraction;
+package com.picpay.banking.monitoring.config;
 
 import com.picpay.banking.infraction.repository.InfractionMetricRepository;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
+import com.picpay.banking.pix.core.domain.metrics.Metric;
 import com.picpay.banking.pix.core.domain.metrics.MetricEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,23 +17,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author rafael.braga
  * @version 1.0 28/01/2021
  */
 @Configuration
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class InfractionMetricsConfig {
 
     private final InfractionMetricRepository infractionMetricRepository;
 
     @Bean
-    public List<MetricEvent> metricEvents() {
+    public Metric infractionMetricEvents() {
         log.info("Construindo eventos de monitoramento de infraction...");
-        return Arrays.asList(MetricEvent.builder()
+        return Metric.builder()
+            .domain("Infraction")
+            .metricEvents(
+        Arrays.asList(MetricEvent.builder()
                                  .description("open-infractions_waiting_on_ack_by_third_party")
                                  .value(() -> infractionMetricRepository.countBySituation(InfractionReportSituation.OPEN))
                                  .build(),
@@ -43,7 +46,7 @@ public class InfractionMetricsConfig {
                              MetricEvent.builder()
                                  .description("analyzed-infractions_waiting_on_third_party")
                                  .value(() -> infractionMetricRepository.countBySituation(InfractionReportSituation.ANALYZED))
-                                 .build());
+                                 .build())).build();
     }
 
 }

@@ -1,0 +1,16 @@
+kind: pipeline
+type: kubernetes
+name: baas-dict-sonar-check
+trigger:
+  event:
+    - pull_request
+steps:
+  - name: mvn_settings
+    image: alpine:latest
+    commands:
+      - echo '<?xml version="1.0" encoding="UTF-8"?><settings><servers><server><id>picpay-releases</id><username>picpay-dev</username><password>gbx862yTqhHwzPxy6VWQT3T3X4</password></server><server><id>picpay-snapshots</id><username>picpay-dev</username><password>gbx862yTqhHwzPxy6VWQT3T3X4</password></server></servers><profiles><profile><id>picpay-deploy</id><properties><repo.release>https://nexus-prod.limbo.work/repository/picpay-maven-releases/</repo.release><repo.snapshot>https://nexus-prod.limbo.work/repository/picpay-maven-snapshots/</repo.snapshot></properties><repositories><repository><id>picpay-releases</id><url>https://nexus-prod.limbo.work/repository/picpay-maven-releases/</url><releases><enabled>true</enabled><updatePolicy>never</updatePolicy></releases><snapshots><enabled>false</enabled><updatePolicy>never</updatePolicy></snapshots></repository><repository><id>picpay-snapshots</id><url>https://nexus-prod.limbo.work/repository/picpay-maven-snapshots/</url><releases><enabled>false</enabled><updatePolicy>never</updatePolicy></releases><snapshots><enabled>true</enabled><updatePolicy>never</updatePolicy></snapshots></repository></repositories></profile></profiles><activeProfiles><activeProfile>picpay-deploy</activeProfile></activeProfiles></settings>' > settings.xml
+
+  - name: test_sonar_verify
+    image: maven:3-jdk-11
+    commands:
+      - mvn clean test verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.branch.name=$DRONE_TARGET_BRANCH -B -V -gs settings.xml

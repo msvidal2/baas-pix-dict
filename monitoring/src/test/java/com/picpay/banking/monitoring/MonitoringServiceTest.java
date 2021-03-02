@@ -6,10 +6,13 @@
 
 package com.picpay.banking.monitoring;
 
+import com.picpay.banking.monitoring.service.MonitoringService;
+import com.picpay.banking.pix.core.domain.metrics.Metric;
 import com.picpay.banking.pix.core.domain.metrics.MetricEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -20,8 +23,8 @@ class MonitoringServiceTest {
 
     @BeforeEach
     void setUp() {
-        final List<List<MetricEvent>> metricEvents = List.of(List.of(MetricEvent.builder().description("test-metric").value(() -> 1L).build()));
-        monitoringService = new MonitoringService(metricEvents);
+        final var metricEvents = Metric.builder().metricEvents(List.of(MetricEvent.builder().description("test-metric").value(() -> 1L).build())).build();
+        monitoringService = new MonitoringService(Collections.singletonList(metricEvents));
     }
 
     @Test
