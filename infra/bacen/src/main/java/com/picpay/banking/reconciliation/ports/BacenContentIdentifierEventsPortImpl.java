@@ -12,6 +12,7 @@ import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
 import com.picpay.banking.reconciliation.ratelimiter.ReconciliationRateLimiter;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -27,8 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentifierEventsPort {
+
 
     private final BacenArqClient bacenArqClient;
 
@@ -52,10 +54,11 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
         Set<BacenCidEvent> result = new HashSet<>();
 
         boolean hasNext = true;
+        final int LIMIT = 200;
         AtomicReference<LocalDateTime> nextDate = new AtomicReference<>(startTime);
         while (hasNext) {
             var bacenEvents = reconciliationRateLimiter.acquirePermissionForListCidSetEvents(
-                () -> bacenReconciliationClient.getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate.get(), 200));
+                () -> bacenReconciliationClient.getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate.get(), LIMIT));
 
             if (Objects.isNull(bacenEvents.getCidSetEvents())) {
                 hasNext = false;
@@ -91,11 +94,12 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public List<String> downloadCidsFromBacen(final String url) {
-        final var urlFile = url.replaceAll("^.*\\/\\/[^\\/]+:?[0-9]?\\/", urlGateway + "/arq/");
+    public Set<String> downloadCidsFromBacen(final String url) {
+        final String REGEX = "^.*\\/\\/[^\\/]+:?[0-9]?\\/";
+        final var urlFile = url.replaceAll(REGEX, urlGateway + "/arq/");
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
-        return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
     }
 
     @Override
@@ -106,6 +110,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
             return Optional.of(response.toDomain());
         } catch (FeignException.NotFound ex) {
+            log.info("BacenContentIdentifierEventsPort: getEntryByCid not found for cid {}", cid, ex);
             return Optional.empty();
         }
     }

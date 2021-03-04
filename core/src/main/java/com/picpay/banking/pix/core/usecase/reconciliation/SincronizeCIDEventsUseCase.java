@@ -2,14 +2,11 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncBacenCidEvents;
-import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncBacenCidEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -43,11 +40,7 @@ public class SincronizeCIDEventsUseCase {
     }
 
     private SyncBacenCidEvents createSyncBacenCidAfterLastSyncVerifier(KeyType keyType) {
-        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
-            .orElseGet(() -> SyncVerifier.builder()
-                .keyType(keyType)
-                .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-                .build());
+        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType);
 
         return SyncBacenCidEvents.builder()
             .keyType(keyType)

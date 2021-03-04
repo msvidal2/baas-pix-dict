@@ -16,6 +16,8 @@ spring:
 picpay:
     dict:
         url: http://localhost:8080/v1/keys
+    reconciliation:
+        url: http://localhost:8089/v1/
     mysql:
         url: jdbc:mysql://localhost:3306/dict
         username: root

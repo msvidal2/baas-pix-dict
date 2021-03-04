@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ public interface BacenContentIdentifierEventsPort {
 
     ContentIdentifierFile getContentIdentifierFileInBacen(Integer id);
 
-    List<String> downloadCidsFromBacen(String url);
+    Set<String> downloadCidsFromBacen(String url);
 
     Optional<PixKey> getPixKey(String cid);
 

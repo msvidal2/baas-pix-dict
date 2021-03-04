@@ -52,6 +52,10 @@ class SincronizeCIDEventsUseCaseTest {
 
         when(syncBacenCidEventsPort.getSyncBacenCid(any())).thenReturn(Optional.empty());
         when(bacenContentIdentifierEventsPort.list(any(), any())).thenReturn(new HashSet<>());
+        when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
+            .keyType(KeyType.CPF)
+            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .build());
 
         sincronizeCIDEventsUseCase.syncByKeyType(KeyType.CPF);
 
@@ -66,6 +70,10 @@ class SincronizeCIDEventsUseCaseTest {
     void synchronizes_the_data_with_the_zeroed_base_and_with_bacen_return() {
         var dateMostRecent = LocalDateTime.now().plus(Duration.ofDays(1));
 
+        when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
+            .keyType(KeyType.CPF)
+            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .build());
         when(syncBacenCidEventsPort.getSyncBacenCid(any())).thenReturn(Optional.empty());
         when(bacenContentIdentifierEventsPort.list(any(), any())).thenReturn(
             Set.of(BacenCidEvent.builder()

@@ -112,7 +112,7 @@ class FailureReconciliationSyncUseCaseTest {
                 .cid("1")
                 .build()));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+            .thenReturn(SyncVerifier.builder().keyType(KeyType.CPF).build());
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
 
@@ -145,7 +145,7 @@ class FailureReconciliationSyncUseCaseTest {
         when(findPixKeyPort.findPixKey(any()))
             .thenReturn(Optional.of(PixKey.builder().cid("02").build()));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+            .thenReturn(SyncVerifier.builder().keyType(KeyType.CPF).build());
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
 
@@ -166,7 +166,7 @@ class FailureReconciliationSyncUseCaseTest {
         when(syncBacenCidEventsPort.listAfterLastSyncronized(any(), any()))
             .thenReturn(Set.of(ContentIdentifierUtil.bacenCidEventRemove("01")));
         when(syncVerifierPort.getLastSuccessfulVsync(any()))
-            .thenReturn(Optional.of(SyncVerifier.builder().keyType(KeyType.CPF).build()));
+            .thenReturn(SyncVerifier.builder().keyType(KeyType.CPF).build());
         when(bacenSyncVerificationsPort.syncVerification(any(), any()))
             .thenReturn(SyncVerifierResult.builder().syncVerifierResultType(SyncVerifierResultType.OK).build());
         when(findPixKeyPort.findByCid(any())).thenReturn(Optional.of(PixKey.builder().build()));

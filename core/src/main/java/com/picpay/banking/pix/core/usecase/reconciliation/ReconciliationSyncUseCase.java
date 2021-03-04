@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierPort;
@@ -10,7 +9,6 @@ import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -28,11 +26,7 @@ public class ReconciliationSyncUseCase {
         var startCurrentTimeMillis = System.currentTimeMillis();
         log.info("ReconciliationSync_started {}", kv("keyType", keyType));
 
-        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType)
-            .orElseGet(() -> SyncVerifier.builder()
-                .keyType(keyType)
-                .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
-                .build());
+        var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(keyType);
 
         List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
             syncVerifier.getKeyType(),

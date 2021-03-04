@@ -25,6 +25,7 @@ server:
     threads:
       max: 400
       min-spare: 50
+  port: 8089
 
 picpay:
   ispb: 22896431

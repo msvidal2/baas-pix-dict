@@ -3,12 +3,15 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.web;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
 
 /**
  * @author rafael.braga
@@ -32,8 +37,10 @@ public class ReconciliationController {
 
     private final FailureReconciliationSyncByFileUseCase syncByCidsFileUseCase;
     private final ReconciliationUseCase reconciliationUseCase;
+    private final ReconciliationSyncUseCase reconciliationSyncUseCase;
+    private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
 
-    @Trace(dispatcher = true, metricName = "manual_file_sync")
+    @Trace(dispatcher = true, metricName = "manual_syncByFile")
     @PostMapping("file/{keyType}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void startSyncByFile(@PathVariable("keyType") KeyType keyType) {
@@ -41,7 +48,7 @@ public class ReconciliationController {
         syncByCidsFileUseCase.execute(keyType);
     }
 
-    @Trace(dispatcher = true, metricName = "full_manual_sync")
+    @Trace(dispatcher = true, metricName = "manual_fullSync")
     @PostMapping("full/{keyType}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void startFullSync(@PathVariable("keyType") KeyType keyType) {
@@ -49,5 +56,19 @@ public class ReconciliationController {
         reconciliationUseCase.execute(keyType);
     }
 
+    @Trace(dispatcher = true, metricName = "manual_allKeyTypeWithFullSync")
+    @PostMapping("full")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void startAllKeyTypeWithFullSync() {
+        Arrays.stream(KeyType.values()).forEach(reconciliationUseCase::execute);
+    }
+
+    @Trace(dispatcher = true, metricName = "manual_onlySyncVerifier")
+    @PostMapping("onlyVerifier/{keyType}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void startOnlySyncVerifier(@PathVariable("keyType") KeyType keyType) {
+        sincronizeCIDEventsUseCase.syncByKeyType(keyType);
+        reconciliationSyncUseCase.execute(keyType);
+    }
 
 }

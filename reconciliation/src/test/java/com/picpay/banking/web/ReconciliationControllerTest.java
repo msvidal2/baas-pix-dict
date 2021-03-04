@@ -8,7 +8,9 @@ package com.picpay.banking.web;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,10 @@ class ReconciliationControllerTest {
 
     @Mock
     private FailureReconciliationSyncByFileUseCase syncByCidsFileUseCase;
+    @Mock
+    private ReconciliationSyncUseCase reconciliationSyncUseCase;
+    @Mock
+    private SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
     @Mock
     private ReconciliationUseCase reconciliationUseCase;
     @InjectMocks
@@ -68,6 +74,29 @@ class ReconciliationControllerTest {
         mockMvc.perform(post(BASE_URL.concat("/full/XPTO")))
             .andDo(print())
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void when_start_all_key_type_with_full_sync_requested_then_start_all_full_sync() throws Exception {
+        mockMvc.perform(post(BASE_URL.concat("/full")))
+            .andDo(print())
+            .andExpect(status().isAccepted());
+
+        verify(reconciliationUseCase).execute(KeyType.CPF);
+        verify(reconciliationUseCase).execute(KeyType.CNPJ);
+        verify(reconciliationUseCase).execute(KeyType.CELLPHONE);
+        verify(reconciliationUseCase).execute(KeyType.RANDOM);
+        verify(reconciliationUseCase).execute(KeyType.EMAIL);
+    }
+
+    @Test
+    void when_start_only_sync_verifier_requested_then_start_only_sync_verifier() throws Exception {
+        mockMvc.perform(post(BASE_URL.concat("/onlyVerifier/CPF")))
+            .andDo(print())
+            .andExpect(status().isAccepted());
+
+        verify(sincronizeCIDEventsUseCase).syncByKeyType(KeyType.CPF);
+        verify(reconciliationSyncUseCase).execute(KeyType.CPF);
     }
 
 }

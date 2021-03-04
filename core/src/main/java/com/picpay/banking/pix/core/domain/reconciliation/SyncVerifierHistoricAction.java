@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"cid", "action"})
 public class SyncVerifierHistoricAction {

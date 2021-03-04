@@ -2,7 +2,7 @@ package com.picpay.banking.pix.dict.test.reconciliation;
 
 import com.picpay.banking.pix.dict.test.database.DatabaseUtils;
 import com.picpay.banking.pix.dict.test.RunTests;
-import com.picpay.banking.pix.dict.test.sync.SyncVerifierApplicationUtil;
+import com.picpay.banking.pix.dict.test.dictapi.ReconciliationApiRestClient;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Então;
 import io.cucumber.java.pt.Quando;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class SyncVerifierSteps extends RunTests {
 
     private final DatabaseUtils databaseUtils;
-    private final SyncVerifierApplicationUtil syncVerifierApplicationUtil;
+    private final ReconciliationApiRestClient reconciliationApiRestClient;
     private String condition;
     private String keyType;
 
@@ -35,7 +35,12 @@ public class SyncVerifierSteps extends RunTests {
     @Então("o resultado esperado é {string}")
     public void o_resultado_esperado_é(String result) {
         var onlySyncVerifier = result.equals("NOK");
-        syncVerifierApplicationUtil.run(keyType, onlySyncVerifier);
+
+        if (onlySyncVerifier) {
+            reconciliationApiRestClient.runOnlySyncVerifier(keyType);
+        } else {
+            reconciliationApiRestClient.runSyncVerifier(keyType);
+        }
 
         String vsyncResult = databaseUtils.findVsyncResult(keyType);
         assertThat(vsyncResult).isEqualTo(result);

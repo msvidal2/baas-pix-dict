@@ -38,7 +38,7 @@ public class ReconciliationUseCase {
         }
     }
 
-    //TODO discutir com Rodrigo retornos no controller e possibilidade de termos endpoint para consultar vsync.
+    // TODO: discutir com Rodrigo retornos no controller e possibilidade de termos endpoint para consultar vsync.
     private SyncVerifierHistoric run(final KeyType syncKeyType) {
         log.info("Inicio da sync por: {}", kv("keyType", syncKeyType.name()));
         sincronizeCIDEventsUseCase.syncByKeyType(syncKeyType);

@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,38 +31,38 @@ public class BacenErrorBuilder {
     }
 
     public BacenErrorBuilder withBody(final byte[] responseBody) {
-        this.responseBody = Arrays.copyOf(responseBody,responseBody.length);
+        this.responseBody = Arrays.copyOf(responseBody, responseBody.length);
         return this;
     }
 
     public BacenError build() {
         parse();
 
-        if(problem == null) {
+        if (problem == null) {
             return null;
         }
 
         var fields = Optional.ofNullable(problem.getViolations())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(v -> fieldResolver.resolve(v))
-                .collect(Collectors.toList());
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(v -> fieldResolver.resolve(v))
+            .collect(Collectors.toList());
 
-        var typeParts = problem.getType().split("[/]");
+        final String BAR_REGEX = "[/]";
+        var typeParts = problem.getType().split(BAR_REGEX);
 
         var errorCode = BacenErrorCode.resolve(typeParts[typeParts.length - 1]);
 
-        // FIXME: Quando tento deletar uma chave que não existe, o errorcode ta vindo nulo
         return BacenError.builder()
-                .message(errorCode == null ? null : errorCode.getCode())
-                .detail(errorCode == null ? problem.getDetail() : errorCode.getMessage())
-                .correlationId(problem.getCorrelationId())
-                .fields(fields)
-                .build();
+            .message(errorCode == null ? null : errorCode.getCode())
+            .detail(errorCode == null ? problem.getDetail() : errorCode.getMessage())
+            .correlationId(problem.getCorrelationId())
+            .fields(fields)
+            .build();
     }
 
     private void parse() {
-        if(responseBody == null || responseBody.length == 0) {
+        if (responseBody == null || responseBody.length == 0) {
             return;
         }
 
@@ -74,7 +74,8 @@ public class BacenErrorBuilder {
 
             problem = (Problem) unmarshaller.unmarshal(inputStream);
         } catch (JAXBException e) {
-            log.error("Erro when parse response body: "+ new String(responseBody), e);
+            log.error("Erro when parse response body: " + new String(responseBody, StandardCharsets.UTF_8), e);
         }
     }
+
 }
