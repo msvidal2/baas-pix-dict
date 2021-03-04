@@ -19,6 +19,8 @@ spring:
     hikari:
       maximum-pool-size: 100
       minimum-idle: 10
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   tomcat:
@@ -29,7 +31,6 @@ server:
 
 picpay:
   ispb: 22896431
-  service.name: ${spring.application.name}
   logging:
     appender: CONSOLE
     level: INFO
@@ -40,8 +41,8 @@ picpay:
       schedule: 0 0 2 1/1 * ?
       timeoutPollingBacenFile: 1
       pollingBacenFilePeriod: 10
-
-logging.pattern.console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta([%t]) %m%n"
+    compression:
+      enabled: true
 
 management:
   health:
@@ -54,6 +55,5 @@ management:
     web:
       exposure:
         include: prometheus, health
-      base-path: '/'
       path-mapping:
-        prometheus: 'metrics'
+        prometheus: 'metrics'SyncBacenCidEventsEntity

@@ -1,0 +1,1 @@
+ALTER TABLE dict.sync_bacen_cid_events ADD CONSTRAINT sync_bacen_cid_events_PK PRIMARY KEY (`key_type`);
