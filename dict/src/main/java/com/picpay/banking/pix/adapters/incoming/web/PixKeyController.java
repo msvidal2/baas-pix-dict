@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
+import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
@@ -108,17 +109,27 @@ public class PixKeyController {
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_DELETE)
     @DeleteMapping("{key}")
-    @ResponseStatus(NO_CONTENT)
-    public void remove(@RequestHeader String requestIdentifier,
+    @ResponseStatus(ACCEPTED)
+    public PixKeyResponseDTO remove(@RequestHeader String requestIdentifier,
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
+
+        var pixKey = dto.toDomain(key);
+        var reason = dto.getReason();
+
+        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         log.info("PixKey_removing",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", key),
                 kv("dto", dto));
 
-        removePixKeyUseCase.execute(requestIdentifier, dto.toDomain(key), dto.getReason());
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_REMOVE,
+                requestIdentifier,
+                pixKey,
+                reason.getValue());
+
+        return PixKeyResponseDTO.from(pixKey);
     }
 
     @Trace

@@ -7,11 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RemoveReason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    INACTIVITY(Reason.INACTIVITY.getValue()),
-    FRAUD(Reason.FRAUD.getValue()),
-    RECONCILIATION(-1);
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
+    INACTIVITY(Reason.INACTIVITY),
+    FRAUD(Reason.FRAUD),
+    RECONCILIATION(Reason.RECONCILIATION);
 
-    private int value;
+    private Reason value;
 
 }
