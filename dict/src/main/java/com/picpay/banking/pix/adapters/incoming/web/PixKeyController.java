@@ -3,9 +3,7 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
-import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
@@ -135,18 +133,24 @@ public class PixKeyController {
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
+    @ResponseStatus(ACCEPTED)
     public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
+        var reason = dto.getReason();
 
         log.info("PixKey_updatingAccount",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", key),
                 kv("dto", dto));
 
-        updateAccountUseCase.execute(requestIdentifier, pixKey, dto.getReason());
 
-        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, pixKey.getKey(), dto.getUserId()));
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
+                requestIdentifier,
+                pixKey,
+                reason.getValue());
+
+        return PixKeyResponseDTO.from(pixKey);
     }
 }
