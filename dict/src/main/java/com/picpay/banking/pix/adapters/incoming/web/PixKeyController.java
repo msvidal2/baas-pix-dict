@@ -3,6 +3,8 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
@@ -31,16 +33,17 @@ public class PixKeyController {
 
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
 
-    private final CreatePixKeyUseCase createPixKeyUseCase;
     private final RemovePixKeyUseCase removePixKeyUseCase;
     private final FindPixKeyUseCase findPixKeyUseCase;
     private final UpdateAccountPixKeyUseCase updateAccountUseCase;
     private final ListPixKeyUseCase listPixKeyUseCase;
 
+    private final PixKeyEventRegistryUseCase pixKeyPixKeyEventRegistryUseCase;
+
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_CREATE)
     @PostMapping
-    @ResponseStatus(CREATED)
+    @ResponseStatus(ACCEPTED)
     public PixKeyResponseDTO create(@RequestHeader String requestIdentifier,
                                     @RequestBody @Validated @NotNull CreatePixKeyRequestWebDTO requestDTO) {
 
@@ -55,12 +58,12 @@ public class PixKeyController {
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
-        var pixKey = createPixKeyUseCase.execute(
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
                 requestIdentifier,
                 requestDTO.toPixKey(),
-                requestDTO.getReason());
+                requestDTO.getReason().getValue());
 
-        return PixKeyResponseDTO.from(pixKey);
+        return PixKeyResponseDTO.from(requestDTO.toPixKey());
     }
 
     @Trace
