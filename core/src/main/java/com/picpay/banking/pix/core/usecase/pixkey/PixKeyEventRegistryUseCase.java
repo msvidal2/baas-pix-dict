@@ -15,7 +15,7 @@ public class PixKeyEventRegistryUseCase {
                         final PixKey key,
                         final Reason reason) {
 
-
+        // TODO: chamar port de registro de eventos de chave
 
     }
 
