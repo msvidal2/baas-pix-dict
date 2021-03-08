@@ -78,6 +78,7 @@ public class CreatePixKeyRequestWebDTO {
                 .taxId(cpfCnpj)
                 .name(name)
                 .fantasyName(fantasyName)
+                .situation(PixKeySituation.PENDING)
                 .build();
     }
 }

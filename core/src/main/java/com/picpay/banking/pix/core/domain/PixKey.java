@@ -60,6 +60,7 @@ public class PixKey implements Serializable {
     private String cid;
     private UUID requestId;
     private boolean donatedAutomatically;
+    private PixKeySituation situation;
 
     public PixKey(String key, KeyType keyType){
         this.key = key;

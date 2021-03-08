@@ -33,6 +33,7 @@ public class PixKeyResponseDTO {
     private String endToEndId;
     private ClaimType claim;
     private Statistic statistic;
+    private PixKeySituation situation;
 
     public static PixKeyResponseDTO from(final PixKey pixKey) {
         return PixKeyResponseDTO.builder()
@@ -53,6 +54,7 @@ public class PixKeyResponseDTO {
                 .endToEndId(pixKey.getEndToEndId())
                 .claim(pixKey.getClaim())
                 .statistic(pixKey.getStatistic())
+                .situation(pixKey.getSituation())
                 .build();
     }
 

@@ -5,7 +5,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
@@ -51,6 +53,11 @@ public class PixKeyController {
         if (requestDTO != null && requestDTO.getPersonType() != null && requestDTO.getPersonType().getValue() == 0)
             requestDTO.setFantasyName(null);
 
+        var pixKey = requestDTO.toPixKey();
+        var reason = requestDTO.getReason();
+
+        CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+
         log.info("PixKey_creating",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", requestDTO.getKey() != null ? requestDTO.getKey() : null),
@@ -60,8 +67,8 @@ public class PixKeyController {
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
                 requestIdentifier,
-                requestDTO.toPixKey(),
-                requestDTO.getReason().getValue());
+                pixKey,
+                reason.getValue());
 
         return PixKeyResponseDTO.from(requestDTO.toPixKey());
     }
