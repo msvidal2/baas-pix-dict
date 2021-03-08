@@ -56,4 +56,4 @@ management:
       exposure:
         include: prometheus, health
       path-mapping:
-        prometheus: 'metrics'SyncBacenCidEventsEntity
+        prometheus: 'metrics'
