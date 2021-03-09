@@ -14,9 +14,12 @@ import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseC
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
+import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
+import com.picpay.banking.reconciliation.dto.response.EntryByCidResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +43,7 @@ public class ReconciliationController {
     private final ReconciliationUseCase reconciliationUseCase;
     private final ReconciliationSyncUseCase reconciliationSyncUseCase;
     private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
+    private final BacenReconciliationClient bacenReconciliationClient;
 
     @Trace(dispatcher = true, metricName = "manual_syncByFile")
     @PostMapping("file/{keyType}")
@@ -71,6 +75,13 @@ public class ReconciliationController {
         log.info("Iniciando processo manual de verificação de sincronismo sem alteração nos dados.");
         sincronizeCIDEventsUseCase.syncByKeyType(keyType);
         return reconciliationSyncUseCase.execute(keyType);
+    }
+
+    @Trace(dispatcher = true, metricName = "manual_onlySyncVerifier")
+    @GetMapping("cid/{cid}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public EntryByCidResponse test(@PathVariable("cid") String cid) {
+        return bacenReconciliationClient.getEntryByCid(cid, "22896431");
     }
 
 }
