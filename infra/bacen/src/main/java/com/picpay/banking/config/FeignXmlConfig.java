@@ -24,19 +24,21 @@ public class FeignXmlConfig {
     @Bean
     @Primary
     public Encoder encoder(JAXBContextFactory jaxbContextFactory) {
-        return new JAXBEncoder(jaxbContextFactory);
+        return new JAXBEncoder(jaxbContextFactory());
     }
 
     @Bean
     @Primary
     public Decoder decoder(JAXBContextFactory jaxbContextFactory) {
-        return new JAXBDecoder(jaxbContextFactory);
+        return new JAXBDecoder(jaxbContextFactory());
     }
 
     @Bean
     public JAXBContextFactory jaxbContextFactory() {
         return new JAXBContextFactory.Builder()
             .withMarshallerJAXBEncoding("UTF-8")
+            .withProperty("javax.xml.bind.context.factory", "com.sun.xml.bind.v2.JAXBContextFactory")
+            .withProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.JAXBContextFactory")
             .build();
     }
 
