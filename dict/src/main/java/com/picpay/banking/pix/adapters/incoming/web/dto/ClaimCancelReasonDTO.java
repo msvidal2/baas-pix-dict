@@ -1,5 +1,7 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.picpay.banking.pix.core.domain.ClaimantType;
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,23 +14,23 @@ import static com.picpay.banking.pix.core.domain.ClaimantType.DONOR;
 
 @Getter
 @AllArgsConstructor
-public enum ClaimCancelReason {
+public enum ClaimCancelReasonDTO {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE.getValue()),
-    FRAUD(Reason.FRAUD.getValue()),
-    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE.getValue());
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
+    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE),
+    FRAUD(Reason.FRAUD),
+    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE);
 
-    private final int value;
+    private final Reason value;
 
-    public static ClaimCancelReason resolve(int value) {
+    public static ClaimCancelReasonDTO resolve(Reason reason) {
         return Arrays.stream(values())
-                .filter(reason -> reason.value == value)
+                .filter(localReason -> localReason.value.equals(reason))
                 .findAny()
                 .orElse(null);
     }
 
-    public static Map<ClaimCancelReason, List<ClaimantType>> getOwnershipAllowedReasons() {
+    public static Map<ClaimCancelReasonDTO, List<ClaimantType>> getOwnershipAllowedReasons() {
         return Map.of(
                 CLIENT_REQUEST, List.of(CLAIMANT),
                 ACCOUNT_CLOSURE, List.of(CLAIMANT),
@@ -37,7 +39,7 @@ public enum ClaimCancelReason {
     }
 
 
-    public static Map<ClaimCancelReason, List<ClaimantType>> getPortabilityAllowedReasons() {
+    public static Map<ClaimCancelReasonDTO, List<ClaimantType>> getPortabilityAllowedReasons() {
         return Map.of(
                 CLIENT_REQUEST, List.of(DONOR, CLAIMANT),
                 ACCOUNT_CLOSURE, List.of(CLAIMANT),

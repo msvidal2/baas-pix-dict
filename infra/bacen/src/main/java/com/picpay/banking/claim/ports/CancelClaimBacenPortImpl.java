@@ -7,7 +7,7 @@ import com.picpay.banking.claim.dto.request.CancelClaimRequest;
 import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimCancelReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class CancelClaimBacenPortImpl implements CancelClaimBacenPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "cancelFallback")
-    public Claim cancel(String claimId, ClaimCancelReason reason, int ispb, String requestIdentifier) {
+    public Claim cancel(String claimId, Reason reason, int ispb, String requestIdentifier) {
         var request = CancelClaimRequest.builder()
                 .claimId(claimId)
                 .participant(Strings.padStart(String.valueOf(ispb), 8, '0'))
@@ -48,7 +48,7 @@ public class CancelClaimBacenPortImpl implements CancelClaimBacenPort {
         return response.toClaim();
     }
 
-    public Claim cancelFallback(String claimId, ClaimCancelReason reason, int ispb, String requestIdentifier, Exception e) {
+    public Claim cancelFallback(String claimId, Reason reason, int ispb, String requestIdentifier, Exception e) {
         log.error("Claim_fallback_cancelingBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("exceptionMessage", e.getMessage()),

@@ -4,7 +4,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.picpay.banking.pix.core.domain.ClaimCancelReason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator.validate;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

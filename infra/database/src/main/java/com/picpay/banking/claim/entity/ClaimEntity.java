@@ -99,7 +99,7 @@ public class ClaimEntity {
 
     @Column(name = "cancel_reason")
     @Enumerated(EnumType.STRING)
-    private ClaimCancelReason cancelReason;
+    private Reason cancelReason;
 
     @Column(name = "cancelled_by_claimant")
     private Boolean cancelledByClaimant;

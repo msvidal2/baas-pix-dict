@@ -39,7 +39,7 @@ public class Claim {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
-    private ClaimCancelReason cancelReason;
+    private Reason reason;
     private ClaimConfirmationReason confirmationReason;
     private LocalDateTime starDate;
     private LocalDateTime endDate;
