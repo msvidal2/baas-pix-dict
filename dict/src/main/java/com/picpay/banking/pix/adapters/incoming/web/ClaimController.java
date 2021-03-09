@@ -6,6 +6,8 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableRe
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @Api(value = "Claim")
@@ -58,18 +61,25 @@ public class ClaimController {
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
-    public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
+    @ValidateIdempotency(ClaimConfirmationDTO.class)
+    @ResponseStatus(ACCEPTED)
+    public ClaimResponseDTO confirm(@IdempotencyKey @RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
+
+        //TODO para validar a idempotencia é necessário usar o claimId tbm. Replicar o que será feito pelo Diego no update_pix_key
 
         log.info("Claim_confirming",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getReason(),
-                        requestIdentifier));
+//        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
+//                        dto.getReason(),
+//                        requestIdentifier));
+        //TODO chamar caso de uso para gravar intenção de confirmação
+
+        return ClaimResponseDTO.from(dto.toDomain(claimId));
     }
 
     @Trace
