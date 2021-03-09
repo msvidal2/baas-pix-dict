@@ -5,7 +5,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimEvent;
 import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @Api(value = "Claim")
 @RestController
@@ -31,17 +33,18 @@ public class ClaimController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String CLAIM_ID = "claimId";
 
-    private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
     private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
 
+    private final ClaimEventRegistryUseCase claimEventRegistryUseCase;
+
     @Trace
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
-    @ResponseStatus(CREATED)
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
@@ -52,7 +55,12 @@ public class ClaimController {
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
-        return ClaimResponseDTO.from(createAddressKeyUseCase.execute(requestDTO.toDomain(), requestIdentifier));
+        var claim = requestDTO.toDomain();
+        CreateClaimValidator.validate(requestIdentifier, claim);
+
+        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEvent.PENDING_OPEN);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
