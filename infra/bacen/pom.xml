@@ -63,11 +63,11 @@
             <artifactId>jackson-module-jaxb-annotations</artifactId>
             <version>2.11.3</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-jaxb</artifactId>
             <version>11.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>it.ozimov</groupId>
             <artifactId>embedded-redis</artifactId>
