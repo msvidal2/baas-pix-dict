@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEvent;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,6 +46,7 @@ public class ClaimController {
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(ACCEPTED)
+    @ValidateIdempotency(CreateClaimRequestWebDTO.class)
     public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
