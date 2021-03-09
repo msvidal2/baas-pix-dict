@@ -3,10 +3,10 @@ package com.picpay.banking.pix.adapters.incoming.web;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
-import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -24,7 +24,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
@@ -36,7 +37,6 @@ public class PixKeyController {
 
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
 
-    private final RemovePixKeyUseCase removePixKeyUseCase;
     private final FindPixKeyUseCase findPixKeyUseCase;
     private final UpdateAccountPixKeyUseCase updateAccountUseCase;
     private final ListPixKeyUseCase listPixKeyUseCase;
@@ -47,7 +47,8 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_CREATE)
     @PostMapping
     @ResponseStatus(ACCEPTED)
-    public PixKeyResponseDTO create(@RequestHeader String requestIdentifier,
+    @ValidateIdempotency(CreatePixKeyRequestWebDTO.class)
+    public PixKeyResponseDTO create(@IdempotencyKey @RequestHeader String requestIdentifier,
                                     @RequestBody @Validated @NotNull CreatePixKeyRequestWebDTO requestDTO) {
 
         //TODO temporario.
