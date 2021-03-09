@@ -40,15 +40,10 @@ public class FeignXmlConfig {
 
     @Bean
     public JAXBContextFactory jaxbContextFactory() {
-        try {
+            // .build(List.of(EntryByCidResponse.class));
             return new JAXBContextFactory.Builder()
                 .withMarshallerJAXBEncoding("UTF-8")
-                //            .withProperty("javax.xml.bind.context.factory", "com.sun.xml.bind.v2.JAXBContextFactory")
-                //            .withProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.JAXBContextFactory")
-                .build(List.of(EntryByCidResponse.class));
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+                .build();
     }
 
 }
