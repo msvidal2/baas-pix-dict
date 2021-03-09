@@ -57,8 +57,3 @@ management:
         include: prometheus, health
       path-mapping:
         prometheus: 'metrics'
-
-
-logging:
-  level:
-    javax.xml: debug
