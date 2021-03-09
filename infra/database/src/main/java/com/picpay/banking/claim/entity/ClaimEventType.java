@@ -8,8 +8,8 @@ import lombok.Getter;
 public enum ClaimEventType {
 
     OPEN(0),
-    CREATED(1),
-    REMOVED(2);
+    CREATE(1),
+    REMOVE(2);
 
     private final int value;
 

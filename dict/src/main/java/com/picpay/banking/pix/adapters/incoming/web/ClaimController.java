@@ -5,7 +5,6 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimEvent;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
@@ -60,7 +59,7 @@ public class ClaimController {
         var claim = requestDTO.toDomain();
         CreateClaimValidator.validate(requestIdentifier, claim);
 
-        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEvent.PENDING_OPEN);
+        claimEventRegistryUseCase.execute(claim, requestIdentifier);
 
         return ClaimResponseDTO.from(claim);
     }
