@@ -5,6 +5,8 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -22,7 +24,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
@@ -134,7 +137,8 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     @ResponseStatus(ACCEPTED)
-    public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
+    @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
+    public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
