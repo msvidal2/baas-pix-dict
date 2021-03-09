@@ -1,5 +1,6 @@
-package com.picpay.banking.pixkey.entity;
+package com.picpay.banking.claim.entity;
 
+import com.picpay.banking.pixkey.entity.KeyEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +11,12 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "pix_key_event")
+@Entity(name = "claim_event")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PixKeyEvent {
+public class ClaimEvent {
 
     @Id
     @GeneratedValue
@@ -25,15 +26,13 @@ public class PixKeyEvent {
     @Enumerated(EnumType.STRING)
     private KeyEventType type;
 
+    @JoinColumn(name = "claim_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns(value = {
-            @JoinColumn(name = "pix_key_fk", referencedColumnName = "pix_key"),
-            @JoinColumn(name = "key_type_fk", referencedColumnName = "type") })
-    private PixKeyEntity pixKey;
+    private ClaimEntity claim;
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
-    private PixKeyEntity data;
+    private ClaimEntity data;
 
     @CreatedDate
     private LocalDateTime creationDate;
