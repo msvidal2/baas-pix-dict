@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.entity;
 
-import com.picpay.banking.pixkey.entity.KeyEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class ClaimEvent {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private KeyEventType type;
+    private ClaimEventType type;
 
     @JoinColumn(name = "claim_id")
     @ManyToOne(fetch = FetchType.LAZY)
