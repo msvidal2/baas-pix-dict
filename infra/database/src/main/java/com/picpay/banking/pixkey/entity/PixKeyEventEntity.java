@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PixKeyEvent {
+public class PixKeyEventEntity {
 
     @Id
     @GeneratedValue
