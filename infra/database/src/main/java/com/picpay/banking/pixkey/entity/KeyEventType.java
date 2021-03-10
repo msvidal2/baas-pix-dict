@@ -26,9 +26,4 @@ public enum KeyEventType {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-//    OPEN(0),
-//    CREATED(1),
-//    REMOVED(2);
-//    private final int value;
-
 }

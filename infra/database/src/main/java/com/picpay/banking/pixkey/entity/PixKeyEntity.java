@@ -35,6 +35,8 @@ public class PixKeyEntity {
     @EmbeddedId
     private PixKeyIdEntity id;
 
+    private Situation situation;
+
     @Column(nullable = false)
     private Integer participant;
 
