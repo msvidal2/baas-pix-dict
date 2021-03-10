@@ -10,7 +10,6 @@ import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
-import com.picpay.banking.reconciliation.ratelimiter.ReconciliationRateLimiter;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,15 +37,14 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
 
     private final String participant;
     private final String urlGateway;
-    private final ReconciliationRateLimiter reconciliationRateLimiter;
 
     public BacenContentIdentifierEventsPortImpl(final BacenArqClient bacenArqClient, final BacenReconciliationClient bacenReconciliationClient,
         @Value("${picpay.ispb}") String participant, @Value("${pix.bacen.dict.url}") String urlGateway) {
+
         this.bacenArqClient = bacenArqClient;
         this.bacenReconciliationClient = bacenReconciliationClient;
         this.participant = participant;
         this.urlGateway = urlGateway;
-        this.reconciliationRateLimiter = ReconciliationRateLimiter.getInstance();
     }
 
     @Override
@@ -57,8 +55,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
         final int LIMIT = 200;
         AtomicReference<LocalDateTime> nextDate = new AtomicReference<>(startTime);
         while (hasNext) {
-            var bacenEvents = reconciliationRateLimiter.acquirePermissionForListCidSetEvents(
-                () -> bacenReconciliationClient.getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate.get(), LIMIT));
+            var bacenEvents = bacenReconciliationClient.getEvents(participant, KeyTypeBacen.resolve(keyType).name(), nextDate.get(), LIMIT);
 
             if (Objects.isNull(bacenEvents.getCidSetEvents())) {
                 hasNext = false;
@@ -105,8 +102,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     @Override
     public Optional<PixKey> getPixKey(final String cid) {
         try {
-            final var response = reconciliationRateLimiter.acquirePermissionForGetEntryByCid(
-                () -> this.bacenReconciliationClient.getEntryByCid(cid, participant));
+            final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
 
             return Optional.of(response.toDomain());
         } catch (FeignException.NotFound ex) {
