@@ -1,9 +1,20 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.CreatePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ListKeyResponseWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.ListPixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.RemovePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
-import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.RemovePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.UpdateAccountPixKeyUseCase;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyObjectKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import com.picpay.banking.pix.infra.openapi.msg.PixKeyControllerMessages;
 import io.swagger.annotations.Api;
@@ -12,14 +23,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @Api(value = PixKeyControllerMessages.CLASS_CONTROLLER)
 @RestController
@@ -114,8 +136,9 @@ public class PixKeyController {
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
-    public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
-                                           @PathVariable String key,
+    @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
+    public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
+                                           @IdempotencyObjectKey @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
 
