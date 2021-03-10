@@ -101,8 +101,7 @@ public class IdempotencyAspect {
         assert args.length == parameterAnnotations.length;
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             for (Annotation annotation : parameterAnnotations[argIndex]) {
-                //problema está aqui: precisamos achar um jeito de comparar se o tipo da anotação passado como parâmetro é o tipo desejado
-                if (!annotation.getClass().equals(type.getClass())) {
+                if (!annotation.annotationType().equals(type)) {
                     continue;
                 }
                 return (String) args[argIndex];
