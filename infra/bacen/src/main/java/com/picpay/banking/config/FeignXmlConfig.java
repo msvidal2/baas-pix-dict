@@ -3,8 +3,10 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.config;
 
+import com.picpay.banking.reconciliation.dto.response.EntryByCidResponse;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jaxb.JAXBContextFactory;
@@ -13,6 +15,9 @@ import feign.jaxb.JAXBEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+
+import javax.xml.bind.JAXBException;
+import java.util.List;
 
 /**
  * @author rafael.braga
@@ -35,9 +40,10 @@ public class FeignXmlConfig {
 
     @Bean
     public JAXBContextFactory jaxbContextFactory() {
-        return new JAXBContextFactory.Builder()
-            .withMarshallerJAXBEncoding("UTF-8")
-            .build();
+            // .build(List.of(EntryByCidResponse.class));
+            return new JAXBContextFactory.Builder()
+                .withMarshallerJAXBEncoding("UTF-8")
+                .build();
     }
 
 }

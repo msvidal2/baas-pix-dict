@@ -54,7 +54,7 @@ class ReconciliationControllerTest {
     void when_sync_by_file_requested_then_start_sync() throws Exception {
         mockMvc.perform(post(BASE_URL.concat("/file/CPF")))
             .andDo(print())
-            .andExpect(status().isAccepted());
+            .andExpect(status().isOk());
 
         verify(syncByCidsFileUseCase).execute(KeyType.CPF);
     }
@@ -63,7 +63,7 @@ class ReconciliationControllerTest {
     void when_full_sync_requested_then_start_sync() throws Exception {
         mockMvc.perform(post(BASE_URL.concat("/full/CPF")))
             .andDo(print())
-            .andExpect(status().isAccepted());
+            .andExpect(status().isOk());
 
         verify(reconciliationUseCase).execute(KeyType.CPF);
 
@@ -80,7 +80,7 @@ class ReconciliationControllerTest {
     void when_start_all_key_type_with_full_sync_requested_then_start_all_full_sync() throws Exception {
         mockMvc.perform(post(BASE_URL.concat("/full")))
             .andDo(print())
-            .andExpect(status().isAccepted());
+            .andExpect(status().isOk());
 
         verify(reconciliationUseCase).execute(KeyType.CPF);
         verify(reconciliationUseCase).execute(KeyType.CNPJ);
@@ -93,7 +93,7 @@ class ReconciliationControllerTest {
     void when_start_only_sync_verifier_requested_then_start_only_sync_verifier() throws Exception {
         mockMvc.perform(post(BASE_URL.concat("/onlyVerifier/CPF")))
             .andDo(print())
-            .andExpect(status().isAccepted());
+            .andExpect(status().isOk());
 
         verify(sincronizeCIDEventsUseCase).syncByKeyType(KeyType.CPF);
         verify(reconciliationSyncUseCase).execute(KeyType.CPF);
