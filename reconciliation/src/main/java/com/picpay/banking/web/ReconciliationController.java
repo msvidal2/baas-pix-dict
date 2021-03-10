@@ -14,7 +14,6 @@ import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseC
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
-import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,7 +40,6 @@ public class ReconciliationController {
     private final ReconciliationUseCase reconciliationUseCase;
     private final ReconciliationSyncUseCase reconciliationSyncUseCase;
     private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
-    private final BacenReconciliationClient bacenReconciliationClient;
 
     @Trace(dispatcher = true, metricName = "manual_syncByFile")
     @PostMapping("file/{keyType}")
