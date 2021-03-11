@@ -31,7 +31,7 @@ public class ReconciliationSyncUseCase {
         List<String> cids = contentIdentifierPort.findAllCidsAfterLastSuccessfulVsync(
             syncVerifier.getKeyType(),
             syncVerifier.getSynchronizedAt());
-        var vsyncCurrent = syncVerifier.calculateVsync(cids);
+        var vsyncCurrent = syncVerifier.calculateVsync(cids.stream());
 
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(keyType, vsyncCurrent);
         var vsyncHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);

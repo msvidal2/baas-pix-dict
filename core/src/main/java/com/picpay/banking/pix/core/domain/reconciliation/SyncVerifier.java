@@ -6,10 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 @Getter
 @Builder
@@ -24,27 +23,8 @@ public class SyncVerifier {
     private LocalDateTime synchronizedAt;
     private SyncVerifierResultType syncVerifierResultType;
 
-    public String calculateVsync(final Iterable<String> contentIdentifiers) {
-        try {
-            byte[] result = Hex.decodeHex(vsync);
-
-            for (String contentIdentifier : contentIdentifiers) {
-                result = xor(result, Hex.decodeHex(contentIdentifier));
-            }
-
-            return String.valueOf(Hex.encodeHex(result));
-        } catch (DecoderException e) {
-            throw new IllegalArgumentException("The Cid must be a String that represents a hexadecimal with 64 characters.", e);
-        }
-    }
-
-    private static byte[] xor(byte[] a, byte[] b) {
-        int length = Math.min(a.length, b.length);
-        byte[] result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = (byte) (a[i] ^ b[i]);
-        }
-        return result;
+    public String calculateVsync(final Stream<String> contentIdentifiers) {
+       return contentIdentifiers.reduce(vsync, new VsyncBitwiseXOR());
     }
 
     public SyncVerifierHistoric syncVerificationResult(final String vsyncCurrent, final SyncVerifierResult syncVerifierResult) {
@@ -76,9 +56,10 @@ public class SyncVerifier {
     }
 
     public static SyncVerifier defaultValue(KeyType keyType) {
+        final int PIX_INITIAL_YEAR = 2020;
         return SyncVerifier.builder()
             .keyType(keyType)
-            .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
+            .synchronizedAt(LocalDateTime.of(PIX_INITIAL_YEAR, 1, 1, 0, 0))
             .build();
     }
 
