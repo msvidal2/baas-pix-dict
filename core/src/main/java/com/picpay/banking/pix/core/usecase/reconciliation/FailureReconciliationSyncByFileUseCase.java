@@ -124,8 +124,7 @@ public class FailureReconciliationSyncByFileUseCase {
         var newSyncVerifierHistoric = lastSyncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
 
         syncVerifierPort.save(lastSyncVerifier);
-        syncVerifierHistoricPort.save(newSyncVerifierHistoric);
-        return newSyncVerifierHistoric;
+        return syncVerifierHistoricPort.save(newSyncVerifierHistoric);
     }
 
     private List<String> extractCidsInDatabaseByPagination(KeyType keyType) {

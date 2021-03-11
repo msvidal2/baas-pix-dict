@@ -4,6 +4,9 @@ public enum PixKeyEvent {
 
     PENDING_CREATE,
     PENDING_UPDATE,
-    PENDING_REMOVE;
+    PENDING_REMOVE,
+    CREATED,
+    REMOVED,
+    UPDATED;
 
 }
