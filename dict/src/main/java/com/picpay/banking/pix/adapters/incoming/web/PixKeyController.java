@@ -12,6 +12,7 @@ import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyObjectKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
@@ -144,7 +145,7 @@ public class PixKeyController {
     @ResponseStatus(ACCEPTED)
     @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
     public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
-                                           @PathVariable String key,
+                                           @IdempotencyObjectKey @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
         var reason = dto.getReason().getValue();
