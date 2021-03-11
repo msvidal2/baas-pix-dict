@@ -30,7 +30,7 @@ public class CancelClaimUseCase {
 
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
-                         final Reason reason,
+                         final ClaimReason reason,
                          final String requestIdentifier) {
 
         var claim = findByIdPort.find(claimCancel.getClaimId())
@@ -75,11 +75,11 @@ public class CancelClaimUseCase {
     }
 
     private void validateAllowedReason(final Claim claim,
-                                       final Reason reason,
+                                       final ClaimReason reason,
                                        final boolean canceledClaimant) {
         var allowedReasons = Map.of(
-                ClaimType.POSSESSION_CLAIM, Reason.getOwnershipAllowedCancellationReasons(),
-                ClaimType.PORTABILITY, Reason.getPortabilityAllowedCancellationReasons())
+                ClaimType.POSSESSION_CLAIM, ClaimReason.getOwnershipAllowedCancelReasons(),
+                ClaimType.PORTABILITY, ClaimReason.getPortabilityAllowedCancelReasons())
                     .get(claim.getClaimType())
                     .get(reason);
 
@@ -92,9 +92,9 @@ public class CancelClaimUseCase {
     }
 
     private void validateExpiredResolutionPeriod(final Claim claim,
-                                                 final Reason reason,
+                                                 final ClaimReason reason,
                                                  final boolean canceledClaimant) {
-        if (Reason.DEFAULT_RESPONSE == reason
+        if (ClaimReason.DEFAULT_OPERATION == reason
                 && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
             if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
@@ -103,11 +103,11 @@ public class CancelClaimUseCase {
         }
     }
 
-    private boolean isPossessionClaimDonationFraud(Claim claim, Reason reason) {
+    private boolean isPossessionClaimDonationFraud(Claim claim, ClaimReason reason) {
         return ClaimType.POSSESSION_CLAIM == claim.getClaimType()
                 && ClaimSituation.CONFIRMED == claim.getClaimSituation()
-                && ClaimConfirmationReason.DEFAULT_RESPONSE == claim.getConfirmationReason()
-                && Reason.FRAUD == reason;
+                && ClaimReason.DEFAULT_OPERATION == claim.getCancelReason()
+                && ClaimReason.FRAUD == reason;
     }
 
     private void recoveryDonatedByFraudKey(Claim claim) {

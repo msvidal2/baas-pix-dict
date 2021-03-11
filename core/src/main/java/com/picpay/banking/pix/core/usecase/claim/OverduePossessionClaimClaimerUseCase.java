@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import com.picpay.banking.pix.core.domain.ClaimSituation;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
@@ -19,9 +20,9 @@ public class OverduePossessionClaimClaimerUseCase {
 
     public void cancel(Claim claim, String requestIdentifier) {
         claim.setClaimSituation(ClaimSituation.CANCELED);
-        claim.setReason(Reason.DEFAULT_RESPONSE);
+        claim.setCancelReason(ClaimReason.DEFAULT_OPERATION);
 
-        cancelClaimBacenPort.cancel(claim.getClaimId(), Reason.DEFAULT_RESPONSE, claim.getIspb(), requestIdentifier);
+        cancelClaimBacenPort.cancel(claim.getClaimId(), ClaimReason.DEFAULT_OPERATION, claim.getIspb(), requestIdentifier);
         cancelClaimPort.cancel(claim, requestIdentifier);
 
         log.info("OverduePossessionClaim_canceled",

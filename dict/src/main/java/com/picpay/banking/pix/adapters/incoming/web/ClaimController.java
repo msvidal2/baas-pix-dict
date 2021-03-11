@@ -1,27 +1,22 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.usecase.claim.*;
-import com.picpay.banking.pix.core.validators.ClaimIdValidator;
-import com.picpay.banking.pix.core.validators.IspbValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.Objects;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -75,7 +70,7 @@ public class ClaimController {
                 kv("dto", dto));
 
         return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getReason(),
+                        dto.getDomainReason(),
                         requestIdentifier));
     }
 
@@ -114,7 +109,7 @@ public class ClaimController {
         var claim = Claim.builder()
                 .claimId(claimId)
                 .ispb(dto.getIspb())
-                .reason(dto.getDomainReason())
+                .cancelReason(dto.getDomainReason())
                 .build();
 
         ClaimCancelValidator.validate(claim, requestIdentifier);

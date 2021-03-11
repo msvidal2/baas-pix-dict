@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto.response;
+package com.picpay.banking.pix.adapters.incoming.web.dto.claim.response;
 
 import com.picpay.banking.pix.core.domain.ClaimIterable;
 import lombok.AllArgsConstructor;

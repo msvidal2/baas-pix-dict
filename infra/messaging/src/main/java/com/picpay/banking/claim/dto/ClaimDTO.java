@@ -33,8 +33,8 @@ public class ClaimDTO {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
-    private Reason cancelReason;
-    private ClaimConfirmationReason confirmationReason;
+    private ClaimReason cancelReason;
+    private ClaimReason confirmationReason;
     private String correlationId;
 
     public static ClaimDTO from(final Claim claim) {

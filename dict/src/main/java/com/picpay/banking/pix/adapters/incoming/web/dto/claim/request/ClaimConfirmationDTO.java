@@ -1,7 +1,7 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,14 +23,18 @@ public class ClaimConfirmationDTO {
 
     @ApiModelProperty(value = "Reason for confirmation", required = true)
     @NonNull
-    private ClaimConfirmationReason reason;
+    private ClaimConfirmationReasonDTO reason;
 
     public Claim toDomain(final String claimId) {
         return Claim.builder()
                 .claimId(claimId)
-                .confirmationReason(reason)
+                .confirmationReason(reason.getClaimReason())
                 .ispb(ispb)
                 .build();
+    }
+
+    public ClaimReason getDomainReason() {
+        return reason.getClaimReason();
     }
 
 }

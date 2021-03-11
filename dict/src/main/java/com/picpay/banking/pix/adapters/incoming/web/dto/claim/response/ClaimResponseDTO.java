@@ -1,5 +1,7 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto.response;
+package com.picpay.banking.pix.adapters.incoming.web.dto.claim.response;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelReasonDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
 import com.picpay.banking.pix.core.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +35,8 @@ public class ClaimResponseDTO {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
-    private Reason cancelReason;
-    private ClaimConfirmationReason confirmationReason;
+    private ClaimCancelReasonDTO cancelReason;
+    private ClaimConfirmationReasonDTO confirmationReason;
     private String correlationId;
 
     public static ClaimResponseDTO from(final Claim claim) {
@@ -60,8 +62,8 @@ public class ClaimResponseDTO {
                 .resolutionThresholdDate(claim.getResolutionThresholdDate())
                 .completionThresholdDate(claim.getCompletionThresholdDate())
                 .lastModifiedDate(claim.getLastModifiedDate())
-                .cancelReason(claim.getCancelReason())
-                .confirmationReason(claim.getConfirmationReason())
+                .cancelReason(ClaimCancelReasonDTO.resolve(claim.getCancelReason()))
+                .confirmationReason(ClaimConfirmationReasonDTO.resolve(claim.getConfirmationReason()))
                 .correlationId(claim.getCorrelationId())
                 .build();
     }

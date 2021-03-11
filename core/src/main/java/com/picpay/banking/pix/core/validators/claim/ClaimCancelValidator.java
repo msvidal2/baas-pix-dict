@@ -21,7 +21,7 @@ public class ClaimCancelValidator {
         ClaimIdValidator.validate(claim.getClaimId());
         IspbValidator.validate(claim.getIspb());
 
-        if(Objects.isNull(claim.getReason())) {
+        if(Objects.isNull(claim.getCancelReason())) {
             throw new IllegalArgumentException("Reason cannot be null");
         }
     }

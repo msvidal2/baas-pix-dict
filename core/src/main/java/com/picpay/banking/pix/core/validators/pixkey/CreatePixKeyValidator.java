@@ -1,9 +1,8 @@
 package com.picpay.banking.pix.core.validators.pixkey;
 
-import com.google.common.base.Strings;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.validators.*;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
 import lombok.AllArgsConstructor;
@@ -13,10 +12,8 @@ import java.util.Objects;
 @AllArgsConstructor
 public class CreatePixKeyValidator {
 
-    public static void validate(final String requestIdentifier, final PixKey pixKey, final CreateReason reason) {
-        if (Strings.isNullOrEmpty(requestIdentifier) || requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier cannot be empty");
-        }
+    public static void validate(final String requestIdentifier, final PixKey pixKey, final Reason reason) {
+        RequestIdentifierValidator.validate(requestIdentifier);
 
         if(Objects.isNull(pixKey)) {
             throw new IllegalArgumentException("Pix key cannot be null");

@@ -5,7 +5,7 @@ import com.picpay.banking.claim.dto.request.ConfirmClaimRequest;
 import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class ConfirmClaimPortImpl implements ConfirmClaimPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "confirmFallback")
-    public Claim confirm(Claim claim, ClaimConfirmationReason reason, String requestIdentifier) {
+    public Claim confirm(Claim claim, ClaimReason reason, String requestIdentifier) {
 
         var request = ConfirmClaimRequest.from(claim);
 
@@ -42,7 +42,7 @@ public class ConfirmClaimPortImpl implements ConfirmClaimPort {
         return claimResponse;
     }
 
-    public Claim confirmFallback(Claim claim, ClaimConfirmationReason reason, String requestIdentifier, Exception e) {
+    public Claim confirmFallback(Claim claim, ClaimReason reason, String requestIdentifier, Exception e) {
         log.error("Claim_fallback_confirmBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimType", claim.getClaimType()),

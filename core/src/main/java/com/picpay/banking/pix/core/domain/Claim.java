@@ -39,8 +39,8 @@ public class Claim {
     private LocalDateTime resolutionThresholdDate;
     private LocalDateTime completionThresholdDate;
     private LocalDateTime lastModifiedDate;
-    private Reason reason;
-    private ClaimConfirmationReason confirmationReason;
+    private ClaimReason cancelReason;
+    private ClaimReason confirmationReason;
     private LocalDateTime starDate;
     private LocalDateTime endDate;
     private String correlationId;

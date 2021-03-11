@@ -3,12 +3,11 @@ package com.picpay.banking.pixkey.ports;
 import com.picpay.banking.config.TimeLimiterExecutor;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.CreateEntryRequest;
-import com.picpay.banking.pixkey.dto.request.Reason;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class CreatePixKeyBacenPortImpl implements CreatePixKeyBacenPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey create(String requestIdentifier, PixKey pixKey, CreateReason reason) {
+    public PixKey create(String requestIdentifier, PixKey pixKey, Reason reason) {
         var createEntryRequest = CreateEntryRequest.from(pixKey, reason, requestIdentifier);
 
         var response = timeLimiterExecutor.execute(CIRCUIT_BREAKER_NAME,
@@ -39,7 +38,7 @@ public class CreatePixKeyBacenPortImpl implements CreatePixKeyBacenPort {
         return response.toDomain(requestIdentifier);
     }
 
-    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, CreateReason reason, Exception e) {
+    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
         log.error("PixKey_fallback_creatingBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("key", pixKey.getKey()),

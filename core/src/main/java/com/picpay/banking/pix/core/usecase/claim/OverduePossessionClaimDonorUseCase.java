@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyAutomatically
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.DEFAULT_RESPONSE;
+import static com.picpay.banking.pix.core.domain.ClaimReason.DEFAULT_OPERATION;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
@@ -21,9 +21,9 @@ public class OverduePossessionClaimDonorUseCase {
 
     public void confirm(Claim claim, String requestIdentifier) {
 
-        claim.setConfirmationReason(DEFAULT_RESPONSE);
+        claim.setConfirmationReason(DEFAULT_OPERATION);
 
-        claim = confirmClaimPort.confirm(claim, DEFAULT_RESPONSE, requestIdentifier);
+        claim = confirmClaimPort.confirm(claim, DEFAULT_OPERATION, requestIdentifier);
 
         log.info("OverduePossessionClaim_confirmed",
                 kv(CLAIM_ID, claim.getClaimId()));

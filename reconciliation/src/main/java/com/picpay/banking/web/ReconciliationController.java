@@ -8,14 +8,18 @@ package com.picpay.banking.web;
 
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
+import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
+import com.picpay.banking.reconciliation.dto.response.EntryByCidResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,36 +43,45 @@ public class ReconciliationController {
     private final ReconciliationUseCase reconciliationUseCase;
     private final ReconciliationSyncUseCase reconciliationSyncUseCase;
     private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
+    private final BacenReconciliationClient bacenReconciliationClient;
 
     @Trace(dispatcher = true, metricName = "manual_syncByFile")
     @PostMapping("file/{keyType}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void startSyncByFile(@PathVariable("keyType") KeyType keyType) {
+    @ResponseStatus(HttpStatus.OK)
+    public SyncVerifierHistoric startSyncByFile(@PathVariable("keyType") KeyType keyType) {
         log.info("Iniciando processo de sincronizacao por arquivo com chave {}. Chamada MANUAL", keyType);
-        syncByCidsFileUseCase.execute(keyType);
+        return syncByCidsFileUseCase.execute(keyType);
     }
 
     @Trace(dispatcher = true, metricName = "manual_fullSync")
     @PostMapping("full/{keyType}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void startFullSync(@PathVariable("keyType") KeyType keyType) {
+    @ResponseStatus(HttpStatus.OK)
+    public SyncVerifierHistoric startFullSync(@PathVariable("keyType") KeyType keyType) {
         log.info("Iniciando processo de sincronizacao completo por chave {}. Chamada MANUAL", keyType);
-        reconciliationUseCase.execute(keyType);
+        return reconciliationUseCase.execute(keyType);
     }
 
     @Trace(dispatcher = true, metricName = "manual_allKeyTypeWithFullSync")
     @PostMapping("full")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public void startAllKeyTypeWithFullSync() {
         Arrays.stream(KeyType.values()).forEach(reconciliationUseCase::execute);
     }
 
     @Trace(dispatcher = true, metricName = "manual_onlySyncVerifier")
     @PostMapping("onlyVerifier/{keyType}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void startOnlySyncVerifier(@PathVariable("keyType") KeyType keyType) {
+    @ResponseStatus(HttpStatus.OK)
+    public SyncVerifierHistoric startOnlySyncVerifier(@PathVariable("keyType") KeyType keyType) {
+        log.info("Iniciando processo manual de verificação de sincronismo sem alteração nos dados.");
         sincronizeCIDEventsUseCase.syncByKeyType(keyType);
-        reconciliationSyncUseCase.execute(keyType);
+        return reconciliationSyncUseCase.execute(keyType);
+    }
+
+    @Trace(dispatcher = true, metricName = "manual_onlySyncVerifier")
+    @GetMapping("cid/{cid}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public EntryByCidResponse test(@PathVariable("cid") String cid) {
+        return bacenReconciliationClient.getEntryByCid(cid, "22896431");
     }
 
 }

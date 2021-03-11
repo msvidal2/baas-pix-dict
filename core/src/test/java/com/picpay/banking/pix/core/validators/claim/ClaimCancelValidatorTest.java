@@ -4,7 +4,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.ClaimReason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator.validate;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -18,28 +18,29 @@ class ClaimCancelValidatorTest {
     void setup() {
         claim = Claim.builder()
                 .claimId("7b8d0484-b13c-496e-ba05-f7889c358132")
+                .cancelReason(CLIENT_REQUEST)
                 .ispb(24323434)
                 .build();
     }
 
     @Test
     void when_validateWithClaimantSuccess_expect_noExceptions() {
-        assertDoesNotThrow(() -> validate(claim, true, CLIENT_REQUEST, random()));
+        assertDoesNotThrow(() -> validate(claim, random()));
     }
 
     @Test
     void when_validateWithNullRequestIdentifier_expect_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, null));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, null));
     }
 
     @Test
     void when_validateWithEmptyRequestIdentifier_expect_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, ""));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, ""));
     }
 
     @Test
     void when_validateWithBlankRequestIdentifier_expect_illegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, "  "));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, "  "));
     }
 
     @Test
@@ -49,7 +50,7 @@ class ClaimCancelValidatorTest {
                 .ispb(24323434)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, random()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, random()));
     }
 
     @Test
@@ -59,7 +60,7 @@ class ClaimCancelValidatorTest {
                 .ispb(0)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, CLIENT_REQUEST, random()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, random()));
     }
 
     @Test
@@ -69,7 +70,7 @@ class ClaimCancelValidatorTest {
                 .ispb(0)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, false, CLIENT_REQUEST, random()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, random()));
     }
 
     @Test
@@ -79,7 +80,7 @@ class ClaimCancelValidatorTest {
                 .ispb(24323434)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> validate(claim, true, null, random()));
+        assertThrows(IllegalArgumentException.class, () -> validate(claim, random()));
     }
 
     private String random() {

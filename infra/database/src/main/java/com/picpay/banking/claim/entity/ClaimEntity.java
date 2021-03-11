@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -95,11 +94,11 @@ public class ClaimEntity {
 
     @Column(name = "confirm_reason")
     @Enumerated(EnumType.STRING)
-    private ClaimConfirmationReason confirmReason;
+    private ClaimReason confirmReason;
 
     @Column(name = "cancel_reason")
     @Enumerated(EnumType.STRING)
-    private Reason cancelReason;
+    private ClaimReason cancelReason;
 
     @Column(name = "cancelled_by_claimant")
     private Boolean cancelledByClaimant;

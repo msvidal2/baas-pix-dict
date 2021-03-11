@@ -1,6 +1,5 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
-import com.picpay.banking.pix.core.domain.CreateReason;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
@@ -34,7 +33,7 @@ public class CreatePixKeyUseCase {
 
     public PixKey execute(final String requestIdentifier,
         final PixKey pixKey,
-        final CreateReason reason) {
+        final Reason reason) {
 
         CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -56,9 +55,9 @@ public class CreatePixKeyUseCase {
         return createdPixKey;
     }
 
-    private void save(CreateReason reason, PixKey createdPixKey, final String requestIdentifier) {
+    private void save(Reason reason, PixKey createdPixKey, final String requestIdentifier) {
         try {
-            savePixKeyPort.savePixKey(createdPixKey, reason.getValue());
+            savePixKeyPort.savePixKey(createdPixKey, reason);
         } catch (Exception e) {
             log.error("PixKey_create_saveError",
                     kv(REQUEST_IDENTIFIER, requestIdentifier),
