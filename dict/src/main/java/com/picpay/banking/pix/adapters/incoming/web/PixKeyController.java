@@ -142,7 +142,7 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     @ResponseStatus(ACCEPTED)
-    public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
+    public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
