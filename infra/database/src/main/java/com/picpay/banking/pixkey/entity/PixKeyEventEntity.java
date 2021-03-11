@@ -1,9 +1,12 @@
 package com.picpay.banking.pixkey.entity;
 
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -18,18 +21,22 @@ import java.time.LocalDateTime;
 public class PixKeyEventEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private KeyEventType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns(value = {
-            @JoinColumn(name = "pix_key_fk", referencedColumnName = "pix_key"),
-            @JoinColumn(name = "key_type_fk", referencedColumnName = "type") })
-    private PixKeyEntity pixKey;
+    @Column(nullable = false)
+    private String requestIdentifier;
+
+    private String pixKey;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private KeyType pixKeyType;
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
