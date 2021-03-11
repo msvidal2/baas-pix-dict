@@ -18,21 +18,6 @@ public enum ClaimReason {
     FRAUD,
     DEFAULT_OPERATION;
 
-    /*
-    CONFIRM REASON:
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
-    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE),
-    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE);
-     */
-
-    /*
-    CANCEL REASON
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
-    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE),
-    FRAUD(Reason.FRAUD),
-    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE);
-     */
-
     public static List<ClaimReason> portabilityConfirmReasons() {
         return List.of(CLIENT_REQUEST, ACCOUNT_CLOSURE);
     }
