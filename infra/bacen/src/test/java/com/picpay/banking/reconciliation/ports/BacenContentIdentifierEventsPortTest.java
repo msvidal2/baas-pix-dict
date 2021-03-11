@@ -9,6 +9,7 @@ import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.response.CidSetFile;
 import com.picpay.banking.reconciliation.dto.response.CidSetFileResponse;
 import com.picpay.banking.reconciliation.dto.response.GetCidSetFileResponse;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,8 @@ class BacenContentIdentifierEventsPortTest {
     @BeforeEach
     void init(){
         this.bacenContentIdentifierEventsPort =
-            new BacenContentIdentifierEventsPortImpl(bacenArqClient,bacenReconciliationClient,"22896431", "http://urlGateway.com");
+            new BacenContentIdentifierEventsPortImpl(bacenArqClient, bacenReconciliationClient,
+                "22896431", "http://urlGateway.com");
 
         this.cidSetFile = CidSetFile.builder()
             .id(1)

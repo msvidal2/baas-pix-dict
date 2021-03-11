@@ -12,6 +12,7 @@ import feign.codec.Encoder;
 import feign.jaxb.JAXBContextFactory;
 import feign.jaxb.JAXBDecoder;
 import feign.jaxb.JAXBEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -24,6 +25,7 @@ import java.util.List;
  * @version 1.0 09/12/2020
  */
 @Configuration
+@Slf4j
 public class FeignXmlConfig {
 
     @Bean
@@ -40,10 +42,14 @@ public class FeignXmlConfig {
 
     @Bean
     public JAXBContextFactory jaxbContextFactory() {
-            // .build(List.of(EntryByCidResponse.class));
+        try {
             return new JAXBContextFactory.Builder()
                 .withMarshallerJAXBEncoding("UTF-8")
-                .build();
+                .build(List.of(EntryByCidResponse.class));
+        } catch (JAXBException e) {
+            log.error("Error JAXB ContextFactory", e);
+            throw new RuntimeException(e);
+        }
     }
 
 }
