@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.RemoveReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -24,7 +24,7 @@ public class RemovePixKeyUseCase {
 
     public void execute(final String requestIdentifier,
         final PixKey pixKey,
-        final RemoveReason reason) {
+        final Reason reason) {
 
         RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 

@@ -36,6 +36,9 @@ public class PixKeyEntity {
     private PixKeyIdEntity id;
 
     @Column(nullable = false)
+    private Situation situation;
+
+    @Column(nullable = false)
     private Integer participant;
 
     @Column(nullable = false)

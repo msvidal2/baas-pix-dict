@@ -1,0 +1,2 @@
+
+ALTER TABLE pix_key ADD COLUMN situation VARCHAR(20) NOT NULL;

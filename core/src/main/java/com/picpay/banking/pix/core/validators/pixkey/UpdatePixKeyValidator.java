@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.validators.pixkey;
 
 import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.validators.*;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
 
@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class UpdatePixKeyValidator {
 
-    public static void validate(final String requestIdentifier, final PixKey pixKey, final UpdateReason reason) {
+    public static void validate(final String requestIdentifier, final PixKey pixKey, final Reason reason) {
         if (Strings.isNullOrEmpty(requestIdentifier) || requestIdentifier.isBlank()) {
             throw new IllegalArgumentException("requestIdentifier cannot be empty");
         }

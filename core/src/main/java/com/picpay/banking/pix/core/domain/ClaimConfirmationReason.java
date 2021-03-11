@@ -4,25 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
 public enum ClaimConfirmationReason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE.getValue()),
-    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE.getValue());
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
+    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE),
+    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE);
 
-    private int value;
+    private Reason value;
 
-    public static ClaimConfirmationReason resolve(int value) {
-        for(ClaimConfirmationReason reason : values()) {
-            if (reason.value == value) {
-                return reason;
-            }
-        }
-
-        return null;
+    public static ClaimConfirmationReason resolve(Reason value) {
+        return Stream.of(values())
+                .filter(r -> r.value.equals(value))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public static List<ClaimConfirmationReason> portabilityConfirmReasons() {

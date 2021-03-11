@@ -1,10 +1,14 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreatePixKeyRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.RemovePixKeyRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.UpdateAccountPixKeyRequestWebDTO;
-import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.pixkey.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +27,6 @@ import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHe
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -40,19 +43,13 @@ public class PixKeyControllerTest {
     private PixKeyController controller;
 
     @Mock
-    private CreatePixKeyUseCase createPixKeyUseCase;
-
-    @Mock
-    private UpdateAccountPixKeyUseCase updateAccountUseCase;
-
-    @Mock
     private FindPixKeyUseCase findPixKeyUseCase;
 
     @Mock
-    private RemovePixKeyUseCase removePixKeyUseCase;
+    private ListPixKeyUseCase listPixKeyUseCase;
 
     @Mock
-    private ListPixKeyUseCase listPixKeyUseCase;
+    private PixKeyEventRegistryUseCase pixKeyEventRegistryUseCase;
 
     private PixKey pixKey;
 
@@ -94,32 +91,26 @@ public class PixKeyControllerTest {
                 .cpfCnpj("31254398713")
                 .name("Silva Silva")
                 .fantasyName("Fantasy Name")
-                .reason(CreateReason.CLIENT_REQUEST)
+                .reason(CreateReasonDTO.CLIENT_REQUEST)
                 .build();
     }
 
     @Test
     public void when_createPixKeyWithSuccess_expect_statusCreated() throws Exception {
-        when(createPixKeyUseCase.execute(anyString(), any(), any())).thenReturn(pixKey);
-
         mockMvc.perform(post(BASE_URL)
                 .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(createPixKeyDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.key", equalTo("joao@picpay.com")))
-                .andExpect(jsonPath("$.ispb", equalTo(1)))
-                .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.key", equalTo("teste@teste.com")))
+                .andExpect(jsonPath("$.ispb", equalTo(12345)))
                 .andExpect(jsonPath("$.accountType", equalTo("SALARY")))
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
     @Test
     public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
-        when(updateAccountUseCase.execute(anyString(), any(), any())).thenReturn(pixKey);
-        when(findPixKeyUseCase.execute(anyString(), any(), anyString())).thenReturn(pixKey);
-
-        mockMvc.perform(put(BASE_URL +"/joao@picpay")
+        mockMvc.perform(put(BASE_URL +"/12345678912")
                 .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(UpdateAccountPixKeyRequestWebDTO.builder()
@@ -128,31 +119,31 @@ public class PixKeyControllerTest {
                         .accountOpeningDate(LocalDateTime.now())
                         .accountType(AccountType.SALARY)
                         .branchNumber("4123")
-                        .reason(UpdateReason.CLIENT_REQUEST)
+                        .reason(UpdateReasonDTO.CLIENT_REQUEST)
                         .type(KeyType.EMAIL)
                         .userId("123")
                         .build())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.key", equalTo("joao@picpay.com")))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.key", equalTo("12345678912")))
                 .andExpect(jsonPath("$.ispb", equalTo(1)))
-                .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
-                .andExpect(jsonPath("$.accountType", equalTo("SALARY")))
-                .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
+//                .andExpect(jsonPath("$.nameIspb", equalTo("Empresa Picpay")))
+                .andExpect(jsonPath("$.accountType", equalTo("SALARY")));
+//                .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
     @Test
-    public void when_removePixKeySuccessfully_expect_statusNoContent() throws Exception {
-        doNothing().when(removePixKeyUseCase).execute(anyString(), any(), any());
+    public void when_removePixKeySuccessfully_expect_statusAccepted() throws Exception {
+        //doNothing().when(pixKeyEventRegistryUseCase).execute(PixKeyEvent.PENDING_REMOVE, anyString(), any(PixKey.class), any(Reason.class));
 
         mockMvc.perform(delete(BASE_URL +"/joao@picpay")
                 .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(RemovePixKeyRequestWebDTO.builder()
                         .ispb(1)
-                        .reason(RemoveReason.CLIENT_REQUEST)
+                        .reason(RemoveReasonDTO.CLIENT_REQUEST)
                         .type(KeyType.EMAIL)
                         .build())))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isAccepted());
     }
 
     @Test

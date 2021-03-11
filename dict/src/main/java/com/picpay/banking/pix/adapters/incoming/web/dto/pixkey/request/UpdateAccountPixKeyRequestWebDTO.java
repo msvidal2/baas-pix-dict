@@ -1,9 +1,6 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
-import com.picpay.banking.pix.core.domain.AccountType;
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.NonNull;
@@ -44,7 +41,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "Reason for update", required = true)
     @NonNull
-    private UpdateReason reason;
+    private UpdateReasonDTO reason;
 
     @ApiModelProperty(value =
             "CPF ou algum outro identificador do usuário final que originou a consulta de chave. Será utilizado pelo"
@@ -61,6 +58,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .accountOpeningDate(accountOpeningDate)
+//                .situation(PixKeySituation.PENDING_UPDATE)
                 .build();
     }
 
