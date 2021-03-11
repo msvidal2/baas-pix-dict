@@ -1,5 +1,6 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.UpdateReasonDTO;
 import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -41,7 +42,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "Reason for update", required = true)
     @NonNull
-    private UpdateReason reason;
+    private UpdateReasonDTO reason;
 
     @ApiModelProperty(value =
             "CPF ou algum outro identificador do usuário final que originou a consulta de chave. Será utilizado pelo"
@@ -58,7 +59,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .accountOpeningDate(accountOpeningDate)
-                .situation(PixKeySituation.PENDING_UPDATE)
+//                .situation(PixKeySituation.PENDING_UPDATE)
                 .build();
     }
 

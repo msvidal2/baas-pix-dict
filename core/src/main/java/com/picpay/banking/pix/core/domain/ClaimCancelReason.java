@@ -14,16 +14,16 @@ import static com.picpay.banking.pix.core.domain.ClaimantType.DONOR;
 @AllArgsConstructor
 public enum ClaimCancelReason {
 
-    CLIENT_REQUEST(Reason.CLIENT_REQUEST.getValue()),
-    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE.getValue()),
-    FRAUD(Reason.FRAUD.getValue()),
-    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE.getValue());
+    CLIENT_REQUEST(Reason.CLIENT_REQUEST),
+    ACCOUNT_CLOSURE(Reason.ACCOUNT_CLOSURE),
+    FRAUD(Reason.FRAUD),
+    DEFAULT_RESPONSE(Reason.DEFAULT_RESPONSE);
 
-    private final int value;
+    private final Reason value;
 
-    public static ClaimCancelReason resolve(int value) {
+    public static ClaimCancelReason resolve(Reason value) {
         return Arrays.stream(values())
-                .filter(reason -> reason.value == value)
+                .filter(reason -> reason.value.equals(value))
                 .findAny()
                 .orElse(null);
     }

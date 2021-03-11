@@ -1,16 +1,12 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.RemoveReasonDTO;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.PixKeySituation;
-import com.picpay.banking.pix.core.domain.RemoveReason;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.lang.NonNull;
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 @Builder
 @Getter
@@ -20,15 +16,15 @@ import org.springframework.lang.NonNull;
 public class RemovePixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "Key type of key of AdressingKey", dataType="java.lang.String", required = true)
-    @NonNull
+    @NotNull
     private KeyType type;
 
     @ApiModelProperty(value = "Reason for inclusion", required = true)
-    @NonNull
-    private RemoveReason reason;
+    @NotNull
+    private RemoveReasonDTO reason;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NonNull
+    @NotNull
     protected Integer ispb;
 
     public PixKey toDomain(String key) {
@@ -36,7 +32,7 @@ public class RemovePixKeyRequestWebDTO {
                 .key(key)
                 .ispb(ispb)
                 .type(type)
-                .situation(PixKeySituation.PENDING_REMOVE)
+//                .situation(PixKeySituation.PENDING_REMOVE)
                 .build();
     }
 

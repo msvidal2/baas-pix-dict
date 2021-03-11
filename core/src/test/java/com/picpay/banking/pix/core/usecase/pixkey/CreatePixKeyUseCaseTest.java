@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
-import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.domain.KeyType.CPF;
 import static com.picpay.banking.pix.core.domain.KeyType.EMAIL;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;

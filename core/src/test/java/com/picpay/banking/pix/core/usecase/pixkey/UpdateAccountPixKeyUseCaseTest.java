@@ -4,12 +4,11 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.picpay.banking.pix.core.domain.Reason.BRANCH_TRANSFER;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -72,12 +73,12 @@ class UpdateAccountPixKeyUseCaseTest {
         when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKeyResponse);
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
     public void testUpdateNullpixKey() {
-        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null, CLIENT_REQUEST));
     }
 
     @Test
@@ -105,7 +106,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(null, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -135,7 +136,7 @@ class UpdateAccountPixKeyUseCaseTest {
         when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKeyResponse);
         when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, BRANCH_TRANSFER));
     }
 
     @Test
@@ -150,7 +151,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, UpdateReason.CLIENT_REQUEST));
+        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -175,7 +176,7 @@ class UpdateAccountPixKeyUseCaseTest {
         when(savePixKeyPort.savePixKey(any(), any())).thenReturn(pixKey);
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(
-                randomUUID, pixKey, UpdateReason.BRANCH_TRANSFER));
+                randomUUID, pixKey, BRANCH_TRANSFER));
     }
 
     @Test
@@ -193,7 +194,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 useCase.execute(
                         randomUUID,
                         pixKey,
-                        UpdateReason.BRANCH_TRANSFER));
+                        BRANCH_TRANSFER));
     }
 
     @Test
@@ -211,7 +212,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(KeyValidatorException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.BRANCH_TRANSFER));
+                BRANCH_TRANSFER));
     }
 
     @Test
@@ -228,7 +229,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -245,7 +246,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -270,7 +271,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertDoesNotThrow(() -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.BRANCH_TRANSFER));
+                BRANCH_TRANSFER));
     }
 
     @Test
@@ -288,7 +289,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -305,7 +306,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -323,7 +324,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(KeyValidatorException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -341,7 +342,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
     @Test
@@ -358,7 +359,7 @@ class UpdateAccountPixKeyUseCaseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(
                 randomUUID,
                 pixKey,
-                UpdateReason.CLIENT_REQUEST));
+                CLIENT_REQUEST));
     }
 
 }
