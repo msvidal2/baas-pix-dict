@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
+package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
