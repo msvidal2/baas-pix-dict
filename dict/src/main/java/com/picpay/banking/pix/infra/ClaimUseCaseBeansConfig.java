@@ -31,7 +31,7 @@ public class ClaimUseCaseBeansConfig {
     private final ConfirmClaimPort claimConfirmationPort;
     private final FindClaimPort findClaimPort;
     private final RemovePixKeyPort removePixKeyPort;
-    private final PixKeyEventPort pixKeyEventPort;
+    private PixKeyEventPort pixKeyEventPort;
     private final ListClaimPort listClaimPort;
     private final CancelClaimBacenPort claimCancelPort;
     private final FindByIdPort findByIdPort;
