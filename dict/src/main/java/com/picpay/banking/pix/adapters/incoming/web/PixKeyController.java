@@ -1,18 +1,17 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.ListKeyResponseWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.CreatePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.ListPixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.RemovePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.UpdateAccountPixKeyRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.CreatePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.ListKeyResponseWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
-import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyObjectKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
 import com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator;
@@ -143,9 +142,8 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     @ResponseStatus(ACCEPTED)
-    @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
     public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
-                                           @IdempotencyObjectKey @PathVariable String key,
+                                           @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
         var reason = dto.getReason().getValue();
