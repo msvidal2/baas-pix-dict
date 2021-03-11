@@ -136,18 +136,25 @@ public class PixKeyController {
     @Trace
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
-    public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
+    @ResponseStatus(ACCEPTED)
+    @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
+    public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
+        var reason = dto.getReason();
 
         log.info("PixKey_updatingAccount",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", key),
                 kv("dto", dto));
 
-        updateAccountUseCase.execute(requestIdentifier, pixKey, dto.getReason());
 
-        return PixKeyResponseDTO.from(findPixKeyUseCase.execute(requestIdentifier, pixKey.getKey(), dto.getUserId()));
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
+                requestIdentifier,
+                pixKey,
+                reason.getValue());
+
+        return PixKeyResponseDTO.from(pixKey);
     }
 }
