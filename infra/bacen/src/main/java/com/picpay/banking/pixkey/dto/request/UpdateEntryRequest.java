@@ -1,7 +1,7 @@
 package com.picpay.banking.pixkey.dto.request;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,13 +33,13 @@ public class UpdateEntryRequest {
     private Account account;
 
     @XmlElement(name = "Reason")
-    private Reason reason;
+    private ReasonDTO reason;
 
-    public static UpdateEntryRequest from(PixKey pixKey, UpdateReason reason) {
+    public static UpdateEntryRequest from(PixKey pixKey, Reason reason) {
         return UpdateEntryRequest.builder()
                 .key(pixKey.getKey())
                 .account(Account.from(pixKey))
-                .reason(Reason.resolve(reason))
+                .reason(ReasonDTO.resolve(reason))
                 .build();
     }
 }

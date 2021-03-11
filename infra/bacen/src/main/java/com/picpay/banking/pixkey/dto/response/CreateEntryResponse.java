@@ -10,7 +10,6 @@ package com.picpay.banking.pixkey.dto.response;
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Entry;
-import com.picpay.banking.pixkey.dto.request.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

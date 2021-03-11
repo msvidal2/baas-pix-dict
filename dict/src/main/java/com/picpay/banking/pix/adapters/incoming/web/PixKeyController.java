@@ -1,10 +1,16 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.PixKeyResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.response.pixkey.ListKeyResponseWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.ListPixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.RemovePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.UpdateAccountPixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey.CreatePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.response.pixkey.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
-import com.picpay.banking.pix.core.usecase.pixkey.*;
+import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator;
@@ -38,9 +44,7 @@ public class PixKeyController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
 
     private final FindPixKeyUseCase findPixKeyUseCase;
-    private final UpdateAccountPixKeyUseCase updateAccountUseCase;
     private final ListPixKeyUseCase listPixKeyUseCase;
-
     private final PixKeyEventRegistryUseCase pixKeyPixKeyEventRegistryUseCase;
 
     @Trace
@@ -56,7 +60,7 @@ public class PixKeyController {
             requestDTO.setFantasyName(null);
 
         var pixKey = requestDTO.toPixKey();
-        var reason = requestDTO.getReason();
+        var reason = requestDTO.getReason().getValue();
 
         CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -70,7 +74,7 @@ public class PixKeyController {
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
                 requestIdentifier,
                 pixKey,
-                reason.getValue());
+                reason);
 
         return PixKeyResponseDTO.from(requestDTO.toPixKey());
     }
@@ -116,7 +120,7 @@ public class PixKeyController {
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
         var pixKey = dto.toDomain(key);
-        var reason = dto.getReason();
+        var reason = dto.getReason().getValue();
 
         RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -128,7 +132,7 @@ public class PixKeyController {
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_REMOVE,
                 requestIdentifier,
                 pixKey,
-                reason.getValue());
+                reason);
 
         return PixKeyResponseDTO.from(pixKey);
     }
@@ -142,7 +146,7 @@ public class PixKeyController {
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
-        var reason = dto.getReason();
+        var reason = dto.getReason().getValue();
 
         log.info("PixKey_updatingAccount",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
@@ -153,7 +157,7 @@ public class PixKeyController {
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
                 requestIdentifier,
                 pixKey,
-                reason.getValue());
+                reason);
 
         return PixKeyResponseDTO.from(pixKey);
     }

@@ -1,11 +1,12 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
 
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RemoveReason {
+public enum RemoveReasonDTO {
 
     CLIENT_REQUEST(Reason.CLIENT_REQUEST),
     INACTIVITY(Reason.INACTIVITY),

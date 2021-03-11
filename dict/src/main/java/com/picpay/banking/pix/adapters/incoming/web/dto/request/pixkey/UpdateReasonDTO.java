@@ -1,11 +1,12 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
 
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UpdateReason {
+public enum UpdateReasonDTO {
 
     CLIENT_REQUEST(Reason.CLIENT_REQUEST),
     BRANCH_TRANSFER(Reason.BRANCH_TRANSFER),

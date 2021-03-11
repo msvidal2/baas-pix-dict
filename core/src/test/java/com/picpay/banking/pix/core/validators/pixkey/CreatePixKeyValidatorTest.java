@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
-import static com.picpay.banking.pix.core.domain.CreateReason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.domain.KeyType.*;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static com.picpay.banking.pix.core.validators.pixkey.CreatePixKeyValidator.validate;

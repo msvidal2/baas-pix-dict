@@ -3,7 +3,7 @@ package com.picpay.banking.pixkey.ports;
 import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
@@ -31,7 +31,7 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey update(String requestIdentifier, PixKey pixKey, UpdateReason reason) {
+    public PixKey update(String requestIdentifier, PixKey pixKey, Reason reason) {
 
         var updateEntryRequest = UpdateEntryRequest.from(pixKey, reason);
 
@@ -41,7 +41,7 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
     }
 
-    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, UpdateReason reason, Exception e) {
+    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
         log.error("PixKey_fallback_updateAccountBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("pixKey", pixKey.getKey()),

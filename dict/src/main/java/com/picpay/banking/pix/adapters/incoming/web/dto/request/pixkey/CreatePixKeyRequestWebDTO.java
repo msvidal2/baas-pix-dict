@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.request.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -63,7 +63,7 @@ public class CreatePixKeyRequestWebDTO {
 
     @ApiModelProperty(value = "Reason for inclusion", required = true)
     @NotNull
-    protected CreateReason reason;
+    protected CreateReasonDTO reason;
 
     public PixKey toPixKey() {
         return PixKey.builder()
@@ -78,7 +78,7 @@ public class CreatePixKeyRequestWebDTO {
                 .taxId(cpfCnpj)
                 .name(name)
                 .fantasyName(fantasyName)
-                .situation(PixKeySituation.PENDING)
+                .situation(PixKeySituation.OPEN)
                 .build();
     }
 }
