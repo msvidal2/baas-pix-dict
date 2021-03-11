@@ -6,6 +6,7 @@
 
 package com.picpay.banking.pixkey.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -30,6 +31,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PixKeyEntity {
 
     @EmbeddedId
@@ -99,51 +101,53 @@ public class PixKeyEntity {
 
     public static PixKeyEntity from(final PixKey pixKey, final Reason reason) {
         return PixKeyEntity.builder()
-            .id(PixKeyIdEntity.builder()
-                .key(pixKey.getKey())
-                .type(pixKey.getType())
-                .build())
-            .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
-            .taxId(pixKey.getTaxId())
-            .participant(pixKey.getIspb())
-            .branch(pixKey.getBranchNumber())
-            .accountNumber(pixKey.getAccountNumber())
-            .accountType(pixKey.getAccountType())
-            .openingDate(pixKey.getAccountOpeningDate())
-            .personType(pixKey.getPersonType())
-            .name(pixKey.getName())
-            .reason(reason)
-            .correlationId(pixKey.getCorrelationId())
-            .creationDate(pixKey.getCreatedAt())
-            .updateDate(pixKey.getUpdatedAt())
-            .ownershipDate(pixKey.getStartPossessionAt())
-            .cid(pixKey.getCid())
-            .donatedAutomatically(pixKey.isDonatedAutomatically())
-            .fantasyName(pixKey.getFantasyName())
-            .build();
+                .id(PixKeyIdEntity.builder()
+                        .key(pixKey.getKey())
+                        .type(pixKey.getType())
+                        .build())
+                .requestId(pixKey.getRequestId() != null ? pixKey.getRequestId().toString() : "")
+                .taxId(pixKey.getTaxId())
+                .participant(pixKey.getIspb())
+                .branch(pixKey.getBranchNumber())
+                .accountNumber(pixKey.getAccountNumber())
+                .accountType(pixKey.getAccountType())
+                .openingDate(pixKey.getAccountOpeningDate())
+                .personType(pixKey.getPersonType())
+                .name(pixKey.getName())
+                .reason(reason)
+                .correlationId(pixKey.getCorrelationId())
+                .creationDate(pixKey.getCreatedAt())
+                .updateDate(pixKey.getUpdatedAt())
+                .ownershipDate(pixKey.getStartPossessionAt())
+                .cid(pixKey.getCid())
+                .donatedAutomatically(pixKey.isDonatedAutomatically())
+                .fantasyName(pixKey.getFantasyName())
+                .situation(Situation.resolve(pixKey.getSituation()))
+                .build();
     }
 
     public PixKey toPixKey() {
         return PixKey.builder()
-            .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
-            .key(id.getKey())
-            .ispb(participant)
-            .branchNumber(branch)
-            .accountType(accountType)
-            .accountNumber(accountNumber)
-            .accountOpeningDate(openingDate)
-            .personType(personType)
-            .taxId(taxId)
-            .name(name)
-            .createdAt(creationDate)
-            .startPossessionAt(ownershipDate)
-            .correlationId(correlationId)
-            .requestId(UUID.fromString(requestId))
-            .cid(cid)
-            .updatedAt(updateDate)
-            .donatedAutomatically(donatedAutomatically)
-            .fantasyName(fantasyName)
-            .build();
+                .type(com.picpay.banking.pix.core.domain.KeyType.resolve(id.getType().getValue()))
+                .key(id.getKey())
+                .ispb(participant)
+                .branchNumber(branch)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .accountOpeningDate(openingDate)
+                .personType(personType)
+                .taxId(taxId)
+                .name(name)
+                .createdAt(creationDate)
+                .startPossessionAt(ownershipDate)
+                .correlationId(correlationId)
+                .requestId(UUID.fromString(requestId))
+                .cid(cid)
+                .updatedAt(updateDate)
+                .donatedAutomatically(donatedAutomatically)
+                .fantasyName(fantasyName)
+                .situation(situation.getValue())
+                .build();
     }
 
 }
