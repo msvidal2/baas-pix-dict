@@ -8,6 +8,7 @@ package com.picpay.banking.idempotency.aspect;
 
 import com.picpay.banking.pix.core.exception.IdempotencyException;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyObjectKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,8 @@ public class IdempotencyAspect {
     public Object validate(final ProceedingJoinPoint point) throws Throwable {
         final ValidateIdempotency validateIdempotency = ((MethodSignature) point.getSignature()).getMethod().getAnnotation(ValidateIdempotency.class);
         Optional<?> comparisonTarget = comparisonTarget(validateIdempotency, point.getArgs());
-        Object fromCache = fromCache(idempotencyKey(point), comparisonTarget);
+
+        Object fromCache = fromCache(idempotencyKey(point, IdempotencyKey.class), comparisonTarget, point);
 
         if (fromCache != null) {
             if (!match(comparisonTarget, fromCache)) {
@@ -65,10 +67,20 @@ public class IdempotencyAspect {
             .orElse(Boolean.FALSE);
     }
 
-    private Object fromCache(final String idempotencyKey, Optional<?> hashName) {
+    private Object fromCache(final String idempotencyKey, Optional<?> hashName, final ProceedingJoinPoint point) {
         Object targetClass = hashName.orElse(null);
         if (targetClass != null) {
-            return redisTemplate.opsForHash().get(targetClass.getClass().getSimpleName(), idempotencyKey);
+            String objectKey = idempotencyKey(point, IdempotencyObjectKey.class);
+            String redisKey;
+
+            //salvar na cache a chave idempotency+ObjectKey similar ao que temos no INfractionUseCase
+            if (objectKey != null) {
+                redisKey = idempotencyKey+objectKey;
+            } else {
+                redisKey = idempotencyKey;
+            }
+
+            return redisTemplate.opsForHash().get(targetClass.getClass().getSimpleName(), redisKey);
         }
         return null;
     }
@@ -81,7 +93,7 @@ public class IdempotencyAspect {
             .map(value::cast);
     }
 
-    private String idempotencyKey(final ProceedingJoinPoint point) {
+    private String idempotencyKey(final ProceedingJoinPoint point, Class<? extends Annotation> type) {
         Object[] args = point.getArgs();
         MethodSignature methodSignature = (MethodSignature) point.getStaticPart().getSignature();
         Method method = methodSignature.getMethod();
@@ -89,8 +101,9 @@ public class IdempotencyAspect {
         assert args.length == parameterAnnotations.length;
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             for (Annotation annotation : parameterAnnotations[argIndex]) {
-                if (!(annotation instanceof IdempotencyKey))
+                if (!annotation.annotationType().equals(type)) {
                     continue;
+                }
                 return (String) args[argIndex];
             }
         }
