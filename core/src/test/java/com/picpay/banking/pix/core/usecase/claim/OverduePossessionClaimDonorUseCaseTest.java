@@ -59,7 +59,7 @@ public class OverduePossessionClaimDonorUseCaseTest {
                 .completionThresholdDate(NOW.plusDays(7))
                 .resolutionThresholdDate(NOW.plusDays(7))
                 .lastModifiedDate(NOW)
-                .confirmationReason(ClaimConfirmationReason.CLIENT_REQUEST)
+                .confirmationReason(ClaimReason.CLIENT_REQUEST)
                 .claimSituation(ClaimSituation.AWAITING_CLAIM)
                 .build();
 
@@ -79,7 +79,7 @@ public class OverduePossessionClaimDonorUseCaseTest {
                 .completionThresholdDate(NOW.plusDays(7))
                 .resolutionThresholdDate(NOW.plusDays(7))
                 .lastModifiedDate(NOW)
-                .confirmationReason(ClaimConfirmationReason.CLIENT_REQUEST)
+                .confirmationReason(ClaimReason.CLIENT_REQUEST)
                 .claimSituation(ClaimSituation.CONFIRMED)
                 .build();
     }

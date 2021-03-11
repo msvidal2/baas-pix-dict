@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.Claim;

@@ -72,7 +72,7 @@ class ConfirmClaimUseCaseTest {
                 .completionThresholdDate(NOW.plusDays(7))
                 .resolutionThresholdDate(NOW.plusDays(7))
                 .lastModifiedDate(NOW)
-                .confirmationReason(ClaimConfirmationReason.CLIENT_REQUEST)
+                .confirmationReason(ClaimReason.CLIENT_REQUEST)
                 .claimSituation(ClaimSituation.AWAITING_CLAIM)
                 .build();
     }
@@ -85,7 +85,7 @@ class ConfirmClaimUseCaseTest {
         when(removePixKeyPort.remove(any(), anyInt())).thenReturn(null);
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(PixKey.builder().build()));
 
-        Claim claimConfirmed = useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, UUID.randomUUID().toString());
+        Claim claimConfirmed = useCase.execute(claim, ClaimReason.CLIENT_REQUEST, UUID.randomUUID().toString());
 
         assertEquals(claim.getClaimId(), claimConfirmed.getClaimId());
         assertEquals(claim.getClaimSituation(), claimConfirmed.getClaimSituation());
@@ -103,7 +103,7 @@ class ConfirmClaimUseCaseTest {
 
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claim));
 
-        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, RANDOM_UUID));
+        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimReason.CLIENT_REQUEST, RANDOM_UUID));
 
         verify(confirmClaimPort, times(0)).confirm(any(), any(), anyString());
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
@@ -118,7 +118,7 @@ class ConfirmClaimUseCaseTest {
 
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claim));
 
-        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimConfirmationReason.DEFAULT_RESPONSE, RANDOM_UUID));
+        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimReason.DEFAULT_OPERATION, RANDOM_UUID));
 
         verify(confirmClaimPort, times(0)).confirm(any(), any(), anyString());
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
@@ -133,7 +133,7 @@ class ConfirmClaimUseCaseTest {
 
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claim));
 
-        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimConfirmationReason.ACCOUNT_CLOSURE, RANDOM_UUID));
+        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimReason.ACCOUNT_CLOSURE, RANDOM_UUID));
 
         verify(confirmClaimPort, times(0)).confirm(any(), any(), anyString());
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
@@ -149,7 +149,7 @@ class ConfirmClaimUseCaseTest {
 
         when(findClaimPort.findClaim(anyString(), anyInt(), anyBoolean())).thenReturn(Optional.of(claim));
 
-        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimConfirmationReason.DEFAULT_RESPONSE, RANDOM_UUID));
+        assertThrows(ClaimException.class, () -> useCase.execute(claim, ClaimReason.DEFAULT_OPERATION, RANDOM_UUID));
 
         verify(confirmClaimPort, times(0)).confirm(any(), any(), anyString());
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
@@ -164,7 +164,7 @@ class ConfirmClaimUseCaseTest {
         assertThrows(IllegalArgumentException.class, () -> {
             var claim = Claim.builder()
             .ispb(23542432).build();
-        useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, randomUUID().toString());});
+        useCase.execute(claim, ClaimReason.CLIENT_REQUEST, randomUUID().toString());});
     }
 
     @Test
@@ -173,7 +173,7 @@ class ConfirmClaimUseCaseTest {
             var claim = Claim.builder()
                 .claimId("")
                 .ispb(23542432).build();
-            useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, randomUUID().toString());});
+            useCase.execute(claim, ClaimReason.CLIENT_REQUEST, randomUUID().toString());});
     }
 
 
@@ -183,7 +183,7 @@ class ConfirmClaimUseCaseTest {
             var claim = Claim.builder()
                 .claimId("adncyt3874yt837y")
                 .ispb(23542432).build();
-            useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, randomUUID().toString());});
+            useCase.execute(claim, ClaimReason.CLIENT_REQUEST, randomUUID().toString());});
     }
 
     @Test
@@ -201,6 +201,6 @@ class ConfirmClaimUseCaseTest {
             var claim = Claim.builder()
                 .claimId(randomUUID().toString())
                 .ispb(23542432).build();
-            useCase.execute(claim, ClaimConfirmationReason.CLIENT_REQUEST, null);});
+            useCase.execute(claim, ClaimReason.CLIENT_REQUEST, null);});
     }
 }

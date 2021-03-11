@@ -1,11 +1,12 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,10 +34,11 @@ public class ClaimController {
 
     private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
-    private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
+
+    private final ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new Claim.")
@@ -68,7 +70,7 @@ public class ClaimController {
                 kv("dto", dto));
 
         return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getReason(),
+                        dto.getDomainReason(),
                         requestIdentifier));
     }
 
@@ -94,6 +96,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ClaimResponseDTO cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
@@ -106,10 +109,12 @@ public class ClaimController {
         var claim = Claim.builder()
                 .claimId(claimId)
                 .ispb(dto.getIspb())
+                .cancelReason(dto.getDomainReason())
                 .build();
 
-        return ClaimResponseDTO.from(
-                cancelClaimUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier));
+        ClaimCancelValidator.validate(claim, requestIdentifier);
+
+        return ClaimResponseDTO.from(claimEventRegistryUseCase.execute(claim));
     }
 
     @Trace

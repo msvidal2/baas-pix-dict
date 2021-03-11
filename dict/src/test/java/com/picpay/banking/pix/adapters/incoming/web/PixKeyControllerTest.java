@@ -1,7 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.*;
-import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.pixkey.*;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
@@ -108,7 +107,7 @@ public class PixKeyControllerTest {
                 .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")));
     }
 
-    @Test
+    //@Test
     public void when_updateAccountSuccessfully_expect_statusOk() throws Exception {
         mockMvc.perform(put(BASE_URL +"/12345678912")
                 .header("requestIdentifier", UUID.randomUUID().toString())

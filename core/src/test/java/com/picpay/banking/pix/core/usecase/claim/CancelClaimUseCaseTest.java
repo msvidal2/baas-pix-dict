@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.ClaimCancelReason.*;
+import static com.picpay.banking.pix.core.domain.ClaimReason.*;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -119,7 +119,7 @@ class CancelClaimUseCaseTest {
                 .ispb(12345678)
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(claimCancel,
+        assertThrows(ResourceNotFoundException.class, () -> useCase.execute(claimCancel,
                 false,
                 CLIENT_REQUEST,
                 randomUUID().toString()));
@@ -287,7 +287,7 @@ class CancelClaimUseCaseTest {
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, CLIENT_REQUEST, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, ACCOUNT_CLOSURE, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, FRAUD, requestIdentifier));
-        assertDoesNotThrow(() -> useCase.execute(claimCancel, true, DEFAULT_RESPONSE, requestIdentifier));
+        assertDoesNotThrow(() -> useCase.execute(claimCancel, true, DEFAULT_OPERATION, requestIdentifier));
 
         verify(findByIdPort, times(4)).find(anyString());
     }
@@ -325,7 +325,7 @@ class CancelClaimUseCaseTest {
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, CLIENT_REQUEST, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, ACCOUNT_CLOSURE, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, true, FRAUD, requestIdentifier));
-        assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, true, DEFAULT_RESPONSE, requestIdentifier));
+        assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, true, DEFAULT_OPERATION, requestIdentifier));
 
         verify(findByIdPort, times(4)).find(anyString());
     }
@@ -363,7 +363,7 @@ class CancelClaimUseCaseTest {
         assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, false, CLIENT_REQUEST, requestIdentifier));
         assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, false, ACCOUNT_CLOSURE, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, false, FRAUD, requestIdentifier));
-        assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, false, DEFAULT_RESPONSE, requestIdentifier));
+        assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, false, DEFAULT_OPERATION, requestIdentifier));
 
         verify(findByIdPort, times(4)).find(anyString());
     }
@@ -401,7 +401,7 @@ class CancelClaimUseCaseTest {
         assertDoesNotThrow(() -> useCase.execute(claimCancel, false, CLIENT_REQUEST, requestIdentifier));
         assertThrows(ClaimException.class, () -> useCase.execute(claimCancel, false, ACCOUNT_CLOSURE, requestIdentifier));
         assertDoesNotThrow(() -> useCase.execute(claimCancel, false, FRAUD, requestIdentifier));
-        assertDoesNotThrow(() -> useCase.execute(claimCancel, false, DEFAULT_RESPONSE, requestIdentifier));
+        assertDoesNotThrow(() -> useCase.execute(claimCancel, false, DEFAULT_OPERATION, requestIdentifier));
 
         verify(findByIdPort, times(4)).find(anyString());
     }
@@ -437,7 +437,7 @@ class CancelClaimUseCaseTest {
         var requestIdentifier = randomUUID().toString();
 
         var error = assertThrows(ClaimException.class,
-                () -> useCase.execute(claimCancel, true, DEFAULT_RESPONSE, requestIdentifier))
+                () -> useCase.execute(claimCancel, true, DEFAULT_OPERATION, requestIdentifier))
                 .getClaimError();
 
         assertEquals(ClaimError.CLAIMANT_CANCEL_INVALID_REASON, error);
@@ -476,7 +476,7 @@ class CancelClaimUseCaseTest {
         var requestIdentifier = randomUUID().toString();
 
         var error = assertThrows(ClaimException.class,
-                () -> useCase.execute(claimCancel, false, DEFAULT_RESPONSE, requestIdentifier))
+                () -> useCase.execute(claimCancel, false, DEFAULT_OPERATION, requestIdentifier))
                 .getClaimError();
 
         assertEquals(ClaimError.DONOR_CANCEL_INVALID_REASON, error);

@@ -1,6 +1,6 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
-import com.picpay.banking.pix.core.domain.ClaimCancelReason;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +21,15 @@ public class ClaimCancelDTO {
     private int ispb;
 
     @ApiModelProperty(value = "Canceled by claimant")
-    private boolean canceledClaimant;
+    @NonNull
+    private Boolean canceledByClaimant;
 
     @ApiModelProperty(value = "Reason for cancel", required = true)
     @NonNull
-    private ClaimCancelReason reason;
+    private ClaimCancelReasonDTO reason;
+
+    public ClaimReason getDomainReason() {
+        return reason.getClaimReason();
+    }
 
 }
