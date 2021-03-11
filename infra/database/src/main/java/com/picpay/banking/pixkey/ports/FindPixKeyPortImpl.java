@@ -5,16 +5,20 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.domain.reconciliation.VsyncBitwiseXOR;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.repository.PixKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,21 +37,21 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     @Override
     public Optional<PixKey> findDonatedPixKey(String pixKey) {
         return pixKeyRepository.findByIdKeyAndDonatedAutomaticallyTrue(pixKey)
-                .map(PixKeyEntity::toPixKey);
+            .map(PixKeyEntity::toPixKey);
     }
 
     @Override
     public Optional<PixKey> findPixKey(String pixKey) {
         return pixKeyRepository.findByIdKeyAndReasonNot(pixKey, Reason.INACTIVITY)
-                .map(PixKeyEntity::toPixKey);
+            .map(PixKeyEntity::toPixKey);
     }
 
     @Override
     public List<PixKey> findByAccount(Integer ispb, String branch, String accountNUmber, AccountType accountType) {
         return pixKeyRepository.findByAccountAndReasonNot(ispb, branch, accountNUmber, accountType, Reason.INACTIVITY)
-                .stream()
-                .map(PixKeyEntity::toPixKey)
-                .collect(Collectors.toList());
+            .stream()
+            .map(PixKeyEntity::toPixKey)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -67,12 +71,21 @@ public class FindPixKeyPortImpl implements FindPixKeyPort {
     @Override
     public Optional<PixKey> findByCid(final String cid) {
         return this.pixKeyRepository.findByCidAndReasonNot(cid, Reason.INACTIVITY)
-                .map(PixKeyEntity::toPixKey);
+            .map(PixKeyEntity::toPixKey);
     }
 
     @Override
     public String computeVsync(final KeyType key) {
-        return this.pixKeyRepository.computeVsync(key.name());
+        final int SIZE = 1000;
+        Page<String> page = pixKeyRepository.findAllCidByKeyType(key, PageRequest.of(0, SIZE));
+        Set<String> contentIdentifiers = new HashSet<>(page.getContent());
+        while (page.hasNext()) {
+            page = pixKeyRepository.findAllCidByKeyType(key, page.nextPageable());
+            contentIdentifiers.addAll(page.getContent());
+        }
+
+        String emptyVsync = "0000000000000000000000000000000000000000000000000000000000000000";
+        return contentIdentifiers.parallelStream().reduce(emptyVsync, new VsyncBitwiseXOR());
     }
 
 }
