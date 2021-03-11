@@ -19,6 +19,7 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
 //    private final PixKeyEventRepository eventRepository;
 
+    @Override
     @ValidateIdempotency(PixKey.class)
     public void registry(final PixKeyEvent event, @IdempotencyKey final String requestIdentifier, final PixKey pixKey, final Reason reason) {
 
