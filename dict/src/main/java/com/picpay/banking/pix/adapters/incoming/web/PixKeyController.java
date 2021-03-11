@@ -1,11 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.ListKeyResponseWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.CreatePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.ListPixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.RemovePixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.UpdateAccountPixKeyRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.CreatePixKeyRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.ListKeyResponseWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.PixKeyResponseDTO;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
@@ -142,8 +142,7 @@ public class PixKeyController {
     @ApiOperation(value = PixKeyControllerMessages.METHOD_UPDATE_ACCOUNT)
     @PutMapping("{key}")
     @ResponseStatus(ACCEPTED)
-    @ValidateIdempotency(UpdateAccountPixKeyRequestWebDTO.class)
-    public PixKeyResponseDTO updateAccount(@IdempotencyKey @RequestHeader String requestIdentifier,
+    public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
         var pixKey = dto.toDomain(key);
