@@ -106,7 +106,7 @@ public class CancelClaimUseCase {
     private boolean isPossessionClaimDonationFraud(Claim claim, ClaimReason reason) {
         return ClaimType.POSSESSION_CLAIM == claim.getClaimType()
                 && ClaimSituation.CONFIRMED == claim.getClaimSituation()
-                && ClaimReason.DEFAULT_OPERATION == claim.getCancelReason()
+                && ClaimReason.DEFAULT_OPERATION == claim.getConfirmationReason()
                 && ClaimReason.FRAUD == reason;
     }
 
