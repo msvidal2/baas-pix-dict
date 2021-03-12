@@ -73,7 +73,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ClaimEventRegistryUseCase claimEventRegistryUseCase() {
-        return new ClaimEventRegistryUseCase();
+        return new ClaimEventRegistryUseCase(null);
     }
 
 }
