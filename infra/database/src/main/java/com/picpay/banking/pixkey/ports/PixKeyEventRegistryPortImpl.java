@@ -30,12 +30,6 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
     @ValidateIdempotency(PixKey.class)
     public void registry(final PixKeyEvent event, @IdempotencyKey final String requestIdentifier, final PixKey pixKey, final Reason reason) {
 
-        log.info("PixKeyEventRegistry_registering {} {}",
-                kv("event", event),
-                kv("requestIdentifier", requestIdentifier),
-                kv("pixKey", pixKey),
-                kv("reason", reason));
-
         var eventEntity = PixKeyEventEntity.builder()
                 .type(event)
                 .requestIdentifier(requestIdentifier)
@@ -51,7 +45,9 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
         log.info("PixKeyEventRegistry_registered {} {}",
                 kv("event", event),
-                kv("requestIdentifier", requestIdentifier));
+                kv("requestIdentifier", requestIdentifier),
+                kv("pixKey", pixKey),
+                kv("reason", reason));
     }
 
 }

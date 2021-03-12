@@ -117,12 +117,7 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        var claim = Claim.builder()
-                .claimId(claimId)
-                .ispb(dto.getIspb())
-                .cancelReason(dto.getDomainReason())
-                .build();
-
+        var claim = dto.toClaim().withClaimId(claimId);
         ClaimCancelValidator.validate(claim, requestIdentifier);
 
         claimEventRegistryUseCase.execute(

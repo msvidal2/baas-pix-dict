@@ -56,21 +56,17 @@ public class PixKeyController {
     public PixKeyResponseDTO create(@IdempotencyKey @RequestHeader String requestIdentifier,
                                     @RequestBody @Validated @NotNull CreatePixKeyRequestWebDTO requestDTO) {
 
-        //TODO temporario.
-        if (requestDTO != null && requestDTO.getPersonType() != null && requestDTO.getPersonType().getValue() == 0)
-            requestDTO.setFantasyName(null);
-
-        var pixKey = requestDTO.toPixKey();
-        var reason = requestDTO.getReason().getValue();
-
-        CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
-
         log.info("PixKey_creating",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", requestDTO.getKey() != null ? requestDTO.getKey() : null),
                 kv("NameIspb", requestDTO.getIspb()),
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
+
+        var pixKey = requestDTO.toPixKey();
+        var reason = requestDTO.getReason().getValue();
+
+        CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
                 requestIdentifier,
@@ -120,15 +116,15 @@ public class PixKeyController {
                        @PathVariable String key,
                        @RequestBody @Validated RemovePixKeyRequestWebDTO dto) {
 
-        var pixKey = dto.toDomain(key);
-        var reason = dto.getReason().getValue();
-
-        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
-
         log.info("PixKey_removing",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", key),
                 kv("dto", dto));
+
+        var pixKey = dto.toDomain(key);
+        var reason = dto.getReason().getValue();
+
+        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_REMOVE,
                 requestIdentifier,
@@ -145,16 +141,16 @@ public class PixKeyController {
     public PixKeyResponseDTO updateAccount(@RequestHeader String requestIdentifier,
                                            @PathVariable String key,
                                            @RequestBody @Validated UpdateAccountPixKeyRequestWebDTO dto) {
-        var pixKey = dto.toDomain(key);
-        var reason = dto.getReason().getValue();
-
-        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         log.info("PixKey_updatingAccount",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv("key", key),
                 kv("dto", dto));
 
+        var pixKey = dto.toDomain(key);
+        var reason = dto.getReason().getValue();
+
+        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
                 requestIdentifier,

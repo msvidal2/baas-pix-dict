@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.infra;
 
+import com.picpay.banking.pix.core.ports.claim.ClaimEventRegistryPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
@@ -41,6 +42,8 @@ public class ClaimUseCaseBeansConfig {
     private final CompleteClaimPort completeClaimPort;
     private final SavePixKeyPort createPixKeyPort;
 
+    private final ClaimEventRegistryPort claimEventRegistryPort;
+
     @Bean
     public CreateClaimUseCase createClaimUseCase() {
         return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort);
@@ -73,7 +76,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ClaimEventRegistryUseCase claimEventRegistryUseCase() {
-        return new ClaimEventRegistryUseCase(null);
+        return new ClaimEventRegistryUseCase(claimEventRegistryPort);
     }
 
 }

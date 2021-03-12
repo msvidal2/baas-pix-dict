@@ -4,6 +4,8 @@ import com.picpay.banking.pix.core.domain.ClaimReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 @AllArgsConstructor
 public enum ClaimConfirmationReasonDTO {
@@ -15,7 +17,10 @@ public enum ClaimConfirmationReasonDTO {
     private final ClaimReason claimReason;
 
     public static ClaimConfirmationReasonDTO resolve(ClaimReason confirmReason) {
-        return null;
+        return Arrays.stream(values())
+                .filter(reason -> reason.getClaimReason().equals(confirmReason))
+                .findAny()
+                .orElse(null);
     }
 
 }

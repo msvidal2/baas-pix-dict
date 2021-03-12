@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.NonNull;
@@ -59,7 +61,6 @@ public class UpdateAccountPixKeyRequestWebDTO {
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .accountOpeningDate(accountOpeningDate)
-                .situation(PixKeySituation.ACTIVE)
                 .build();
     }
 
