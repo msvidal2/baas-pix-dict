@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -20,30 +21,33 @@ import java.time.LocalDateTime;
 public class ClaimEventEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClaimEventType type;
 
-    @JoinColumn(name = "claim_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ClaimEntity claim;
+    @Column(nullable = false)
+    private String requestIdentifier;
+
+    private String claimId;
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
-    private ClaimEntity data;
+    private Claim data;
 
     @CreatedDate
     private LocalDateTime creationDate;
 
-    public static ClaimEventEntity of(Claim claim, ClaimEventType eventType) {
-        var claimEntity = ClaimEntity.from(claim);
+    public static ClaimEventEntity of(String requestIdentifier, Claim claim, ClaimEventType eventType) {
         return ClaimEventEntity.builder()
-                .claim(claimEntity)
-                .data(claimEntity)
                 .type(eventType)
+                .requestIdentifier(requestIdentifier)
+                .claimId(claim.getClaimId())
+                .data(claim)
+                .creationDate(LocalDateTime.now())
                 .build();
     }
 

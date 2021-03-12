@@ -21,6 +21,7 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
     public void registry(String requestIdentifier, ClaimEventType eventType, Claim claim) {
 
         var claimEvent = ClaimEventEntity.of(
+                requestIdentifier,
                 claim,
                 eventType);
 
