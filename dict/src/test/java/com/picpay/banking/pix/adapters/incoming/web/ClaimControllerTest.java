@@ -1,8 +1,10 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CreateClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
+import com.picpay.banking.pix.core.usecase.claim.ClaimEventRegistryUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,14 +17,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,6 +45,9 @@ class ClaimControllerTest {
 
     @Mock
     private CompleteClaimUseCase completeClaimUseCase;
+
+    @Mock
+    private ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     private Claim claim;
 
@@ -120,6 +126,95 @@ class ClaimControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder().build())))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void when_createClaimEventWithSuccess_expect_statusAccepted() throws Exception {
+        doNothing().when(claimEventRegistryUseCase).execute(anyString(), any(), any());
+
+        mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(CreateClaimRequestWebDTO.builder()
+                        .accountNumber("5280")
+                        .accountOpeningDate(LocalDateTime.parse("2020-08-14T13:59:12.646"))
+                        .accountType(AccountType.CHECKING)
+                        .branchNumber("5103")
+                        .claimType(ClaimType.POSSESSION_CLAIM)
+                        .cpfCnpj("81562845005")
+                        .ispb(22896431)
+                        .key("+5583888888167")
+                        .keyType(KeyType.CELLPHONE)
+                        .name("Jannayna Arauj")
+                        .personType(PersonType.INDIVIDUAL_PERSON)
+                        .build())))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.claimType", equalTo("POSSESSION_CLAIM")))
+                .andExpect(jsonPath("$.key", equalTo("+5583888888167")))
+                .andExpect(jsonPath("$.keyType", equalTo("CELLPHONE")))
+                .andExpect(jsonPath("$.ispb", equalTo(22896431)))
+                .andExpect(jsonPath("$.branchNumber", equalTo("5103")))
+                .andExpect(jsonPath("$.accountType", equalTo("CHECKING")))
+                .andExpect(jsonPath("$.accountNumber", equalTo("5280")))
+                .andExpect(jsonPath("$.accountOpeningDate[0]", equalTo(2020)))
+                .andExpect(jsonPath("$.accountOpeningDate[1]", equalTo(8)))
+                .andExpect(jsonPath("$.accountOpeningDate[2]", equalTo(14)))
+                .andExpect(jsonPath("$.accountOpeningDate[3]", equalTo(13)))
+                .andExpect(jsonPath("$.accountOpeningDate[4]", equalTo(59)))
+                .andExpect(jsonPath("$.accountOpeningDate[5]", equalTo(12)))
+                .andExpect(jsonPath("$.personType", equalTo("INDIVIDUAL_PERSON")))
+                .andExpect(jsonPath("$.name", equalTo("Jannayna Arauj")))
+                .andExpect(jsonPath("$.cpfCnpj", equalTo("81562845005")));
+
+    }
+
+    @Test
+    void when_createClaimEventWithoutRequestIdentifier_expect_badRequest() throws Exception {
+        mockMvc.perform(post(BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(CreateClaimRequestWebDTO.builder()
+                        .accountNumber("5280")
+                        .accountOpeningDate(LocalDateTime.parse("2020-08-14T13:59:12.646"))
+                        .accountType(AccountType.CHECKING)
+                        .branchNumber("5103")
+                        .claimType(ClaimType.POSSESSION_CLAIM)
+                        .cpfCnpj("81562845005")
+                        .ispb(22896431)
+                        .key("+5583888888167")
+                        .keyType(KeyType.CELLPHONE)
+                        .name("Jannayna Arauj")
+                        .personType(PersonType.INDIVIDUAL_PERSON)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Missing request header 'requestIdentifier' for method parameter of type String")))
+                .andExpect(jsonPath("$.timestamp[0]", equalTo(2021)))
+                .andExpect(jsonPath("$.timestamp[1]", equalTo(3)))
+                .andExpect(jsonPath("$.timestamp[2]", equalTo(12)));
+    }
+
+    @Test
+    void when_createClaimEventInvalidBody_expect_badRequest() throws Exception {
+        mockMvc.perform(post(BASE_URL)
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(CreateClaimRequestWebDTO.builder()
+                        .accountNumber("5280")
+                        .accountOpeningDate(LocalDateTime.parse("2020-08-14T13:59:12.646"))
+                        .accountType(AccountType.CHECKING)
+                        .branchNumber("5103")
+                        .claimType(ClaimType.POSSESSION_CLAIM)
+                        .keyType(KeyType.CELLPHONE)
+                        .name("Jannayna Arauj")
+                        .personType(PersonType.INDIVIDUAL_PERSON)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")));
     }
 
 }
