@@ -1,5 +1,6 @@
 package com.picpay.banking.claim.entity;
 
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClaimEvent {
+public class ClaimEventEntity {
 
     @Id
     @GeneratedValue

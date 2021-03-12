@@ -5,6 +5,7 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -114,7 +115,12 @@ public class ClaimController {
 
         ClaimCancelValidator.validate(claim, requestIdentifier);
 
-        return ClaimResponseDTO.from(claimEventRegistryUseCase.execute(claim));
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.PENDING_CANCELLATION,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
