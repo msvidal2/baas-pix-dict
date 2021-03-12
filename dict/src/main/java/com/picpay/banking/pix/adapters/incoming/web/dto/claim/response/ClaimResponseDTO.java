@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.claim.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelReasonDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
 import com.picpay.banking.pix.core.domain.*;
@@ -8,7 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+@JsonInclude(NON_NULL)
 @Getter
 @Builder
 @AllArgsConstructor
@@ -17,10 +22,10 @@ public class ClaimResponseDTO {
     private String claimId;
     private ClaimSituation claimSituation;
     private ClaimType claimType;
-    private int participationFlow;
+    private Integer participationFlow;
     private String key;
     private KeyType keyType;
-    private int ispb;
+    private Integer ispb;
     private String branchNumber;
     private AccountType accountType;
     private String accountNumber;
@@ -29,7 +34,7 @@ public class ClaimResponseDTO {
     private String name;
     private String fantasyName;
     private String cpfCnpj;
-    private int donorIspb;
+    private Integer donorIspb;
     private DonorData donorData;
     private Boolean isClaim;
     private LocalDateTime resolutionThresholdDate;
@@ -45,8 +50,8 @@ public class ClaimResponseDTO {
                 .claimSituation(claim.getClaimSituation())
                 .claimType(claim.getClaimType())
                 .participationFlow(claim.getParticipationFlow())
-                .key(claim.getPixKey().getKey())
-                .keyType(claim.getPixKey().getType())
+                .key(Optional.ofNullable(claim.getPixKey()).map(PixKey::getKey).orElse(null))
+                .keyType(Optional.ofNullable(claim.getPixKey()).map(PixKey::getType).orElse(null))
                 .ispb(claim.getIspb())
                 .branchNumber(claim.getBranchNumber())
                 .accountType(claim.getAccountType())

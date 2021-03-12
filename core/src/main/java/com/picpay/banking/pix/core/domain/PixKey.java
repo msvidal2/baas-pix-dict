@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Slf4j
 @EqualsAndHashCode(of = {"type", "key", "ispb", "branchNumber", "accountType", "accountNumber", "personType", "taxId"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PixKey implements Serializable {
 
     private static final long serialVersionUID = -6450851575119416890L;
