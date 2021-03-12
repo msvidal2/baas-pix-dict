@@ -82,9 +82,13 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getDomainReason(),
-                        requestIdentifier));
+        var claim = dto.toDomain(claimId);
+
+        claimEventRegistryUseCase.execute(requestIdentifier,
+                ClaimEventType.PENDING_CONFIRM,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace

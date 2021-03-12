@@ -1,11 +1,11 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.entity.ClaimEventEntity;
 import com.picpay.banking.claim.repository.ClaimEventRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.ports.claim.ClaimEventRegistryPort;
+import com.picpay.banking.pix.core.ports.claim.picpay.ClaimCacheSavePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,8 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
 
     private final ClaimEventRepository claimEventRepository;
 
+    private final ClaimCacheSavePort claimCacheSavePort;
+
     @Override
     public void registry(String requestIdentifier, ClaimEventType eventType, Claim claim) {
 
@@ -25,6 +27,8 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
                 eventType);
 
         claimEventRepository.save(claimEvent);
+
+        claimCacheSavePort.save(claim, requestIdentifier);
     }
 
 }
