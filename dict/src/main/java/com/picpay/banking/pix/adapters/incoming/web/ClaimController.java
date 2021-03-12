@@ -74,6 +74,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {

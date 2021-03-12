@@ -1,8 +1,11 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
+import com.picpay.banking.pix.core.usecase.claim.ClaimEventRegistryUseCase;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +24,7 @@ import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHe
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,6 +41,9 @@ class ClaimControllerTest {
 
     @Mock
     private FindClaimUseCase findClaimUseCase;
+
+    @Mock
+    private ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     @Mock
     private CompleteClaimUseCase completeClaimUseCase;
@@ -119,6 +124,36 @@ class ClaimControllerTest {
         mockMvc.perform(put("/v1/claims/1/complete")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder().build())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void when_confirmClaimsWithSuccess_expect_statusAccepted() throws Exception {
+        var claimId = UUID.randomUUID().toString();
+
+        mockMvc.perform(post("/v1/claims/".concat(claimId).concat("/confirm"))
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimConfirmationDTO.builder()
+                        .ispb(12345)
+                        .reason(ClaimConfirmationReasonDTO.CLIENT_REQUEST)
+                        .build())))
+                .andDo(print())
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.claimId", equalTo(claimId)))
+                .andExpect(jsonPath("$.confirmationReason", equalTo(ClaimConfirmationReasonDTO.CLIENT_REQUEST.name())));
+    }
+
+    @Test
+    void when_confirmClaimsWithInvalidRequest_expect_statusBadRequest() throws Exception {
+        mockMvc.perform(post("/v1/claims/1234567890/confirm")
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimConfirmationDTO.builder()
+                        .ispb(12345)
+                        .reason(ClaimConfirmationReasonDTO.CLIENT_REQUEST)
+                        .build())))
+                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
