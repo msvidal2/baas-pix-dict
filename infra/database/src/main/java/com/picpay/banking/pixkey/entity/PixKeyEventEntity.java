@@ -2,6 +2,7 @@ package com.picpay.banking.pixkey.entity;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class PixKeyEventEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private KeyEventType type;
+    private PixKeyEvent type;
 
     @Column(nullable = false)
     private String requestIdentifier;
@@ -40,7 +41,7 @@ public class PixKeyEventEntity {
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
-    private PixKeyEntity data;
+    private PixKey data;
 
     @CreatedDate
     private LocalDateTime creationDate;
