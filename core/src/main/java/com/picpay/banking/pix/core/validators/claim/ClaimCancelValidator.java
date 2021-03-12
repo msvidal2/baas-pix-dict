@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.validators.claim;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimCancelReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.validators.ClaimIdValidator;
 import com.picpay.banking.pix.core.validators.IspbValidator;
 import lombok.AccessLevel;
@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClaimCancelValidator {
 
-    public static void validate(Claim claim, boolean canceledClaimant, ClaimCancelReason reason, String requestIdentifier) {
+    public static void validate(Claim claim, String requestIdentifier) {
         if(StringUtils.isBlank(requestIdentifier)) {
             throw new IllegalArgumentException("Request identifier cannot be empty");
         }
@@ -21,7 +21,7 @@ public class ClaimCancelValidator {
         ClaimIdValidator.validate(claim.getClaimId());
         IspbValidator.validate(claim.getIspb());
 
-        if(Objects.isNull(reason)) {
+        if(Objects.isNull(claim.getCancelReason())) {
             throw new IllegalArgumentException("Reason cannot be null");
         }
     }

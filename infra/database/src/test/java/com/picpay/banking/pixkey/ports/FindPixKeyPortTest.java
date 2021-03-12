@@ -2,6 +2,7 @@ package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
@@ -50,6 +51,7 @@ public class FindPixKeyPortTest {
             .accountOpeningDate(LocalDateTime.now())
             .branchNumber("1")
             .requestId(UUID.randomUUID())
+            .situation(PixKeySituation.ACTIVE)
             .cid("ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a")
         .build();
     }

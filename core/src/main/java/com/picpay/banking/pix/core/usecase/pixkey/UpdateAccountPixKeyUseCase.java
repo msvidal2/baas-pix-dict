@@ -2,7 +2,7 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.UpdateReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
@@ -27,7 +27,7 @@ public class UpdateAccountPixKeyUseCase {
 
     public PixKey execute(@NonNull final String requestIdentifier,
         @NonNull final PixKey pixKey,
-        @NonNull final UpdateReason reason) {
+        @NonNull final Reason reason) {
 
         UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -35,7 +35,7 @@ public class UpdateAccountPixKeyUseCase {
             throw new IllegalArgumentException("requestIdentifier can not be empty");
         }
 
-        if (KeyType.RANDOM.equals(pixKey.getType()) && UpdateReason.CLIENT_REQUEST.equals(reason)) {
+        if (KeyType.RANDOM.equals(pixKey.getType()) && Reason.CLIENT_REQUEST.equals(reason)) {
             throw new UseCaseException("Random keys cannot be updated per client requests");
         }
 
@@ -56,9 +56,9 @@ public class UpdateAccountPixKeyUseCase {
         return pixKeyUpdated;
     }
 
-    private void save(String requestIdentifier, UpdateReason reason, PixKey pixKeyUpdated) {
+    private void save(String requestIdentifier, Reason reason, PixKey pixKeyUpdated) {
         try {
-            savePixKeyPort.savePixKey(pixKeyUpdated, reason.getValue());
+            savePixKeyPort.savePixKey(pixKeyUpdated, reason);
         } catch (Exception e) {
             log.error("PixKey_update_saveError",
                     kv(REQUEST_IDENTIFIER, requestIdentifier),

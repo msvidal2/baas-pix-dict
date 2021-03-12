@@ -6,6 +6,7 @@
 
 package com.picpay.banking.pixkey.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
@@ -30,10 +31,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PixKeyEntity {
 
     @EmbeddedId
     private PixKeyIdEntity id;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Situation situation;
 
     @Column(nullable = false)
     private Integer participant;
@@ -117,6 +123,7 @@ public class PixKeyEntity {
             .cid(pixKey.getCid())
             .donatedAutomatically(pixKey.isDonatedAutomatically())
             .fantasyName(pixKey.getFantasyName())
+            .situation(Situation.resolve(pixKey.getSituation()))
             .build();
     }
 
@@ -140,6 +147,7 @@ public class PixKeyEntity {
             .updatedAt(updateDate)
             .donatedAutomatically(donatedAutomatically)
             .fantasyName(fantasyName)
+            .situation(situation.getValue())
             .build();
     }
 

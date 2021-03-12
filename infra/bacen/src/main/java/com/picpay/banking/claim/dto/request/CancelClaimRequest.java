@@ -1,6 +1,6 @@
 package com.picpay.banking.claim.dto.request;
 
-import com.picpay.banking.claim.dto.ClaimReason;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -78,6 +78,20 @@ services:
         networks:
             - baas_pix_net
 
+#    reconciliation:
+#        container_name: reconciliation
+#        build:
+#            context: reconciliation
+#            dockerfile: Dockerfile
+#        ports:
+#            - 8080:8080
+#        depends_on:
+#            - kafka
+#            - mysqldb
+#            - redis
+#        networks:
+#            - baas_pix_net
+
 networks:
     baas_pix_net:
 

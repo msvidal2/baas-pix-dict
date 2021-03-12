@@ -1,12 +1,14 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimIterableResponseDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.response.ClaimResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
-import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
@@ -21,7 +23,6 @@ import javax.validation.Valid;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.CREATED;
 
 @Api(value = "Claim")
 @RestController
@@ -40,11 +41,13 @@ public class ClaimController {
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
+    private final ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
-    @ResponseStatus(CREATED)
+    @ResponseStatus(ACCEPTED)
+    @ValidateIdempotency(CreateClaimRequestWebDTO.class)
     public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
@@ -55,31 +58,33 @@ public class ClaimController {
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
-        return ClaimResponseDTO.from(createAddressKeyUseCase.execute(requestDTO.toDomain(), requestIdentifier));
+        var claim = requestDTO.toDomain();
+
+        CreateClaimValidator.validate(requestIdentifier, claim);
+
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.PENDING_CREATE,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
-    @ValidateIdempotency(ClaimConfirmationDTO.class)
-    @ResponseStatus(ACCEPTED)
-    public ClaimResponseDTO confirm(@IdempotencyKey @RequestHeader String requestIdentifier,
+    public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
-
-        //TODO para validar a idempotencia é necessário usar o claimId tbm. Replicar o que será feito pelo Diego no update_pix_key
 
         log.info("Claim_confirming",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-//        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-//                        dto.getReason(),
-//                        requestIdentifier));
-        //TODO chamar caso de uso para gravar intenção de confirmação
-
-        return ClaimResponseDTO.from(dto.toDomain(claimId));
+        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
+                        dto.getDomainReason(),
+                        requestIdentifier));
     }
 
     @Trace
@@ -104,6 +109,8 @@ public class ClaimController {
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
+    @ResponseStatus(ACCEPTED)
+    @ValidateIdempotency(ClaimCancelDTO.class)
     public ClaimResponseDTO cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
@@ -116,10 +123,17 @@ public class ClaimController {
         var claim = Claim.builder()
                 .claimId(claimId)
                 .ispb(dto.getIspb())
+                .cancelReason(dto.getDomainReason())
                 .build();
 
-        return ClaimResponseDTO.from(
-                cancelClaimUseCase.execute(claim, dto.isCanceledClaimant(), dto.getReason(), requestIdentifier));
+        ClaimCancelValidator.validate(claim, requestIdentifier);
+
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.PENDING_CANCELLATION,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace

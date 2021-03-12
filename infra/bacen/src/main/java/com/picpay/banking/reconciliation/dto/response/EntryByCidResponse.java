@@ -5,6 +5,7 @@ import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.pixkey.dto.request.Entry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,7 +67,8 @@ public class EntryByCidResponse {
             .correlationId(correlationId)
             .requestId(UUID.fromString(requestId))
             .cid(cid)
-        .build();
+            .situation(PixKeySituation.ACTIVE)
+            .build();
     }
 
 }

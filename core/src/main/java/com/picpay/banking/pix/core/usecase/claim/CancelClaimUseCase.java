@@ -9,7 +9,6 @@ import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,10 +30,8 @@ public class CancelClaimUseCase {
 
     public Claim execute(final Claim claimCancel,
                          final boolean canceledClaimant,
-                         final ClaimCancelReason reason,
+                         final ClaimReason reason,
                          final String requestIdentifier) {
-
-        ClaimCancelValidator.validate(claimCancel, canceledClaimant, reason, requestIdentifier);
 
         var claim = findByIdPort.find(claimCancel.getClaimId())
                 .orElseThrow(ResourceNotFoundException::new);
@@ -78,11 +75,11 @@ public class CancelClaimUseCase {
     }
 
     private void validateAllowedReason(final Claim claim,
-                                       final ClaimCancelReason reason,
+                                       final ClaimReason reason,
                                        final boolean canceledClaimant) {
         var allowedReasons = Map.of(
-                ClaimType.POSSESSION_CLAIM, ClaimCancelReason.getOwnershipAllowedReasons(),
-                ClaimType.PORTABILITY, ClaimCancelReason.getPortabilityAllowedReasons())
+                ClaimType.POSSESSION_CLAIM, ClaimReason.getOwnershipAllowedCancelReasons(),
+                ClaimType.PORTABILITY, ClaimReason.getPortabilityAllowedCancelReasons())
                     .get(claim.getClaimType())
                     .get(reason);
 
@@ -95,9 +92,9 @@ public class CancelClaimUseCase {
     }
 
     private void validateExpiredResolutionPeriod(final Claim claim,
-                                                 final ClaimCancelReason reason,
+                                                 final ClaimReason reason,
                                                  final boolean canceledClaimant) {
-        if (ClaimCancelReason.DEFAULT_RESPONSE == reason
+        if (ClaimReason.DEFAULT_OPERATION == reason
                 && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
             if (canceledClaimant) {
                 throw new ClaimException(ClaimError.CLAIMANT_CANCEL_INVALID_REASON);
@@ -106,11 +103,11 @@ public class CancelClaimUseCase {
         }
     }
 
-    private boolean isPossessionClaimDonationFraud(Claim claim, ClaimCancelReason reason) {
+    private boolean isPossessionClaimDonationFraud(Claim claim, ClaimReason reason) {
         return ClaimType.POSSESSION_CLAIM == claim.getClaimType()
                 && ClaimSituation.CONFIRMED == claim.getClaimSituation()
-                && ClaimConfirmationReason.DEFAULT_RESPONSE == claim.getConfirmationReason()
-                && ClaimCancelReason.FRAUD == reason;
+                && ClaimReason.DEFAULT_OPERATION == claim.getConfirmationReason()
+                && ClaimReason.FRAUD == reason;
     }
 
     private void recoveryDonatedByFraudKey(Claim claim) {

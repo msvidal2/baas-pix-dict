@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.RemoveReason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;

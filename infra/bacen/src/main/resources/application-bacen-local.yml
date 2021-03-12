@@ -4,6 +4,17 @@ resilience4j:
       default:
         timeoutDuration: 10s
         cancelRunningFuture: true
+  ratelimiter:
+    instances:
+      getEntryByCidRateLimiter:
+        limitForPeriod: 3600
+        limitRefreshPeriod: 60s
+        timeoutDuration: 60s
+      listCidSetEventsRateLimiter:
+        limitForPeriod: 20
+        limitRefreshPeriod: 60s
+        timeoutDuration: 60s
+
 feign:
   client:
     config:
