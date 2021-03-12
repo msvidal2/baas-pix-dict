@@ -6,6 +6,8 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.ports.claim.ClaimEventRegistryPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ClaimCacheSavePort;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +22,8 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
     private final ClaimCacheSavePort claimCacheSavePort;
 
     @Override
-    public void registry(String requestIdentifier, ClaimEventType eventType, Claim claim) {
+    @ValidateIdempotency(Claim.class)
+    public void registry(@IdempotencyKey String requestIdentifier, ClaimEventType eventType, Claim claim) {
 
         var claimEvent = ClaimEventEntity.of(
                 requestIdentifier,

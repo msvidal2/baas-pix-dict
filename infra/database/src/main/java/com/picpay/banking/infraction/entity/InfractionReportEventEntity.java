@@ -13,7 +13,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "pix_key_event")
+@Entity(name = "infraction_report_event")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

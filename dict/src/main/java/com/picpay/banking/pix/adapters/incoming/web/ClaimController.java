@@ -84,7 +84,6 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        //TODO como vamos pegar o Claim completo nesse momento?
         var claim = dto.toDomain(claimId);
 
         ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
