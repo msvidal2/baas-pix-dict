@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -83,6 +84,8 @@ public class ClaimController {
                 kv("dto", dto));
 
         var claim = dto.toDomain(claimId);
+
+        ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
 
         claimEventRegistryUseCase.execute(requestIdentifier,
                 ClaimEventType.PENDING_CONFIRM,
