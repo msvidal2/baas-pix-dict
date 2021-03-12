@@ -43,6 +43,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
     @NonNull
     private UpdateReasonDTO reason;
 
+
     @ApiModelProperty(value =
             "CPF ou algum outro identificador do usuário final que originou a consulta de chave. Será utilizado pelo"
                     +" DICT para calcular o rate-limiting.", required = true)
