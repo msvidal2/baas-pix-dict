@@ -1,5 +1,6 @@
 package com.picpay.banking.claim.entity;
 
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,14 @@ public class ClaimEventEntity {
 
     @CreatedDate
     private LocalDateTime creationDate;
+
+    public static ClaimEventEntity of(Claim claim, ClaimEventType eventType) {
+        var claimEntity = ClaimEntity.from(claim);
+        return ClaimEventEntity.builder()
+                .claim(claimEntity)
+                .data(claimEntity)
+                .type(eventType)
+                .build();
+    }
 
 }
