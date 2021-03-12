@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +44,9 @@ public interface PixKeyRepository extends PagingAndSortingRepository<PixKeyEntit
 
     Page<PixKeyEntity> findAllByIdTypeAndReasonNot(KeyType keyType, Reason inactivity, Pageable pageable);
 
-    @Query(value = "select lower(hex(bit_xor(UNHEX(p.cid)))) from pix_key p where p.type = :keyType and p.reason != 'INACTIVITY'", nativeQuery = true)
+    @Query(value = "select p.cid from pix_key p where p.reason <> 'INACTIVITY' and p.id.type = :keyType")
     @Transactional(readOnly = true)
-    String computeVsync(@Param("keyType") String keyType);
+    Page<String> findAllCidByKeyType(KeyType keyType, Pageable pageable);
 
 }
 

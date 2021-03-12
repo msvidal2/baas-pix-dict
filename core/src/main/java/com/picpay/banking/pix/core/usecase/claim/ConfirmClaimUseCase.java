@@ -1,10 +1,6 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimConfirmationReason;
-import com.picpay.banking.pix.core.domain.ClaimSituation;
-import com.picpay.banking.pix.core.domain.ClaimType;
-import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
@@ -22,8 +18,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.ownershipConfirmReasons;
-import static com.picpay.banking.pix.core.domain.ClaimConfirmationReason.portabilityConfirmReasons;
+import static com.picpay.banking.pix.core.domain.ClaimReason.ownershipConfirmReasons;
+import static com.picpay.banking.pix.core.domain.ClaimReason.portabilityConfirmReasons;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @AllArgsConstructor
@@ -43,7 +39,7 @@ public class ConfirmClaimUseCase {
     private final FindPixKeyPort findPixKeyPort;
 
     public Claim execute(final Claim confirmClaim,
-        final ClaimConfirmationReason reason,
+        final ClaimReason reason,
         final String requestIdentifier) {
 
         ConfirmClaimValidator.validate(confirmClaim, reason, requestIdentifier);
@@ -58,7 +54,7 @@ public class ConfirmClaimUseCase {
         validateResolutionPeriod(claim);
 
         Claim claimConfirmed = confirmClaimPort.confirm(claim, reason, requestIdentifier);
-        if (ClaimConfirmationReason.CLIENT_REQUEST == reason)
+        if (ClaimReason.CLIENT_REQUEST == reason)
             claimConfirmed.setCompletionThresholdDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         log.info("Claim_confirmed",
@@ -128,7 +124,7 @@ public class ConfirmClaimUseCase {
 
     private void validateResolutionPeriod(Claim claim) {
         if (ClaimType.POSSESSION_CLAIM == claim.getClaimType()
-                && ClaimConfirmationReason.DEFAULT_RESPONSE == claim.getConfirmationReason()
+                && ClaimReason.DEFAULT_OPERATION == claim.getConfirmationReason()
                 && LocalDateTime.now(ZoneId.of("UTC")).isBefore(claim.getResolutionThresholdDate())) {
                     throw new ClaimException(ClaimError.OWNERSHIP_DEFAULT_OPERATION_RESOLUTION_DATE_NOT_PASSED);
         }

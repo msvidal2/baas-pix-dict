@@ -2,17 +2,15 @@ package com.picpay.banking.pix.core.validators.pixkey;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.RemoveReason;
 import com.picpay.banking.pix.core.validators.key.KeyValidatorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
-import static com.picpay.banking.pix.core.domain.RemoveReason.CLIENT_REQUEST;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.validators.pixkey.RemovePixKeyValidator.validate;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RemovePixKeyValidatorTest {
 

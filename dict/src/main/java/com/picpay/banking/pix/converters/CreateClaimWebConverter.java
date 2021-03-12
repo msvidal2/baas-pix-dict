@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.converters;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreateClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CreateClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.PixKey;
 import org.springframework.stereotype.Component;

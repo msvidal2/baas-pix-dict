@@ -1,7 +1,7 @@
 package com.picpay.banking.pixkey.dto.request;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.RemoveReason;
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,13 +33,13 @@ public class RemoveEntryRequest {
     private String participant;
 
     @XmlElement(name = "Reason")
-    private Reason reason;
+    private ReasonDTO reason;
 
-    public static RemoveEntryRequest from(PixKey pixKey, RemoveReason reason) {
+    public static RemoveEntryRequest from(PixKey pixKey, Reason reason) {
         return RemoveEntryRequest.builder()
                 .key(pixKey.getKey())
                 .participant(Integer.toString(pixKey.getIspb()))
-                .reason(Reason.resolve(reason))
+                .reason(ReasonDTO.resolve(reason))
                 .build();
     }
 

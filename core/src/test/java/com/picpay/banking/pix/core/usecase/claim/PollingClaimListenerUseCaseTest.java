@@ -61,7 +61,7 @@ public class PollingClaimListenerUseCaseTest {
                 .completionThresholdDate(NOW.plusDays(7))
                 .resolutionThresholdDate(NOW.plusDays(7))
                 .lastModifiedDate(NOW)
-                .confirmationReason(ClaimConfirmationReason.CLIENT_REQUEST)
+                .confirmationReason(ClaimReason.CLIENT_REQUEST)
                 .claimSituation(ClaimSituation.OPEN)
                 .build();
 
@@ -81,7 +81,7 @@ public class PollingClaimListenerUseCaseTest {
                 .completionThresholdDate(NOW.plusDays(7))
                 .resolutionThresholdDate(NOW.plusDays(7))
                 .lastModifiedDate(NOW)
-                .confirmationReason(ClaimConfirmationReason.CLIENT_REQUEST)
+                .confirmationReason(ClaimReason.CLIENT_REQUEST)
                 .claimSituation(ClaimSituation.AWAITING_CLAIM)
                 .build();
     }

@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.CompleteClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;

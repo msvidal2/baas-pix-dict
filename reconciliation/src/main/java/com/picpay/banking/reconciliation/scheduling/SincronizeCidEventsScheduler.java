@@ -3,6 +3,7 @@ package com.picpay.banking.reconciliation.scheduling;
 import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
+import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
+@UnavailableWhileSyncIsActive
 public class SincronizeCidEventsScheduler {
 
     private static final String EVERY_HOUR = "0 0 0/1 1/1 * ?";

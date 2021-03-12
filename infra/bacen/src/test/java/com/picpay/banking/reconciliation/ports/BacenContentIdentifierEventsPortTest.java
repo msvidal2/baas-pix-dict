@@ -40,7 +40,8 @@ class BacenContentIdentifierEventsPortTest {
     @BeforeEach
     void init(){
         this.bacenContentIdentifierEventsPort =
-            new BacenContentIdentifierEventsPortImpl(bacenArqClient,bacenReconciliationClient,"22896431", "http://urlGateway.com");
+            new BacenContentIdentifierEventsPortImpl(bacenArqClient, bacenReconciliationClient,
+                "22896431", "http://urlGateway.com");
 
         this.cidSetFile = CidSetFile.builder()
             .id(1)

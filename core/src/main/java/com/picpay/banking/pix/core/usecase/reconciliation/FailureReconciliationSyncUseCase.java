@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -120,7 +119,7 @@ public class FailureReconciliationSyncUseCase {
 
     private void performSyncVerifier(final SyncVerifierHistoric syncVerifierHistoric, final Set<BacenCidEvent> bacenEvents) {
         var syncVerifier = syncVerifierPort.getLastSuccessfulVsync(syncVerifierHistoric.getKeyType());
-        var vsyncCurrent = syncVerifier.calculateVsync(bacenEvents.stream().map(BacenCidEvent::getCid).collect(Collectors.toList()));
+        var vsyncCurrent = syncVerifier.calculateVsync(bacenEvents.stream().map(BacenCidEvent::getCid));
         var syncVerifierResult = bacenSyncVerificationsPort.syncVerification(syncVerifierHistoric.getKeyType(), vsyncCurrent);
         var newSyncVerifierHistoric = syncVerifier.syncVerificationResult(vsyncCurrent, syncVerifierResult);
         syncVerifierPort.save(syncVerifier);

@@ -13,6 +13,7 @@ import com.picpay.banking.reconciliation.dto.response.CreateSyncVerificationResp
 import com.picpay.banking.reconciliation.dto.response.EntryByCidResponse;
 import com.picpay.banking.reconciliation.dto.response.GetCidSetFileResponse;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -25,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 
 @FeignClient(value = "Reconciliation",
-        url = "${pix.bacen.dict.url}",
-        path = "/dict/api/v1/")
+    url = "${pix.bacen.dict.url}",
+    path = "/dict/api/v1/")
 public interface BacenReconciliationClient {
 
     @PostMapping(value = "/cids/files",
@@ -42,11 +43,13 @@ public interface BacenReconciliationClient {
     @GetMapping(value = "/cids/entries/{cid}",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
+    @RateLimiter(name = "getEntryByCidRateLimiter")
     EntryByCidResponse getEntryByCid(@PathVariable("cid") String cid, @RequestHeader("PI-RequestingParticipant") String participant);
 
     @GetMapping(value = "/cids/events",
         consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.APPLICATION_XML_VALUE)
+    @RateLimiter(name = "listCidSetEventsRateLimiter")
     ListCidSetEventsResponse getEvents(
         @RequestParam(value = "Participant") String participant,
         @RequestParam(value = "KeyType") String keyType,

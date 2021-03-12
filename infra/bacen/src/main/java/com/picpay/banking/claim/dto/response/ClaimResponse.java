@@ -1,9 +1,9 @@
 package com.picpay.banking.claim.dto.response;
 
 import com.picpay.banking.adapters.LocalDateTimeAdapter;
-import com.picpay.banking.claim.dto.ClaimReason;
 import com.picpay.banking.claim.dto.request.ClaimType;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimReason;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pixkey.dto.request.Account;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
@@ -104,8 +104,8 @@ public class ClaimResponse {
                 .resolutionThresholdDate(resolutionPeriodEnd)
                 .lastModifiedDate(lastModified)
                 .personType(claimer.getType().getPersonType())
-                .cancelReason(cancelReason != null ? cancelReason.getCancelReason() : null)
-                .confirmationReason(confirmReason != null ? confirmReason.getConfirmationReason() : null)
+                .cancelReason(cancelReason)
+                .confirmationReason(confirmReason)
                 .isClaim(cancelledBy != null ? cancelledBy.isValue() : null)
                 .correlationId(correlationId)
                 .build();
