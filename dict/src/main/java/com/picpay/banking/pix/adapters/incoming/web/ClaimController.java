@@ -7,8 +7,8 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResp
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
-import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,11 +34,12 @@ public class ClaimController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String CLAIM_ID = "claimId";
 
+    private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
+    private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
-
     private final ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     @Trace
@@ -56,9 +57,13 @@ public class ClaimController {
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
         var claim = requestDTO.toDomain();
+
         CreateClaimValidator.validate(requestIdentifier, claim);
 
-        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEventType.PENDING_OPEN);
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.PENDING_CREATE,
+                claim);
 
         return ClaimResponseDTO.from(claim);
     }
@@ -102,6 +107,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
@@ -114,10 +120,15 @@ public class ClaimController {
         var claim = Claim.builder()
                 .claimId(claimId)
                 .ispb(dto.getIspb())
+                .cancelReason(dto.getDomainReason())
                 .build();
 
         ClaimCancelValidator.validate(claim, requestIdentifier);
-        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEventType.PENDING_CANCELED);
+
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.PENDING_CANCELLATION,
+                claim);
 
         return ClaimResponseDTO.from(claim);
     }

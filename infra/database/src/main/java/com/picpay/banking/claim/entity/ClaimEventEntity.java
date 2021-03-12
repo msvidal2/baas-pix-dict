@@ -1,8 +1,7 @@
-package com.picpay.banking.pixkey.entity;
+package com.picpay.banking.claim.entity;
 
-import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.PixKeyEvent;
+import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +13,12 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "pix_key_event")
+@Entity(name = "claim_event")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PixKeyEventEntity {
+public class ClaimEventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
@@ -28,22 +27,28 @@ public class PixKeyEventEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PixKeyEvent type;
+    private ClaimEventType type;
 
     @Column(nullable = false)
     private String requestIdentifier;
 
-    private String pixKey;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private KeyType pixKeyType;
+    private String claimId;
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
-    private PixKey data;
+    private Claim data;
 
     @CreatedDate
     private LocalDateTime creationDate;
+
+    public static ClaimEventEntity of(String requestIdentifier, Claim claim, ClaimEventType eventType) {
+        return ClaimEventEntity.builder()
+                .type(eventType)
+                .requestIdentifier(requestIdentifier)
+                .claimId(claim.getClaimId())
+                .data(claim)
+                .creationDate(LocalDateTime.now())
+                .build();
+    }
 
 }

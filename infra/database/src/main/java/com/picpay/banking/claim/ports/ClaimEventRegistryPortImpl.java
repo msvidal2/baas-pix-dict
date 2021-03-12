@@ -1,12 +1,10 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.entity.ClaimEntity;
-import com.picpay.banking.claim.entity.ClaimEvent;
-import com.picpay.banking.claim.entity.ClaimEventTypeEntity;
+import com.picpay.banking.claim.entity.ClaimEventEntity;
 import com.picpay.banking.claim.repository.ClaimEventRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
-import com.picpay.banking.pix.core.ports.claim.picpay.ClaimEventRegistryPort;
+import com.picpay.banking.pix.core.ports.claim.ClaimEventRegistryPort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +20,14 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
 
     @Override
     @ValidateIdempotency(Claim.class)
-    public void persistClaimEvent(final Claim claim,
-                                  @IdempotencyKey final String requestIdentifier,
-                                  final ClaimEventType claimEvent) {
-        ClaimEntity entity = ClaimEntity.from(claim);
-        ClaimEvent event = ClaimEvent.builder()
-                .claim(entity)
-                .data(entity)
-                .type(ClaimEventTypeEntity.resolve(claimEvent))
-                .build();
+    public void registry(@IdempotencyKey String requestIdentifier, ClaimEventType eventType, Claim claim) {
 
-        claimEventRepository.save(event);
+        var claimEvent = ClaimEventEntity.of(
+                requestIdentifier,
+                claim,
+                eventType);
+
+        claimEventRepository.save(claimEvent);
     }
+
 }

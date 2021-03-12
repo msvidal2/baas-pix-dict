@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.validators.IspbValidator;
+import com.picpay.banking.pix.core.validators.RequestIdentifierValidator;
 import com.picpay.banking.pix.core.validators.key.KeyValidator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,7 @@ public class RemovePixKeyValidator {
     public static void validate(final String requestIdentifier,
                                 final PixKey pixKey,
                                 final Reason reason) {
-        if (Strings.isNullOrEmpty(requestIdentifier) || requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("RequestIdentifier cannot be empty");
-        }
+        RequestIdentifierValidator.validate(requestIdentifier);
 
         if(Objects.isNull(pixKey)) {
             throw new IllegalArgumentException("Pix key cannot be null");
