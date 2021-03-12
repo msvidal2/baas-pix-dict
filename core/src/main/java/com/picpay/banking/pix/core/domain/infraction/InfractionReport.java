@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain.infraction;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.exception.InfractionReportException;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import static com.picpay.banking.pix.core.exception.InfractionReportError.INFRAC
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InfractionReport implements Serializable {
 
     private static final long serialVersionUID = 640888779552542875L;
