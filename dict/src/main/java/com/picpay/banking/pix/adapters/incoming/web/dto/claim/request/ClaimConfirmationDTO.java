@@ -8,7 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,11 +19,10 @@ import org.springframework.lang.NonNull;
 public class ClaimConfirmationDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NonNull
     private int ispb;
 
     @ApiModelProperty(value = "Reason for confirmation", required = true)
-    @NonNull
+    @NotNull
     private ClaimConfirmationReasonDTO reason;
 
     public Claim toDomain(final String claimId) {

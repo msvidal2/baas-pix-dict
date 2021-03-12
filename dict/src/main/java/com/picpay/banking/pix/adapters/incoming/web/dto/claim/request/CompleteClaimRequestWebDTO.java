@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
-
 @Builder
 @Getter
 @ToString
@@ -17,7 +15,6 @@ import javax.validation.constraints.NotNull;
 public class CompleteClaimRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NotNull
     private int ispb;
 
 }
