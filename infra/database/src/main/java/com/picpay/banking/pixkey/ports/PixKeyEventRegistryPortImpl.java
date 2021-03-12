@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.PixKeyEvent;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyCacheSavePort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pixkey.entity.KeyEventType;
@@ -24,6 +25,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
     private final PixKeyEventRepository eventRepository;
+
+    private final PixKeyCacheSavePort pixKeyCacheSavePort;
 
     @Override
     @ValidateIdempotency(PixKey.class)
@@ -48,6 +51,8 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
                 .build();
 
         eventRepository.save(eventEntity);
+
+        pixKeyCacheSavePort.save(pixKey, requestIdentifier);
 
         log.info("PixKeyEventRegistry_registered {} {}",
                 kv("event", event),
