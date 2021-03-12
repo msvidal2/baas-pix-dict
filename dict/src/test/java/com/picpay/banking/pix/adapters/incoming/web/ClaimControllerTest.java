@@ -1,5 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelReasonDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
@@ -44,10 +46,10 @@ class ClaimControllerTest {
     private FindClaimUseCase findClaimUseCase;
 
     @Mock
-    private CompleteClaimUseCase completeClaimUseCase;
+    private ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     @Mock
-    private ClaimEventRegistryUseCase claimEventRegistryUseCase;
+    private CompleteClaimUseCase completeClaimUseCase;
 
     private Claim claim;
 
@@ -129,6 +131,35 @@ class ClaimControllerTest {
     }
 
     @Test
+
+    void when_confirmClaimsWithSuccess_expect_statusAccepted() throws Exception {
+        var claimId = UUID.randomUUID().toString();
+
+        mockMvc.perform(post("/v1/claims/".concat(claimId).concat("/confirm"))
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimConfirmationDTO.builder()
+                        .ispb(12345)
+                        .reason(ClaimConfirmationReasonDTO.CLIENT_REQUEST)
+                        .build())))
+                .andDo(print())
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.claimId", equalTo(claimId)))
+                .andExpect(jsonPath("$.confirmationReason", equalTo(ClaimConfirmationReasonDTO.CLIENT_REQUEST.name())));
+    }
+
+    @Test
+    void when_confirmClaimsWithInvalidRequest_expect_statusBadRequest() throws Exception {
+        mockMvc.perform(post("/v1/claims/1234567890/confirm")
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimConfirmationDTO.builder()
+                        .ispb(12345)
+                        .reason(ClaimConfirmationReasonDTO.CLIENT_REQUEST)
+                        .build())))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
     void when_cancelClaimWithSuccess_expect_accepted() throws Exception {
         doNothing().when(claimEventRegistryUseCase).execute(anyString(), any(), any());
 

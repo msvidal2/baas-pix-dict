@@ -6,18 +6,17 @@ import com.google.common.base.Strings;
 import lombok.*;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 @Builder
 @Setter
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Claim {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Claim implements Serializable {
 
     @With
     private String claimId;

@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -71,6 +72,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
@@ -80,9 +82,15 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getDomainReason(),
-                        requestIdentifier));
+        var claim = dto.toDomain(claimId);
+
+        ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
+
+        claimEventRegistryUseCase.execute(requestIdentifier,
+                ClaimEventType.PENDING_CONFIRMATION,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
