@@ -1,16 +1,16 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Strings;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import net.logstash.logback.encoder.org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+@JsonInclude(NON_NULL)
 @Builder
 @Setter
 @Getter
@@ -19,12 +19,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Claim {
 
+    @With
     private String claimId;
     private ClaimSituation claimSituation;
     private ClaimType claimType;
-    private int participationFlow;
+    private Integer participationFlow;
     private PixKey pixKey;
-    private int ispb;
+    private Integer ispb;
     private String branchNumber;
     private AccountType accountType;
     private String accountNumber;
@@ -33,7 +34,7 @@ public class Claim {
     private String name;
     private String fantasyName;
     private String cpfCnpj;
-    private int donorIspb;
+    private Integer donorIspb;
     private DonorData donorData;
     private Boolean isClaim;
     private LocalDateTime resolutionThresholdDate;
@@ -49,6 +50,7 @@ public class Claim {
         return ObjectUtils.firstNonNull(name, fantasyName);
     }
 
+    @JsonIgnore
     public String getTaxIdWithLeftZeros() {
         int size = 11;
 
@@ -59,6 +61,7 @@ public class Claim {
         return Strings.padStart(cpfCnpj, size, '0');
     }
 
+    @JsonIgnore
     public boolean isOpen(Integer participant) {
         return participant == donorIspb && ClaimSituation.OPEN.equals(claimSituation);
     }

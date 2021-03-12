@@ -1,6 +1,5 @@
 package com.picpay.banking.claim.ports;
 
-import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.entity.ClaimEventEntity;
 import com.picpay.banking.claim.repository.ClaimEventRepository;
 import com.picpay.banking.pix.core.domain.Claim;
