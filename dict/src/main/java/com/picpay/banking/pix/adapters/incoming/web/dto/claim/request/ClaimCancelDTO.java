@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
+import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimReason;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -28,8 +29,11 @@ public class ClaimCancelDTO {
     @NonNull
     private ClaimCancelReasonDTO reason;
 
-    public ClaimReason getDomainReason() {
-        return reason.getClaimReason();
+    public Claim toClaim() {
+        return Claim.builder()
+                .ispb(ispb)
+                .cancelReason(reason.getClaimReason())
+                .build();
     }
 
 }
