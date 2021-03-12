@@ -19,6 +19,7 @@ public class PixKeyEventRegistryUseCase {
                         final Reason reason) {
 
         eventRegistryPort.registry(event, requestIdentifier, key, reason);
+
     }
 
 }
