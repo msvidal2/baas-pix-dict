@@ -65,6 +65,14 @@ public class CreatePixKeyRequestWebDTO {
     @NotNull
     protected CreateReasonDTO reason;
 
+    public String getFantasyName() {
+        if(PersonType.INDIVIDUAL_PERSON.equals(personType)) {
+            return null;
+        }
+
+        return fantasyName;
+    }
+
     public PixKey toPixKey() {
         return PixKey.builder()
                 .type(type)
