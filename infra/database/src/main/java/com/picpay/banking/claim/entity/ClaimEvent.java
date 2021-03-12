@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 
 @Entity(name = "claim_event")
 @Builder

@@ -18,12 +18,7 @@ public enum ClaimSituation {
     AWAITING_CLAIM(1),
     CONFIRMED(2),
     CANCELED(3),
-    COMPLETED(4),
-    PENDING_OPEN(5),
-    PENDING_AWAITING_CLAIM(6),
-    PENDING_CONFIRMED(7),
-    PENDING_CANCELED(8),
-    PENDING_COMPLETED(9);
+    COMPLETED(4);
 
     private final int value;
 

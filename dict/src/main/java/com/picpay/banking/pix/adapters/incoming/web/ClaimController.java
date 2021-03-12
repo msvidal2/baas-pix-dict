@@ -5,9 +5,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
-import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
@@ -35,7 +35,6 @@ public class ClaimController {
     public static final String CLAIM_ID = "claimId";
 
     private final ConfirmClaimUseCase confirmClaimUseCase;
-    private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
@@ -46,7 +45,6 @@ public class ClaimController {
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(ACCEPTED)
-    @ValidateIdempotency(CreateClaimRequestWebDTO.class)
     public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
@@ -60,7 +58,7 @@ public class ClaimController {
         var claim = requestDTO.toDomain();
         CreateClaimValidator.validate(requestIdentifier, claim);
 
-        claimEventRegistryUseCase.execute(claim, requestIdentifier);
+        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEventType.PENDING_OPEN);
 
         return ClaimResponseDTO.from(claim);
     }
@@ -119,7 +117,7 @@ public class ClaimController {
                 .build();
 
         ClaimCancelValidator.validate(claim, requestIdentifier);
-        claimEventRegistryUseCase.execute(claim, requestIdentifier);
+        claimEventRegistryUseCase.execute(claim, requestIdentifier, ClaimEventType.PENDING_CANCELED);
 
         return ClaimResponseDTO.from(claim);
     }
