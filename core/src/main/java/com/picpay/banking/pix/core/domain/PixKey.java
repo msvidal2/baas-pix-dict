@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,6 +72,7 @@ public class PixKey implements Serializable {
         return ObjectUtils.firstNonNull(name, fantasyName);
     }
 
+    @JsonIgnore
     public String getTaxIdWithLeftZeros() {
         int size = CPF_SIZE;
 

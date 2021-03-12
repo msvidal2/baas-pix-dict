@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -31,7 +32,7 @@ public class RemovePixKeyRequestWebDTO {
                 .key(key)
                 .ispb(ispb)
                 .type(type)
-//                .situation(PixKeySituation.PENDING_REMOVE)
+                .situation(PixKeySituation.INACTIVE)
                 .build();
     }
 
