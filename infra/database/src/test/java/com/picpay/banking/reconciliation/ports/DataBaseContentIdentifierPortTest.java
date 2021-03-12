@@ -4,6 +4,7 @@ import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierActionEntity;
 import com.picpay.banking.reconciliation.entity.ContentIdentifierFileEntity;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierActionRepository;
@@ -97,6 +98,7 @@ class DataBaseContentIdentifierPortTest {
             .accountNumber("132")
             .accountOpeningDate(LocalDateTime.now())
             .branchNumber("1")
+            .situation(PixKeySituation.ACTIVE)
             .requestId(UUID.randomUUID())
         .build();
 
