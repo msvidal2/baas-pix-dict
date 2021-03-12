@@ -123,7 +123,7 @@ public class PixKeyEntity {
             .cid(pixKey.getCid())
             .donatedAutomatically(pixKey.isDonatedAutomatically())
             .fantasyName(pixKey.getFantasyName())
-            .situation(Situation.resolve(pixKey.getSituation()))
+            .situation(pixKey.getSituation() != null ? Situation.resolve(pixKey.getSituation()) : null)
             .build();
     }
 

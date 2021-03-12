@@ -6,8 +6,6 @@ import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
-import com.picpay.banking.pixkey.entity.KeyEventType;
-import com.picpay.banking.pixkey.entity.PixKeyEntity;
 import com.picpay.banking.pixkey.entity.PixKeyEventEntity;
 import com.picpay.banking.pixkey.repository.PixKeyEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,15 +33,12 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
                 kv("pixKey", pixKey),
                 kv("reason", reason));
 
-        var pixKeyEntity = PixKeyEntity.from(pixKey, reason);
-        pixKeyEntity.setRequestId(requestIdentifier);
-
         var eventEntity = PixKeyEventEntity.builder()
-                .type(KeyEventType.resolve(event))
+                .type(event)
                 .requestIdentifier(requestIdentifier)
                 .pixKey(pixKey.getKey())
                 .pixKeyType(pixKey.getType())
-                .data(pixKeyEntity)
+                .data(pixKey)
                 .creationDate(LocalDateTime.now())
                 .build();
 

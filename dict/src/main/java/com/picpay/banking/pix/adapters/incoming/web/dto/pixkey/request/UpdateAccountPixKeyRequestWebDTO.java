@@ -58,7 +58,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .accountOpeningDate(accountOpeningDate)
-//                .situation(PixKeySituation.PENDING_UPDATE)
+                .situation(PixKeySituation.ACTIVE)
                 .build();
     }
 
