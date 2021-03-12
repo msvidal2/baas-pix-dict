@@ -110,6 +110,7 @@ public class ClaimController {
     @ApiOperation("Cancel an pix key claim")
     @DeleteMapping("/{claimId}")
     @ResponseStatus(ACCEPTED)
+    @ValidateIdempotency(ClaimCancelDTO.class)
     public ClaimResponseDTO cancel(@RequestHeader String requestIdentifier,
                         @PathVariable String claimId,
                         @RequestBody @Validated ClaimCancelDTO dto) {
