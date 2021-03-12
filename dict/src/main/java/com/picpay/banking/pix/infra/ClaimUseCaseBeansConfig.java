@@ -71,4 +71,9 @@ public class ClaimUseCaseBeansConfig {
         return new FindClaimUseCase(findClaimPort);
     }
 
+    @Bean
+    public ClaimEventRegistryUseCase claimEventRegistryUseCase() {
+        return new ClaimEventRegistryUseCase();
+    }
+
 }
