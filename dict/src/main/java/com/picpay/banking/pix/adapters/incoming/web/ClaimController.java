@@ -88,7 +88,7 @@ public class ClaimController {
         ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
 
         claimEventRegistryUseCase.execute(requestIdentifier,
-                ClaimEventType.PENDING_CONFIRM,
+                ClaimEventType.PENDING_CONFIRMATION,
                 claim);
 
         return ClaimResponseDTO.from(claim);
