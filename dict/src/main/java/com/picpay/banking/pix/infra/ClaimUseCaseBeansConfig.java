@@ -1,16 +1,8 @@
 package com.picpay.banking.pix.infra;
 
-import com.picpay.banking.pix.core.ports.claim.bacen.CancelClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CancelClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
+import com.picpay.banking.pix.core.ports.claim.ClaimEventRegistryPort;
+import com.picpay.banking.pix.core.ports.claim.bacen.*;
+import com.picpay.banking.pix.core.ports.claim.picpay.*;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -72,8 +64,8 @@ public class ClaimUseCaseBeansConfig {
     }
 
     @Bean
-    public ClaimEventRegistryUseCase claimEventRegistryUseCase() {
-        return new ClaimEventRegistryUseCase(null);
+    public ClaimEventRegistryUseCase claimEventRegistryUseCase(ClaimEventRegistryPort claimEventRegistryPort) {
+        return new ClaimEventRegistryUseCase(claimEventRegistryPort);
     }
 
 }
