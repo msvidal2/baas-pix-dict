@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import com.picpay.banking.pix.core.domain.ClaimEventType;
 
 @Entity(name = "claim_event")
 @Builder
@@ -24,7 +23,7 @@ public class ClaimEvent {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private ClaimEventType type;
+    private ClaimEventTypeEntity type;
 
     @JoinColumn(name = "claim_id")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -2,6 +2,7 @@ package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.claim.entity.ClaimEntity;
 import com.picpay.banking.claim.entity.ClaimEvent;
+import com.picpay.banking.claim.entity.ClaimEventTypeEntity;
 import com.picpay.banking.claim.repository.ClaimEventRepository;
 import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
@@ -28,7 +29,7 @@ public class ClaimEventRegistryPortImpl implements ClaimEventRegistryPort {
         ClaimEvent event = ClaimEvent.builder()
                 .claim(entity)
                 .data(entity)
-                .type(claimEvent)
+                .type(ClaimEventTypeEntity.resolve(claimEvent))
                 .build();
 
         claimEventRepository.save(event);
