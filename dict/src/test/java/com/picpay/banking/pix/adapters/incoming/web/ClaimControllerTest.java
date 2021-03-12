@@ -2,6 +2,8 @@ package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelReasonDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
@@ -23,6 +25,7 @@ import java.util.UUID;
 import static com.picpay.banking.pix.adapters.incoming.web.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -128,6 +131,7 @@ class ClaimControllerTest {
     }
 
     @Test
+
     void when_confirmClaimsWithSuccess_expect_statusAccepted() throws Exception {
         var claimId = UUID.randomUUID().toString();
 
@@ -155,6 +159,89 @@ class ClaimControllerTest {
                         .build())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+
+    void when_cancelClaimWithSuccess_expect_accepted() throws Exception {
+        doNothing().when(claimEventRegistryUseCase).execute(anyString(), any(), any());
+
+        mockMvc.perform(delete(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d"))
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimCancelDTO.builder()
+                        .ispb(22896432)
+                        .reason(ClaimCancelReasonDTO.CLIENT_REQUEST)
+                        .canceledByClaimant(Boolean.FALSE)
+                        .build())))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.claimId", equalTo("9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d")))
+                .andExpect(jsonPath("$.ispb", equalTo(22896432)))
+                .andExpect(jsonPath("$.cancelReason", equalTo("CLIENT_REQUEST")));
+    }
+
+    @Test
+    void when_cancelClaimInvalidClaimId_expect_badRequest() throws Exception {
+        mockMvc.perform(delete(BASE_URL.concat("/1"))
+                .accept(MediaType.APPLICATION_JSON)
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimCancelDTO.builder()
+                        .ispb(22896432)
+                        .reason(ClaimCancelReasonDTO.CLIENT_REQUEST)
+                        .canceledByClaimant(Boolean.FALSE)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid claim id: 1")));
+    }
+
+    @Test
+    void when_cancelClaimWithoutRequestIdentifier_expect_badRequest() throws Exception {
+        mockMvc.perform(delete(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimCancelDTO.builder()
+                        .ispb(22896432)
+                        .reason(ClaimCancelReasonDTO.CLIENT_REQUEST)
+                        .canceledByClaimant(Boolean.FALSE)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Missing request header 'requestIdentifier' for method parameter of type String")));
+    }
+
+    @Test
+    void when_cancelClaimWithoutIspb_expect_badRequest() throws Exception {
+        mockMvc.perform(delete(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d"))
+                .accept(MediaType.APPLICATION_JSON)
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimCancelDTO.builder()
+                        .reason(ClaimCancelReasonDTO.CLIENT_REQUEST)
+                        .canceledByClaimant(Boolean.FALSE)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid ISPB")));
+    }
+
+    @Test
+    void when_cancelClaimWithoutReason_expect_badRequest() throws Exception {
+        mockMvc.perform(delete(BASE_URL.concat("/9bdf6f35-61dd-4325-9a7a-f9fc3e38c69d"))
+                .accept(MediaType.APPLICATION_JSON)
+                .header("requestIdentifier", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(ClaimCancelDTO.builder()
+                        .ispb(22896432)
+                        .canceledByClaimant(Boolean.FALSE)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("reason")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("must not be null")));
     }
 
 }

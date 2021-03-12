@@ -36,9 +36,7 @@ public class ClaimController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String CLAIM_ID = "claimId";
 
-    private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
-    private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
