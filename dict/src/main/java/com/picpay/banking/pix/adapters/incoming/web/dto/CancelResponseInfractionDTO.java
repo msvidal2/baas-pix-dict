@@ -1,12 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author Luis Silva
@@ -17,18 +13,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CancelResponseInfractionDTO {
-
-    private String endToEndId;
 
     private String infractionReportId;
 
-    private InfractionReportSituation situation;
-
     public static CancelResponseInfractionDTO from(final InfractionReport infractionReport) {
-        return CancelResponseInfractionDTO.builder().endToEndId(infractionReport.getEndToEndId())
+        return CancelResponseInfractionDTO.builder()
             .infractionReportId(infractionReport.getInfractionReportId())
-            .situation(infractionReport.getSituation())
             .build();
     }
 

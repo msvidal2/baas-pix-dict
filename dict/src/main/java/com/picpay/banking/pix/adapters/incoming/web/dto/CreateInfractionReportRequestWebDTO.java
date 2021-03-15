@@ -1,7 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreateInfractionReportRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of the Participant who identified the infraction.", required = true)
@@ -31,8 +33,8 @@ public class CreateInfractionReportRequestWebDTO {
     @ApiModelProperty(value = "Details that can help the receiving participant to analyze suspected infraction")
     private String details;
 
-    public static InfractionReport from(CreateInfractionReportRequestWebDTO request) {
-        return InfractionReport.builder()
+    public static InfractionReportEventData from(CreateInfractionReportRequestWebDTO request) {
+        return InfractionReportEventData.builder()
             .endToEndId(request.getEndToEndId())
             .infractionType(request.getInfractionType())
             .details(request.getDetails())

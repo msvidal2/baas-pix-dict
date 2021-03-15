@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
-import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,24 +11,14 @@ import lombok.ToString;
 @ToString
 public class InfractionReportCreatedDTO {
 
-    private final String infractionReportId;
-    private final ReportedBy reportedBy;
-    private final InfractionReportSituation situation;
-    private final String ispbDebited;
-    private final String ispbCredited;
-    private final String dateCreate;
-    private final String dateLastUpdate;
+    private String endToEndId;
+    private InfractionType infractionType;
 
-    public static InfractionReportCreatedDTO from(InfractionReport infractionReport) {
+    public static InfractionReportCreatedDTO from(InfractionReportEventData infractionReport) {
         return InfractionReportCreatedDTO.builder()
-            .infractionReportId(infractionReport.getInfractionReportId())
-            .reportedBy(infractionReport.getReportedBy())
-            .situation(infractionReport.getSituation())
-            .ispbDebited(infractionReport.getIspbDebited())
-            .ispbCredited(infractionReport.getIspbCredited())
-            .dateCreate(infractionReport.getDateCreate().toString())
-            .dateLastUpdate(infractionReport.getDateLastUpdate().toString())
-            .build();
+                .endToEndId(infractionReport.getEndToEndId())
+                .infractionType(infractionReport.getInfractionType())
+                .build();
     }
 
 }

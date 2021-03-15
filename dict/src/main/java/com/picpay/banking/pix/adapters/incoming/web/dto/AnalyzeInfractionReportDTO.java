@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionAnalyzeEventData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,8 +31,11 @@ public class AnalyzeInfractionReportDTO {
     @NotNull
     private InfractionAnalyzeResult result;
 
-    public InfractionAnalyze toInfractionAnalyze(){
-        return InfractionAnalyze.builder().details(details).analyzeResult(result).build();
+    public InfractionAnalyzeEventData toInfractionAnalyze(){
+        return InfractionAnalyzeEventData.builder()
+                .details(details)
+                .analyzeResult(result)
+                .build();
     }
 
 }
