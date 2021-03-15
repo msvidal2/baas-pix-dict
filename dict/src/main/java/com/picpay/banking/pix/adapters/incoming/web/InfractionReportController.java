@@ -1,41 +1,25 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.AnalyzeInfractionReportDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CancelInfractionDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CancelResponseInfractionDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.CreateInfractionReportRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.FilterInfractionReportDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.FindInfractionReportDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.InfractionReportCreatedDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.*;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.CancelInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.usecase.infraction.*;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
+import static com.picpay.banking.pix.core.domain.InfractionReportEvent.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
 @Api(value = "InfractionReport")
@@ -51,15 +35,13 @@ public class InfractionReportController {
     public static final String INFRACTION_REPORT_ID = "infractionReportId";
 
     private final FindInfractionReportUseCase findInfractionReportUseCase;
-    private final CreateInfractionReportUseCase createInfractionReportUseCase;
-    private final CancelInfractionReportUseCase cancelInfractionReportUseCase;
     private final FilterInfractionReportUseCase filterInfractionReportUseCase;
-    private final AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase;
+    private final InfractionEventRegistryUseCase infractionEventRegistryUseCase;
 
     @Trace
     @ApiOperation(value = "Create a new infraction report")
     @PostMapping
-    @ResponseStatus(CREATED)
+    @ResponseStatus(ACCEPTED)
     public InfractionReportCreatedDTO report(@RequestHeader String requestIdentifier,
                                              @RequestBody @Valid CreateInfractionReportRequestWebDTO createInfractionReportRequestWebDTO) {
         log.info("Infraction_reporting",
@@ -68,9 +50,9 @@ public class InfractionReportController {
                 kv(INFRACTION_TYPE, createInfractionReportRequestWebDTO.getInfractionType()),
                 kv("ispbRequester", createInfractionReportRequestWebDTO.getIspbRequester()));
 
-        final var infractionReport = createInfractionReportUseCase.execute(
-            CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO),
-            requestIdentifier);
+        final var infractionReport = CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO);
+
+        infractionEventRegistryUseCase.execute(PENDING_CREATE, requestIdentifier, infractionReport);
 
         return InfractionReportCreatedDTO.from(infractionReport);
     }
@@ -90,7 +72,7 @@ public class InfractionReportController {
     @Trace
     @ApiOperation(value = "Cancel Infraction Report")
     @PostMapping(value = "/{infractionReportId}/cancel")
-    @ResponseStatus(OK)
+    @ResponseStatus(ACCEPTED)
     public CancelResponseInfractionDTO cancel(@RequestHeader String requestIdentifier,
                                               @PathVariable(INFRACTION_REPORT_ID) String infractionReportId,
                                               @Valid @RequestBody CancelInfractionDTO dto) {
@@ -100,16 +82,22 @@ public class InfractionReportController {
                 kv(INFRACTION_REPORT_ID, infractionReportId),
                 kv(INFRACTION_TYPE, dto.getIspb()));
 
-        var infractionReport = this.cancelInfractionReportUseCase
-            .execute(infractionReportId, dto.getIspb(), requestIdentifier);
+        var eventData = InfractionReportEventData.builder()
+                .infractionReportId(infractionReportId)
+                .ispb(dto.getIspb())
+                .build();
 
-        return CancelResponseInfractionDTO.from(infractionReport);
+        infractionEventRegistryUseCase.execute(PENDING_CANCEL, requestIdentifier, eventData);
+
+        return CancelResponseInfractionDTO.builder()
+                .infractionReportId(infractionReportId)
+                .build();
     }
 
     @Trace
     @ApiOperation(value = "Analyze Infraction Report")
     @PostMapping(value = "/{infractionReportId}/analyze")
-    @ResponseStatus(OK)
+    @ResponseStatus(ACCEPTED)
     public CancelResponseInfractionDTO analyze(@RequestHeader String requestIdentifier,
                                                @PathVariable(INFRACTION_REPORT_ID) String infractionReportId,
                                                @Valid @RequestBody AnalyzeInfractionReportDTO dto) {
@@ -118,8 +106,16 @@ public class InfractionReportController {
                 kv(INFRACTION_REPORT_ID, infractionReportId),
                 kv(INFRACTION_TYPE, dto.getIspb()));
 
-        var infractionReport = this.analyzeInfractionReportUseCase.execute(infractionReportId, dto.toInfractionAnalyze(), requestIdentifier);
-        return CancelResponseInfractionDTO.from(infractionReport);
+        var eventData = InfractionReportEventData.builder()
+                .infractionReportId(infractionReportId)
+                .analyze(dto.toInfractionAnalyze())
+                .build();
+
+        infractionEventRegistryUseCase.execute(PENDING_ANALYZE, requestIdentifier, eventData);
+
+        return CancelResponseInfractionDTO.builder()
+                .infractionReportId(infractionReportId)
+                .build();
     }
 
     @Trace

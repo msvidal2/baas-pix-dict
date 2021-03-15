@@ -2,6 +2,7 @@ package com.picpay.banking.infraction.entity;
 
 import com.picpay.banking.pix.core.domain.InfractionReportEvent;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class InfractionReportEventEntity {
 
     @Type(type = "json")
     @Column(name = "event_data", columnDefinition = "json", nullable = false)
-    private InfractionReport data;
+    private InfractionReportEventData data;
 
     @CreatedDate
     private LocalDateTime creationDate;

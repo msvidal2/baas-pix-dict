@@ -3,10 +3,10 @@ package com.picpay.banking.pix.core.domain;
 public enum InfractionReportEvent {
 
     PENDING_CREATE,
-    PENDING_UPDATE,
-    PENDING_REMOVE,
+    PENDING_ANALYZE,
+    PENDING_CANCEL,
     CREATED,
-    REMOVED,
-    UPDATED;
+    ANALYZING,
+    CANCELED;
 
 }
