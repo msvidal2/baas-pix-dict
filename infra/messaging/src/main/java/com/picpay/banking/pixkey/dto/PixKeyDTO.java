@@ -43,7 +43,7 @@ public class PixKeyDTO {
     private Statistic statistic;
     private String cid;
     private UUID requestId;
-    private boolean donatedAutomatically;
+    private Boolean donatedAutomatically;
 
     public static Object from(final PixKey pixKey) {
         return PixKeyDTO.builder()
@@ -68,7 +68,7 @@ public class PixKeyDTO {
             .statistic(pixKey.getStatistic())
             .cid(pixKey.getCid())
             .requestId(pixKey.getRequestId())
-            .donatedAutomatically(pixKey.isDonatedAutomatically())
+            .donatedAutomatically(pixKey.getDonatedAutomatically())
             .build();
     }
 
@@ -95,7 +95,7 @@ public class PixKeyDTO {
                 .statistic(pixKeyDTO.getStatistic())
                 .cid(pixKeyDTO.getCid())
                 .requestId(pixKeyDTO.getRequestId())
-                .donatedAutomatically(pixKeyDTO.isDonatedAutomatically())
+                .donatedAutomatically(pixKeyDTO.getDonatedAutomatically())
                 .build();
     }
 
