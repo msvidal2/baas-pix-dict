@@ -5,11 +5,11 @@ package com.picpay.banking.pix.core.ports.infraction.picpay;/*
  */
 
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
 import lombok.NonNull;
 
 public interface InfractionReportCacheSavePort {
 
-    void save(@NonNull InfractionReport infractionReport, @NonNull String requestIdentifier);
+    void save(@NonNull InfractionReportEventData infractionReportEventData, @NonNull String requestIdentifier);
 
 }
