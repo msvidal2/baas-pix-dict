@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.domain.infraction.events;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InfractionReportEventData implements Serializable {
 
     private String infractionReportId;
