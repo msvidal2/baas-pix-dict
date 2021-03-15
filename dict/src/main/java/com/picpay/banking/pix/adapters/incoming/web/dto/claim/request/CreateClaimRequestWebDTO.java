@@ -31,7 +31,6 @@ public class CreateClaimRequestWebDTO {
     private String key;
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NotNull
     private int ispb;
 
     @ApiModelProperty(value = "Branch number of client", dataType="java.lang.String")

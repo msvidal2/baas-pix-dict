@@ -1,0 +1,1 @@
+ALTER TABLE claim_event MODIFY claim_id VARCHAR(100) NULL;

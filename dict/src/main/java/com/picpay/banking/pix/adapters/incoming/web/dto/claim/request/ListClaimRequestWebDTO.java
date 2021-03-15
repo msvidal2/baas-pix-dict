@@ -25,7 +25,6 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 public class ListClaimRequestWebDTO {
 
     @ApiModelProperty(value = "ISPB of PSP", dataType="java.lang.integer", required = true)
-    @NotNull
     private Integer ispb;
 
     @ApiModelProperty(value = "Person type of receiver")

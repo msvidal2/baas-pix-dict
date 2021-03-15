@@ -93,7 +93,7 @@ public class PixKeyEntity {
     @Column
     private String cid;
 
-    private boolean donatedAutomatically;
+    private Boolean donatedAutomatically;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime completionPeriodEnd;
@@ -121,7 +121,7 @@ public class PixKeyEntity {
             .updateDate(pixKey.getUpdatedAt())
             .ownershipDate(pixKey.getStartPossessionAt())
             .cid(pixKey.getCid())
-            .donatedAutomatically(pixKey.isDonatedAutomatically())
+            .donatedAutomatically(pixKey.getDonatedAutomatically())
             .fantasyName(pixKey.getFantasyName())
             .situation(pixKey.getSituation() != null ? Situation.resolve(pixKey.getSituation()) : null)
             .build();

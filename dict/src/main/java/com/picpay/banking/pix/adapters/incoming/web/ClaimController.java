@@ -8,8 +8,8 @@ import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
-import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,9 +35,7 @@ public class ClaimController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String CLAIM_ID = "claimId";
 
-    private final CreateClaimUseCase createAddressKeyUseCase;
     private final ConfirmClaimUseCase confirmClaimUseCase;
-    private final CancelClaimUseCase cancelClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
     private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
@@ -47,7 +45,6 @@ public class ClaimController {
     @ApiOperation(value = "Create a new Claim.")
     @PostMapping
     @ResponseStatus(ACCEPTED)
-    @ValidateIdempotency(CreateClaimRequestWebDTO.class)
     public ClaimResponseDTO create(@RequestHeader String requestIdentifier,
                                    @RequestBody @Valid CreateClaimRequestWebDTO requestDTO) {
 
@@ -73,6 +70,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Confirm an pix key claim")
     @PostMapping("/{claimId}/confirm")
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO confirm(@RequestHeader String requestIdentifier,
                          @PathVariable String claimId,
                          @RequestBody @Validated ClaimConfirmationDTO dto) {
@@ -82,9 +80,15 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        return ClaimResponseDTO.from(confirmClaimUseCase.execute(dto.toDomain(claimId),
-                        dto.getDomainReason(),
-                        requestIdentifier));
+        var claim = dto.toDomain(claimId);
+
+        ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
+
+        claimEventRegistryUseCase.execute(requestIdentifier,
+                ClaimEventType.PENDING_CONFIRMATION,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
