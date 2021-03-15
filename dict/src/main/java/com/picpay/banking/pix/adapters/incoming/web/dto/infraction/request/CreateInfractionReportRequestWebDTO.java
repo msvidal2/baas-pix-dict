@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;

@@ -1,7 +1,13 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.AnalyzeInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CancelInfractionDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CreateInfractionReportRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.FilterInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.CancelResponseInfractionDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.FindInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
