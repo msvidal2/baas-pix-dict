@@ -2,16 +2,21 @@ package com.picpay.banking.pix.core.events.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PixKeyEventData {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PixKeyEventData implements Serializable {
 
     private KeyType type;
     private String key;
