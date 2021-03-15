@@ -6,7 +6,7 @@ import com.picpay.banking.pix.core.domain.ResultCidFile;
 import com.picpay.banking.pix.core.exception.CidFileNotReadyException;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.PollCidFilePort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierFilePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 class RequestSyncFileUseCaseTest {
 
     private BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private ContentIdentifierFilePort contentIdentifierFilePort;
     private PollCidFilePort pollCidFilePort;
 
     private RequestSyncFileUseCase requestSyncFileUseCase;
@@ -37,9 +37,9 @@ class RequestSyncFileUseCaseTest {
     @BeforeEach
     void init() {
         bacenContentIdentifierEventsPort = Mockito.mock(BacenContentIdentifierEventsPort.class);
-        databaseContentIdentifierPort = Mockito.mock(DatabaseContentIdentifierPort.class);
+        contentIdentifierFilePort = Mockito.mock(ContentIdentifierFilePort.class);
         pollCidFilePort = Mockito.mock(PollCidFilePort.class);
-        requestSyncFileUseCase = new RequestSyncFileUseCase(bacenContentIdentifierEventsPort, databaseContentIdentifierPort, pollCidFilePort, 1, 10);
+        requestSyncFileUseCase = new RequestSyncFileUseCase(bacenContentIdentifierEventsPort, contentIdentifierFilePort, pollCidFilePort, 1, 10);
     }
 
     @Test
@@ -52,13 +52,13 @@ class RequestSyncFileUseCaseTest {
             .build();
 
         when(bacenContentIdentifierEventsPort.requestContentIdentifierFile(any())).thenReturn(requestedFile);
-        doNothing().when(databaseContentIdentifierPort).saveFile(any());
+        doNothing().when(contentIdentifierFilePort).saveFile(any());
         when(pollCidFilePort.poll(any(), anyInt(), any(), anyInt(), any())).thenReturn(Optional.of(ResultCidFile.emptyCidFile()));
 
         var receivedFile = requestSyncFileUseCase.requestAwaitFile(KeyType.CPF);
 
         assertThat(receivedFile).isNotNull();
-        verify(databaseContentIdentifierPort).saveFile(any());
+        verify(contentIdentifierFilePort).saveFile(any());
     }
 
     @Test
@@ -72,14 +72,14 @@ class RequestSyncFileUseCaseTest {
             .build();
 
         when(bacenContentIdentifierEventsPort.requestContentIdentifierFile(any())).thenReturn(requestedFile);
-        doNothing().when(databaseContentIdentifierPort).saveFile(any());
+        doNothing().when(contentIdentifierFilePort).saveFile(any());
         when(pollCidFilePort.poll(any(), anyInt(), any(), anyInt(), any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> requestSyncFileUseCase.requestAwaitFile(KeyType.CPF))
             .isInstanceOf(CidFileNotReadyException.class)
             .hasMessageContaining("O arquivo de CIDs 123 não está disponível no BACEN");
 
-        verify(databaseContentIdentifierPort).saveFile(any());
+        verify(contentIdentifierFilePort).saveFile(any());
     }
 
 }

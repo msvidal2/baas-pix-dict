@@ -3,26 +3,25 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PersonType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifier;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResult;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import com.picpay.banking.pix.core.exception.CidFileNotReadyException;
 import com.picpay.banking.pix.core.exception.ReconciliationException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierFilePort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -51,22 +49,14 @@ import static org.mockito.Mockito.when;
  * @version 1.0 25/11/2020
  */
 @ExtendWith(MockitoExtension.class)
-class FailureReconciliationSyncByFileUseCaseTest {
+class FileReconciliationCheckUseCaseTest {
 
     @Mock
-    private DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private ContentIdentifierFilePort contentIdentifierFilePort;
     @Mock
     private BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
     @Mock
-    private SavePixKeyPort createPixKeyPort;
-    @Mock
-    private RemovePixKeyPort removePixKeyPort;
-    @Mock
     private FindPixKeyPort findPixKeyPort;
-    @Mock
-    private PixKeyEventPort pixKeyEventPort;
-    @Mock
-    private ReconciliationLockPort lockPort;
     @Mock
     private SyncVerifierPort syncVerifierPort;
     @Mock
@@ -75,8 +65,12 @@ class FailureReconciliationSyncByFileUseCaseTest {
     private SyncVerifierHistoricPort syncVerifierHistoricPort;
     @Mock
     private RequestSyncFileUseCase requestSyncFileUseCase;
+    @Mock
+    private ReconciliationLockPort reconciliationLockPort;
+    @Mock
+    private ReconciliationActionPort reconciliationActionPort;
 
-    private FailureReconciliationSyncByFileUseCase failureReconciliationSyncByFileUseCase;
+    private FileReconciliationCheckUseCase fileReconciliationCheckUseCase;
 
     private ContentIdentifierFile cidFile;
     private Set<String> cids;
@@ -84,18 +78,16 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
     @BeforeEach
     public void init() {
-        failureReconciliationSyncByFileUseCase = new FailureReconciliationSyncByFileUseCase(
-            databaseContentIdentifierPort,
+        fileReconciliationCheckUseCase = new FileReconciliationCheckUseCase(
+            contentIdentifierFilePort,
             bacenPixKeyByContentIdentifierPort,
-            createPixKeyPort,
             findPixKeyPort,
-            removePixKeyPort,
-            pixKeyEventPort,
             syncVerifierPort,
             bacenSyncVerificationsPort,
             syncVerifierHistoricPort,
             requestSyncFileUseCase,
-            lockPort);
+            reconciliationLockPort,
+            reconciliationActionPort);
 
         cidFile = ContentIdentifierFile.builder()
             .id(1)
@@ -169,40 +161,51 @@ class FailureReconciliationSyncByFileUseCaseTest {
             "69db9b861be66f434f8ef722f480195b56aaadb7135b9089c53e161000af41da");
     }
 
+    private SyncVerifierHistoric createFailureSyncVerifier(KeyType keyType) {
+        return SyncVerifierHistoric.builder()
+            .synchronizedStart(LocalDateTime.now())
+            .keyType(keyType)
+            .syncVerifierResultType(SyncVerifierResultType.NOK)
+            .build();
+    }
+
     @Test
+    @DisplayName("Quando o arquivo estiver vazio lança exception")
     void when_file_is_empty_dont_process() {
         when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(contentFile(Collections.emptySet()));
 
-        assertThatThrownBy(() -> failureReconciliationSyncByFileUseCase.execute(KeyType.CPF))
+        assertThatThrownBy(() -> fileReconciliationCheckUseCase.execute(createFailureSyncVerifier(KeyType.CPF)))
             .isInstanceOf(ReconciliationException.class)
             .hasMessageContaining("The CID file is empty.");
 
-        verify(lockPort).lock();
+        verify(reconciliationLockPort).lock();
         verify(requestSyncFileUseCase).requestAwaitFile(KeyType.CPF);
         verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
-        verify(bacenPixKeyByContentIdentifierPort, never()).getPixKey(any());
-        verify(databaseContentIdentifierPort, never()).saveFile(any());
-        verify(pixKeyEventPort, never()).pixKeyWasCreated(any());
-        verify(pixKeyEventPort, never()).pixKeyWasUpdated(any());
-        verify(pixKeyEventPort, never()).pixKeyWasRemoved(any());
-        verify(lockPort).unlock();
+        verify(bacenPixKeyByContentIdentifierPort, never()).getPixKeyByCid(any());
+        verify(contentIdentifierFilePort, never()).saveFile(any());
+        verify(reconciliationActionPort, never()).insertPixKey(any());
+        verify(reconciliationActionPort, never()).updatePixKey(any(), any());
+        verify(reconciliationActionPort, never()).removePixKey(any());
+        verify(reconciliationLockPort).unlock();
     }
 
     @Test
+    @DisplayName("quando não é possível obter o arquivo lança exception")
     void when_file_is_unavailable_dont_insert_keys() {
         when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenThrow(new CidFileNotReadyException(123));
 
-        assertThatThrownBy(() -> failureReconciliationSyncByFileUseCase.execute(KeyType.CPF))
+        assertThatThrownBy(() -> fileReconciliationCheckUseCase.execute(createFailureSyncVerifier(KeyType.CPF)))
             .isInstanceOf(CidFileNotReadyException.class)
             .hasMessageContaining("O arquivo de CIDs 123 não está disponível no BACEN");
 
-        verify(lockPort).lock();
+        verify(reconciliationLockPort).lock();
         verify(findPixKeyPort, never()).findAllByKeyType(any(), any(), anyInt());
-        verify(databaseContentIdentifierPort, never()).saveFile(any());
-        verify(lockPort).unlock();
+        verify(contentIdentifierFilePort, never()).saveFile(any());
+        verify(reconciliationLockPort).unlock();
     }
 
     @Test
+    @DisplayName("Deve inserir 5 chaves")
     void when_valid_file_then_insert_keys_from_bacen() {
         final var availableFile = cidFile.toBuilder()
             .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
@@ -210,43 +213,39 @@ class FailureReconciliationSyncByFileUseCaseTest {
             .build();
 
         when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(availableFile);
-        doNothing().when(lockPort).lock();
+        doNothing().when(reconciliationLockPort).lock();
         when(findPixKeyPort.findAllByKeyType(any(), any(), anyInt())).then(this::generatePixkKeyToInsert);
-        when(bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
-        when(createPixKeyPort.savePixKey(any(), any())).then(this::generatePixKeyFromDomain);
+        when(bacenPixKeyByContentIdentifierPort.getPixKeyByCid(anyString())).then(this::generatePixKeyFromCID);
         when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
             .keyType(KeyType.CPF)
             .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
             .build());
         when(bacenSyncVerificationsPort.syncVerification(any(), any())).thenReturn(SyncVerifierResult.builder().build());
-        doNothing().when(pixKeyEventPort).pixKeyWasCreated(any());
-        doNothing().when(databaseContentIdentifierPort).saveFile(any());
-        doNothing().when(lockPort).unlock();
+        doNothing().when(reconciliationActionPort).insertPixKey(any());
+        doNothing().when(contentIdentifierFilePort).saveFile(any());
+        doNothing().when(reconciliationLockPort).unlock();
 
-        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+        fileReconciliationCheckUseCase.execute(createFailureSyncVerifier(KeyType.CPF));
 
-        verify(lockPort).lock();
         verify(findPixKeyPort).findAllByKeyType(any(), any(), anyInt());
-        verify(databaseContentIdentifierPort, times(5)).saveAction(anyInt(), any(), anyString(),
-            argThat(contentIdentifierAction -> contentIdentifierAction.equals(ContentIdentifierFileAction.ADDED)));
-        verify(createPixKeyPort, times(5)).savePixKey(any(), any());
-        verify(pixKeyEventPort, times(5)).pixKeyWasCreated(any());
-        verify(databaseContentIdentifierPort).saveFile(any());
-        verify(lockPort).unlock();
+        verify(reconciliationActionPort, times(5)).insertPixKey(any());
+        verify(contentIdentifierFilePort).saveFile(any());
+        verify(reconciliationLockPort).lock();
+        verify(reconciliationLockPort).unlock();
     }
 
     @Test
+    @DisplayName("Deve inserir 4 chaves e atualizar 1 chave")
     void when_valid_bacen_file_with_new_keys_then_update_database_with_keys() {
         final var availableFile = cidFile.toBuilder()
             .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
             .content(cids)
             .build();
 
-        doNothing().when(lockPort).lock();
+        doNothing().when(reconciliationLockPort).lock();
         when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(availableFile);
         when(findPixKeyPort.findAllByKeyType(any(), any(), anyInt())).then(this::generatePixkKeyToInsert);
-        when(bacenPixKeyByContentIdentifierPort.getPixKey(anyString())).then(this::generatePixKeyFromCID);
-        when(createPixKeyPort.savePixKey(any(), any())).then(this::generatePixKeyFromDomain);
+        when(bacenPixKeyByContentIdentifierPort.getPixKeyByCid(anyString())).then(this::generatePixKeyFromCID);
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey("ae843d282551398d7d201be38cb2f6472cfed56aa8a1234612780f9618ec017a")).thenReturn(Optional.of(pixKey));
         when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
@@ -254,34 +253,24 @@ class FailureReconciliationSyncByFileUseCaseTest {
             .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
             .build());
         when(bacenSyncVerificationsPort.syncVerification(any(), any())).thenReturn(SyncVerifierResult.builder().build());
-        doNothing().when(databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
-        doNothing().when(pixKeyEventPort).pixKeyWasUpdated(any());
-        doNothing().when(databaseContentIdentifierPort).saveFile(any());
-        doNothing().when(lockPort).unlock();
+        doNothing().when(reconciliationActionPort).updatePixKey(any(), any());
+        doNothing().when(contentIdentifierFilePort).saveFile(any());
+        doNothing().when(reconciliationLockPort).unlock();
 
-        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+        fileReconciliationCheckUseCase.execute(createFailureSyncVerifier(KeyType.CPF));
 
-        verify(lockPort).lock();
         verify(findPixKeyPort).findAllByKeyType(any(), any(), anyInt());
-        verify(bacenPixKeyByContentIdentifierPort, times(5)).getPixKey(anyString());
-        verify(createPixKeyPort, times(5)).savePixKey(any(), any());
+        verify(bacenPixKeyByContentIdentifierPort, times(5)).getPixKeyByCid(anyString());
         verify(findPixKeyPort, times(5)).findPixKey(any());
-        verify(databaseContentIdentifierPort, times(1)).saveAction(anyInt(), any(), anyString(),
-            argThat(contentIdentifierAction -> contentIdentifierAction.equals(
-                ContentIdentifierFileAction.REMOVED)));
-        verify(databaseContentIdentifierPort, times(1)).saveAction(anyInt(), any(), anyString(),
-            argThat(contentIdentifierAction -> contentIdentifierAction.equals(
-                ContentIdentifierFileAction.UPDATED)));
-        verify(databaseContentIdentifierPort, times(4)).saveAction(anyInt(), any(), anyString(),
-            argThat(contentIdentifierAction -> contentIdentifierAction.equals(
-                ContentIdentifierFileAction.ADDED)));
-        verify(pixKeyEventPort, times(1)).pixKeyWasUpdated(any());
-        verify(pixKeyEventPort, times(4)).pixKeyWasCreated(any());
-        verify(databaseContentIdentifierPort).saveFile(any());
-        verify(lockPort).unlock();
+        verify(reconciliationActionPort, times(1)).updatePixKey(any(), any());
+        verify(reconciliationActionPort, times(4)).insertPixKey(any());
+        verify(contentIdentifierFilePort).saveFile(any());
+        verify(reconciliationLockPort).lock();
+        verify(reconciliationLockPort).unlock();
     }
 
     @Test
+    @DisplayName("Deve remover 1 chave")
     void when_file_has_keys_that_should_be_removed_then_remove_from_local_database() {
         final var availableFile = cidFile.toBuilder()
             .status(ContentIdentifierFile.StatusContentIdentifierFile.AVAILABLE)
@@ -295,7 +284,7 @@ class FailureReconciliationSyncByFileUseCaseTest {
 
         when(requestSyncFileUseCase.requestAwaitFile(KeyType.CPF)).thenReturn(availableFile);
 
-        doNothing().when(lockPort).lock();
+        doNothing().when(reconciliationLockPort).lock();
         when(findPixKeyPort.findAllByKeyType(any(), any(), anyInt())).thenReturn(
             Pagination.<PixKey>builder().currentPage(1).hasNext(false).result(contentIdentifiers).build());
         when(findPixKeyPort.findByCid(anyString())).thenReturn(Optional.of(contentIdentifiersToRemove));
@@ -309,27 +298,22 @@ class FailureReconciliationSyncByFileUseCaseTest {
             .keyType(KeyType.CPF)
             .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
             .build());
-        doNothing().when(databaseContentIdentifierPort).saveAction(anyInt(), any(), anyString(), any());
-        doNothing().when(pixKeyEventPort).pixKeyWasRemoved(any());
-        doNothing().when(databaseContentIdentifierPort).saveFile(any());
-        doNothing().when(lockPort).unlock();
+        doNothing().when(reconciliationActionPort).removePixKey(any());
+        doNothing().when(contentIdentifierFilePort).saveFile(any());
+        doNothing().when(reconciliationLockPort).unlock();
 
-        failureReconciliationSyncByFileUseCase.execute(KeyType.CPF);
+        fileReconciliationCheckUseCase.execute(createFailureSyncVerifier(KeyType.CPF));
 
-        verify(lockPort).lock();
+        verify(reconciliationLockPort).lock();
         verify(findPixKeyPort).findAllByKeyType(any(), any(), anyInt());
-        verify(bacenPixKeyByContentIdentifierPort, times(0)).getPixKey(anyString());
-        verify(createPixKeyPort, never()).savePixKey(any(), any());
+        verify(bacenPixKeyByContentIdentifierPort, times(0)).getPixKeyByCid(anyString());
         verify(findPixKeyPort).findByCid(anyString());
-        verify(removePixKeyPort).removeByCid(any());
-        verify(databaseContentIdentifierPort, times(1)).saveAction(anyInt(), any(), anyString(),
-            argThat(contentIdentifierAction -> contentIdentifierAction.equals(
-                ContentIdentifierFileAction.REMOVED)));
-        verify(pixKeyEventPort, never()).pixKeyWasCreated(any());
-        verify(pixKeyEventPort, never()).pixKeyWasUpdated(any());
-        verify(pixKeyEventPort).pixKeyWasRemoved(any());
-        verify(databaseContentIdentifierPort).saveFile(any());
-        verify(lockPort).unlock();
+        verify(reconciliationActionPort).removePixKey(any());
+        verify(reconciliationActionPort, never()).insertPixKey(any());
+        verify(reconciliationActionPort, never()).updatePixKey(any(), any());
+        verify(reconciliationActionPort).removePixKey(any());
+        verify(contentIdentifierFilePort).saveFile(any());
+        verify(reconciliationLockPort).unlock();
     }
 
     private Optional<PixKey> generatePixKeyFromCID(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
@@ -350,9 +334,9 @@ class FailureReconciliationSyncByFileUseCaseTest {
     private Pagination<PixKey> generatePixkKeyToInsert(final org.mockito.invocation.InvocationOnMock invocationOnMock) {
         var keyType = (KeyType) invocationOnMock.getArgument(0);
         final var content = cids.stream().filter(cid -> !cid.startsWith("a")).map(s -> PixKey.builder()
-                .cid(s)
-                .type(keyType).key(UUID.randomUUID().toString()).build()
-                                                                                 ).collect(Collectors.toList());
+            .cid(s)
+            .type(keyType).key(UUID.randomUUID().toString()).build())
+            .collect(Collectors.toList());
         return Pagination.<PixKey>builder()
             .result(content)
             .currentPage(0)

@@ -19,6 +19,7 @@ public class SyncBacenCidEvents {
 
     private KeyType keyType;
     private LocalDateTime lastSyncWithBacen;
+    private Collection<BacenCidEvent> bacenCidEvents;
 
     public void syncWithBacen(final Collection<BacenCidEvent> bacenCidEvents) {
         var bacenCidEventMostRecent = bacenCidEvents.stream().max(Comparator.comparing(BacenCidEvent::getEventOnBacenAt));

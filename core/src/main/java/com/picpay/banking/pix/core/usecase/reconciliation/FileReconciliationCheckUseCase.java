@@ -2,23 +2,22 @@ package com.picpay.banking.pix.core.usecase.reconciliation;
 
 import com.picpay.banking.pix.core.common.Pagination;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
-import com.picpay.banking.pix.core.domain.ContentIdentifierFileAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationFixByCidFile;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.exception.ReconciliationException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenPixKeyByContentIdentifierPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenSyncVerificationsPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierFilePort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationActionPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationLockPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierHistoricPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.SyncVerifierPort;
+import com.picpay.banking.pix.core.validators.reconciliation.VsyncHistoricValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -27,52 +26,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.ADDED;
-import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.REMOVED;
-import static com.picpay.banking.pix.core.domain.ContentIdentifierFileAction.UPDATED;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FailureReconciliationSyncByFileUseCase {
+public class FileReconciliationCheckUseCase {
 
     private static final String LOG_CONTENT_IDENTIFIER_FIELD_ID = "contentIdentifierFileId";
+    private static final String SYNC_VERIFIER_HISTORIC = "syncVerifierHistoric";
 
-    private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private final ContentIdentifierFilePort contentIdentifierFilePort;
     private final BacenPixKeyByContentIdentifierPort bacenPixKeyByContentIdentifierPort;
-    private final SavePixKeyPort createPixKeyPort;
     private final FindPixKeyPort findPixKeyPort;
-    private final RemovePixKeyPort removePixKeyPort;
-    private final PixKeyEventPort pixKeyEventPort;
     private final SyncVerifierPort syncVerifierPort;
     private final BacenSyncVerificationsPort bacenSyncVerificationsPort;
     private final SyncVerifierHistoricPort syncVerifierHistoricPort;
     private final RequestSyncFileUseCase requestSyncFileUseCase;
     private final ReconciliationLockPort reconciliationLockPort;
+    private final ReconciliationActionPort reconciliationActionPort;
 
     private ReconciliationFixByCidFile reconciliationFixByCidFile;
+    private SyncVerifierHistoric failureSyncVerifier;
 
-    public SyncVerifierHistoric execute(KeyType keyType) {
+    public SyncVerifierHistoric execute(SyncVerifierHistoric failureSyncVerifier) {
         var startCurrentTimeMillis = System.currentTimeMillis();
+
+        VsyncHistoricValidator.validate(failureSyncVerifier);
+        this.failureSyncVerifier = failureSyncVerifier;
+
         SyncVerifierHistoric syncVerifierHistoric;
         try {
             reconciliationLockPort.lock();
-
-            ContentIdentifierFile contentIdentifierFile = requestAwaitContentIdentifierFile(keyType);
-            var cidsInDatabase = extractCidsInDatabaseByPagination(keyType);
-
-            reconciliationFixByCidFile = new ReconciliationFixByCidFile(keyType, contentIdentifierFile);
-
-            var cidsThatMustBeCreated = reconciliationFixByCidFile.computeCidsThatMustBeCreated(cidsInDatabase);
-            createPixKey1000by1000(cidsThatMustBeCreated);
-
-            reconciliationFixByCidFile.computeCidsThatMustBeRemoved(cidsInDatabase).parallelStream()
-                .forEach(this::remove);
-
-            syncVerifierHistoric = performSyncVerifier();
-
-            contentIdentifierFile.done();
-            databaseContentIdentifierPort.saveFile(contentIdentifierFile);
+            syncVerifierHistoric = run(failureSyncVerifier.getKeyType());
         } finally {
             reconciliationLockPort.unlock();
         }
@@ -82,8 +67,30 @@ public class FailureReconciliationSyncByFileUseCase {
             kv(LOG_CONTENT_IDENTIFIER_FIELD_ID, reconciliationFixByCidFile.getContentIdentifierFile().getId()),
             kv("totalRunTime_in_seconds", (System.currentTimeMillis() - startCurrentTimeMillis) / MILLISECONDS_TO_SECONDS),
             kv("countCidInFile", reconciliationFixByCidFile.getContentIdentifierFile().getContent().size()),
-            kv("keyType", keyType));
+            kv("keyType", failureSyncVerifier.getKeyType()));
 
+        return syncVerifierHistoric;
+    }
+
+    private SyncVerifierHistoric run(final KeyType keyType) {
+        ContentIdentifierFile contentIdentifierFile = requestAwaitContentIdentifierFile(keyType);
+        var cidsInDatabase = extractCidsInDatabaseByPagination(keyType);
+
+        reconciliationFixByCidFile = new ReconciliationFixByCidFile(keyType, contentIdentifierFile);
+
+        var cidsThatMustBeCreated = reconciliationFixByCidFile.computeCidsThatMustBeCreated(cidsInDatabase);
+        createPixKey1000by1000(cidsThatMustBeCreated);
+
+        reconciliationFixByCidFile.computeCidsThatMustBeRemoved(cidsInDatabase).parallelStream()
+            .forEach(cid -> findPixKeyPort.findByCid(cid).ifPresent(this::removePixKey));
+
+        failureSyncVerifier.fixedByFileReconciliation();
+        syncVerifierHistoricPort.save(failureSyncVerifier);
+
+        var syncVerifierHistoric = performSyncVerifier();
+
+        contentIdentifierFile.done();
+        contentIdentifierFilePort.saveFile(contentIdentifierFile);
         return syncVerifierHistoric;
     }
 
@@ -106,14 +113,43 @@ public class FailureReconciliationSyncByFileUseCase {
             log.info("Processing {} of {}", offset, total);
 
             cidsThatMustBeCreated.stream().skip(offset).limit(INCREMENT)
-                .flatMap(cid -> bacenPixKeyByContentIdentifierPort.getPixKey(cid).stream())
+                .flatMap(cid -> bacenPixKeyByContentIdentifierPort.getPixKeyByCid(cid).stream())
                 .parallel()
                 .forEach(pixKeyInBacen -> findPixKeyPort.findPixKey(pixKeyInBacen.getKey())
-                    .ifPresentOrElse(pixKeyInDatabase -> update(pixKeyInBacen, pixKeyInDatabase),
-                        () -> insert(pixKeyInBacen)));
+                    .ifPresentOrElse(pixKeyInDatabase -> updatePixKey(pixKeyInDatabase, pixKeyInBacen),
+                        () -> insertPixKey(pixKeyInBacen)));
 
             offset += INCREMENT;
         }
+    }
+
+    private void insertPixKey(final PixKey pixKey) {
+        reconciliationActionPort.insertPixKey(createHistoricAction(pixKey, ReconciliationAction.ADDED));
+    }
+
+    private void updatePixKey(final PixKey oldPixKey, final PixKey newPixKey) {
+        reconciliationActionPort.updatePixKey(createHistoricAction(oldPixKey, ReconciliationAction.REMOVED),
+            createHistoricAction(newPixKey, ReconciliationAction.ADDED));
+    }
+
+    private void removePixKey(final PixKey pixKey) {
+        reconciliationActionPort.removePixKey(createHistoricAction(pixKey, ReconciliationAction.REMOVED));
+    }
+
+    private SyncVerifierHistoricAction createHistoricAction(final PixKey pixKey, final ReconciliationAction action) {
+        var historicAction = SyncVerifierHistoricAction.builder()
+            .cid(pixKey.getCid())
+            .pixKey(pixKey)
+            .action(action)
+            .syncVerifierHistoric(failureSyncVerifier)
+            .build();
+
+        log.info("FailureReconciliationSync_changePixKey: {}, {}, {}",
+            kv("cid", pixKey.getCid()),
+            kv("action", action),
+            kv(SYNC_VERIFIER_HISTORIC, failureSyncVerifier));
+
+        return historicAction;
     }
 
     private SyncVerifierHistoric performSyncVerifier() {
@@ -140,39 +176,6 @@ public class FailureReconciliationSyncByFileUseCase {
         } while (BooleanUtils.isTrue(pagination.getHasNext()));
 
         return cidsInDatabase;
-    }
-
-    private void insert(final PixKey pixKeyInBacen) {
-        var pixKey = createPixKeyPort.savePixKey(pixKeyInBacen, Reason.RECONCILIATION);
-        pixKeyEventPort.pixKeyWasCreated(pixKey);
-        createHistoricAction(pixKey, ADDED);
-    }
-
-    private void update(final PixKey pixKeyInBacen, final PixKey pixKeyInDatabase) {
-        var pixKey = createPixKeyPort.savePixKey(pixKeyInBacen, Reason.RECONCILIATION);
-        pixKeyEventPort.pixKeyWasUpdated(pixKey);
-
-        createHistoricAction(pixKeyInDatabase, REMOVED);
-        createHistoricAction(pixKeyInBacen, UPDATED);
-    }
-
-    private void remove(final String cid) {
-        var pixKeyInDatabase = findPixKeyPort.findByCid(cid);
-        pixKeyInDatabase.ifPresent(pixKey -> {
-            removePixKeyPort.removeByCid(pixKey.getCid());
-            pixKeyEventPort.pixKeyWasRemoved(pixKey);
-            createHistoricAction(pixKey, ContentIdentifierFileAction.REMOVED);
-        });
-    }
-
-    private void createHistoricAction(final PixKey pixKey, final ContentIdentifierFileAction action) {
-        databaseContentIdentifierPort.saveAction(reconciliationFixByCidFile.getContentIdentifierFile().getId(), pixKey, pixKey.getCid(), action);
-
-        log.info("ReconciliationSyncByFile_changePixKey: {}, {}, {}, {}",
-            kv("key", pixKey.getKey()),
-            kv("keyType", pixKey.getType()),
-            kv("action", action),
-            kv(LOG_CONTENT_IDENTIFIER_FIELD_ID, reconciliationFixByCidFile.getContentIdentifierFile().getId()));
     }
 
 }

@@ -15,7 +15,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Slf4j
 @AllArgsConstructor
-public class ReconciliationSyncUseCase {
+public class SyncVerifierUseCase {
 
     private final SyncVerifierPort syncVerifierPort;
     private final SyncVerifierHistoricPort syncVerifierHistoricPort;

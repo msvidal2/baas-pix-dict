@@ -36,7 +36,7 @@ public class FetchCidFileCallablePort implements SafeCallable<Optional<ResultCid
 
         final var keyType = availableFile.getKeyType();
         log.info("Arquivo encontrado. Retornando para inicio da sync por arquivo... ID arquivo: {} KeyType: {}", kv("contentIdentifierFileId", fileId), kv("keyType", keyType));
-        final var cids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen(availableFile.getUrl());
+        final var cids = this.bacenContentIdentifierEventsPort.downloadContentIdentifierFromBacen(availableFile.getUrl());
         return Optional.of(new ResultCidFile(cids));
     }
 

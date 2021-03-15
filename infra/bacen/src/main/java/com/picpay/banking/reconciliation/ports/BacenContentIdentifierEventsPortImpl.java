@@ -3,14 +3,12 @@ package com.picpay.banking.reconciliation.ports;
 import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.ContentIdentifierFile;
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pixkey.dto.request.KeyTypeBacen;
 import com.picpay.banking.reconciliation.clients.BacenArqClient;
 import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
 import com.picpay.banking.reconciliation.dto.request.CidSetFileRequest;
 import com.picpay.banking.reconciliation.dto.response.ListCidSetEventsResponse.CidSetEvent;
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +18,6 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -48,7 +45,7 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public Set<BacenCidEvent> list(final KeyType keyType, final LocalDateTime startTime) {
+    public Set<BacenCidEvent> findAllContentIdentifierEventsAfter(final KeyType keyType, final LocalDateTime startTime) {
         Set<BacenCidEvent> result = new HashSet<>();
 
         boolean hasNext = true;
@@ -91,24 +88,12 @@ public class BacenContentIdentifierEventsPortImpl implements BacenContentIdentif
     }
 
     @Override
-    public Set<String> downloadCidsFromBacen(final String url) {
+    public Set<String> downloadContentIdentifierFromBacen(final String url) {
         final String REGEX = "^.*\\/\\/[^\\/]+:?[0-9]?\\/";
         final var urlFile = url.replaceAll(REGEX, urlGateway + "/arq/");
 
         final var file = this.bacenArqClient.request(URI.create(urlFile));
         return Stream.of(file.split("\n")).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Optional<PixKey> getPixKey(final String cid) {
-        try {
-            final var response = this.bacenReconciliationClient.getEntryByCid(cid, participant);
-
-            return Optional.of(response.toDomain());
-        } catch (FeignException.NotFound ex) {
-            log.info("BacenContentIdentifierEventsPort: getEntryByCid not found for cid {}", cid, ex);
-            return Optional.empty();
-        }
     }
 
 }

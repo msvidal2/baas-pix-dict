@@ -4,7 +4,6 @@ import com.picpay.banking.pix.core.domain.BacenCidEvent;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncBacenCidEvents;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,7 +14,5 @@ public interface SyncBacenCidEventsPort {
     void saveSyncBacenCidEvents(SyncBacenCidEvents syncBacenCidEvents);
 
     void saveAllBacenCidEvent(KeyType keyType, Set<BacenCidEvent> bacenCidEvents);
-
-    Set<BacenCidEvent> listAfterLastSyncronized(KeyType keyType, LocalDateTime synchronizedStart);
 
 }

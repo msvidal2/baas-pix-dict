@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ReconciliationSyncUseCaseTest {
+class SyncVerifierUseCaseTest {
 
     @Mock
     private SyncVerifierPort syncVerifierPort;
@@ -35,11 +35,11 @@ class ReconciliationSyncUseCaseTest {
     @Mock
     private BacenSyncVerificationsPort bacenSyncVerificationsPort;
     @Mock
-    private ReconciliationSyncUseCase reconciliationSyncUseCase;
+    private SyncVerifierUseCase syncVerifierUseCase;
 
     @BeforeEach
     private void beforeEach() {
-        reconciliationSyncUseCase = new ReconciliationSyncUseCase(
+        syncVerifierUseCase = new SyncVerifierUseCase(
             syncVerifierPort,
             syncVerifierHistoricPort,
             contentIdentifierPort,
@@ -62,7 +62,7 @@ class ReconciliationSyncUseCaseTest {
         when(syncVerifierHistoricPort.save(any()))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
+        var syncVerifierHistoric = syncVerifierUseCase.execute(KeyType.CPF);
 
         verify(syncVerifierPort, times(1)).save(any());
         verify(syncVerifierHistoricPort, times(1)).save(any());
@@ -84,7 +84,7 @@ class ReconciliationSyncUseCaseTest {
         when(syncVerifierHistoricPort.save(any()))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var syncVerifierHistoric = reconciliationSyncUseCase.execute(KeyType.CPF);
+        var syncVerifierHistoric = syncVerifierUseCase.execute(KeyType.CPF);
 
         verify(syncVerifierPort, times(1)).save(any());
         verify(syncVerifierHistoricPort, times(1)).save(any());

@@ -23,9 +23,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class ReconciliationUseCase {
 
-    private final FailureReconciliationSyncByFileUseCase syncByFileUseCase;
-    private final ReconciliationSyncUseCase reconciliationSyncUseCase;
-    private final FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
+    private final FileReconciliationCheckUseCase fileReconciliationCheckUseCase;
+    private final SyncVerifierUseCase syncVerifierUseCase;
+    private final AggregateReconciliationCheckUseCase aggregateReconciliationCheckUseCase;
     private final SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
     private final ReconciliationLockPort reconciliationLockPort;
 
@@ -43,14 +43,14 @@ public class ReconciliationUseCase {
         log.info("Inicio da sync por: {}", kv("keyType", syncKeyType.name()));
         sincronizeCIDEventsUseCase.syncByKeyType(syncKeyType);
 
-        SyncVerifierHistoric syncVerifierHistoric = reconciliationSyncUseCase.execute(syncKeyType);
+        SyncVerifierHistoric syncVerifierHistoric = syncVerifierUseCase.execute(syncKeyType);
 
         if (syncVerifierHistoric.isNOK()) {
-            syncVerifierHistoric = failureReconciliationSyncUseCase.execute(syncVerifierHistoric);
+            syncVerifierHistoric = aggregateReconciliationCheckUseCase.execute(syncVerifierHistoric);
 
             if (syncVerifierHistoric.isNOK()) {
                 log.warn("Sync por eventos: NOK. Iniciando tratamento por arquivos. KeyType: {}", syncKeyType);
-                syncVerifierHistoric = syncByFileUseCase.execute(syncKeyType);
+                syncVerifierHistoric = fileReconciliationCheckUseCase.execute(syncVerifierHistoric);
             }
         }
 

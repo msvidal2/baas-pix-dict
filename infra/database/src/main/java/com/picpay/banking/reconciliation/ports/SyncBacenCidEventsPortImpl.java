@@ -11,7 +11,6 @@ import com.picpay.banking.reconciliation.repository.SyncBacenCidEventsRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,13 +38,6 @@ public class SyncBacenCidEventsPortImpl implements SyncBacenCidEventsPort {
         bacenCidEventRepository.saveAll(bacenCidEvents.stream()
             .map(bacenCidEvent -> BacenCidEventEntity.from(bacenCidEvent, keyType))
             .collect(Collectors.toList()));
-    }
-
-    @Override
-    public Set<BacenCidEvent> listAfterLastSyncronized(final KeyType keyType, final LocalDateTime synchronizedStart) {
-        return bacenCidEventRepository.findByKeyTypeAndEventOnBacenAtAfter(keyType, synchronizedStart)
-            .stream().map(BacenCidEventEntity::toDomain)
-            .collect(Collectors.toSet());
     }
 
 }

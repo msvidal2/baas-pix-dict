@@ -48,6 +48,10 @@ public class SyncVerifierHistoricEntity {
     @Enumerated(EnumType.STRING)
     private SyncVerifierResultType result;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reconciliation_method")
+    private SyncVerifierHistoric.ReconciliationMethod reconciliationMethod;
+
     public static SyncVerifierHistoricEntity from(final SyncVerifierHistoric syncVerifierHistoric) {
         return SyncVerifierHistoricEntity.builder()
             .id(syncVerifierHistoric.getId())
@@ -57,6 +61,7 @@ public class SyncVerifierHistoricEntity {
             .synchronizedStart(syncVerifierHistoric.getSynchronizedStart())
             .synchronizedEnd(syncVerifierHistoric.getSynchronizedEnd())
             .result(syncVerifierHistoric.getSyncVerifierResultType())
+            .reconciliationMethod(syncVerifierHistoric.getReconciliationMethod())
             .build();
     }
 
@@ -69,6 +74,7 @@ public class SyncVerifierHistoricEntity {
             .synchronizedStart(synchronizedStart)
             .synchronizedEnd(synchronizedEnd)
             .syncVerifierResultType(result)
+            .reconciliationMethod(reconciliationMethod)
             .build();
     }
 

@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.validators.reconciliation;
 
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoric;
+import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierResultType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,10 @@ public class VsyncHistoricValidator {
 
         if (syncVerifierHistoric.getSynchronizedStart() == null) {
             throw new IllegalArgumentException("The attribute SynchronizedAt of VsyncHistoric cannot be null");
+        }
+
+        if (SyncVerifierResultType.NOK != syncVerifierHistoric.getSyncVerifierResultType()) {
+            throw new IllegalArgumentException("The attribute SyncVerifierResultType of VsyncHistoric must be NOK");
         }
     }
 

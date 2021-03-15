@@ -51,7 +51,7 @@ class SincronizeCIDEventsUseCaseTest {
         var expectedDate = LocalDateTime.of(2020, 1, 1, 0, 0);
 
         when(syncBacenCidEventsPort.getSyncBacenCid(any())).thenReturn(Optional.empty());
-        when(bacenContentIdentifierEventsPort.list(any(), any())).thenReturn(new HashSet<>());
+        when(bacenContentIdentifierEventsPort.findAllContentIdentifierEventsAfter(any(), any())).thenReturn(new HashSet<>());
         when(syncVerifierPort.getLastSuccessfulVsync(any())).thenReturn(SyncVerifier.builder()
             .keyType(KeyType.CPF)
             .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -75,7 +75,7 @@ class SincronizeCIDEventsUseCaseTest {
             .synchronizedAt(LocalDateTime.of(2020, 1, 1, 0, 0))
             .build());
         when(syncBacenCidEventsPort.getSyncBacenCid(any())).thenReturn(Optional.empty());
-        when(bacenContentIdentifierEventsPort.list(any(), any())).thenReturn(
+        when(bacenContentIdentifierEventsPort.findAllContentIdentifierEventsAfter(any(), any())).thenReturn(
             Set.of(BacenCidEvent.builder()
                     .cid("1")
                     .action(ReconciliationAction.ADDED)
@@ -111,7 +111,7 @@ class SincronizeCIDEventsUseCaseTest {
                 .lastSyncWithBacen(LocalDateTime.now())
                 .keyType(KeyType.CPF)
                 .build()));
-        when(bacenContentIdentifierEventsPort.list(any(), any())).thenReturn(
+        when(bacenContentIdentifierEventsPort.findAllContentIdentifierEventsAfter(any(), any())).thenReturn(
             Set.of(BacenCidEvent.builder()
                     .cid("1")
                     .action(ReconciliationAction.ADDED)

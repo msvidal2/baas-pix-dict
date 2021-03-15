@@ -87,7 +87,7 @@ class BacenContentIdentifierEventsPortTest {
         when(this.bacenArqClient.request(any()))
             .thenReturn(cids);
 
-        final var listCids = this.bacenContentIdentifierEventsPort.downloadCidsFromBacen("http://teste.com/teste/arquivo");
+        final var listCids = this.bacenContentIdentifierEventsPort.downloadContentIdentifierFromBacen("http://teste.com/teste/arquivo");
         assertThat(listCids.size()).isEqualTo(2);
 
         verify(this.bacenArqClient).request(argThat(uri -> uri.getHost().equals("urlGateway.com") && uri.getPath().startsWith("/arq/")));

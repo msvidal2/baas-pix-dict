@@ -31,11 +31,11 @@ import static org.mockito.Mockito.when;
 class ReconciliationUseCaseTest {
 
     @Mock
-    private FailureReconciliationSyncByFileUseCase syncByFileUseCase;
+    private FileReconciliationCheckUseCase syncByFileUseCase;
     @Mock
-    private ReconciliationSyncUseCase reconciliationSyncUseCase;
+    private SyncVerifierUseCase syncVerifierUseCase;
     @Mock
-    private FailureReconciliationSyncUseCase failureReconciliationSyncUseCase;
+    private AggregateReconciliationCheckUseCase aggregateReconciliationCheckUseCase;
     @Mock
     private SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
     @Mock
@@ -54,7 +54,7 @@ class ReconciliationUseCaseTest {
     @Test
     void when_execute_run_by_events_and_no_sync_is_needed_then_dont_run_sync() {
         SyncVerifierHistoric syncResultOK = syncResult(OK);
-        when(reconciliationSyncUseCase.execute(any(KeyType.class))).thenReturn(syncResultOK);
+        when(syncVerifierUseCase.execute(any(KeyType.class))).thenReturn(syncResultOK);
 
         assertThatCode(() -> {
             SyncVerifierHistoric result = reconciliationUseCase.execute(KeyType.CPF);
@@ -62,15 +62,15 @@ class ReconciliationUseCaseTest {
         }).doesNotThrowAnyException();
 
         verify(reconciliationLockPort).lock();
-        verify(failureReconciliationSyncUseCase, never()).execute(any(SyncVerifierHistoric.class));
-        verify(syncByFileUseCase, never()).execute(any(KeyType.class));
+        verify(aggregateReconciliationCheckUseCase, never()).execute(any(SyncVerifierHistoric.class));
+        verify(syncByFileUseCase, never()).execute(any());
         verify(reconciliationLockPort).unlock();
     }
 
     @Test
     void when_sync_is_not_ok_then_run_failure_sync() {
-        when(reconciliationSyncUseCase.execute(any(KeyType.class))).thenReturn(syncResult(NOK));
-        when(failureReconciliationSyncUseCase.execute(any(SyncVerifierHistoric.class))).thenReturn(syncResult(OK));
+        when(syncVerifierUseCase.execute(any(KeyType.class))).thenReturn(syncResult(NOK));
+        when(aggregateReconciliationCheckUseCase.execute(any(SyncVerifierHistoric.class))).thenReturn(syncResult(OK));
 
         assertThatCode(() -> {
             SyncVerifierHistoric result = reconciliationUseCase.execute(KeyType.CPF);
@@ -78,16 +78,16 @@ class ReconciliationUseCaseTest {
         }).doesNotThrowAnyException();
 
         verify(reconciliationLockPort).lock();
-        verify(failureReconciliationSyncUseCase).execute(any(SyncVerifierHistoric.class));
-        verify(syncByFileUseCase, never()).execute(any(KeyType.class));
+        verify(aggregateReconciliationCheckUseCase).execute(any(SyncVerifierHistoric.class));
+        verify(syncByFileUseCase, never()).execute(any());
         verify(reconciliationLockPort).unlock();
     }
 
     @Test
     void when_failure_sync_doesnt_solve_issues_then_run_file_sync() {
-        when(reconciliationSyncUseCase.execute(any(KeyType.class))).thenReturn(syncResult(NOK));
-        when(failureReconciliationSyncUseCase.execute(any(SyncVerifierHistoric.class))).thenReturn(syncResult(NOK));
-        when(syncByFileUseCase.execute(any(KeyType.class))).thenReturn(syncResult(OK));
+        when(syncVerifierUseCase.execute(any(KeyType.class))).thenReturn(syncResult(NOK));
+        when(aggregateReconciliationCheckUseCase.execute(any(SyncVerifierHistoric.class))).thenReturn(syncResult(NOK));
+        when(syncByFileUseCase.execute(any())).thenReturn(syncResult(OK));
 
         assertThatCode(() -> {
             SyncVerifierHistoric result = reconciliationUseCase.execute(KeyType.CPF);
@@ -95,8 +95,8 @@ class ReconciliationUseCaseTest {
         }).doesNotThrowAnyException();
 
         verify(reconciliationLockPort).lock();
-        verify(failureReconciliationSyncUseCase).execute(any(SyncVerifierHistoric.class));
-        verify(syncByFileUseCase).execute(any(KeyType.class));
+        verify(aggregateReconciliationCheckUseCase).execute(any(SyncVerifierHistoric.class));
+        verify(syncByFileUseCase).execute(any());
         verify(reconciliationLockPort).unlock();
     }
 

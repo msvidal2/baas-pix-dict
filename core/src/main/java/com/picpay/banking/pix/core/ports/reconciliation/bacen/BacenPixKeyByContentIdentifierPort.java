@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface BacenPixKeyByContentIdentifierPort {
 
-    Optional<PixKey> getPixKey(String cid);
+    Optional<PixKey> getPixKeyByCid(String cid);
 
 }

@@ -28,6 +28,8 @@ public class SyncVerifierHistoric {
     private final LocalDateTime synchronizedStart;
     private final LocalDateTime synchronizedEnd;
     private final SyncVerifierResultType syncVerifierResultType;
+    @Builder.Default
+    private ReconciliationMethod reconciliationMethod = ReconciliationMethod.ONLY_VERIFIER;
 
     public Set<BacenCidEvent> groupBacenEventsByCidMaxByDate(final Collection<BacenCidEvent> bacenEvents) {
         if (bacenEvents.isEmpty()) {
@@ -45,6 +47,18 @@ public class SyncVerifierHistoric {
 
     public boolean isOK() {
         return syncVerifierResultType == SyncVerifierResultType.OK;
+    }
+
+    public void fixedByAggregateReconciliation() {
+        this.reconciliationMethod = ReconciliationMethod.FIX_BY_AGGREGATE;
+    }
+
+    public void fixedByFileReconciliation() {
+        this.reconciliationMethod = ReconciliationMethod.FIX_BY_FILE;
+    }
+
+    public enum ReconciliationMethod {
+        ONLY_VERIFIER, FIX_BY_AGGREGATE, FIX_BY_FILE;
     }
 
 }

@@ -7,7 +7,7 @@ import com.picpay.banking.pix.core.exception.CidFileNotReadyException;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.BacenContentIdentifierEventsPort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.FetchCidFileCallablePort;
 import com.picpay.banking.pix.core.ports.reconciliation.bacen.PollCidFilePort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.DatabaseContentIdentifierPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierFilePort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +21,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class RequestSyncFileUseCase {
 
     private final BacenContentIdentifierEventsPort bacenContentIdentifierEventsPort;
-    private final DatabaseContentIdentifierPort databaseContentIdentifierPort;
+    private final ContentIdentifierFilePort contentIdentifierFilePort;
     private final PollCidFilePort pollCidFilePort;
     private final Integer timeoutPeriod;
     private final Integer pollingAwaitingPeriod;
@@ -36,7 +36,7 @@ public class RequestSyncFileUseCase {
     private ContentIdentifierFile request(KeyType keyType) {
         log.info("RequestSyncFile_started {}", kv("keyType", keyType));
         final var contentIdentifierFile = this.bacenContentIdentifierEventsPort.requestContentIdentifierFile(keyType);
-        this.databaseContentIdentifierPort.saveFile(contentIdentifierFile);
+        this.contentIdentifierFilePort.saveFile(contentIdentifierFile);
         log.info("RequestSyncFile_ended {} {} ", kv("keyType", keyType), kv("contentIdentifierFileId", contentIdentifierFile.getId()));
         return contentIdentifierFile;
     }

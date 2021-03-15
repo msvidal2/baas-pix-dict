@@ -25,7 +25,7 @@ public class SincronizeCIDEventsUseCase {
         SyncBacenCidEvents syncBacenCidEvents = syncBacenCidEventsPort.getSyncBacenCid(keyType)
             .orElseGet(() -> createSyncBacenCidAfterLastSyncVerifier(keyType));
 
-        var bacenCidEvents = bacenContentIdentifierEventsPort.list(syncBacenCidEvents.getKeyType(), syncBacenCidEvents.getLastSyncWithBacen());
+        var bacenCidEvents = bacenContentIdentifierEventsPort.findAllContentIdentifierEventsAfter(syncBacenCidEvents.getKeyType(), syncBacenCidEvents.getLastSyncWithBacen());
 
         syncBacenCidEvents.syncWithBacen(bacenCidEvents);
 

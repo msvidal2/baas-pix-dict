@@ -7,10 +7,12 @@
 package com.picpay.banking.web;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.usecase.reconciliation.FailureReconciliationSyncByFileUseCase;
-import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationSyncUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.FileReconciliationCheckUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.ReconciliationUseCase;
 import com.picpay.banking.pix.core.usecase.reconciliation.SincronizeCIDEventsUseCase;
+import com.picpay.banking.pix.core.usecase.reconciliation.SyncVerifierUseCase;
+import com.picpay.banking.reconciliation.clients.BacenReconciliationClient;
+import com.picpay.banking.reconciliation.repository.SyncVerifierHistoricRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +22,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,20 +33,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class ReconciliationControllerTest {
 
+    public static final String BASE_URL = "/v1/sync";
     @Mock
-    private FailureReconciliationSyncByFileUseCase syncByCidsFileUseCase;
+    private FileReconciliationCheckUseCase syncByCidsFileUseCase;
     @Mock
-    private ReconciliationSyncUseCase reconciliationSyncUseCase;
+    private SyncVerifierUseCase syncVerifierUseCase;
     @Mock
     private SincronizeCIDEventsUseCase sincronizeCIDEventsUseCase;
     @Mock
     private ReconciliationUseCase reconciliationUseCase;
+    @Mock
+    private SyncVerifierHistoricRepository syncVerifierHistoricRepository;
+    @Mock
+    private BacenReconciliationClient bacenReconciliationClient;
+
     @InjectMocks
     private ReconciliationController reconciliationController;
-
     private MockMvc mockMvc;
-
-    public static final String BASE_URL = "/v1/sync";
 
     @BeforeEach
     void setUp() {
@@ -52,11 +60,13 @@ class ReconciliationControllerTest {
 
     @Test
     void when_sync_by_file_requested_then_start_sync() throws Exception {
+        when(syncVerifierHistoricRepository.save(any())).then(invocation -> invocation.getArgument(0));
+
         mockMvc.perform(post(BASE_URL.concat("/file/CPF")))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(syncByCidsFileUseCase).execute(KeyType.CPF);
+        verify(syncByCidsFileUseCase).execute(argThat(syncVerifierHistoric -> syncVerifierHistoric.getKeyType() == KeyType.CPF));
     }
 
     @Test
@@ -66,7 +76,6 @@ class ReconciliationControllerTest {
             .andExpect(status().isOk());
 
         verify(reconciliationUseCase).execute(KeyType.CPF);
-
     }
 
     @Test
@@ -96,7 +105,7 @@ class ReconciliationControllerTest {
             .andExpect(status().isOk());
 
         verify(sincronizeCIDEventsUseCase).syncByKeyType(KeyType.CPF);
-        verify(reconciliationSyncUseCase).execute(KeyType.CPF);
+        verify(syncVerifierUseCase).execute(KeyType.CPF);
     }
 
 }
