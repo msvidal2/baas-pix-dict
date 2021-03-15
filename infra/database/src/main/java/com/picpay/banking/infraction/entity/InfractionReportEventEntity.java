@@ -1,8 +1,7 @@
 package com.picpay.banking.infraction.entity;
 
-import com.picpay.banking.pix.core.domain.InfractionReportEvent;
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.InfractionReportEvent;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

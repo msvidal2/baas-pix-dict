@@ -2,8 +2,8 @@ package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.infraction.entity.InfractionReportEventEntity;
 import com.picpay.banking.infraction.repository.InfractionReportEventRepository;
-import com.picpay.banking.pix.core.domain.InfractionReportEvent;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.InfractionReportEvent;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionEventRegistryPort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;

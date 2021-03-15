@@ -311,7 +311,7 @@ class ClaimControllerTest {
                 .andExpect(jsonPath("$.message", equalTo("Missing request header 'requestIdentifier' for method parameter of type String")))
                 .andExpect(jsonPath("$.timestamp[0]", equalTo(2021)))
                 .andExpect(jsonPath("$.timestamp[1]", equalTo(3)))
-                .andExpect(jsonPath("$.timestamp[2]", equalTo(12)));
+                .andExpect(jsonPath("$.timestamp[2]", equalTo(15)));
     }
 
     @Test

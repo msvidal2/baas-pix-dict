@@ -4,14 +4,14 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.Analy
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.core.domain.InfractionReportEvent;
+import com.picpay.banking.pix.core.events.InfractionReportEvent;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionAnalyzeEventData;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionAnalyzeEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.InfractionEventRegistryUseCase;
