@@ -29,8 +29,6 @@ public class CompleteClaimUseCase {
     private final PixKeyEventPort pixKeyEventPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
-
-        CompleteClaimValidator.validate(requestIdentifier, claim);
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
 
         Claim claimCompleted = executeClaim(claim, requestIdentifier);
