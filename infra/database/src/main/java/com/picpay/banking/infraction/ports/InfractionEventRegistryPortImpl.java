@@ -5,6 +5,7 @@ import com.picpay.banking.infraction.repository.InfractionReportEventRepository;
 import com.picpay.banking.pix.core.events.InfractionReportEvent;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionEventRegistryPort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class InfractionEventRegistryPortImpl implements InfractionEventRegistryP
 
     private final InfractionReportEventRepository infractionReportEventRepository;
 
+    private final InfractionReportCacheSavePort infractionReportCacheSavePort;
+
     @Override
     @ValidateIdempotency(InfractionReportEventData.class)
     public void registry(InfractionReportEvent event, @IdempotencyKey String requestIdentifier, InfractionReportEventData infractionReportEventData) {
@@ -35,6 +38,8 @@ public class InfractionEventRegistryPortImpl implements InfractionEventRegistryP
                 .build();
 
         infractionReportEventRepository.save(infractionEventEntity);
+
+        infractionReportCacheSavePort.save(infractionReportEventData, requestIdentifier);
 
         log.info("InfractionEventRegistry_registered {} {}",
                 kv("event", event),
