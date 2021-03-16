@@ -1,6 +1,8 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.events.PixKeyEvent;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.picpay.banking.pix.core.domain.PixKeyEvent.PENDING_CREATE;
+import static com.picpay.banking.pix.core.events.PixKeyEvent.PENDING_CREATE;
 import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -30,11 +32,11 @@ class PixKeyEventRegistryUseCaseTest {
     @Mock
     private PixKeyEventRegistryPort pixKeyEventRegistryPort;
 
-    private PixKey pixKey;
+    private PixKeyEventData pixKeyEventData;
 
     @BeforeEach
     void setup() {
-        pixKey = PixKey.builder()
+        pixKeyEventData = PixKeyEventData.builder()
                 .type(KeyType.EMAIL)
                 .key("joao@picpay.com")
                 .ispb(1)
@@ -52,24 +54,24 @@ class PixKeyEventRegistryUseCaseTest {
 
     @Test
     void when_executeWithSuccess_expect_noExceptions() {
-        doNothing().when(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKey.class), any(Reason.class));
+        doNothing().when(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKeyEventData.class), any(Reason.class));
 
         assertDoesNotThrow(() ->
-                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKey, CLIENT_REQUEST));
+                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKeyEventData, CLIENT_REQUEST));
 
-        verify(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKey.class), any(Reason.class));
+        verify(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKeyEventData.class), any(Reason.class));
     }
 
     @Test
     void when_executeWithNullEvent_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(null, randomUUID().toString(), pixKey, CLIENT_REQUEST));
+                useCase.execute(null, randomUUID().toString(), pixKeyEventData, CLIENT_REQUEST));
     }
 
     @Test
     void when_executeWithNullRequestIdentifier_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(PENDING_CREATE, null, pixKey, CLIENT_REQUEST));
+                useCase.execute(PENDING_CREATE, null, pixKeyEventData, CLIENT_REQUEST));
     }
 
     @Test
@@ -81,7 +83,7 @@ class PixKeyEventRegistryUseCaseTest {
     @Test
     void when_executeWithNullReason_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKey, null));
+                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKeyEventData, null));
     }
 
 }

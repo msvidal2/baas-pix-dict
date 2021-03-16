@@ -1,10 +1,16 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
 import com.newrelic.api.agent.Trace;
-import com.picpay.banking.pix.adapters.incoming.web.dto.*;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.AnalyzeInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CancelInfractionDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CreateInfractionReportRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.FilterInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.CancelResponseInfractionDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.FindInfractionReportDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.InfractionReportCreatedDTO;
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.*;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
@@ -17,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
-import static com.picpay.banking.pix.core.domain.InfractionReportEvent.*;
+import static com.picpay.banking.pix.core.events.InfractionReportEvent.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;

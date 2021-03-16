@@ -1,6 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyCacheSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class PixKeyCacheSavePortImpl implements PixKeyCacheSavePort {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void save(@NonNull PixKey pixKey, @NonNull String requestIdentifier) {
-        redisTemplate.opsForHash().put(PixKey.class.getSimpleName(), requestIdentifier, pixKey);
+    public void save(@NonNull PixKeyEventData pixKey, @NonNull String requestIdentifier) {
+        redisTemplate.opsForHash().put(PixKeyEventData.class.getSimpleName(), requestIdentifier, pixKey);
     }
 }

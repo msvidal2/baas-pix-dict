@@ -24,9 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateInfractionReportUseCaseTest {
@@ -48,7 +46,6 @@ class CreateInfractionReportUseCaseTest {
         createInfractionReportUseCase = new CreateInfractionReportUseCase(infractionReportPort,
                                                                           infractionReportSavePort,
                                                                           infractionReportFindPort,
-                                                                          infractionReportCacheSavePort,
                                                                           ispbPicPay);
     }
 
@@ -70,7 +67,6 @@ class CreateInfractionReportUseCaseTest {
         verify(infractionReportPort).create(any(), anyString(), anyString());
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportSavePort).save(any(InfractionReport.class));
-        verify(infractionReportCacheSavePort).save(any(InfractionReport.class), anyString());
     }
 
     @Test
@@ -85,7 +81,6 @@ class CreateInfractionReportUseCaseTest {
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportPort, times(0)).create(any(), anyString(), anyString());
         verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
-        verify(infractionReportCacheSavePort, times(0)).save(any(InfractionReport.class), anyString());
     }
 
     @Test

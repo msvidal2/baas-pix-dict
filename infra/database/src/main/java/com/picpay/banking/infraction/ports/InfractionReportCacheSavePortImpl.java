@@ -6,6 +6,7 @@
 package com.picpay.banking.infraction.ports;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,8 @@ public class InfractionReportCacheSavePortImpl implements InfractionReportCacheS
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void save(@NonNull final InfractionReport infractionReport, final @NonNull String requestIdentifier) {
-        redisTemplate.opsForHash().put(requestIdentifier, InfractionReport.class.getName(), infractionReport);
+    public void save(@NonNull InfractionReportEventData infractionReportEventData, @NonNull String requestIdentifier) {
+        redisTemplate.opsForHash().put(InfractionReportEventData.class.getName(), requestIdentifier, infractionReportEventData);
     }
 
 }

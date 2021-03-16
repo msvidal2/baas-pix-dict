@@ -20,7 +20,6 @@ public class CreateInfractionReportUseCase {
     private final CreateInfractionReportPort infractionReportPort;
     private final InfractionReportSavePort infractionReportSavePort;
     private final InfractionReportFindPort infractionReportFindPort;
-    private final InfractionReportCacheSavePort infractionReportCacheSavePort;
     private final String ispbPicPay;
 
     public InfractionReport execute(final InfractionReport infractionReport, final String requestIdentifier) {
@@ -40,7 +39,6 @@ public class CreateInfractionReportUseCase {
                 , kv("endToEndId", infractionReportCreated.getEndToEndId())
                 , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
             infractionReportSavePort.save(infractionReportCreated);
-            infractionReportCacheSavePort.save(infractionReportCreated, requestIdentifier);
         }
 
         return infractionReportCreated;

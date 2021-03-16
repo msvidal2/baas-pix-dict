@@ -1,8 +1,8 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

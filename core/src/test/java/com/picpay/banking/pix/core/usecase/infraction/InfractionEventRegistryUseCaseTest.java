@@ -1,21 +1,18 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
-import com.picpay.banking.pix.core.domain.InfractionReportEvent;
+import com.picpay.banking.pix.core.events.InfractionReportEvent;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionAnalyzeEventData;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionAnalyzeEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionEventRegistryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
-import static com.picpay.banking.pix.core.domain.InfractionReportEvent.PENDING_CREATE;
+import static com.picpay.banking.pix.core.events.InfractionReportEvent.PENDING_CREATE;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
