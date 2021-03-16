@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.domain.infraction.events;
+package com.picpay.banking.pix.core.events.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.ReportedBy;

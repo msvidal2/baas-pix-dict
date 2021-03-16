@@ -1,8 +1,9 @@
 package com.picpay.banking.pixkey.ports;
 
 import com.picpay.banking.pix.core.domain.PixKey;
-import com.picpay.banking.pix.core.domain.PixKeyEvent;
+import com.picpay.banking.pix.core.events.PixKeyEvent;
 import com.picpay.banking.pix.core.domain.Reason;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyCacheSavePort;
 import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
@@ -28,7 +29,7 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
     @Override
     @ValidateIdempotency(PixKey.class)
-    public void registry(final PixKeyEvent event, @IdempotencyKey final String requestIdentifier, final PixKey pixKey, final Reason reason) {
+    public void registry(final PixKeyEvent event, @IdempotencyKey final String requestIdentifier, final PixKeyEventData pixKey, final Reason reason) {
 
         var eventEntity = PixKeyEventEntity.builder()
                 .type(event)

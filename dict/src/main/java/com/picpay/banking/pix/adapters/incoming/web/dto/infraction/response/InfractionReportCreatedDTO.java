@@ -1,7 +1,7 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

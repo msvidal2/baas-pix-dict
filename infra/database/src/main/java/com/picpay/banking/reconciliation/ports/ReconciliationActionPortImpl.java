@@ -1,8 +1,9 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.PixKeyEvent;
+import com.picpay.banking.pix.core.events.PixKeyEvent;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoricAction;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ReconciliationActionPort;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pixkey.entity.PixKeyEntity;
@@ -32,7 +33,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
         var pixKeyInserted = pixKeyRepository.save(pixKeyEntity).toPixKey();
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATED, UUID.randomUUID().toString(), pixKeyInserted, Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInserted), Reason.RECONCILIATION);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(oldPixKeyAction));
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(newPixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATED, UUID.randomUUID().toString(), pixKeyUpdated, Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyUpdated), Reason.RECONCILIATION);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
                 var pixKeyInactivated = pixKeyRepository.save(pixKeyEntity).toPixKey();
                 syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
                 // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-                pixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVED, UUID.randomUUID().toString(), pixKeyInactivated, Reason.RECONCILIATION);
+                pixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInactivated), Reason.RECONCILIATION);
             });
     }
 

@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.adapters.incoming.web.dto;
+package com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

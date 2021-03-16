@@ -7,7 +7,7 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.RemovePix
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request.UpdateAccountPixKeyRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.ListKeyResponseWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.response.PixKeyResponseDTO;
-import com.picpay.banking.pix.core.domain.PixKeyEvent;
+import com.picpay.banking.pix.core.events.PixKeyEvent;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
@@ -63,17 +63,17 @@ public class PixKeyController {
                 kv("AccountNumber", requestDTO.getAccountNumber()),
                 kv("BranchNumber", requestDTO.getBranchNumber()));
 
-        var pixKey = requestDTO.toPixKey();
+        var pixKeyEventData = requestDTO.toEventData();
         var reason = requestDTO.getReason().getValue();
 
-        CreatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+        CreatePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
                 requestIdentifier,
-                pixKey,
+                pixKeyEventData,
                 reason);
 
-        return PixKeyResponseDTO.from(requestDTO.toPixKey());
+        return PixKeyResponseDTO.from(pixKeyEventData.toPixKey());
     }
 
     @Trace
@@ -121,17 +121,17 @@ public class PixKeyController {
                 kv("key", key),
                 kv("dto", dto));
 
-        var pixKey = dto.toDomain(key);
+        var pixKeyEventData = dto.toEventData(key);
         var reason = dto.getReason().getValue();
 
-        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+        RemovePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_REMOVE,
                 requestIdentifier,
-                pixKey,
+                pixKeyEventData,
                 reason);
 
-        return PixKeyResponseDTO.from(pixKey);
+        return PixKeyResponseDTO.from(pixKeyEventData.toPixKey());
     }
 
     @Trace
@@ -147,16 +147,16 @@ public class PixKeyController {
                 kv("key", key),
                 kv("dto", dto));
 
-        var pixKey = dto.toDomain(key);
+        var pixKeyEventData = dto.toEventData(key);
         var reason = dto.getReason().getValue();
 
-        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+        UpdatePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
         pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
                 requestIdentifier,
-                pixKey,
+                pixKeyEventData,
                 reason);
 
-        return PixKeyResponseDTO.from(pixKey);
+        return PixKeyResponseDTO.from(pixKeyEventData.toPixKey());
     }
 }
