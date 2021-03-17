@@ -23,8 +23,8 @@
     </dependencies>
 
     <modules>
-        <module>worker-general</module>
-        <module>db-update-pixkey</module>
+        <module>pixkey-database</module>
+        <module>watchdog-polling-listener</module>
     </modules>
 
 </project>
