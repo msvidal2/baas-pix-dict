@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.picpay.banking.pix.core.events.InfractionReportEvent.PENDING_CREATE;
+import static com.picpay.banking.pix.core.events.InfractionReportEvent.CREATE_PENDING;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +44,7 @@ class InfractionEventRegistryUseCaseTest {
 
     @Test
     void when_executeWithSuccess_expect_noExceptions() {
-        assertDoesNotThrow(() -> useCase.execute(PENDING_CREATE, randomUUID().toString(), eventData));
+        assertDoesNotThrow(() -> useCase.execute(CREATE_PENDING, randomUUID().toString(), eventData));
 
         verify(infractionEventRegistryPort).registry(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
     }
@@ -58,13 +58,13 @@ class InfractionEventRegistryUseCaseTest {
     @Test
     void when_executeWithNullRequestIdentifier_expect_nullPointerException() {
         assertThrows(NullPointerException.class,
-                () -> useCase.execute(PENDING_CREATE, null, eventData));
+                () -> useCase.execute(CREATE_PENDING, null, eventData));
     }
 
     @Test
     void when_executeWithNullInfractionReportDataEvent_expect_nullPointerException() {
         assertThrows(NullPointerException.class,
-                () -> useCase.execute(PENDING_CREATE, randomUUID().toString(), null));
+                () -> useCase.execute(CREATE_PENDING, randomUUID().toString(), null));
     }
 
 }

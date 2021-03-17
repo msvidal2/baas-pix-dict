@@ -1,4 +1,4 @@
-package com.picpay.banking.pix.core.domain;
+package com.picpay.banking.pix.core.events;
 
 public enum DictAction {
     ADD,

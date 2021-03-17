@@ -33,7 +33,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
         var pixKeyInserted = pixKeyRepository.save(pixKeyEntity).toPixKey();
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInserted), Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInserted), Reason.RECONCILIATION);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(oldPixKeyAction));
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(newPixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyUpdated), Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyUpdated), Reason.RECONCILIATION);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
                 var pixKeyInactivated = pixKeyRepository.save(pixKeyEntity).toPixKey();
                 syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
                 // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-                pixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVED, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInactivated), Reason.RECONCILIATION);
+                pixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInactivated), Reason.RECONCILIATION);
             });
     }
 

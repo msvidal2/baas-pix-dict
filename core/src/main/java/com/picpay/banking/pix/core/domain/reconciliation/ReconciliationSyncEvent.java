@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.domain.reconciliation;
 
 import com.google.common.base.Strings;
-import com.picpay.banking.pix.core.domain.DictAction;
+import com.picpay.banking.pix.core.events.DictAction;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.exception.InvalidReconciliationSyncEventException;
 import lombok.AllArgsConstructor;

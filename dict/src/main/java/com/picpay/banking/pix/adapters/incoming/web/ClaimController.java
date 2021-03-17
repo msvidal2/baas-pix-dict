@@ -4,7 +4,7 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
-import com.picpay.banking.pix.core.domain.ClaimEventType;
+import com.picpay.banking.pix.core.events.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
@@ -59,7 +59,7 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.CREATING,
+                ClaimEventType.CREATE_PENDING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -83,7 +83,7 @@ public class ClaimController {
         ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
 
         claimEventRegistryUseCase.execute(requestIdentifier,
-                ClaimEventType.CONFIRMING,
+                ClaimEventType.CONFIRM_PENDING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -126,7 +126,7 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.CANCELING,
+                ClaimEventType.CANCEL_PENDING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -150,7 +150,7 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.COMPLETING,
+                ClaimEventType.COMPLETE_PENDING,
                 claim);
 
         return ClaimResponseDTO.from(claim);

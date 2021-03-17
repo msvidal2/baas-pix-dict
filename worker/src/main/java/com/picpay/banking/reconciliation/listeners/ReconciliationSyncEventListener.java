@@ -1,7 +1,7 @@
 package com.picpay.banking.reconciliation.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picpay.banking.pix.core.domain.DictEvent;
+import com.picpay.banking.pix.core.events.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationSyncEvent;
