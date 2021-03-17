@@ -9,7 +9,7 @@ spring:
     stream:
       bindings:
         pixKey-events:
-          destination: pixkey-events-topic
+          destination: dict-events-topic
           binder: kafka
 
 picpay:

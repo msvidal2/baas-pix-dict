@@ -40,6 +40,7 @@ public class PixKeyEventData implements Serializable {
     private UUID requestId;
     private Boolean donatedAutomatically;
     private PixKeySituation situation;
+    private Reason reason;
 
     public PixKey toPixKey() {
         return PixKey.builder()
@@ -58,7 +59,7 @@ public class PixKeyEventData implements Serializable {
                 .build();
     }
 
-    public static PixKeyEventData from(final PixKey pixKey) {
+    public static PixKeyEventData from(final PixKey pixKey, final Reason reason) {
         return PixKeyEventData.builder()
                 .type(pixKey.getType())
                 .key(pixKey.getKey())

@@ -1,6 +1,5 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.events.PixKeyEvent;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.domain.reconciliation.SyncVerifierHistoricAction;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
@@ -17,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.picpay.banking.pix.core.domain.Reason.RECONCILIATION;
+import static com.picpay.banking.pix.core.events.EventType.*;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -29,22 +31,22 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertPixKey(final SyncVerifierHistoricAction pixKeyAction) {
-        final PixKeyEntity pixKeyEntity = PixKeyEntity.from(pixKeyAction.getPixKey(), Reason.RECONCILIATION);
+        final PixKeyEntity pixKeyEntity = PixKeyEntity.from(pixKeyAction.getPixKey(), RECONCILIATION);
         var pixKeyInserted = pixKeyRepository.save(pixKeyEntity).toPixKey();
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInserted), Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PIX_KEY_CREATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInserted, RECONCILIATION));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updatePixKey(final SyncVerifierHistoricAction oldPixKeyAction, final SyncVerifierHistoricAction newPixKeyAction) {
-        final PixKeyEntity pixKeyEntity = PixKeyEntity.from(newPixKeyAction.getPixKey(), Reason.RECONCILIATION);
+        final PixKeyEntity pixKeyEntity = PixKeyEntity.from(newPixKeyAction.getPixKey(), RECONCILIATION);
         var pixKeyUpdated = pixKeyRepository.save(pixKeyEntity).toPixKey();
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(oldPixKeyAction));
         syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(newPixKeyAction));
         // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-        pixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyUpdated), Reason.RECONCILIATION);
+        pixKeyEventRegistryUseCase.execute(PIX_KEY_UPDATED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyUpdated, RECONCILIATION));
     }
 
     @Override
@@ -56,7 +58,7 @@ public class ReconciliationActionPortImpl implements ReconciliationActionPort {
                 var pixKeyInactivated = pixKeyRepository.save(pixKeyEntity).toPixKey();
                 syncVerifierHistoricActionRepository.save(SyncVerifierHistoricActionEntity.from(pixKeyAction));
                 // TODO: Confirmar se o requestIdentifier pode ser gerado dentro do processo de reconciliação
-                pixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInactivated), Reason.RECONCILIATION);
+                pixKeyEventRegistryUseCase.execute(PIX_KEY_REMOVED_BACEN, UUID.randomUUID().toString(), PixKeyEventData.from(pixKeyInactivated, RECONCILIATION));
             });
     }
 

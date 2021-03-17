@@ -9,7 +9,7 @@ import com.picpay.banking.claim.config.*;
 import com.picpay.banking.infraction.config.AcknowledgeInputStream;
 import com.picpay.banking.infraction.config.AcknowledgeOutputStream;
 import com.picpay.banking.infraction.config.InfractionAlertNotificationOutputStream;
-import com.picpay.banking.pixkey.config.PixKeyEventInputBinding;
+import com.picpay.banking.pixkey.config.DictEventInputBinding;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
         ClaimNotificationOutputBinding.class,
         OverduePossessionClaimDonorInputTopic.class,
         OverduePossessionClaimClaimerInputTopic.class,
-        PixKeyEventInputBinding.class
+        DictEventInputBinding.class
 })
 @Configuration
 public class StreamBindingConfig {

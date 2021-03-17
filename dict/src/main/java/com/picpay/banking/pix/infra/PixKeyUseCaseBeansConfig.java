@@ -7,13 +7,13 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
-import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
+import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableBinding(PixKeyEventOutputBinding.class)
+@EnableBinding(DictEventOutputBinding.class)
 @Configuration
 @RequiredArgsConstructor
 public class PixKeyUseCaseBeansConfig {

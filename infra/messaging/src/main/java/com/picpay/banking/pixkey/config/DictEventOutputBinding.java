@@ -4,7 +4,7 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
 
-public interface PixKeyEventOutputBinding {
+public interface DictEventOutputBinding {
 
     String OUTPUT = "pixKey-events";
 

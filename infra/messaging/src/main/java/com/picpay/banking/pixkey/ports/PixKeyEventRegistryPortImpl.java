@@ -1,11 +1,11 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.events.PixKeyEvent;
+import com.picpay.banking.pix.core.events.Domain;
+import com.picpay.banking.pix.core.events.DomainEvent;
+import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
-import com.picpay.banking.pix.core.events.data.PixKeyMessage;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
-import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
+import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,17 +20,17 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @ConditionalOnProperty(value = "picpay.dict.pixkey.event-registry", havingValue = "true")
 public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
-    private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
+    private final DictEventOutputBinding pixKeyEventOutputBinding;
 
     @Override
-    public void registry(PixKeyEvent event, String requestIdentifier, PixKeyEventData pixKeyEventData, Reason reason) {
+    public void registry(EventType event, String requestIdentifier, PixKeyEventData pixKeyEventData) {
 
         var message = MessageBuilder
-                .withPayload(PixKeyMessage.builder()
-                        .event(event)
-                        .data(pixKeyEventData)
+                .withPayload(DomainEvent.<PixKeyEventData>builder()
+                        .eventType(event)
+                        .domain(Domain.PIX_KEY)
+                        .source(pixKeyEventData)
                         .requestIdentifier(requestIdentifier)
-                        .reason(reason)
                         .build())
                 .build();
 
