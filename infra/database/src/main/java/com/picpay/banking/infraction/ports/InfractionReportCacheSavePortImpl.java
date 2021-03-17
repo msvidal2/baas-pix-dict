@@ -3,10 +3,10 @@
  *  Copyright (c) 2020, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.infraction.ports;
 
-import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

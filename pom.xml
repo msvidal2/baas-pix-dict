@@ -52,7 +52,7 @@
         <module>core</module>
         <module>infra</module>
         <module>dict</module>
-        <module>worker</module>
+        <module>workers</module>
         <module>reconciliation</module>
         <module>mockserver</module>
         <module>polling</module>

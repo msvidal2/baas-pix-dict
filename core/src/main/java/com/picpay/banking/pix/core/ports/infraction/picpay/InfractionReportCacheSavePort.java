@@ -5,7 +5,7 @@ package com.picpay.banking.pix.core.ports.infraction.picpay;/*
  */
 
 
-import com.picpay.banking.pix.core.domain.infraction.events.InfractionReportEventData;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import lombok.NonNull;
 
 public interface InfractionReportCacheSavePort {
