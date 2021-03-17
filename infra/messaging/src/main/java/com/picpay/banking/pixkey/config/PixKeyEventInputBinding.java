@@ -5,9 +5,9 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface PixKeyEventInputBinding {
 
-    String INPUT = "keys-changed";
+    String INPUT = "pixKey-events";
 
     @Input(INPUT)
-    SubscribableChannel receivePixKeyWasChanged();
+    SubscribableChannel input();
 
 }

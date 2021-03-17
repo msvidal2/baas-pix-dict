@@ -40,7 +40,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     public void fallback(final PixKey pixKey, Exception e) {
