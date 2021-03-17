@@ -48,9 +48,6 @@ class ClaimControllerTest {
     private FindClaimUseCase findClaimUseCase;
 
     @Mock
-    private CompleteClaimUseCase completeClaimUseCase;
-
-    @Mock
     private ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
     private Claim claim;
@@ -109,19 +106,15 @@ class ClaimControllerTest {
 
     @Test
     void when_completeClaimsWithSuccess_expect_statusOk() throws Exception {
-        claim.setClaimSituation(ClaimSituation.COMPLETED);
+        doNothing().when(claimEventRegistryUseCase).execute(anyString(), any(), any());
 
-        when(completeClaimUseCase.execute(any(), anyString())).thenReturn(claim);
-
-        mockMvc.perform(put("/v1/claims/1/complete")
+        mockMvc.perform(put("/v1/claims/0f169159-081f-4de9-91b1-3d7286a4d578/complete")
                 .header("requestIdentifier", UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
                         .ispb(12345)
                         .build())))
-            .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.claimSituation", equalTo("COMPLETED")));
+                .andExpect(status().isAccepted());
     }
 
     @Test
@@ -130,6 +123,19 @@ class ClaimControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder().build())))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void when_completeClaimsWithoutClaimId_expect_statusBadRequest() throws Exception {
+        mockMvc.perform(put("/v1/claims/1/complete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
+                        .ispb(12345)
+                        .build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo(400)))
+                .andExpect(jsonPath("$.error", equalTo("Bad Request")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid claim id: 1")));
     }
 
     @Test

@@ -4,10 +4,10 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
-import com.picpay.banking.pix.core.domain.Claim;
 import com.picpay.banking.pix.core.domain.ClaimEventType;
 import com.picpay.banking.pix.core.usecase.claim.*;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
+import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
@@ -35,9 +35,7 @@ public class ClaimController {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     public static final String CLAIM_ID = "claimId";
 
-    private final ConfirmClaimUseCase confirmClaimUseCase;
     private final ListClaimUseCase listClaimUseCase;
-    private final CompleteClaimUseCase completeClaimUseCase;
     private final FindClaimUseCase findClaimUseCase;
     private final ClaimEventRegistryUseCase claimEventRegistryUseCase;
 
@@ -61,7 +59,7 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.PENDING_CREATE,
+                ClaimEventType.CREATING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -85,7 +83,7 @@ public class ClaimController {
         ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
 
         claimEventRegistryUseCase.execute(requestIdentifier,
-                ClaimEventType.PENDING_CONFIRMATION,
+                ClaimEventType.CONFIRMING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -128,7 +126,7 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.PENDING_CANCELLATION,
+                ClaimEventType.CANCELING,
                 claim);
 
         return ClaimResponseDTO.from(claim);
@@ -137,6 +135,7 @@ public class ClaimController {
     @Trace
     @ApiOperation("Complete an pix key claim")
     @PutMapping("/{claimId}/complete")
+    @ResponseStatus(ACCEPTED)
     public ClaimResponseDTO complete(@RequestHeader String requestIdentifier,
                           @PathVariable String claimId,
                           @RequestBody @Validated CompleteClaimRequestWebDTO dto) {
@@ -146,12 +145,15 @@ public class ClaimController {
                 kv(CLAIM_ID, claimId),
                 kv("dto", dto));
 
-        var claim = Claim.builder()
-                .claimId(claimId)
-                .ispb(dto.getIspb())
-                .build();
+        var claim = dto.toClaim().withClaimId(claimId);
+        CompleteClaimValidator.validate(requestIdentifier, claim);
 
-        return ClaimResponseDTO.from(completeClaimUseCase.execute(claim, requestIdentifier));
+        claimEventRegistryUseCase.execute(
+                requestIdentifier,
+                ClaimEventType.COMPLETING,
+                claim);
+
+        return ClaimResponseDTO.from(claim);
     }
 
     @Trace
