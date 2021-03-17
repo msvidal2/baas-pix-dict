@@ -7,7 +7,7 @@
         <groupId>com.picpay.banking.pix.dict.workers</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>db-update-pixkey</artifactId>
+    <artifactId>pixkey-database</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <java.version>11</java.version>

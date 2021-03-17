@@ -55,12 +55,12 @@
         </dependency>
         <dependency>
             <groupId>com.picpay.banking.pix.dict.workers</groupId>
-            <artifactId>db-update-pixkey</artifactId>
+            <artifactId>pixkey-database</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.picpay.banking.pix.dict.workers</groupId>
-            <artifactId>worker-general</artifactId>
+            <artifactId>watchdog-polling-listener</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
