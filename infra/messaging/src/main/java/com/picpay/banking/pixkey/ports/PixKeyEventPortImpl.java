@@ -1,7 +1,7 @@
 package com.picpay.banking.pixkey.ports;
 
-import com.picpay.banking.pix.core.domain.DictAction;
-import com.picpay.banking.pix.core.domain.DictEvent;
+import com.picpay.banking.pix.core.events.DictAction;
+import com.picpay.banking.pix.core.events.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;

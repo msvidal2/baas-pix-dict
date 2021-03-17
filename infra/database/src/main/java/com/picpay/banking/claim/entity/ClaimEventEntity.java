@@ -1,7 +1,7 @@
 package com.picpay.banking.claim.entity;
 
 import com.picpay.banking.pix.core.domain.Claim;
-import com.picpay.banking.pix.core.domain.ClaimEventType;
+import com.picpay.banking.pix.core.events.ClaimEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

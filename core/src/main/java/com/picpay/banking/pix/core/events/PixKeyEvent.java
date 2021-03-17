@@ -2,11 +2,13 @@ package com.picpay.banking.pix.core.events;
 
 public enum PixKeyEvent {
 
-    PENDING_CREATE,
-    PENDING_UPDATE,
-    PENDING_REMOVE,
-    CREATED,
-    REMOVED,
-    UPDATED;
+    CREATE_PENDING,
+    UPDATE_PENDING,
+    REMOVE_PENDING,
+
+    CREATED_BACEN,
+    REMOVED_BACEN,
+    UPDATED_BACEN,
+    FAILED_BACEN;
 
 }

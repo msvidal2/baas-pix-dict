@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.picpay.banking.pix.core.events.PixKeyEvent.PENDING_CREATE;
+import static com.picpay.banking.pix.core.events.PixKeyEvent.CREATE_PENDING;
 import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -57,7 +57,7 @@ class PixKeyEventRegistryUseCaseTest {
         doNothing().when(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKeyEventData.class), any(Reason.class));
 
         assertDoesNotThrow(() ->
-                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKeyEventData, CLIENT_REQUEST));
+                useCase.execute(CREATE_PENDING, randomUUID().toString(), pixKeyEventData, CLIENT_REQUEST));
 
         verify(pixKeyEventRegistryPort).registry(any(PixKeyEvent.class), anyString(), any(PixKeyEventData.class), any(Reason.class));
     }
@@ -71,19 +71,19 @@ class PixKeyEventRegistryUseCaseTest {
     @Test
     void when_executeWithNullRequestIdentifier_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(PENDING_CREATE, null, pixKeyEventData, CLIENT_REQUEST));
+                useCase.execute(CREATE_PENDING, null, pixKeyEventData, CLIENT_REQUEST));
     }
 
     @Test
     void when_executeWithNullPixKey_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(PENDING_CREATE, randomUUID().toString(), null, CLIENT_REQUEST));
+                useCase.execute(CREATE_PENDING, randomUUID().toString(), null, CLIENT_REQUEST));
     }
 
     @Test
     void when_executeWithNullReason_expect_nullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                useCase.execute(PENDING_CREATE, randomUUID().toString(), pixKeyEventData, null));
+                useCase.execute(CREATE_PENDING, randomUUID().toString(), pixKeyEventData, null));
     }
 
 }

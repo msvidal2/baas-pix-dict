@@ -58,7 +58,7 @@ public class InfractionReportController {
 
         final var infractionReport = CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO);
 
-        infractionEventRegistryUseCase.execute(PENDING_CREATE, requestIdentifier, infractionReport);
+        infractionEventRegistryUseCase.execute(CREATE_PENDING, requestIdentifier, infractionReport);
 
         return InfractionReportCreatedDTO.from(infractionReport);
     }
@@ -93,7 +93,7 @@ public class InfractionReportController {
                 .ispb(dto.getIspb())
                 .build();
 
-        infractionEventRegistryUseCase.execute(PENDING_CANCEL, requestIdentifier, eventData);
+        infractionEventRegistryUseCase.execute(CANCEL_PENDING, requestIdentifier, eventData);
 
         return CancelResponseInfractionDTO.builder()
                 .infractionReportId(infractionReportId)
@@ -117,7 +117,7 @@ public class InfractionReportController {
                 .analyze(dto.toInfractionAnalyze())
                 .build();
 
-        infractionEventRegistryUseCase.execute(PENDING_ANALYZE, requestIdentifier, eventData);
+        infractionEventRegistryUseCase.execute(ANALYZE_PENDING, requestIdentifier, eventData);
 
         return CancelResponseInfractionDTO.builder()
                 .infractionReportId(infractionReportId)

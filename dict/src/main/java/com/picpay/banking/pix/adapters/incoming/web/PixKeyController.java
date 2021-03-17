@@ -68,7 +68,7 @@ public class PixKeyController {
 
         CreatePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
-        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_CREATE,
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.CREATE_PENDING,
                 requestIdentifier,
                 pixKeyEventData,
                 reason);
@@ -126,7 +126,7 @@ public class PixKeyController {
 
         RemovePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
-        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_REMOVE,
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.REMOVE_PENDING,
                 requestIdentifier,
                 pixKeyEventData,
                 reason);
@@ -152,7 +152,7 @@ public class PixKeyController {
 
         UpdatePixKeyValidator.validate(requestIdentifier, pixKeyEventData.toPixKey(), reason);
 
-        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.PENDING_UPDATE,
+        pixKeyPixKeyEventRegistryUseCase.execute(PixKeyEvent.UPDATE_PENDING,
                 requestIdentifier,
                 pixKeyEventData,
                 reason);
