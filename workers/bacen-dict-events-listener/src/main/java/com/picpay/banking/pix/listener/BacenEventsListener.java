@@ -11,10 +11,12 @@ import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventKey;
 import com.picpay.banking.pix.core.events.EventProcessor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author rafael.braga
@@ -22,15 +24,17 @@ import java.util.Map;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EventListener {
 
-    private final Map<EventKey, EventProcessor> processors;
+    private final Map<EventKey, Optional<EventProcessor>> processors;
 
     @StreamListener("dict-events")
     public void listen(DomainEvent domainEvent) {
         var eventKey = EventKey.builder().eventType(domainEvent.getEventType()).domain(domainEvent.getDomain()).build();
-        EventProcessor processor = processors.get(eventKey);
-        processor.process(domainEvent);
+        Optional<EventProcessor> eventProcessor = processors.get(eventKey);
+        eventProcessor.ifPresentOrElse(proc -> proc.process(domainEvent),
+                                       () -> log.info("Processador não encontrado para tipo de evento {}", eventKey));
     }
 
 }

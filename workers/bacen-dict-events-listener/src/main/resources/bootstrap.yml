@@ -4,10 +4,11 @@ spring:
   cloud:
     config:
       uri: ${CONFIG_SERVER_URI:http://localhost:8888}
-      name: dict,dict-bacen,dict-messaging
+      name: dict,dict-bacen,dict-messaging,dict-database
       request-connect-timeout: 45
   profiles:
     active:
       - ${ENV:local}
       - bacen-${ENV:local}
       - messaging-${ENV:local}
+      - database-${ENV:local}

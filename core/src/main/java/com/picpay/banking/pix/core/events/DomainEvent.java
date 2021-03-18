@@ -6,9 +6,12 @@
 
 package com.picpay.banking.pix.core.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.picpay.banking.pix.core.events.data.ErrorEvent;
+import lombok.*;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
  * @author rafael.braga
@@ -16,13 +19,17 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(NON_NULL)
+@JsonDeserialize(builder = DomainEventDeserializerBuilder.class)
 public class DomainEvent<T> {
 
-    private final EventType eventType;
-    private final Domain domain;
-    private final T source;
-//    private final ErrorEvent errorEvent;
-    private final String requestIdentifier;
+    private EventType eventType;
+    private Domain domain;
+    private T source;
+    private ErrorEvent errorEvent;
+    private String requestIdentifier;
 
 }
