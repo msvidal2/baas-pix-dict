@@ -1,0 +1,6 @@
+DROP INDEX infraction_event_creation_date ON infraction_report_event;
+DROP INDEX infraction_event_infraction_id ON infraction_report_event;
+DROP INDEX infraction_event_request_identifier ON infraction_report_event;
+DROP INDEX infraction_event_identifier_by_type ON infraction_report_event;
+
+DROP TABLE infraction_report_event;
