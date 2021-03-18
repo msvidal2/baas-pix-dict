@@ -25,7 +25,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EventListener {
+public class BacenEventsListener {
 
     private final Map<EventKey, Optional<EventProcessor>> processors;
 

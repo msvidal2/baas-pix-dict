@@ -1,10 +1,11 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
+import com.picpay.banking.pix.core.events.EventType;
+import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
+import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionEventRegistryPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CreateInfractionReportUseCase {
 
     private final CreateInfractionReportPort infractionReportPort;
-    private final InfractionReportSavePort infractionReportSavePort;
+    private final InfractionEventRegistryPort infractionEventRegistryPort;
     private final InfractionReportFindPort infractionReportFindPort;
     private final String ispbPicPay;
 
@@ -38,7 +39,7 @@ public class CreateInfractionReportUseCase {
                 , kv("requestIdentifier", requestIdentifier)
                 , kv("endToEndId", infractionReportCreated.getEndToEndId())
                 , kv("infractionReportId", infractionReportCreated.getInfractionReportId()));
-            infractionReportSavePort.save(infractionReportCreated);
+            infractionEventRegistryPort.registry(EventType.INFRACTION_REPORT_CREATED_BACEN, requestIdentifier, InfractionReportEventData.from(infractionReport));
         }
 
         return infractionReportCreated;

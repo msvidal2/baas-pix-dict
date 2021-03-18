@@ -4,6 +4,22 @@ spring:
   redis:
     enabled: true
     password: none
+  cloud:
+    stream:
+      bindings:
+        pixKey-events:
+          destination: dict-events-topic
+          binder: kafka
+          contentType: application/json
+          consumer:
+            enableDlq: true
+            dlqName: dict-events-topic-DLQ
+            maxAttemps: 3
+            configuration:
+              max.poll.records: 1
+              max.poll.interval.ms: 1
+            partitionCount: 1
+            concurrency: 1
 
 picpay:
   ispb: 22896431

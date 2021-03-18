@@ -6,8 +6,8 @@
 
 package com.picpay.banking.pix.core.events;
 
-public interface EventProcessor {
+public interface EventProcessor<T> {
 
-    void process(final DomainEvent domainEvent);
+    DomainEvent<T> process(final DomainEvent<T> domainEvent);
 
 }
