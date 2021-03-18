@@ -6,6 +6,7 @@
 package com.picpay.banking.pix.core.events;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -14,9 +15,14 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@EqualsAndHashCode
 public class EventKey {
 
+    @EqualsAndHashCode.Include
     private final EventType eventType;
+    @EqualsAndHashCode.Include
     private final Domain domain;
+
+
 
 }

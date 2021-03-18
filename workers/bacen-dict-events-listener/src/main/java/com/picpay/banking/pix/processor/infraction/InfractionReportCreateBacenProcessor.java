@@ -14,8 +14,8 @@ import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.ErrorEvent;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.infra.config.StreamConfig;
 import com.picpay.banking.pix.processor.ProcessorTemplate;
-import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
@@ -37,8 +37,8 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
     private final Integer ispb;
 
     @Override
-    @SendTo(DictEventOutputBinding.OUTPUT)
-    public DomainEvent<InfractionReportEventData> listen(DomainEvent<InfractionReportEventData> domainEvent) {
+    @SendTo(StreamConfig.OUTPUT)
+    protected DomainEvent<InfractionReportEventData> handle(DomainEvent<InfractionReportEventData> domainEvent) {
         InfractionReport createdOnBacen = createInfractionReportUseCase.execute(InfractionReport.from(domainEvent.getSource()),
                                                                                 domainEvent.getRequestIdentifier());
         InfractionReportEventData eventData = InfractionReportEventData.from(createdOnBacen, ispb);
@@ -50,7 +50,6 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
             .build();
     }
 
-    @SendTo(DictEventOutputBinding.OUTPUT)
     public DomainEvent<InfractionReportEventData> failedEvent(DomainEvent<InfractionReportEventData> domainEvent, Exception e) {
         var error = (BacenException) e;
         return DomainEvent.<InfractionReportEventData>builder()

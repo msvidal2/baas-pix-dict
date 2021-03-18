@@ -18,6 +18,9 @@ public class InfractionAnalyze implements Serializable {
     private String details;
 
     public static InfractionAnalyze from(InfractionAnalyzeEventData infractionAnalyzeEventData) {
+        if (infractionAnalyzeEventData == null)
+            return null;
+
         return InfractionAnalyze.builder()
             .analyzeResult(infractionAnalyzeEventData.getAnalyzeResult())
             .details(infractionAnalyzeEventData.getDetails())
