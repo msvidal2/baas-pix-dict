@@ -26,7 +26,7 @@ public class ReconciliationSyncEventListener {
     private final ContentIdentifierEventRecordUseCase contentIdentifierEventRecordUseCase;
     private final ContentIdentifierEventRepository contentIdentifierEventRepository;
 
-    @StreamListener(value = DictEventOutputBinding.OUTPUT_TO_BACEN)
+    @StreamListener(value = DictEventOutputBinding.OUTPUT)
     public void reconciliationSyncEvent(Message<DictEvent> message) {
         var dictEvent = message.getPayload();
         var pixKey = objectMapper.convertValue(dictEvent.getData(), PixKey.class);

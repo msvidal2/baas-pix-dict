@@ -40,7 +40,7 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
                         .build())
                 .build();
 
-        var result = dictEventOutputBinding.outputToBacen().send(message, 2000);
+        var result = dictEventOutputBinding.output().send(message, 2000);
 
         pixKeyCacheSavePort.save(pixKeyEventData, requestIdentifier);
 

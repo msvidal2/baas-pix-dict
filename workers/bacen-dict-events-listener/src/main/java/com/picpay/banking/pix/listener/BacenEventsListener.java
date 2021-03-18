@@ -3,13 +3,12 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
-
 package com.picpay.banking.pix.listener;
 
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventKey;
 import com.picpay.banking.pix.core.events.EventProcessor;
+import com.picpay.banking.pixkey.config.DictEventInputBinding;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -29,11 +28,11 @@ public class BacenEventsListener {
 
     private final Map<EventKey, Optional<EventProcessor>> processors;
 
-    @StreamListener("dict-events")
+    @StreamListener(value = DictEventInputBinding.INPUT)
     public void listen(DomainEvent domainEvent) {
         var eventKey = EventKey.builder().eventType(domainEvent.getEventType()).domain(domainEvent.getDomain()).build();
         Optional<EventProcessor> eventProcessor = processors.get(eventKey);
-        eventProcessor.ifPresentOrElse(proc -> proc.process(domainEvent),
+        eventProcessor.ifPresentOrElse(proc -> proc.listen(domainEvent),
                                        () -> log.info("Processador não encontrado para tipo de evento {}", eventKey));
     }
 
