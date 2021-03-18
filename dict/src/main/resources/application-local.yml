@@ -20,6 +20,8 @@ picpay:
   dict:
     pixkey:
       event-registry: true
+    infraction:
+      event-registry: true
   compression:
     enabled: true
 

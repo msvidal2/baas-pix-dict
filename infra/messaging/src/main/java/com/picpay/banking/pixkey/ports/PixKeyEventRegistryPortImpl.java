@@ -5,6 +5,9 @@ import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyCacheSavePort;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.IdempotencyKey;
+import com.picpay.banking.pix.core.validators.idempotency.annotation.ValidateIdempotency;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +23,13 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @ConditionalOnProperty(value = "picpay.dict.pixkey.event-registry", havingValue = "true")
 public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
 
-    private final DictEventOutputBinding pixKeyEventOutputBinding;
+    private final DictEventOutputBinding dictEventOutputBinding;
+
+    private final PixKeyCacheSavePort pixKeyCacheSavePort;
 
     @Override
-    public void registry(EventType event, String requestIdentifier, PixKeyEventData pixKeyEventData) {
+    @ValidateIdempotency(PixKeyEventData.class)
+    public void registry(EventType event, @IdempotencyKey String requestIdentifier, PixKeyEventData pixKeyEventData) {
 
         var message = MessageBuilder
                 .withPayload(DomainEvent.<PixKeyEventData>builder()
@@ -34,7 +40,9 @@ public class PixKeyEventRegistryPortImpl implements PixKeyEventRegistryPort {
                         .build())
                 .build();
 
-        var result = pixKeyEventOutputBinding.output().send(message, 2000);
+        var result = dictEventOutputBinding.output().send(message, 2000);
+
+        pixKeyCacheSavePort.save(pixKeyEventData, requestIdentifier);
 
         log.info("PixKeyEventRegistry_sent {} {}",
                 kv("event", event),

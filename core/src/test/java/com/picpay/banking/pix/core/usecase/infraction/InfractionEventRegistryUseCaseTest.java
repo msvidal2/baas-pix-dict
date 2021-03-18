@@ -1,7 +1,7 @@
 package com.picpay.banking.pix.core.usecase.infraction;
 
-import com.picpay.banking.pix.core.events.InfractionReportEvent;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
+import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.InfractionAnalyzeEventData;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionEventRegistryPort;
@@ -12,9 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.picpay.banking.pix.core.events.InfractionReportEvent.CREATE_PENDING;
+import static com.picpay.banking.pix.core.events.EventType.INFRACTION_REPORT_CREATE_PENDING;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -44,9 +45,9 @@ class InfractionEventRegistryUseCaseTest {
 
     @Test
     void when_executeWithSuccess_expect_noExceptions() {
-        assertDoesNotThrow(() -> useCase.execute(CREATE_PENDING, randomUUID().toString(), eventData));
+        assertDoesNotThrow(() -> useCase.execute(INFRACTION_REPORT_CREATE_PENDING, randomUUID().toString(), eventData));
 
-        verify(infractionEventRegistryPort).registry(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
+        verify(infractionEventRegistryPort).registry(any(EventType.class), anyString(), any(InfractionReportEventData.class));
     }
 
     @Test
@@ -58,13 +59,13 @@ class InfractionEventRegistryUseCaseTest {
     @Test
     void when_executeWithNullRequestIdentifier_expect_nullPointerException() {
         assertThrows(NullPointerException.class,
-                () -> useCase.execute(CREATE_PENDING, null, eventData));
+                () -> useCase.execute(INFRACTION_REPORT_CREATE_PENDING, null, eventData));
     }
 
     @Test
     void when_executeWithNullInfractionReportDataEvent_expect_nullPointerException() {
         assertThrows(NullPointerException.class,
-                () -> useCase.execute(CREATE_PENDING, randomUUID().toString(), null));
+                () -> useCase.execute(INFRACTION_REPORT_CREATE_PENDING, randomUUID().toString(), null));
     }
 
 }

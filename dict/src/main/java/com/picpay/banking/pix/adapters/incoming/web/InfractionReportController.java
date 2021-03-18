@@ -11,7 +11,9 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.Infr
 import com.picpay.banking.pix.core.domain.infraction.InfractionPage;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
-import com.picpay.banking.pix.core.usecase.infraction.*;
+import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.FindInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.infraction.InfractionEventRegistryUseCase;
 import com.picpay.banking.pix.core.validators.reconciliation.lock.UnavailableWhileSyncIsActive;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
-import static com.picpay.banking.pix.core.events.InfractionReportEvent.*;
+import static com.picpay.banking.pix.core.events.EventType.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
@@ -58,7 +60,7 @@ public class InfractionReportController {
 
         final var infractionReport = CreateInfractionReportRequestWebDTO.from(createInfractionReportRequestWebDTO);
 
-        infractionEventRegistryUseCase.execute(CREATE_PENDING, requestIdentifier, infractionReport);
+        infractionEventRegistryUseCase.execute(INFRACTION_REPORT_CREATE_PENDING, requestIdentifier, infractionReport);
 
         return InfractionReportCreatedDTO.from(infractionReport);
     }
@@ -93,7 +95,7 @@ public class InfractionReportController {
                 .ispb(dto.getIspb())
                 .build();
 
-        infractionEventRegistryUseCase.execute(CANCEL_PENDING, requestIdentifier, eventData);
+        infractionEventRegistryUseCase.execute(INFRACTION_REPORT_CANCEL_PENDING, requestIdentifier, eventData);
 
         return CancelResponseInfractionDTO.builder()
                 .infractionReportId(infractionReportId)
@@ -117,7 +119,7 @@ public class InfractionReportController {
                 .analyze(dto.toInfractionAnalyze())
                 .build();
 
-        infractionEventRegistryUseCase.execute(ANALYZE_PENDING, requestIdentifier, eventData);
+        infractionEventRegistryUseCase.execute(INFRACTION_REPORT_ANALYZE_PENDING, requestIdentifier, eventData);
 
         return CancelResponseInfractionDTO.builder()
                 .infractionReportId(infractionReportId)

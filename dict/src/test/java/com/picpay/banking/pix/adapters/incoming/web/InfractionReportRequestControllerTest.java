@@ -4,12 +4,12 @@ import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.Analy
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CancelInfractionDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.request.CreateInfractionReportRequestWebDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.infraction.response.InfractionReportCreatedDTO;
-import com.picpay.banking.pix.core.events.InfractionReportEvent;
 import com.picpay.banking.pix.core.domain.ReportedBy;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
+import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.InfractionAnalyzeEventData;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.FilterInfractionReportUseCase;
@@ -121,7 +121,7 @@ class InfractionReportRequestControllerTest {
                 .andExpect(jsonPath("$.endToEndId", equalTo("E9999901012341234123412345678900")))
                 .andExpect(jsonPath("$.infractionType", equalTo("FRAUD")));
 
-        verify(infractionEventRegistryUseCase).execute(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
+        verify(infractionEventRegistryUseCase).execute(any(EventType.class), anyString(), any(InfractionReportEventData.class));
     }
 
     @Test
@@ -202,7 +202,7 @@ class InfractionReportRequestControllerTest {
                 .andExpect(jsonPath("$.endToEndId", equalTo("E9999901012341234123412345678900")))
                 .andExpect(jsonPath("$.infractionType", equalTo("FRAUD")));
 
-        verify(infractionEventRegistryUseCase).execute(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
+        verify(infractionEventRegistryUseCase).execute(any(EventType.class), anyString(), any(InfractionReportEventData.class));
 
     }
 
@@ -241,7 +241,7 @@ class InfractionReportRequestControllerTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.infractionReportId").exists());
 
-        verify(infractionEventRegistryUseCase).execute(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
+        verify(infractionEventRegistryUseCase).execute(any(EventType.class), anyString(), any(InfractionReportEventData.class));
     }
 
     @Test
@@ -272,7 +272,7 @@ class InfractionReportRequestControllerTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.infractionReportId").exists());
 
-        verify(infractionEventRegistryUseCase).execute(any(InfractionReportEvent.class), anyString(), any(InfractionReportEventData.class));
+        verify(infractionEventRegistryUseCase).execute(any(EventType.class), anyString(), any(InfractionReportEventData.class));
 
     }
 
