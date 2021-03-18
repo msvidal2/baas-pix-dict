@@ -25,6 +25,7 @@
     <modules>
         <module>pixkey-database</module>
         <module>watchdog-polling-listener</module>
+        <module>dict-events-listener</module>
     </modules>
 
 </project>

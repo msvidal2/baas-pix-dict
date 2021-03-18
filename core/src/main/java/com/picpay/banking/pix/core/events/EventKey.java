@@ -3,10 +3,8 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
 package com.picpay.banking.pix.core.events;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,13 +14,9 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-@AllArgsConstructor
-public class DomainEvent<T> {
+public class EventKey {
 
     private final EventType eventType;
     private final Domain domain;
-    private final T source;
-//    private final ErrorEvent errorEvent;
-    private final String requestIdentifier;
 
 }
