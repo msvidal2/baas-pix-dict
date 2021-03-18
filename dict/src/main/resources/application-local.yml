@@ -22,6 +22,8 @@ picpay:
       event-registry: true
     infraction:
       event-registry: true
+    claim:
+      event-registry: true
   compression:
     enabled: true
 

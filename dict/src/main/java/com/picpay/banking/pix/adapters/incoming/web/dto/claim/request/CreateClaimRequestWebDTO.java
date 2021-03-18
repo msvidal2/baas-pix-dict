@@ -2,11 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
 import com.picpay.banking.pix.core.domain.*;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
