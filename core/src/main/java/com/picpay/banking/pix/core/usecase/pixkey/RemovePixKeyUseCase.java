@@ -26,15 +26,15 @@ public class RemovePixKeyUseCase {
         final PixKey pixKey,
         final Reason reason) {
 
-        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
-
-        var removeAt = removePixKeyBacenPort.remove(pixKey, reason).getUpdatedAt();
-
-        remove(requestIdentifier, pixKey, removeAt);
-
-        log.info("PixKey_removed",
-            kv(REQUEST_IDENTIFIER, requestIdentifier),
-            kv("key", pixKey.getKey()));
+//        RemovePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+//
+//        var domainEvent = removePixKeyBacenPort.remove(pixKey, requestIdentifier, reason);
+//
+//        remove(requestIdentifier, pixKey, removeAt);
+//
+//        log.info("PixKey_removed",
+//            kv(REQUEST_IDENTIFIER, requestIdentifier),
+//            kv("key", pixKey.getKey()));
     }
 
     private void remove(String requestIdentifier, PixKey pixKey, java.time.LocalDateTime removeAt) {

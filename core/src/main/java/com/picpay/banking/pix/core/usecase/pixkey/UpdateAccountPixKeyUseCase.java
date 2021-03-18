@@ -29,31 +29,32 @@ public class UpdateAccountPixKeyUseCase {
         @NonNull final PixKey pixKey,
         @NonNull final Reason reason) {
 
-        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
-
-        if (requestIdentifier.isBlank()) {
-            throw new IllegalArgumentException("requestIdentifier can not be empty");
-        }
-
-        if (KeyType.RANDOM.equals(pixKey.getType()) && Reason.CLIENT_REQUEST.equals(reason)) {
-            throw new UseCaseException("Random keys cannot be updated per client requests");
-        }
-
-        var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey())
-            .orElseThrow(() -> new UseCaseException(String.format("The key was not found in the database: %s", pixKey.getKey())));
-
-        var pixKeyUpdated = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
-        pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
-        pixKeyUpdated.calculateCid();
-
-        save(requestIdentifier, reason, pixKeyUpdated);
-        sendEvent(requestIdentifier, pixKeyUpdated);
-
-        log.info("PixKey_updated"
-            , kv(REQUEST_IDENTIFIER, requestIdentifier)
-            , kv("key", pixKeyUpdated.getKey()));
-
-        return pixKeyUpdated;
+//        UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
+//
+//        if (requestIdentifier.isBlank()) {
+//            throw new IllegalArgumentException("requestIdentifier can not be empty");
+//        }
+//
+//        if (KeyType.RANDOM.equals(pixKey.getType()) && Reason.CLIENT_REQUEST.equals(reason)) {
+//            throw new UseCaseException("Random keys cannot be updated per client requests");
+//        }
+//
+//        var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey())
+//            .orElseThrow(() -> new UseCaseException(String.format("The key was not found in the database: %s", pixKey.getKey())));
+//
+//        var pixKeyUpdated = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+//        pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());
+//        pixKeyUpdated.calculateCid();
+//
+//        save(requestIdentifier, reason, pixKeyUpdated);
+//        sendEvent(requestIdentifier, pixKeyUpdated);
+//
+//        log.info("PixKey_updated"
+//            , kv(REQUEST_IDENTIFIER, requestIdentifier)
+//            , kv("key", pixKeyUpdated.getKey()));
+//
+//        return pixKeyUpdated;
+        return null;
     }
 
     private void save(String requestIdentifier, Reason reason, PixKey pixKeyUpdated) {
