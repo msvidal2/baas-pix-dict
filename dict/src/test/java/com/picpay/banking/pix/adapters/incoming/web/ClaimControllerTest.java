@@ -1,15 +1,9 @@
 package com.picpay.banking.pix.adapters.incoming.web;
 
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimConfirmationReasonDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.ClaimCancelReasonDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CompleteClaimRequestWebDTO;
-import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.CreateClaimRequestWebDTO;
+import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
 import com.picpay.banking.pix.core.usecase.claim.ClaimEventRegistryUseCase;
-import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
 import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -129,9 +123,12 @@ class ClaimControllerTest {
     void when_completeClaimsWithoutClaimId_expect_statusBadRequest() throws Exception {
         mockMvc.perform(put("/v1/claims/1/complete")
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("requestIdentifier", UUID.randomUUID().toString())
                 .content(OBJECT_MAPPER.asJsonString(CompleteClaimRequestWebDTO.builder()
                         .ispb(12345)
                         .build())))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", equalTo(400)))
                 .andExpect(jsonPath("$.error", equalTo("Bad Request")))

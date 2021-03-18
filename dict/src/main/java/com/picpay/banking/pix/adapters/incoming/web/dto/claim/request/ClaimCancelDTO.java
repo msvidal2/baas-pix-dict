@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.claim.request;
 
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.events.data.ClaimEventData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

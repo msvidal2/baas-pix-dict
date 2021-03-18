@@ -1,6 +1,6 @@
 package com.picpay.banking.pix.core.ports.claim.picpay;
 
-import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.events.data.ClaimEventData;
 import lombok.NonNull;
 
 /**
@@ -11,6 +11,6 @@ import lombok.NonNull;
  */
 public interface ClaimCacheSavePort {
 
-    void save(@NonNull Claim claim, @NonNull String requestIdentifier);
+    void save(@NonNull ClaimEventData claim, @NonNull String requestIdentifier);
 
 }

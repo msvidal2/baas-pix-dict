@@ -1,6 +1,7 @@
 package com.picpay.banking.claim.ports;
 
 import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.events.data.ClaimEventData;
 import com.picpay.banking.pix.core.ports.claim.picpay.ClaimCacheSavePort;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ClaimCacheSavePortImpl implements ClaimCacheSavePort {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void save(@NonNull Claim claim, @NonNull String requestIdentifier) {
-        redisTemplate.opsForHash().put(Claim.class.getSimpleName(), requestIdentifier, claim);
+    public void save(@NonNull ClaimEventData claim, @NonNull String requestIdentifier) {
+        redisTemplate.opsForHash().put(ClaimEventData.class.getSimpleName(), requestIdentifier, claim);
     }
 }
