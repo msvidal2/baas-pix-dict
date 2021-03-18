@@ -4,8 +4,10 @@ import com.newrelic.api.agent.Trace;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.request.*;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimIterableResponseDTO;
 import com.picpay.banking.pix.adapters.incoming.web.dto.claim.response.ClaimResponseDTO;
-import com.picpay.banking.pix.core.events.ClaimEventType;
-import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.events.data.ClaimEventData;
+import com.picpay.banking.pix.core.usecase.claim.ClaimEventRegistryUseCase;
+import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
 import com.picpay.banking.pix.core.validators.claim.ClaimCancelValidator;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.picpay.banking.pix.core.events.EventType.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
@@ -59,8 +62,8 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.CREATE_PENDING,
-                claim);
+                CLAIM_CREATE_PENDING,
+                ClaimEventData.from(claim));
 
         return ClaimResponseDTO.from(claim);
     }
@@ -83,8 +86,8 @@ public class ClaimController {
         ConfirmClaimValidator.validate(claim, claim.getConfirmationReason(), requestIdentifier);
 
         claimEventRegistryUseCase.execute(requestIdentifier,
-                ClaimEventType.CONFIRM_PENDING,
-                claim);
+                CLAIM_CONFIRM_PENDING,
+                ClaimEventData.from(claim));
 
         return ClaimResponseDTO.from(claim);
     }
@@ -126,8 +129,8 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.CANCEL_PENDING,
-                claim);
+                CLAIM_CANCEL_PENDING,
+                ClaimEventData.from(claim));
 
         return ClaimResponseDTO.from(claim);
     }
@@ -150,8 +153,8 @@ public class ClaimController {
 
         claimEventRegistryUseCase.execute(
                 requestIdentifier,
-                ClaimEventType.COMPLETE_PENDING,
-                claim);
+                CLAIM_COMPLETE_PENDING,
+                ClaimEventData.from(claim));
 
         return ClaimResponseDTO.from(claim);
     }

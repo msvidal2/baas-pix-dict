@@ -56,6 +56,13 @@ public class PixKeyEventData implements Serializable {
                 .name(name)
                 .fantasyName(fantasyName)
                 .situation(PixKeySituation.OPEN)
+                .createdAt(createdAt)
+                .startPossessionAt(startPossessionAt)
+                .correlationId(correlationId)
+                .requestId(requestId)
+                .cid(cid)
+                .updatedAt(updatedAt)
+                .donatedAutomatically(donatedAutomatically)
                 .build();
     }
 
@@ -79,6 +86,7 @@ public class PixKeyEventData implements Serializable {
                 .updatedAt(pixKey.getUpdatedAt())
                 .donatedAutomatically(pixKey.getDonatedAutomatically())
                 .fantasyName(pixKey.getFantasyName())
+                .reason(reason)
                 .build();
     }
 

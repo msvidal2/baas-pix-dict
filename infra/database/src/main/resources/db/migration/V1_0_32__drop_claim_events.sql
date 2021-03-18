@@ -1,0 +1,1 @@
+DROP TABLE claim_event;
