@@ -5,7 +5,7 @@ import com.picpay.banking.pix.core.events.DictEvent;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.PortException;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
-import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
+import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import com.picpay.banking.pixkey.dto.PixKeyDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
 
     private static final String CIRCUIT_BREAKER = "pix-key-send-event";
     public static final String ERROR = "error";
-    private final PixKeyEventOutputBinding pixKeyEventOutputBinding;
+    private final DictEventOutputBinding pixKeyEventOutputBinding;
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER, fallbackMethod = "fallback")
@@ -40,7 +40,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PixKeyEventPortImpl implements PixKeyEventPort {
         var message = MessageBuilder
             .withPayload(event)
             .build();
-        pixKeyEventOutputBinding.sendPixKeyWasChanged().send(message);
+        pixKeyEventOutputBinding.output().send(message);
     }
 
     public void fallback(final PixKey pixKey, Exception e) {

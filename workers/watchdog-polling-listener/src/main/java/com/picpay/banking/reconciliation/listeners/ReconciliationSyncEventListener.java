@@ -6,7 +6,7 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationSyncEvent;
 import com.picpay.banking.pix.core.usecase.reconciliation.ContentIdentifierEventRecordUseCase;
-import com.picpay.banking.pixkey.config.PixKeyEventOutputBinding;
+import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class ReconciliationSyncEventListener {
     private final ContentIdentifierEventRecordUseCase contentIdentifierEventRecordUseCase;
     private final ContentIdentifierEventRepository contentIdentifierEventRepository;
 
-    @StreamListener(value = PixKeyEventOutputBinding.OUTPUT)
+    @StreamListener(value = DictEventOutputBinding.OUTPUT)
     public void reconciliationSyncEvent(Message<DictEvent> message) {
         var dictEvent = message.getPayload();
         var pixKey = objectMapper.convertValue(dictEvent.getData(), PixKey.class);

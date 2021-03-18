@@ -2,6 +2,7 @@ package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
 import com.picpay.banking.pix.core.domain.AccountType;
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -52,7 +53,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
     @NotNull
     private String userId;
 
-    public PixKeyEventData toEventData(String key) {
+    public PixKeyEventData toEventData(final String key, final Reason reason) {
         return PixKeyEventData.builder()
                 .key(key)
                 .type(type)
@@ -61,6 +62,7 @@ public class UpdateAccountPixKeyRequestWebDTO {
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .accountOpeningDate(accountOpeningDate)
+                .reason(reason)
                 .build();
     }
 

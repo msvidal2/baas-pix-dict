@@ -74,7 +74,7 @@ public class CreatePixKeyRequestWebDTO {
         return fantasyName;
     }
 
-    public PixKeyEventData toEventData() {
+    public PixKeyEventData toEventData(final Reason reason) {
         return PixKeyEventData.builder()
                 .type(type)
                 .key(key)
@@ -88,6 +88,7 @@ public class CreatePixKeyRequestWebDTO {
                 .name(name)
                 .fantasyName(getFantasyName())
                 .situation(PixKeySituation.OPEN)
+                .reason(reason)
                 .build();
     }
 

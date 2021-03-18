@@ -23,16 +23,14 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder(toBuilder = true)
-@Setter
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
 @EqualsAndHashCode(of = {"type", "key", "ispb", "branchNumber", "accountType", "accountNumber", "personType", "taxId"})
-public class PixKey implements Serializable {
+public class PixKey {
 
     private static final long serialVersionUID = -6450851575119416890L;
 

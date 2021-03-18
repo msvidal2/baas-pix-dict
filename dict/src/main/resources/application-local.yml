@@ -5,6 +5,13 @@ spring:
     enabled: true
     password: none
 
+  cloud:
+    stream:
+      bindings:
+        pixKey-events:
+          destination: dict-events-topic
+          binder: kafka
+
 picpay:
   ispb: 22896431
   logging:
@@ -12,7 +19,7 @@ picpay:
     level: INFO
   dict:
     pixkey:
-      notification-dispatcher: true
+      event-registry: true
   compression:
     enabled: true
 

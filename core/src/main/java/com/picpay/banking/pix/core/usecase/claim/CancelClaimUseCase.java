@@ -115,7 +115,7 @@ public class CancelClaimUseCase {
                 .findDonatedPixKey(claim.getPixKey().getKey())
                 .orElseThrow(ResourceNotFoundException::new);
 
-        pixkey.setDonatedAutomatically(false);
+//        pixkey.setDonatedAutomatically(false);
         savePixKeyPort.savePixKey(pixkey, Reason.FRAUD);
     }
 
