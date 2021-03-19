@@ -58,6 +58,7 @@ public class BacenErrorBuilder {
             .detail(errorCode == null ? problem.getDetail() : errorCode.getMessage())
             .correlationId(problem.getCorrelationId())
             .fields(fields)
+            .isRetryable(errorCode != null && errorCode.isRetryable())
             .build();
     }
 
