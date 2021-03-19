@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.Assertions;
@@ -82,7 +83,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
+        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -121,7 +122,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
+        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -136,7 +137,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
+        Assertions.assertThrows(UseCaseException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
 }
