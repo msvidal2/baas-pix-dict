@@ -2,11 +2,13 @@ package com.picpay.banking.pix.infra;
 
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.FindPixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.ListPixKeyPort;
 import com.picpay.banking.pix.core.usecase.pixkey.FindPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.ListPixKeyUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.UpdateBacenPixKeyUseCase;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -22,6 +24,7 @@ public class PixKeyUseCaseBeansConfig {
     private final FindPixKeyBacenPort findPixKeyBacenPort;
     private final ListPixKeyPort listPixKeyPort;
     private final PixKeyEventRegistryPort eventRegistryPort;
+    private final UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
 
     @Bean
     public FindPixKeyUseCase findPixKeyUseCase() {
@@ -36,6 +39,11 @@ public class PixKeyUseCaseBeansConfig {
     @Bean
     public PixKeyEventRegistryUseCase pixKeyEventRegistryUseCase() {
         return new PixKeyEventRegistryUseCase(eventRegistryPort);
+    }
+
+    @Bean
+    public UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase(){
+        return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
     }
 
 }

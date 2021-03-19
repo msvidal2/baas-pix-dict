@@ -8,6 +8,7 @@ import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.ErrorEvent;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.UpdateEntryRequest;
@@ -35,21 +36,23 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public DomainEvent<PixKey> update(String requestIdentifier, PixKey pixKey, Reason reason) {
+    public DomainEvent<PixKeyEventData> update(String requestIdentifier, PixKey pixKey, Reason reason) {
 
         var updateEntryRequest = UpdateEntryRequest.from(pixKey, reason);
 
         var updateEntryResponse = bacenKeyClient.updateAccountPixKey(updateEntryRequest, pixKey.getKey());
 
-        return DomainEvent.<PixKey>builder()
+        var pixKeyEventData = PixKeyEventData.from(updateEntryResponse.toDomain(pixKey, requestIdentifier), reason);
+
+        return DomainEvent.<PixKeyEventData>builder()
                 .eventType(EventType.PIX_KEY_UPDATED_BACEN)
                 .domain(Domain.PIX_KEY)
-                .source(updateEntryResponse.toDomain(pixKey, requestIdentifier))
+                .source(pixKeyEventData)
                 .requestIdentifier(requestIdentifier)
                 .build();
     }
 
-    public DomainEvent<PixKey> fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
+    public DomainEvent<PixKeyEventData> fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
         log.error("PixKey_fallback_updateAccountBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("pixKey", pixKey.getKey()),
@@ -65,10 +68,10 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
             case BAD_REQUEST:
             case FORBIDDEN:
             case NOT_FOUND:
-                return DomainEvent.<PixKey>builder()
+                return DomainEvent.<PixKeyEventData>builder()
                         .eventType(EventType.PIX_KEY_FAILED_BACEN)
                         .domain(Domain.PIX_KEY)
-                        .source(pixKey)
+                        .source(PixKeyEventData.from(pixKey, reason))
                         .errorEvent(ErrorEvent.builder()
                                 .code(bacenException.getHttpStatus().name())
                                 .description(bacenException.getMessage())
