@@ -2,6 +2,7 @@ package com.picpay.banking.pix.core.events.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.picpay.banking.pix.core.domain.ReportedBy;
+import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReportSituation;
 import com.picpay.banking.pix.core.domain.infraction.InfractionType;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,22 @@ public class InfractionReportEventData implements Serializable {
     private LocalDateTime dateLastUpdate;
     private String details;
     private InfractionAnalyzeEventData analyze;
+
+    public static InfractionReportEventData from(InfractionReport infractionReport, Integer ispb) {
+        return InfractionReportEventData.builder()
+            .infractionReportId(infractionReport.getInfractionReportId())
+            .ispb(ispb)
+            .infractionType(infractionReport.getInfractionType())
+            .endToEndId(infractionReport.getEndToEndId())
+            .reportedBy(infractionReport.getReportedBy())
+            .situation(infractionReport.getSituation())
+            .ispbCredited(infractionReport.getIspbCredited())
+            .ispbDebited(infractionReport.getIspbDebited())
+            .dateCreate(infractionReport.getDateCreate())
+            .dateLastUpdate(infractionReport.getDateLastUpdate())
+            .details(infractionReport.getDetails())
+            .analyze(InfractionAnalyzeEventData.from(infractionReport.getAnalyze()))
+            .build();
+    }
 
 }

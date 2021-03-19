@@ -63,6 +63,11 @@
             <artifactId>watchdog-polling-listener</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.picpay.banking.pix.dict.workers</groupId>
+            <artifactId>dict-events-listener</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
