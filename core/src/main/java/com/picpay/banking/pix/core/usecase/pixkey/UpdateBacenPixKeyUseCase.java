@@ -24,7 +24,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
  */
 @Slf4j
 @AllArgsConstructor
-public class UpdateAccountPixKeyBacenUseCase {
+public class UpdateBacenPixKeyUseCase {
 
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
