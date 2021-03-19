@@ -1,6 +1,7 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.exception.PixKeyError;
@@ -26,11 +27,9 @@ public class UpdateBacenPixKeyUseCase {
     private UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort;
     private FindPixKeyPort findPixKeyPort;
 
-    public PixKeyEventData execute(@NonNull final String requestIdentifier,
-                                                @NonNull final PixKeyEventData pixKeyEventData) {
-
-        var reason = pixKeyEventData.getReason();
-        var pixKey = pixKeyEventData.toPixKey();
+    public PixKey execute(@NonNull final String requestIdentifier,
+                                   @NonNull final PixKey pixKey,
+                                   @NonNull final Reason reason) {
 
         if (KeyType.RANDOM.equals(pixKey.getType()) && Reason.CLIENT_REQUEST.equals(reason))
             throw new IllegalArgumentException(PixKeyError.RANDOM_KEYS_CANNOT_BE_UPDATE.getMessage());
@@ -38,14 +37,14 @@ public class UpdateBacenPixKeyUseCase {
         if (findPixKeyPort.findPixKey(pixKey.getKey()).isEmpty())
             throw new IllegalArgumentException(PixKeyError.KEY_NOT_FOUND.getMessage());
 
-        var domainEvent = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
+        var response = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
 
         log.info("PixKey_updated"
                 , kv(REQUEST_IDENTIFIER, requestIdentifier)
-                , kv("key", pixKeyEventData.getKey())
-                , kv("payload", pixKeyEventData));
+                , kv("key", response.getKey())
+                , kv("payload", response));
 
-        return domainEvent;
+        return response;
     }
 
 }

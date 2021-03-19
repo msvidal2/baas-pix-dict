@@ -32,16 +32,16 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKeyEventData update(String requestIdentifier, PixKey pixKey, Reason reason) {
+    public PixKey update(String requestIdentifier, PixKey pixKey, Reason reason) {
 
         var updateEntryRequest = UpdateEntryRequest.from(pixKey, reason);
 
         var updateEntryResponse = bacenKeyClient.updateAccountPixKey(updateEntryRequest, pixKey.getKey());
 
-        return PixKeyEventData.from(updateEntryResponse.toDomain(pixKey, requestIdentifier), reason);
+        return updateEntryResponse.toDomain(pixKey, requestIdentifier);
     }
 
-    public PixKeyEventData fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
+    public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
         log.error("PixKey_fallback_updateAccountBacen",
                 kv("requestIdentifier", requestIdentifier),
                 kv("pixKey", pixKey.getKey()),
