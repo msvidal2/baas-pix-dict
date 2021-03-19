@@ -43,9 +43,7 @@ class RemovePixKeyUseCaseTest {
             .ispb(12345678)
             .build();
 
-        var pixkey = PixKey.builder().updatedAt(LocalDateTime.now()).build();
-        when(removePixKeyBacenPort.remove(any(), any(), any())).thenReturn(PixKeyEventData.from(pixKey, CLIENT_REQUEST));
-        when(removePixKeyPort.remove(any(), any())).thenReturn(Optional.of(pixKey));
+        when(removePixKeyBacenPort.remove(any(), any(), any())).thenReturn(pixKey);
 
         assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, BRANCH_TRANSFER));
 
