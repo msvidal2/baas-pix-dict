@@ -1,8 +1,7 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
 import com.picpay.banking.pix.core.domain.KeyType;
-import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.events.data.PixKeyEventData;
+import com.picpay.banking.pix.core.domain.PixKey;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -27,12 +26,11 @@ public class RemovePixKeyRequestWebDTO {
     @NotNull
     protected Integer ispb;
 
-    public PixKeyEventData toEventData(final String key, final Reason reason) {
-        return PixKeyEventData.builder()
+    public PixKey toDomain(final String key) {
+        return PixKey.builder()
                 .key(key)
                 .ispb(ispb)
                 .type(type)
-                .reason(reason)
                 .build();
     }
 

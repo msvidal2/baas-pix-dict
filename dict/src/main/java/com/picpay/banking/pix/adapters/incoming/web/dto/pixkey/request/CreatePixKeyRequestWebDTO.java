@@ -1,14 +1,8 @@
 package com.picpay.banking.pix.adapters.incoming.web.dto.pixkey.request;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -74,8 +68,8 @@ public class CreatePixKeyRequestWebDTO {
         return fantasyName;
     }
 
-    public PixKeyEventData toEventData(final Reason reason) {
-        return PixKeyEventData.builder()
+    public PixKey toDomain() {
+        return PixKey.builder()
                 .type(type)
                 .key(key)
                 .ispb(ispb)
@@ -88,7 +82,6 @@ public class CreatePixKeyRequestWebDTO {
                 .name(name)
                 .fantasyName(getFantasyName())
                 .situation(PixKeySituation.OPEN)
-                .reason(reason)
                 .build();
     }
 
