@@ -1,16 +1,16 @@
 package com.picpay.banking.pix.processor.pixkey;
 
-import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
-import com.picpay.banking.pix.core.events.data.ErrorEvent;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.usecase.pixkey.RemoveBacenPixKeyUseCase;
 import com.picpay.banking.pix.processor.ProcessorTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_FAILED_BACEN;
 
 /**
  * Class comments go here...
@@ -40,21 +40,8 @@ public class RemovePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventDat
                 .build();
     }
 
-    public DomainEvent<PixKeyEventData> failedEvent(DomainEvent<PixKeyEventData> domainEvent, Exception e) {
-        var error = (BacenException) e;
-
-        var pixkeyEventData = domainEvent.getSource();
-
-        return DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_FAILED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixkeyEventData.toPixKey(), pixkeyEventData.getReason()))
-                .errorEvent(ErrorEvent.builder()
-                        .code(error.getHttpStatus().name())
-                        .description(error.getMessage())
-                        .build())
-                .requestIdentifier(pixkeyEventData.getRequestId().toString())
-                .build();
+    public EventType failedEventType() {
+        return PIX_KEY_FAILED_BACEN;
     }
 
 }
