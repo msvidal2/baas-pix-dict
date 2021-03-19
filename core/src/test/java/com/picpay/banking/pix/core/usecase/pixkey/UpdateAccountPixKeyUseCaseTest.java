@@ -5,7 +5,6 @@ import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
-import com.picpay.banking.pix.core.exception.PixKeyError;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.Assertions;
@@ -41,9 +40,6 @@ class UpdateAccountPixKeyUseCaseTest {
 
     @Test
     public void testUpdate() {
-        var pixKeyResponse = PixKey.builder()
-                .key("13614501000")
-                .build();
 
         var pixKey = PixKey.builder()
                 .requestId(UUID.randomUUID())
