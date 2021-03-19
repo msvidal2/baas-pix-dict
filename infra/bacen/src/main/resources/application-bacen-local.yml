@@ -33,7 +33,7 @@ feign:
 pix:
   bacen:
     dict:
-      url: http://baas-pix-proxy-bacen.ms.qa
+      url: http://baas-pix-proxy-dict-gateway.ms.qa
       sync:
         lockKey: dict::bacen::sync:active
         lockDuration: 3

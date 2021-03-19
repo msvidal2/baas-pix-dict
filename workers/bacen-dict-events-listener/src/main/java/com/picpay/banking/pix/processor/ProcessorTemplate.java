@@ -33,5 +33,4 @@ public abstract class ProcessorTemplate<T> implements EventProcessor<T> {
             return failedEvent(domainEvent, e);
         }
     }
-
 }

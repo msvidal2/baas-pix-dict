@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.picpay.banking.pix.core.events.Domain.INFRACTION_REPORT;
+import static com.picpay.banking.pix.core.events.EventType.INFRACTION_REPORT_ANALYZE_PENDING;
 import static com.picpay.banking.pix.core.events.EventType.INFRACTION_REPORT_CREATE_PENDING;
 
 /**
@@ -26,10 +27,11 @@ import static com.picpay.banking.pix.core.events.EventType.INFRACTION_REPORT_CRE
 public class ProcessorBeanConfig {
 
     @Bean
-    public Map<EventKey, Optional<EventProcessor>> processors(final EventProcessor createInfractionOnBacenProcessor) {
+    public Map<EventKey, Optional<EventProcessor>> processors(final EventProcessor createInfractionOnBacenProcessor, EventProcessor analyzeInfractionOnBacenProcessor) {
         return Map.of(
-            EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(), Optional.of(createInfractionOnBacenProcessor)
-                     );
+            EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(), Optional.of(createInfractionOnBacenProcessor),
+                EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_ANALYZE_PENDING).build(), Optional.of(analyzeInfractionOnBacenProcessor)
+        );
     }
 
 }

@@ -45,7 +45,7 @@ class AnalyzeInfractionReportUseCaseTest {
 
     @BeforeEach
     void setup() {
-        analyzeInfractionReportUseCase = new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, infractionReportSavePort, "22896431");
+        analyzeInfractionReportUseCase = new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, "22896431");
 
         this.infractionReport = InfractionReport.builder().details("details").dateCreate(LocalDateTime.now()).dateLastUpdate(LocalDateTime.now())
             .infractionReportId(randomUUID().toString())

@@ -6,8 +6,10 @@
 package com.picpay.banking.pix.infra.config;
 
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
@@ -33,6 +35,13 @@ public class UseCaseConfig {
                                                                               final InfractionReportFindPort infractionReportFindPort,
                                                                               @Value("${picpay.ispb}") final String ispbPicPay) {
         return new CreateInfractionReportUseCase(infractionReportPort, infractionReportFindPort, ispbPicPay);
+    }
+
+    @Bean
+    public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(final InfractionReportAnalyzePort infractionReportAnalyzePort,
+                                                                         final InfractionReportFindPort infractionReportFindPort,
+                                                                         @Value("${picpay.ispb}") final String ispbPicPay) {
+        return new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, ispbPicPay);
     }
 
     @Bean
