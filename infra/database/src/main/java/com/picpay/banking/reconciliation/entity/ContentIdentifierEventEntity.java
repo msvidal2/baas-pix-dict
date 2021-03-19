@@ -2,7 +2,7 @@ package com.picpay.banking.reconciliation.entity;
 
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationAction;
-import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ContentIdentifierEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,8 +49,8 @@ public class ContentIdentifierEventEntity {
     @Enumerated(EnumType.STRING)
     private ReconciliationAction type;
 
-    public ReconciliationEvent toDomain() {
-        return ReconciliationEvent.builder()
+    public ContentIdentifierEvent toDomain() {
+        return ContentIdentifierEvent.builder()
                 .cid(this.cid)
                 .key(this.key)
                 .keyType(this.keyType)
@@ -59,7 +59,7 @@ public class ContentIdentifierEventEntity {
                 .build();
     }
 
-    public static ContentIdentifierEventEntity fromDomain(ReconciliationEvent event) {
+    public static ContentIdentifierEventEntity fromDomain(ContentIdentifierEvent event) {
         return ContentIdentifierEventEntity.builder()
                 .cid(event.getCid())
                 .key(event.getKey())

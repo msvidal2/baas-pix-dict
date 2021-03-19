@@ -55,11 +55,6 @@
         </dependency>
         <dependency>
             <groupId>com.picpay.banking.pix.dict.workers</groupId>
-            <artifactId>pixkey-database</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.picpay.banking.pix.dict.workers</groupId>
             <artifactId>watchdog-polling-listener</artifactId>
             <version>${project.version}</version>
         </dependency>
