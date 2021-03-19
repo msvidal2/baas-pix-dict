@@ -4,7 +4,6 @@ import com.picpay.banking.fallbacks.BacenExceptionBuilder;
 import com.picpay.banking.fallbacks.PixKeyFieldResolver;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pixkey.clients.BacenKeyClient;
 import com.picpay.banking.pixkey.dto.request.RemoveEntryRequest;
@@ -32,16 +31,16 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKeyEventData remove(PixKey pixKey, String requestIdentifier, Reason reason) {
+    public PixKey remove(PixKey pixKey, String requestIdentifier, Reason reason) {
 
         var removeEntryRequest = RemoveEntryRequest.from(pixKey, reason);
 
         var removeEntryResponse = bacenKeyClient.removeAccountPixKey(removeEntryRequest, pixKey.getKey());
 
-        return PixKeyEventData.from(removeEntryResponse.toDomain(), reason);
+        return removeEntryResponse.toDomain();
     }
 
-    public PixKeyEventData fallbackMethod(PixKey pixKey, String requestIdentifier, Reason reason, Exception e) {
+    public PixKey fallbackMethod(PixKey pixKey, String requestIdentifier, Reason reason, Exception e) {
         log.error("PixKey_fallback_removeAccountBacen",
             kv("pixKey", pixKey.getKey()),
             kv("reason", reason),

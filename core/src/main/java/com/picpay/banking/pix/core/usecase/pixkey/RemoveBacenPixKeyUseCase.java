@@ -22,18 +22,18 @@ public class RemoveBacenPixKeyUseCase {
     public static final String REQUEST_IDENTIFIER = "requestIdentifier";
     private final RemovePixKeyBacenPort removePixKeyBacenPort;
 
-    public PixKeyEventData execute(final String requestIdentifier,
+    public PixKey execute(final String requestIdentifier,
                                    final PixKey pixKey,
                                    final Reason reason) {
 
-        var pixKeyEventData = removePixKeyBacenPort.remove(pixKey, requestIdentifier, reason);
+        var pixKeyRemoved = removePixKeyBacenPort.remove(pixKey, requestIdentifier, reason);
 
         log.info("PixKey_removed",
                 kv(REQUEST_IDENTIFIER, requestIdentifier),
-                kv("key", pixKeyEventData.getKey()),
-                kv("payload", pixKeyEventData));
+                kv("key", pixKeyRemoved.getKey()),
+                kv("payload", pixKeyRemoved));
 
-        return pixKeyEventData;
+        return pixKeyRemoved;
     }
 
 }

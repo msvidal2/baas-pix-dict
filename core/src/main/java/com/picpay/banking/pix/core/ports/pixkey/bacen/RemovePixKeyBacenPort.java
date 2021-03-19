@@ -7,6 +7,6 @@ import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 
 public interface RemovePixKeyBacenPort {
 
-    PixKeyEventData remove(PixKey pixKey, String requestIdentifier, Reason reason);
+    PixKey remove(PixKey pixKey, String requestIdentifier, Reason reason);
 
 }
