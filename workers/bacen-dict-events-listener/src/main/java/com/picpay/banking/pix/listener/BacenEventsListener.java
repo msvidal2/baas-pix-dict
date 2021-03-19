@@ -30,8 +30,14 @@ public class BacenEventsListener {
 
     @StreamListener(StreamConfig.INPUT)
     public void listen(DomainEvent domainEvent) {
-        var eventKey = EventKey.builder().eventType(domainEvent.getEventType()).domain(domainEvent.getDomain()).build();
+
+        var eventKey = EventKey.builder()
+                .eventType(domainEvent.getEventType())
+                .domain(domainEvent.getDomain())
+                .build();
+
         Optional<EventProcessor> eventProcessor = processors.getOrDefault(eventKey, Optional.empty());
+
         eventProcessor.ifPresentOrElse(proc -> proc.process(domainEvent),
                                        () -> log.info("Processador não encontrado para tipo de evento {}-{}", eventKey.getDomain(), eventKey.getEventType()));
     }

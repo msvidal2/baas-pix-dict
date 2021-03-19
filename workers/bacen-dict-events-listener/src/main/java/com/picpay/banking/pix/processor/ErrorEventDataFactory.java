@@ -4,14 +4,15 @@ import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.core.events.data.ErrorEventData;
 import com.picpay.banking.pix.core.events.data.FieldData;
 import com.picpay.banking.pix.core.exception.UseCaseException;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorEventDataFactory {
-
-    private ErrorEventDataFactory() {}
 
     public static ErrorEventData fromBacenException(BacenException e) {
         var bacenError = e.getBacenError();
