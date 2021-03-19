@@ -47,6 +47,11 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
             .build();
     }
 
+    @Override
+    protected EventType failedEventType() {
+        return null;
+    }
+
     public DomainEvent<InfractionReportEventData> failedEvent(DomainEvent<InfractionReportEventData> domainEvent, Exception e) {
         var error = (BacenException) e;
         return DomainEvent.<InfractionReportEventData>builder()

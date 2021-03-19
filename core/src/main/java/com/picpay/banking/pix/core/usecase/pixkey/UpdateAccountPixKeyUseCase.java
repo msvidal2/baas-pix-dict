@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.usecase.pixkey;
 import com.picpay.banking.pix.core.domain.KeyType;
 import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.domain.Reason;
-import com.picpay.banking.pix.core.exception.UseCaseException;
+import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
@@ -26,8 +26,8 @@ public class UpdateAccountPixKeyUseCase {
     private PixKeyEventPort pixKeyEventPort;
 
     public PixKey execute(@NonNull final String requestIdentifier,
-        @NonNull final PixKey pixKey,
-        @NonNull final Reason reason) {
+                          @NonNull final PixKey pixKey,
+                          @NonNull final Reason reason) {
 
         UpdatePixKeyValidator.validate(requestIdentifier, pixKey, reason);
 
@@ -36,11 +36,11 @@ public class UpdateAccountPixKeyUseCase {
         }
 
         if (KeyType.RANDOM.equals(pixKey.getType()) && Reason.CLIENT_REQUEST.equals(reason)) {
-            throw new UseCaseException("Random keys cannot be updated per client requests");
+            throw new PixKeyException("Random keys cannot be updated per client requests");
         }
 
         var oldPixKey = findPixKeyPort.findPixKey(pixKey.getKey())
-            .orElseThrow(() -> new UseCaseException(String.format("The key was not found in the database: %s", pixKey.getKey())));
+            .orElseThrow(() -> new PixKeyException(String.format("The key was not found in the database: %s", pixKey.getKey())));
 
         var pixKeyUpdated = updateAccountPixKeyBacenPort.update(requestIdentifier, pixKey, reason);
         pixKeyUpdated.keepCreationRequestIdentifier(oldPixKey.getRequestId());

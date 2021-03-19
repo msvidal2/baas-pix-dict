@@ -3,7 +3,7 @@ package com.picpay.banking.pix.core.exception;
 import lombok.Getter;
 
 @Getter
-public class ReconciliationException extends UseCaseException {
+public class ReconciliationException extends RuntimeException {
 
     public ReconciliationException(final String message) {
         super(message);

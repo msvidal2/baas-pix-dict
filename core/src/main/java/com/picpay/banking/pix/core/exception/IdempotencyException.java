@@ -11,7 +11,7 @@ package com.picpay.banking.pix.core.exception;
  * @author rafael.braga
  * @version 1.0 25/11/2020
  */
-public class IdempotencyException extends UseCaseException {
+public class IdempotencyException extends RuntimeException {
 
     private static final String MESSAGE = "Uma entidade com esse request identifier com body diferente já foi criada anteriormente";
 
