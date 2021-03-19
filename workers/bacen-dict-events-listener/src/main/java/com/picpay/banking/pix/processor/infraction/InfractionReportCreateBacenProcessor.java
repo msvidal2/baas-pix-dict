@@ -6,12 +6,10 @@
 
 package com.picpay.banking.pix.processor.infraction;
 
-import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
-import com.picpay.banking.pix.core.events.data.ErrorEventData;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.processor.ProcessorTemplate;
@@ -49,18 +47,7 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
 
     @Override
     protected EventType failedEventType() {
-        return null;
-    }
-
-    public DomainEvent<InfractionReportEventData> failedEvent(DomainEvent<InfractionReportEventData> domainEvent, Exception e) {
-        var error = (BacenException) e;
-        return DomainEvent.<InfractionReportEventData>builder()
-            .domain(Domain.INFRACTION_REPORT)
-            .eventType(EventType.INFRACTION_REPORT_FAILED_BACEN)
-            .requestIdentifier(domainEvent.getRequestIdentifier())
-            .source(domainEvent.getSource())
-            .errorEvent(ErrorEventData.builder().description(error.getMessage()).code(String.valueOf(error.getHttpStatus().value())).build())
-            .build();
+        return EventType.INFRACTION_REPORT_FAILED_BACEN;
     }
 
 }
