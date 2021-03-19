@@ -11,7 +11,7 @@ public class BacenException extends RuntimeException {
 
     private HttpStatus httpStatus;
 
-    public boolean isRetryable;
+    private boolean isRetryable;
 
     public boolean isRetryable() {
         if (bacenError != null) {

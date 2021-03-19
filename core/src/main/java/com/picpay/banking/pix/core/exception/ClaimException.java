@@ -20,4 +20,14 @@ public class ClaimException extends UseCaseException {
         super(message);
     }
 
+    @Override
+    public String getCode() {
+        return claimError.getCode();
+    }
+
+    @Override
+    public String getMessage() {
+        return claimError.getMessage();
+    }
+
 }

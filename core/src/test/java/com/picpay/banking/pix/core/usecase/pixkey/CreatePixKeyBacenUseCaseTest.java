@@ -6,8 +6,6 @@ import com.picpay.banking.pix.core.exception.PixKeyException;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +17,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.picpay.banking.pix.core.domain.AccountType.CHECKING;
-import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static com.picpay.banking.pix.core.domain.KeyType.CPF;
 import static com.picpay.banking.pix.core.domain.KeyType.EMAIL;
 import static com.picpay.banking.pix.core.domain.PersonType.INDIVIDUAL_PERSON;
 import static com.picpay.banking.pix.core.domain.PersonType.LEGAL_ENTITY;
+import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -31,13 +29,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CreatePixKeyUseCaseTest {
+class CreatePixKeyBacenUseCaseTest {
 
     @InjectMocks
-    private CreatePixKeyUseCase useCase;
-
-    @Mock
-    private SavePixKeyPort savePixKeyPort;
+    private CreatePixKeyBacenUseCase useCase;
 
     @Mock
     private FindPixKeyPort findPixKeyPort;
@@ -47,9 +42,6 @@ class CreatePixKeyUseCaseTest {
 
     @Mock
     private FindOpenClaimByKeyPort findOpenClaimByKeyPort;
-
-    @Mock
-    private PixKeyEventPort pixKeyEventPort;
 
     private PixKey pixKey;
 
@@ -106,8 +98,6 @@ class CreatePixKeyUseCaseTest {
         });
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
-        verify(savePixKeyPort).savePixKey(any(), any());
-        verify(pixKeyEventPort).pixKeyWasCreated(any());
     }
 
     @Test
@@ -157,8 +147,6 @@ class CreatePixKeyUseCaseTest {
         });
 
         verify(createPixKeyBacenPortBacen).create(anyString(), any(), any());
-        verify(savePixKeyPort).savePixKey(any(), any());
-        verify(pixKeyEventPort).pixKeyWasCreated(any());
     }
 
     @Test

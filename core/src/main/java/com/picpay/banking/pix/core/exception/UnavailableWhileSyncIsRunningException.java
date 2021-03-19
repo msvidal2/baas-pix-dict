@@ -11,7 +11,7 @@ package com.picpay.banking.pix.core.exception;
  * @author rafael.braga
  * @version 1.0 13/01/2021
  */
-public class UnavailableWhileSyncIsRunningException extends UseCaseException {
+public class UnavailableWhileSyncIsRunningException extends RuntimeException {
 
     private static final String MESSAGE = "DICT-API is currently syncing with BACEN and cannot serve requests. Please try again later";
 

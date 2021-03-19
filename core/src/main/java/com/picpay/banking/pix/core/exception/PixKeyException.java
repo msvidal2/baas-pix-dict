@@ -11,13 +11,18 @@ public class PixKeyException extends UseCaseException {
         this.pixKeyError = pixKeyError;
     }
 
-    public PixKeyException(String message, PixKeyError pixKeyError) {
-        super(message);
-        this.pixKeyError = pixKeyError;
-    }
-
     public PixKeyException(String message) {
         super(message);
+    }
+
+    @Override
+    public String getMessage() {
+        return pixKeyError.getMessage();
+    }
+
+    @Override
+    public String getCode() {
+        return pixKeyError.getCode();
     }
 
 }
