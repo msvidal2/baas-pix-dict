@@ -44,7 +44,6 @@ class CreateInfractionReportUseCaseTest {
     void setUp() {
         final String ispbPicPay = "22896431";
         createInfractionReportUseCase = new CreateInfractionReportUseCase(infractionReportPort,
-                                                                          infractionReportSavePort,
                                                                           infractionReportFindPort,
                                                                           ispbPicPay);
     }

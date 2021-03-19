@@ -13,7 +13,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-// TODO: revisar e melhorar
 @Slf4j
 public class BacenExceptionBuilder {
 
