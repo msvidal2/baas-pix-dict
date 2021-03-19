@@ -37,7 +37,6 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
     private final Integer ispb;
 
     @Override
-    @SendTo(StreamConfig.OUTPUT)
     protected DomainEvent<InfractionReportEventData> handle(DomainEvent<InfractionReportEventData> domainEvent) {
         InfractionReport createdOnBacen = createInfractionReportUseCase.execute(InfractionReport.from(domainEvent.getSource()),
                                                                                 domainEvent.getRequestIdentifier());
