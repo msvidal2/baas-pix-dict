@@ -68,10 +68,9 @@ class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
-        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent);
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent.getSource());
 
-        var response = useCase.execute(randomUUID, domainEvent.getSource());
-        Assertions.assertEquals(EventType.PIX_KEY_UPDATED_BACEN, response.getEventType());
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, domainEvent.getSource()));
     }
 
     @Test
@@ -82,10 +81,6 @@ class UpdateAccountPixKeyUseCaseTest {
     @Test
     public void testUpdateChangeRandomKeyClientRequest() {
         var randomKey = randomUUID().toString();
-
-        var pixKeyResponse = PixKey.builder()
-                .key(randomKey)
-                .build();
 
         var pixKey = PixKey.builder()
                 .requestId(UUID.randomUUID())
@@ -108,11 +103,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .requestIdentifier(randomUUID)
                 .build();
 
-        var response = useCase.execute(randomUUID, domainEvent.getSource());
-
-        Assertions.assertEquals(EventType.PIX_KEY_FAILED_BACEN, response.getEventType());
-        Assertions.assertNotNull(response.getErrorEvent());
-        Assertions.assertEquals(PixKeyError.RANDOM_KEYS_CANNOT_BE_UPDATE.getCode(), response.getErrorEvent().getCode());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
     }
 
     @Test
@@ -141,11 +132,9 @@ class UpdateAccountPixKeyUseCaseTest {
                 .build();
 
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
-        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent);
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent.getSource());
 
-        var response = useCase.execute(randomUUID, domainEvent.getSource());
-
-        Assertions.assertEquals(EventType.PIX_KEY_UPDATED_BACEN, response.getEventType());
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, domainEvent.getSource()));
     }
 
     @Test
@@ -165,11 +154,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .requestIdentifier(randomUUID)
                 .build();
 
-        var response = useCase.execute(randomUUID, domainEvent.getSource());
-
-        Assertions.assertEquals(EventType.PIX_KEY_FAILED_BACEN, response.getEventType());
-        Assertions.assertNotNull(response.getErrorEvent());
-        Assertions.assertEquals(PixKeyError.KEY_NOT_FOUND.getCode(), response.getErrorEvent().getCode());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
     }
 
     @Test
@@ -190,11 +175,7 @@ class UpdateAccountPixKeyUseCaseTest {
                 .requestIdentifier(randomUUID)
                 .build();
 
-        var response = useCase.execute(randomUUID, domainEvent.getSource());
-
-        Assertions.assertEquals(EventType.PIX_KEY_FAILED_BACEN, response.getEventType());
-        Assertions.assertNotNull(response.getErrorEvent());
-        Assertions.assertEquals(PixKeyError.KEY_NOT_FOUND.getCode(), response.getErrorEvent().getCode());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
     }
 
 }
