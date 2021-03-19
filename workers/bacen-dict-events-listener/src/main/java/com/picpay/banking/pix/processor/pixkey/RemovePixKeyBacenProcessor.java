@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Component(value = "updatePixKeyBacenProcessor")
+@Component(value = "removePixKeyBacenProcessor")
 public class RemovePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventData> {
 
     private final RemoveBacenPixKeyUseCase removeBacenPixKeyUseCase;
