@@ -9,18 +9,26 @@ spring:
     password: none
   cloud:
     stream:
+      kafka:
+        bindings:
+          # configuração de binding para DLQ
+          pixKey-events-input:
+            consumer:
+              enableDLQ: true
+              dlqName: dict-events-topic-DLQ
+              autoCommitOnError: true
+              autoCommitOffset: true
       bindings:
         pixKey-events-input:
           destination: dict-events-topic
           group: dict-bacen-listener
           contentType: application/json
           consumer:
-            enableDlq: true
-            dlqName: dict-events-topic-DLQ
-            maxAttemps: 3
-#            configuration:
-#              max.poll.records: 1
-#              max.poll.interval.ms: 1000
+            maxAttempts: 3
+            # configuração de intervalo para retentativa
+            backOffInitialInterval: 100
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
             partitionCount: 1
             concurrency: 1
         pixkey-events-output:
