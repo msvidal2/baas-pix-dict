@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.picpay.banking.pix.core.events.data.ErrorEvent;
+import com.picpay.banking.pix.core.events.data.ErrorEventData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class DomainEventDeserializerBuilder {
     private EventType eventType;
     private Domain domain;
     private Object source;
-    private ErrorEvent errorEvent;
+    private ErrorEventData errorEvent;
     private String requestIdentifier;
 
     public DomainEventDeserializerBuilder eventType(EventType eventType) {
@@ -35,7 +35,7 @@ public class DomainEventDeserializerBuilder {
         return this;
     }
 
-    public DomainEventDeserializerBuilder errorEvent(ErrorEvent errorEvent) {
+    public DomainEventDeserializerBuilder errorEvent(ErrorEventData errorEvent) {
         this.errorEvent = errorEvent;
         return this;
     }
