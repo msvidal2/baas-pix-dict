@@ -1,6 +1,6 @@
 package com.picpay.banking.reconciliation.ports;
 
-import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ContentIdentifierEvent;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.reconciliation.repository.ContentIdentifierEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class ContentIdentifierEventPortImpl implements ContentIdentifierEventPor
     private final ContentIdentifierEventRepository contentIdentifierEventRepository;
 
     @Override
-    public void save(ReconciliationEvent event) {
+    public void save(ContentIdentifierEvent event) {
         contentIdentifierEventRepository.save(fromDomain(event));
     }
 

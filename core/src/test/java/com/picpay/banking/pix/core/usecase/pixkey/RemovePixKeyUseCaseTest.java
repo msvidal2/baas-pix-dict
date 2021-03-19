@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.picpay.banking.pix.core.domain.Reason.BRANCH_TRANSFER;
 import static com.picpay.banking.pix.core.domain.Reason.CLIENT_REQUEST;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -51,7 +52,7 @@ class RemovePixKeyUseCaseTest {
             .thenReturn(PixKey.builder().updatedAt(LocalDateTime.now()).build());
         when(removePixKeyPort.remove(any(), any())).thenReturn(Optional.of(pixKey));
 
-        assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, CLIENT_REQUEST));
+        assertDoesNotThrow(() -> useCase.execute(randomUUID().toString(), pixKey, BRANCH_TRANSFER));
 
         verify(removePixKeyBacenPort).remove(any(), any());
         verify(removePixKeyPort).remove(anyString(), anyInt());

@@ -23,7 +23,6 @@
     </dependencies>
 
     <modules>
-        <module>pixkey-database</module>
         <module>watchdog-polling-listener</module>
         <module>bacen-dict-events-listener</module>
     </modules>

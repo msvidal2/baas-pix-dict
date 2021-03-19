@@ -10,7 +10,11 @@ import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReport
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
+import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyBacenUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
@@ -34,8 +38,8 @@ public class UseCaseConfig {
 
     @Bean
     public CreateInfractionReportUseCase infractionReportCreateBacenProcessor(final CreateInfractionReportPort infractionReportPort,
-                                                                              final InfractionReportFindPort infractionReportFindPort,
-                                                                              @Value("${picpay.ispb}") final String ispbPicPay) {
+        final InfractionReportFindPort infractionReportFindPort,
+        @Value("${picpay.ispb}") final String ispbPicPay) {
         return new CreateInfractionReportUseCase(infractionReportPort, infractionReportFindPort, ispbPicPay);
     }
 
@@ -51,5 +55,32 @@ public class UseCaseConfig {
 
         return new CreatePixKeyBacenUseCase(createPixKeyBacenPortBacen, findPixKeyPort, findOpenClaimByKeyPort);
     }
+
+    @Bean
+    public CreateDatabasePixKeyUseCase createDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
+        ContentIdentifierEventPort contentIdentifierEventPort) {
+        return new CreateDatabasePixKeyUseCase(savePixKeyPort, contentIdentifierEventPort);
+    }
+
+    @Bean
+    public UpdateDatabasePixKeyUseCase updateDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
+        FindPixKeyPort findPixKeyPort,
+        ContentIdentifierEventPort contentIdentifierEventPort) {
+        return new UpdateDatabasePixKeyUseCase(savePixKeyPort, findPixKeyPort, contentIdentifierEventPort);
+    }
+
+    @Bean
+    public RemoveDatabasePixKeyUseCase removeDatabasePixKeyUseCase(
+        RemovePixKeyPort removePixKeyPort, ContentIdentifierEventPort contentIdentifierEventPort) {
+        return new RemoveDatabasePixKeyUseCase(removePixKeyPort, contentIdentifierEventPort);
+    }
+
+    @Bean
+    public UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase(UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort,
+                                                             FindPixKeyPort findPixKeyPort){
+        return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
+    }
+
+
 
 }
