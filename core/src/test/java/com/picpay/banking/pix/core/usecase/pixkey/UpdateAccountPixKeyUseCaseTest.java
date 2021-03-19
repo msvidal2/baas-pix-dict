@@ -1,10 +1,6 @@
 package com.picpay.banking.pix.core.usecase.pixkey;
 
 import com.picpay.banking.pix.core.domain.*;
-import com.picpay.banking.pix.core.events.Domain;
-import com.picpay.banking.pix.core.events.DomainEvent;
-import com.picpay.banking.pix.core.events.EventType;
-import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.Assertions;
@@ -56,22 +52,15 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
 
-        var domainEvent = DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKey, CLIENT_REQUEST))
-                .requestIdentifier(randomUUID)
-                .build();
-
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
-        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent.getSource());
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, domainEvent.getSource()));
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
     public void testUpdateNullpixKey() {
-        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null));
+        Assertions.assertThrows(NullPointerException.class, () -> useCase.execute(randomUUID, null, CLIENT_REQUEST));
     }
 
     @Test
@@ -92,14 +81,8 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        var domainEvent = DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKey, CLIENT_REQUEST))
-                .requestIdentifier(randomUUID)
-                .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -120,17 +103,11 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        var domainEvent = DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKey, BRANCH_TRANSFER))
-                .requestIdentifier(randomUUID)
-                .build();
 
         when(findPixKeyPort.findPixKey(any())).thenReturn(Optional.of(pixKey));
-        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(domainEvent.getSource());
+        when(updateAccountPixKeyBacenPort.update(any(), any(), any())).thenReturn(pixKey);
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, domainEvent.getSource()));
+        Assertions.assertDoesNotThrow(() -> useCase.execute(randomUUID, pixKey, BRANCH_TRANSFER));
     }
 
     @Test
@@ -143,14 +120,8 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        var domainEvent = DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKey, CLIENT_REQUEST))
-                .requestIdentifier(randomUUID)
-                .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
     @Test
@@ -164,14 +135,8 @@ class UpdateAccountPixKeyUseCaseTest {
                 .accountType(AccountType.CHECKING)
                 .accountOpeningDate(LocalDateTime.now())
                 .build();
-        var domainEvent = DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
-                .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKey, CLIENT_REQUEST))
-                .requestIdentifier(randomUUID)
-                .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, domainEvent.getSource()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> useCase.execute(randomUUID, pixKey, CLIENT_REQUEST));
     }
 
 }

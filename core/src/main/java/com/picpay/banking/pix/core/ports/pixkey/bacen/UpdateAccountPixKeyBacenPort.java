@@ -7,6 +7,6 @@ import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 
 public interface UpdateAccountPixKeyBacenPort {
 
-    PixKeyEventData update(String requestIdentifier, PixKey pixKey, Reason reason);
+    PixKey update(String requestIdentifier, PixKey pixKey, Reason reason);
 
 }

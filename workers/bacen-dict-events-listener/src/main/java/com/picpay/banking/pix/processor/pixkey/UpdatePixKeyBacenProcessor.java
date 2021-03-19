@@ -27,11 +27,13 @@ public class UpdatePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventDat
 
     @Override
     public DomainEvent<PixKeyEventData> handle(final DomainEvent<PixKeyEventData> domainEvent) {
-        var pixkeyEventData = updateBacenPixKeyUseCase.execute(domainEvent.getRequestIdentifier(), domainEvent.getSource());
+        var pixkeyEventData = domainEvent.getSource();
+        var pixKeyUpdated = updateBacenPixKeyUseCase.execute(domainEvent.getRequestIdentifier(),
+                pixkeyEventData.toPixKey(), pixkeyEventData.getReason());
         return DomainEvent.<PixKeyEventData>builder()
                 .eventType(EventType.PIX_KEY_UPDATED_BACEN)
                 .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixkeyEventData.toPixKey(), pixkeyEventData.getReason()))
+                .source(PixKeyEventData.from(pixKeyUpdated, pixkeyEventData.getReason()))
                 .requestIdentifier(pixkeyEventData.getRequestId().toString())
                 .build();
     }
