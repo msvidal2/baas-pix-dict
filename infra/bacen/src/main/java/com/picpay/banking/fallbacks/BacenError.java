@@ -18,5 +18,6 @@ public class BacenError implements Serializable {
     private String detail;
     private List<FieldError> fields;
     private String correlationId;
+    private boolean isRetryable;
 
 }

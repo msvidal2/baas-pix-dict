@@ -1,0 +1,52 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    enabled: true
+    password: none
+  cloud:
+    stream:
+      bindings:
+        pixKey-events-input:
+          destination: dict-events-topic
+          group: dict-bacen-listener
+          contentType: application/json
+          consumer:
+            enableDlq: true
+            dlqName: dict-events-topic-DLQ
+            maxAttemps: 3
+#            configuration:
+#              max.poll.records: 1
+#              max.poll.interval.ms: 1000
+            partitionCount: 1
+            concurrency: 1
+        pixkey-events-output:
+          destination: dict-events-topic
+          contentType: application/json
+          producer:
+            partitionCount: 1
+
+picpay:
+  ispb: 22896431
+  logging:
+    appender: CONSOLE
+    level: INFO
+  dict:
+    pixkey:
+      notification-dispatcher: true
+      event-registry: true
+  compression:
+    enabled: true
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      path-mapping:
+        prometheus: '''metrics'''

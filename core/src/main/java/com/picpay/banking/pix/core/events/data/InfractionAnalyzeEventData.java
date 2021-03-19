@@ -1,5 +1,6 @@
 package com.picpay.banking.pix.core.events.data;
 
+import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyze;
 import com.picpay.banking.pix.core.domain.infraction.InfractionAnalyzeResult;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,12 @@ public class InfractionAnalyzeEventData implements Serializable {
 
     private InfractionAnalyzeResult analyzeResult;
     private String details;
+
+    public static InfractionAnalyzeEventData from(InfractionAnalyze infractionAnalyze) {
+        return InfractionAnalyzeEventData.builder()
+            .analyzeResult(infractionAnalyze.getAnalyzeResult())
+            .details(infractionAnalyze.getDetails())
+            .build();
+    }
 
 }
