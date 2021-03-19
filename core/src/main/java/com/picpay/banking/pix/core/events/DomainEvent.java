@@ -8,7 +8,7 @@ package com.picpay.banking.pix.core.events;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.picpay.banking.pix.core.events.data.ErrorEvent;
+import com.picpay.banking.pix.core.events.data.ErrorEventData;
 import lombok.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -29,7 +29,7 @@ public class DomainEvent<T> {
     private EventType eventType;
     private Domain domain;
     private T source;
-    private ErrorEvent errorEvent;
+    private ErrorEventData errorEvent;
     private String requestIdentifier;
 
 }

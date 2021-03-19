@@ -1,0 +1,56 @@
+package com.picpay.banking.pix.processor.pixkey;
+
+import com.picpay.banking.exceptions.BacenException;
+import com.picpay.banking.pix.core.events.DomainEvent;
+import com.picpay.banking.pix.core.events.EventType;
+import com.picpay.banking.pix.core.events.data.ErrorEventData;
+import com.picpay.banking.pix.core.events.data.FieldData;
+import com.picpay.banking.pix.core.events.data.PixKeyEventData;
+import com.picpay.banking.pix.core.exception.PixKeyException;
+import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyBacenUseCase;
+import com.picpay.banking.pix.processor.ProcessorTemplate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.picpay.banking.pix.core.events.Domain.PIX_KEY;
+import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_CREATED_BACEN;
+import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_FAILED_BACEN;
+
+@Component
+@RequiredArgsConstructor
+public class CreatePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventData> {
+
+    private final CreatePixKeyBacenUseCase createPixKeyBacenUseCase;
+
+    @Override
+    protected DomainEvent<PixKeyEventData> handle(DomainEvent<PixKeyEventData> domainEvent) {
+        var eventData = domainEvent.getSource();
+
+        var createdPixKey = createPixKeyBacenUseCase.execute(domainEvent.getRequestIdentifier(),
+                eventData.toPixKey(),
+                eventData.getReason());
+
+        return DomainEvent.<PixKeyEventData>builder()
+                .eventType(PIX_KEY_CREATED_BACEN)
+                .domain(PIX_KEY)
+                .source(PixKeyEventData.from(createdPixKey, eventData.getReason()))
+                .requestIdentifier(domainEvent.getRequestIdentifier())
+                .build();
+    }
+
+//    protected ErrorEventData failedEvent(Exception e) {
+//        return ErrorEventData.builder()
+//
+//                .build();
+//    }
+
+    public EventType failedEventType() {
+        return PIX_KEY_FAILED_BACEN;
+    }
+
+}

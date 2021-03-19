@@ -5,10 +5,14 @@
  */
 package com.picpay.banking.pix.infra.config;
 
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyBacenUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +42,14 @@ public class UseCaseConfig {
     @Bean
     public PixKeyEventRegistryUseCase pixKeyEventRegistryUseCase() {
         return new PixKeyEventRegistryUseCase(eventRegistryPort);
+    }
+
+    @Bean
+    public CreatePixKeyBacenUseCase createPixKeyBacenUseCase(final CreatePixKeyBacenPort createPixKeyBacenPortBacen,
+            final FindPixKeyPort findPixKeyPort,
+            final FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
+
+        return new CreatePixKeyBacenUseCase(createPixKeyBacenPortBacen, findPixKeyPort, findOpenClaimByKeyPort);
     }
 
 }
