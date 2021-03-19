@@ -52,17 +52,6 @@ spring:
   cloud:
     stream:
       bindings:
-        keys-changed:
-          destination: keys-changed
-          group: dict
-          contentType: application/json
-          consumer:
-            maxAttemps: 2
-            configuration:
-              max.poll.records: 1
-              max.poll.interval.ms: 1
-            partitionCount: 1
-            concurrency: 1
         new-infraction-reports:
           destination: new-infraction-reports
           group: dict
