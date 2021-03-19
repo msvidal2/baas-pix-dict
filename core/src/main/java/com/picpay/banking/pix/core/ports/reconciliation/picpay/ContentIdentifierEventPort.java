@@ -1,9 +1,9 @@
 package com.picpay.banking.pix.core.ports.reconciliation.picpay;
 
-import com.picpay.banking.pix.core.domain.reconciliation.ReconciliationEvent;
+import com.picpay.banking.pix.core.domain.reconciliation.ContentIdentifierEvent;
 
 public interface ContentIdentifierEventPort {
 
-    void save(ReconciliationEvent event);
+    void save(ContentIdentifierEvent event);
 
 }

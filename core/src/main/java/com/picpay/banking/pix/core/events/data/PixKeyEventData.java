@@ -1,7 +1,13 @@
 package com.picpay.banking.pix.core.events.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.AccountType;
+import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.domain.KeyType;
+import com.picpay.banking.pix.core.domain.PersonType;
+import com.picpay.banking.pix.core.domain.PixKey;
+import com.picpay.banking.pix.core.domain.PixKeySituation;
+import com.picpay.banking.pix.core.domain.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,52 +48,52 @@ public class PixKeyEventData implements Serializable {
     private PixKeySituation situation;
     private Reason reason;
 
-    public PixKey toPixKey() {
-        return PixKey.builder()
-                .type(type)
-                .key(key)
-                .ispb(ispb)
-                .branchNumber(branchNumber)
-                .accountType(accountType)
-                .accountNumber(accountNumber)
-                .accountOpeningDate(accountOpeningDate)
-                .personType(personType)
-                .taxId(taxId)
-                .name(name)
-                .fantasyName(fantasyName)
-                .situation(PixKeySituation.OPEN)
-                .createdAt(createdAt)
-                .startPossessionAt(startPossessionAt)
-                .correlationId(correlationId)
-                .requestId(requestId)
-                .cid(cid)
-                .updatedAt(updatedAt)
-                .donatedAutomatically(donatedAutomatically)
-                .build();
-    }
-
     public static PixKeyEventData from(final PixKey pixKey, final Reason reason) {
         return PixKeyEventData.builder()
-                .type(pixKey.getType())
-                .key(pixKey.getKey())
-                .ispb(pixKey.getIspb())
-                .branchNumber(pixKey.getBranchNumber())
-                .accountType(pixKey.getAccountType())
-                .accountNumber(pixKey.getAccountNumber())
-                .accountOpeningDate(pixKey.getAccountOpeningDate())
-                .personType(pixKey.getPersonType())
-                .taxId(pixKey.getTaxId())
-                .name(pixKey.getName())
-                .createdAt(pixKey.getCreatedAt())
-                .startPossessionAt(pixKey.getStartPossessionAt())
-                .correlationId(pixKey.getCorrelationId())
-                .requestId(pixKey.getRequestId())
-                .cid(pixKey.getCid())
-                .updatedAt(pixKey.getUpdatedAt())
-                .donatedAutomatically(pixKey.getDonatedAutomatically())
-                .fantasyName(pixKey.getFantasyName())
-                .reason(reason)
-                .build();
+            .type(pixKey.getType())
+            .key(pixKey.getKey())
+            .ispb(pixKey.getIspb())
+            .branchNumber(pixKey.getBranchNumber())
+            .accountType(pixKey.getAccountType())
+            .accountNumber(pixKey.getAccountNumber())
+            .accountOpeningDate(pixKey.getAccountOpeningDate())
+            .personType(pixKey.getPersonType())
+            .taxId(pixKey.getTaxId())
+            .name(pixKey.getName())
+            .createdAt(pixKey.getCreatedAt())
+            .startPossessionAt(pixKey.getStartPossessionAt())
+            .correlationId(pixKey.getCorrelationId())
+            .requestId(pixKey.getRequestId())
+            .cid(pixKey.getCid())
+            .updatedAt(pixKey.getUpdatedAt())
+            .donatedAutomatically(pixKey.getDonatedAutomatically())
+            .fantasyName(pixKey.getFantasyName())
+            .reason(reason)
+            .build();
+    }
+
+    public PixKey toPixKey() {
+        return PixKey.builder()
+            .type(type)
+            .key(key)
+            .ispb(ispb)
+            .branchNumber(branchNumber)
+            .accountType(accountType)
+            .accountNumber(accountNumber)
+            .accountOpeningDate(accountOpeningDate)
+            .personType(personType)
+            .taxId(taxId)
+            .name(name)
+            .fantasyName(fantasyName)
+            .situation(PixKeySituation.OPEN)
+            .createdAt(createdAt)
+            .startPossessionAt(startPossessionAt)
+            .correlationId(correlationId)
+            .requestId(requestId)
+            .cid(cid)
+            .updatedAt(updatedAt)
+            .donatedAutomatically(donatedAutomatically)
+            .build();
     }
 
 }
