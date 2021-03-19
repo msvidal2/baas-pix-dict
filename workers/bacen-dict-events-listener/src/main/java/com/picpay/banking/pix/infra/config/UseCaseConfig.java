@@ -9,15 +9,13 @@ package com.picpay.banking.pix.infra.config;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.CreateDatabasePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.RemoveDatabasePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.UpdateDatabasePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,5 +64,13 @@ public class UseCaseConfig {
         RemovePixKeyPort removePixKeyPort, ContentIdentifierEventPort contentIdentifierEventPort) {
         return new RemoveDatabasePixKeyUseCase(removePixKeyPort, contentIdentifierEventPort);
     }
+
+    @Bean
+    public UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase(UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort,
+                                                             FindPixKeyPort findPixKeyPort){
+        return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
+    }
+
+
 
 }
