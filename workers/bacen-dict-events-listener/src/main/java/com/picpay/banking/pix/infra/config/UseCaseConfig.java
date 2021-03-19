@@ -16,8 +16,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.CreatePixKeyBacenUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,20 +57,21 @@ public class UseCaseConfig {
 
     @Bean
     public CreateDatabasePixKeyUseCase createDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
-        ContentIdentifierEventPort contentIdentifierEventPort) {
+                                                                   ContentIdentifierEventPort contentIdentifierEventPort) {
         return new CreateDatabasePixKeyUseCase(savePixKeyPort, contentIdentifierEventPort);
     }
 
     @Bean
     public UpdateDatabasePixKeyUseCase updateDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
-        FindPixKeyPort findPixKeyPort,
-        ContentIdentifierEventPort contentIdentifierEventPort) {
+                                                                   FindPixKeyPort findPixKeyPort,
+                                                                   ContentIdentifierEventPort contentIdentifierEventPort) {
         return new UpdateDatabasePixKeyUseCase(savePixKeyPort, findPixKeyPort, contentIdentifierEventPort);
     }
 
     @Bean
     public RemoveDatabasePixKeyUseCase removeDatabasePixKeyUseCase(
-        RemovePixKeyPort removePixKeyPort, ContentIdentifierEventPort contentIdentifierEventPort) {
+        RemovePixKeyPort removePixKeyPort,
+        ContentIdentifierEventPort contentIdentifierEventPort) {
         return new RemoveDatabasePixKeyUseCase(removePixKeyPort, contentIdentifierEventPort);
     }
 

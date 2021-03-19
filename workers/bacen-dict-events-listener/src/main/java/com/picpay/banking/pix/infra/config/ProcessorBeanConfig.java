@@ -30,23 +30,23 @@ public class ProcessorBeanConfig {
 
     @Bean
     public Map<EventKey, Optional<EventProcessor>> processors(
-            final EventProcessor createInfractionOnBacenProcessor,
-            final EventProcessor pixKeyCreateBacenProcessor,
+            final EventProcessor<?> createInfractionOnBacenProcessor,
+            final EventProcessor<?> createPixKeyBacenProcessor,
             final EventProcessor<?> createPixKeyDatabaseProcessor,
             final EventProcessor<?> updatePixKeyDatabaseProcessor,
             final EventProcessor<?> removePixKeyDatabaseProcessor,
             final EventProcessor<?> updatePixKeyBacenProcessor) {
         return Map.of(
+                // INFRACTION
                 EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(), Optional.of(createInfractionOnBacenProcessor),
-                EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_CREATE_PENDING).build(), Optional.of(pixKeyCreateBacenProcessor));
-        // INFRACTION
-        EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(),
-                Optional.of(createInfractionOnBacenProcessor),
+
                 // PIXKEY DATABASE
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_CREATED_BACEN).build(), Optional.of(createPixKeyDatabaseProcessor),
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_UPDATED_BACEN).build(), Optional.of(updatePixKeyDatabaseProcessor),
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_REMOVED_BACEN).build(), Optional.of(removePixKeyDatabaseProcessor),
+
                 // PIXKEY BACEN
+                EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_CREATE_PENDING).build(), Optional.of(createPixKeyBacenProcessor),
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_UPDATE_PENDING).build(), Optional.of(updatePixKeyBacenProcessor)
         );
     }

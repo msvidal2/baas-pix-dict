@@ -12,8 +12,8 @@ import static com.picpay.banking.pix.core.events.Domain.PIX_KEY;
 import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_CREATED_BACEN;
 import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_FAILED_BACEN;
 
-@Component
 @RequiredArgsConstructor
+@Component(value = "createPixKeyBacenProcessor")
 public class CreatePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventData> {
 
     private final CreatePixKeyBacenUseCase createPixKeyBacenUseCase;
