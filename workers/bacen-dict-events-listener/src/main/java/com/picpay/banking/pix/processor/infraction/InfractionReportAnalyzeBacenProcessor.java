@@ -6,18 +6,14 @@
 
 package com.picpay.banking.pix.processor.infraction;
 
-import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
-import com.picpay.banking.pix.core.events.data.ErrorEvent;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
-import com.picpay.banking.pix.infra.config.StreamConfig;
 import com.picpay.banking.pix.processor.ProcessorTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
 @Component(value = "analyzeInfractionOnBacenProcessor")
@@ -49,15 +45,9 @@ public class InfractionReportAnalyzeBacenProcessor extends ProcessorTemplate<Inf
             .build();
     }
 
-    public DomainEvent<InfractionReportEventData> failedEvent(DomainEvent<InfractionReportEventData> domainEvent, Exception e) {
-        var error = (BacenException) e;
-        return DomainEvent.<InfractionReportEventData>builder()
-            .domain(Domain.INFRACTION_REPORT)
-            .eventType(EventType.INFRACTION_REPORT_FAILED_BACEN)
-            .requestIdentifier(domainEvent.getRequestIdentifier())
-            .source(domainEvent.getSource())
-            .errorEvent(ErrorEvent.builder().description(error.getMessage()).code(String.valueOf(error.getHttpStatus().value())).build())
-            .build();
+    @Override
+    protected EventType failedEventType() {
+        return EventType.INFRACTION_REPORT_FAILED_BACEN;
     }
 
 }

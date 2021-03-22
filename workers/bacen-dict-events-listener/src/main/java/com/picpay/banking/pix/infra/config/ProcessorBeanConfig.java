@@ -36,7 +36,8 @@ public class ProcessorBeanConfig {
             final EventProcessor<?> updatePixKeyDatabaseProcessor,
             final EventProcessor<?> removePixKeyDatabaseProcessor,
             final EventProcessor<?> updatePixKeyBacenProcessor,
-            final EventProcessor<?> removePixKeyBacenProcessor) {
+            final EventProcessor<?> removePixKeyBacenProcessor,
+            final EventProcessor<?> analyzeInfractionOnBacenProcessor) {
 
         return Map.of(
                 // INFRACTION
