@@ -5,20 +5,20 @@
  */
 package com.picpay.banking.pix.infra.config;
 
+import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.CreateDatabasePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.PixKeyEventRegistryUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.RemoveDatabasePixKeyUseCase;
-import com.picpay.banking.pix.core.usecase.pixkey.UpdateDatabasePixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +50,14 @@ public class UseCaseConfig {
     }
 
     @Bean
+    public CreatePixKeyBacenUseCase createPixKeyBacenUseCase(final CreatePixKeyBacenPort createPixKeyBacenPortBacen,
+            final FindPixKeyPort findPixKeyPort,
+            final FindOpenClaimByKeyPort findOpenClaimByKeyPort) {
+
+        return new CreatePixKeyBacenUseCase(createPixKeyBacenPortBacen, findPixKeyPort, findOpenClaimByKeyPort);
+    }
+
+    @Bean
     public CreateDatabasePixKeyUseCase createDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
                                                                    ContentIdentifierEventPort contentIdentifierEventPort) {
         return new CreateDatabasePixKeyUseCase(savePixKeyPort, contentIdentifierEventPort);
@@ -57,15 +65,22 @@ public class UseCaseConfig {
 
     @Bean
     public UpdateDatabasePixKeyUseCase updateDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
-        FindPixKeyPort findPixKeyPort,
-        ContentIdentifierEventPort contentIdentifierEventPort) {
+                                                                   FindPixKeyPort findPixKeyPort,
+                                                                   ContentIdentifierEventPort contentIdentifierEventPort) {
         return new UpdateDatabasePixKeyUseCase(savePixKeyPort, findPixKeyPort, contentIdentifierEventPort);
     }
 
     @Bean
     public RemoveDatabasePixKeyUseCase removeDatabasePixKeyUseCase(
-            RemovePixKeyPort removePixKeyPort, ContentIdentifierEventPort contentIdentifierEventPort) {
+        RemovePixKeyPort removePixKeyPort,
+        ContentIdentifierEventPort contentIdentifierEventPort) {
         return new RemoveDatabasePixKeyUseCase(removePixKeyPort, contentIdentifierEventPort);
+    }
+
+    @Bean
+    public UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase(UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort,
+                                                             FindPixKeyPort findPixKeyPort){
+        return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
     }
 
     @Bean
@@ -74,5 +89,6 @@ public class UseCaseConfig {
                                                                          @Value("${picpay.ispb}") final String ispbPicPay) {
         return new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, ispbPicPay);
     }
+
 
 }

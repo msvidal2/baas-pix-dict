@@ -38,7 +38,6 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
         var updateEntryResponse = bacenKeyClient.updateAccountPixKey(updateEntryRequest, pixKey.getKey());
 
         return updateEntryResponse.toDomain(pixKey, requestIdentifier);
-
     }
 
     public PixKey fallbackMethod(String requestIdentifier, PixKey pixKey, Reason reason, Exception e) {
@@ -49,7 +48,7 @@ public class UpdateAccountPixKeyBacenPortImpl implements UpdateAccountPixKeyBace
                 kv("exceptionMessage", e.getMessage()),
                 kv("exception", e));
 
-        throw BacenExceptionBuilder.from(e)
+        throw  BacenExceptionBuilder.from(e)
                 .withFieldResolver(new PixKeyFieldResolver())
                 .build();
     }

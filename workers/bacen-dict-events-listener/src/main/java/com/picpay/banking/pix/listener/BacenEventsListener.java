@@ -3,7 +3,6 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
-
 package com.picpay.banking.pix.listener;
 
 import com.picpay.banking.pix.core.events.DomainEvent;
@@ -27,20 +26,20 @@ import java.util.Optional;
 @Slf4j
 public class BacenEventsListener {
 
-    private final Map<EventKey, Optional<EventProcessor<?>>> processors;
+    private final Map<EventKey, Optional<EventProcessor>> processors;
 
     @StreamListener(StreamConfig.INPUT)
     public void listen(DomainEvent domainEvent) {
-        var eventKey = EventKey.builder().eventType(domainEvent.getEventType()).domain(domainEvent.getDomain()).build();
-        Optional<EventProcessor<?>> eventProcessor = processors.getOrDefault(eventKey, Optional.empty());
-        eventProcessor.ifPresentOrElse(proc -> proc.process(domainEvent),
-            () -> error(eventKey));
-    }
 
-    private void error(final EventKey eventKey) {
-        log.error("Processador não encontrado para tipo de evento {}-{}", eventKey.getDomain(), eventKey.getEventType());
-        throw new UnsupportedOperationException(
-            String.format("Processador não encontrado para tipo de evento %s-%s", eventKey.getDomain(), eventKey.getEventType()));
+        var eventKey = EventKey.builder()
+                .eventType(domainEvent.getEventType())
+                .domain(domainEvent.getDomain())
+                .build();
+
+        Optional<EventProcessor> eventProcessor = processors.getOrDefault(eventKey, Optional.empty());
+
+        eventProcessor.ifPresentOrElse(proc -> proc.process(domainEvent),
+                                       () -> log.info("Processador não encontrado para tipo de evento {}-{}", eventKey.getDomain(), eventKey.getEventType()));
     }
 
 }

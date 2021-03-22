@@ -11,7 +11,7 @@ package com.picpay.banking.pix.core.exception;
  * @author rafael.braga
  * @version 1.0 12/02/2021
  */
-public class CidFileNotReadyException extends UseCaseException {
+public class CidFileNotReadyException extends RuntimeException {
 
     private static final String MESSAGE = "O arquivo de CIDs %s não está disponível no BACEN";
 
