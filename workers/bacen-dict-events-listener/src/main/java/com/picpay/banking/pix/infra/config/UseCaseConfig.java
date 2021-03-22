@@ -11,6 +11,7 @@ import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyz
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
+import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
@@ -83,6 +84,10 @@ public class UseCaseConfig {
         return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
     }
 
+    @Bean
+    public RemoveBacenPixKeyUseCase removeBacenPixKeyUseCase(RemovePixKeyBacenPort removePixKeyBacenPort){
+        return new RemoveBacenPixKeyUseCase(removePixKeyBacenPort);
+    }
     @Bean
     public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(final InfractionReportAnalyzePort infractionReportAnalyzePort,
                                                                          final InfractionReportFindPort infractionReportFindPort,

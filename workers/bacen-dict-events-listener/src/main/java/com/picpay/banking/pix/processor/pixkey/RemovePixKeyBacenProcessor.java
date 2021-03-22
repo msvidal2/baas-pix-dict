@@ -1,16 +1,10 @@
-/*
- *  baas-pix-dict 1.0 17/03/21
- *  Copyright (c) 2021, PicPay S.A. All rights reserved.
- *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
- */
-
 package com.picpay.banking.pix.processor.pixkey;
 
 import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
-import com.picpay.banking.pix.core.usecase.pixkey.UpdateBacenPixKeyUseCase;
+import com.picpay.banking.pix.core.usecase.pixkey.RemoveBacenPixKeyUseCase;
 import com.picpay.banking.pix.processor.ProcessorTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,23 +12,31 @@ import org.springframework.stereotype.Component;
 
 import static com.picpay.banking.pix.core.events.EventType.PIX_KEY_FAILED_BACEN;
 
+/**
+ * Class comments go here...
+ *
+ * @author Cleber Luiz da Silva dos Santos
+ * @version 1.0 18/03/21
+ */
 @Slf4j
 @RequiredArgsConstructor
-@Component(value = "updatePixKeyBacenProcessor")
-public class UpdatePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventData> {
+@Component(value = "removePixKeyBacenProcessor")
+public class RemovePixKeyBacenProcessor extends ProcessorTemplate<PixKeyEventData> {
 
-    private final UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase;
+    private final RemoveBacenPixKeyUseCase removeBacenPixKeyUseCase;
 
     @Override
     public DomainEvent<PixKeyEventData> handle(final DomainEvent<PixKeyEventData> domainEvent) {
         var pixkeyEventData = domainEvent.getSource();
-        var pixKeyUpdated = updateBacenPixKeyUseCase.execute(domainEvent.getRequestIdentifier(),
+
+        var pixKeyRemoved = removeBacenPixKeyUseCase.execute(domainEvent.getRequestIdentifier(),
                 pixkeyEventData.toPixKey(), pixkeyEventData.getReason());
+
         return DomainEvent.<PixKeyEventData>builder()
-                .eventType(EventType.PIX_KEY_UPDATED_BACEN)
+                .eventType(EventType.PIX_KEY_REMOVED_BACEN)
                 .domain(Domain.PIX_KEY)
-                .source(PixKeyEventData.from(pixKeyUpdated, pixkeyEventData.getReason()))
-                .requestIdentifier(pixkeyEventData.getRequestId().toString())
+                .source(PixKeyEventData.from(pixKeyRemoved, pixkeyEventData.getReason()))
+                .requestIdentifier(pixKeyRemoved.getRequestId().toString())
                 .build();
     }
 

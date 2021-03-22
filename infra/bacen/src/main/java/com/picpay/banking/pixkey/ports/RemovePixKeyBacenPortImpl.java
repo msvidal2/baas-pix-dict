@@ -31,7 +31,7 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "fallbackMethod")
-    public PixKey remove(PixKey pixKey, Reason reason) {
+    public PixKey remove(PixKey pixKey, String requestIdentifier, Reason reason) {
 
         var removeEntryRequest = RemoveEntryRequest.from(pixKey, reason);
 
@@ -40,7 +40,7 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
         return removeEntryResponse.toDomain();
     }
 
-    public PixKey fallbackMethod(PixKey pixKey, Reason reason, Exception e) {
+    public PixKey fallbackMethod(PixKey pixKey, String requestIdentifier, Reason reason, Exception e) {
         log.error("PixKey_fallback_removeAccountBacen",
             kv("pixKey", pixKey.getKey()),
             kv("reason", reason),
@@ -48,8 +48,8 @@ public class RemovePixKeyBacenPortImpl implements RemovePixKeyBacenPort {
             kv("exception", e));
 
         throw BacenExceptionBuilder.from(e)
-            .withFieldResolver(new PixKeyFieldResolver())
-            .build();
+                .withFieldResolver(new PixKeyFieldResolver())
+                .build();
     }
 
 }
