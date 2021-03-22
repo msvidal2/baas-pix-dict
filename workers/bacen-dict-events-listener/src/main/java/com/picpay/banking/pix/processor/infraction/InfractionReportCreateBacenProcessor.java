@@ -9,10 +9,10 @@ package com.picpay.banking.pix.processor.infraction;
 import com.picpay.banking.pix.core.domain.infraction.InfractionReport;
 import com.picpay.banking.pix.core.events.Domain;
 import com.picpay.banking.pix.core.events.DomainEvent;
+import com.picpay.banking.pix.core.events.EventProcessor;
 import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.InfractionReportEventData;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
-import com.picpay.banking.pix.processor.ProcessorTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0 17/03/2021
  */
 @Component(value = "createInfractionOnBacenProcessor")
-public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<InfractionReportEventData> {
+public class InfractionReportCreateBacenProcessor implements EventProcessor<InfractionReportEventData> {
 
     public InfractionReportCreateBacenProcessor(final CreateInfractionReportUseCase createInfractionReportUseCase,
                                                 @Value("${picpay.ispb}") final Integer ispb) {
@@ -33,7 +33,7 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
     private final Integer ispb;
 
     @Override
-    protected DomainEvent<InfractionReportEventData> handle(DomainEvent<InfractionReportEventData> domainEvent) {
+    public DomainEvent<InfractionReportEventData> process(DomainEvent<InfractionReportEventData> domainEvent) {
         InfractionReport createdOnBacen = createInfractionReportUseCase.execute(InfractionReport.from(domainEvent.getSource()),
                                                                                 domainEvent.getRequestIdentifier());
         InfractionReportEventData eventData = InfractionReportEventData.from(createdOnBacen, ispb);
@@ -46,7 +46,7 @@ public class InfractionReportCreateBacenProcessor extends ProcessorTemplate<Infr
     }
 
     @Override
-    protected EventType failedEventType() {
+    public EventType failedEventType() {
         return EventType.INFRACTION_REPORT_FAILED_BACEN;
     }
 

@@ -10,4 +10,8 @@ public interface EventProcessor<T> {
 
     DomainEvent<T> process(final DomainEvent<T> domainEvent);
 
+    default EventType failedEventType() {
+        return null;
+    }
+
 }

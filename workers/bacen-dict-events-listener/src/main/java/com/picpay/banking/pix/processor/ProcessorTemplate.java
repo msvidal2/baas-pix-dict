@@ -1,18 +1,15 @@
-/*
- *  baas-pix-dict 1.0 18/03/21
- *  Copyright (c) 2021, PicPay S.A. All rights reserved.
- *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
- */
 package com.picpay.banking.pix.processor;
 
 import com.picpay.banking.exceptions.BacenException;
 import com.picpay.banking.pix.core.events.DomainEvent;
 import com.picpay.banking.pix.core.events.EventProcessor;
-import com.picpay.banking.pix.core.events.EventType;
 import com.picpay.banking.pix.core.events.data.ErrorEventData;
 import com.picpay.banking.pix.core.exception.UseCaseException;
 import com.picpay.banking.pix.infra.config.StreamConfig;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Component;
 
 /**
  * @author rafael.braga
@@ -20,31 +17,31 @@ import org.springframework.messaging.handler.annotation.SendTo;
  * @author rafael.tavares
  * @version 1.0 18/03/2021
  */
-public abstract class ProcessorTemplate<T> implements EventProcessor<T> {
+@Slf4j
+@AllArgsConstructor
+@Component
+public class ProcessorTemplate {
 
     @SendTo(StreamConfig.OUTPUT)
-    public DomainEvent<T> process(final DomainEvent<T> domainEvent) {
+    public DomainEvent handle(EventProcessor processor, DomainEvent domainEvent) {
         try {
-            return handle(domainEvent);
+            return processor.process(domainEvent);
         } catch (BacenException e) {
             if (e.isRetryable())
                 throw e;
-
-            return getDomainEventError(domainEvent, ErrorEventDataFactory.fromBacenException(e));
+            return getDomainEventError(domainEvent, processor, ErrorEventDataFactory.fromBacenException(e));
         } catch (UseCaseException e) {
-            return getDomainEventError(domainEvent, ErrorEventDataFactory.fromUseCaseException(e));
+            return getDomainEventError(domainEvent, processor, ErrorEventDataFactory.fromUseCaseException(e));
         } catch (Exception e) {
-            return getDomainEventError(domainEvent, ErrorEventDataFactory.fromException(e));
+            return getDomainEventError(domainEvent, processor, ErrorEventDataFactory.fromException(e));
         }
     }
 
-    protected abstract DomainEvent<T> handle(final DomainEvent<T> domainEvent);
-
-    protected abstract EventType failedEventType();
-
-    private DomainEvent<T> getDomainEventError(final DomainEvent<T> domainEvent, final ErrorEventData errorEventData) {
-        return DomainEvent.<T>builder()
-                .eventType(failedEventType())
+    private DomainEvent getDomainEventError(final DomainEvent domainEvent,
+                                            final EventProcessor eventProcessor,
+                                            final ErrorEventData errorEventData) {
+        return DomainEvent.builder()
+                .eventType(eventProcessor.failedEventType())
                 .domain(domainEvent.getDomain())
                 .requestIdentifier(domainEvent.getRequestIdentifier())
                 .source(domainEvent.getSource())
