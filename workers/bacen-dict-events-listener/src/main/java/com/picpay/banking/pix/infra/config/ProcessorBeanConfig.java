@@ -40,7 +40,8 @@ public class ProcessorBeanConfig {
 
         return Map.of(
                 // INFRACTION
-                EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(), Optional.of(createInfractionOnBacenProcessor),
+                EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_CREATE_PENDING).build(),Optional.of(createInfractionOnBacenProcessor),
+                EventKey.builder().domain(INFRACTION_REPORT).eventType(INFRACTION_REPORT_ANALYZE_PENDING).build(), Optional.of(analyzeInfractionOnBacenProcessor),
 
                 // PIXKEY DATABASE
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_CREATED_BACEN).build(), Optional.of(createPixKeyDatabaseProcessor),

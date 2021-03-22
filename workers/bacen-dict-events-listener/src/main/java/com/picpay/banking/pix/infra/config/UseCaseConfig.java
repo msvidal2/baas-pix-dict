@@ -7,6 +7,7 @@ package com.picpay.banking.pix.infra.config;
 
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
+import com.picpay.banking.pix.core.ports.infraction.bacen.InfractionReportAnalyzePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
 import com.picpay.banking.pix.core.ports.pixkey.PixKeyEventRegistryPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
@@ -16,6 +17,7 @@ import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
+import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.pixkey.*;
 import com.picpay.banking.pixkey.config.DictEventOutputBinding;
@@ -86,5 +88,12 @@ public class UseCaseConfig {
     public RemoveBacenPixKeyUseCase removeBacenPixKeyUseCase(RemovePixKeyBacenPort removePixKeyBacenPort){
         return new RemoveBacenPixKeyUseCase(removePixKeyBacenPort);
     }
+    @Bean
+    public AnalyzeInfractionReportUseCase analyzeInfractionReportUseCase(final InfractionReportAnalyzePort infractionReportAnalyzePort,
+                                                                         final InfractionReportFindPort infractionReportFindPort,
+                                                                         @Value("${picpay.ispb}") final String ispbPicPay) {
+        return new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, ispbPicPay);
+    }
+
 
 }
