@@ -86,14 +86,44 @@ class CreatePixKeyBacenProcessorTest {
 
     @Test
     void when_executeWithSuccess_expect_pixKey() {
-        when(createPixKeyBacenUseCase.execute(anyString(),any(),any())).thenReturn(pixKeyCreated);
+        when(createPixKeyBacenUseCase.execute(anyString(), any(), any())).thenReturn(pixKeyCreated);
 
         assertDoesNotThrow(() -> {
             var response = processor.process(domainEvent);
             assertNotNull(response);
+            assertEquals(EventType.PIX_KEY_CREATED_BACEN, response.getEventType());
+            assertEquals(pixKeyCreated.getKey(), ((PixKeyEventData) response.getSource()).getKey());
         });
 
-        verify(createPixKeyBacenUseCase).execute(anyString(),any(),any());
+        verify(createPixKeyBacenUseCase).execute(anyString(), any(), any());
     }
 
+    @Test
+    void when_executeWithNullEvent_expect_nullPointerException() {
+        var eventData = PixKeyEventData.builder()
+                .ispb(22896431)
+                .key("35618656825")
+                .type(KeyType.CPF)
+                .branchNumber("1")
+                .accountNumber("3945812")
+                .accountType(AccountType.CHECKING)
+                .taxId("35618656825")
+                .name("Fulano de Tal da Silva")
+                .personType(PersonType.INDIVIDUAL_PERSON)
+                .requestId(UUID.fromString("728b45cc-7f8f-43a6-b921-b2f06c85dcfc"))
+                .updatedAt(LocalDateTime.now())
+                .correlationId("123456789")
+                .createdAt(LocalDateTime.now())
+                .accountOpeningDate(LocalDateTime.now())
+                .startPossessionAt(LocalDateTime.now())
+                .build();
+
+        var domainEventError = DomainEvent.<PixKeyEventData>builder()
+                .domain(Domain.PIX_KEY)
+                .eventType(EventType.PIX_KEY_CREATE_PENDING)
+                .source(eventData)
+                .build();
+
+        assertThrows(NullPointerException.class, () -> processor.process(domainEventError));
+    }
 }
