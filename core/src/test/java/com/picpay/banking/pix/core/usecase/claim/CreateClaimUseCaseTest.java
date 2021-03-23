@@ -3,7 +3,6 @@ package com.picpay.banking.pix.core.usecase.claim;
 import com.picpay.banking.pix.core.domain.*;
 import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 public class CreateClaimUseCaseTest {
 
@@ -33,9 +31,6 @@ public class CreateClaimUseCaseTest {
 
     @Mock
     private CreateClaimBacenPort createClaimPort;
-
-    @Mock
-    private CreateClaimPort saveClaimPort;
 
     @Mock
     private FindOpenClaimByKeyPort findOpenClaimByKeyPort;
@@ -86,7 +81,6 @@ public class CreateClaimUseCaseTest {
         when(findOpenClaimByKeyPort.find(anyString())).thenReturn(Optional.empty());
         when(findPixKeyPort.findPixKey(anyString())).thenReturn(Optional.empty());
         when(createClaimPort.createClaim(any(), anyString())).thenReturn(claimResponse);
-        when(saveClaimPort.saveClaim(any(), anyString())).thenReturn(claimResponse);
 
         Claim claimCreated = useCase.execute(claimRequest, randomUUID().toString());
 
@@ -95,7 +89,6 @@ public class CreateClaimUseCaseTest {
         verify(findOpenClaimByKeyPort, times(1)).find(anyString());
         verify(findPixKeyPort, times(1)).findPixKey(anyString());
         verify(createClaimPort, times(1)).createClaim(any(), anyString());
-        verify(saveClaimPort, times(1)).saveClaim(any(), anyString());
     }
 
     @Test
@@ -107,7 +100,6 @@ public class CreateClaimUseCaseTest {
         verify(findOpenClaimByKeyPort, times(1)).find(anyString());
         verify(findPixKeyPort, times(0)).findPixKey(anyString());
         verify(createClaimPort, times(0)).createClaim(any(), anyString());
-        verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
     }
 
     @Test
@@ -125,7 +117,6 @@ public class CreateClaimUseCaseTest {
         verify(findOpenClaimByKeyPort, times(1)).find(anyString());
         verify(findPixKeyPort, times(1)).findPixKey(anyString());
         verify(createClaimPort, times(0)).createClaim(any(), anyString());
-        verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
     }
 
     @Test
@@ -145,7 +136,6 @@ public class CreateClaimUseCaseTest {
         verify(findOpenClaimByKeyPort, times(1)).find(anyString());
         verify(findPixKeyPort, times(1)).findPixKey(anyString());
         verify(createClaimPort, times(0)).createClaim(any(), anyString());
-        verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
     }
 
 }
