@@ -19,7 +19,7 @@ feign:
   client:
     config:
       default:
-        logger-level: NONE
+        logger-level: BASIC
         connect-timeout: 105000
         read-timeout: 105000
   compression:

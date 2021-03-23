@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.picpay.banking.pix.core.events.Domain.INFRACTION_REPORT;
-import static com.picpay.banking.pix.core.events.Domain.PIX_KEY;
+import static com.picpay.banking.pix.core.events.Domain.*;
 import static com.picpay.banking.pix.core.events.EventType.*;
 
 /**
@@ -37,7 +36,8 @@ public class ProcessorBeanConfig {
             final EventProcessor<?> removePixKeyDatabaseProcessor,
             final EventProcessor<?> updatePixKeyBacenProcessor,
             final EventProcessor<?> removePixKeyBacenProcessor,
-            final EventProcessor<?> analyzeInfractionOnBacenProcessor) {
+            final EventProcessor<?> analyzeInfractionOnBacenProcessor,
+            final EventProcessor<?> createClaimBacenProcessor) {
 
         return Map.of(
                 // INFRACTION
@@ -52,7 +52,10 @@ public class ProcessorBeanConfig {
                 // PIXKEY BACEN
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_CREATE_PENDING).build(), Optional.of(createPixKeyBacenProcessor),
                 EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_UPDATE_PENDING).build(), Optional.of(updatePixKeyBacenProcessor),
-                EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_REMOVE_PENDING).build(), Optional.of(removePixKeyBacenProcessor)
+                EventKey.builder().domain(PIX_KEY).eventType(PIX_KEY_REMOVE_PENDING).build(), Optional.of(removePixKeyBacenProcessor),
+
+                // CLAIM BACEN
+                EventKey.builder().domain(CLAIM).eventType(CLAIM_CREATE_PENDING).build(), Optional.of(createClaimBacenProcessor)
         );
     }
 

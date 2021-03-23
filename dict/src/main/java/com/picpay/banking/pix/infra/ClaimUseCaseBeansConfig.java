@@ -46,7 +46,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public CreateClaimUseCase createClaimUseCase() {
-        return new CreateClaimUseCase(createClaimPort, saveClaimPort, findClaimByKeyPort, findPixKeyPort);
+        return new CreateClaimUseCase(createClaimPort, findClaimByKeyPort, findPixKeyPort);
     }
 
     @Bean
