@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableFeignClients(basePackages = "com.picpay.banking.reconciliation.clients")
 @SpringBootApplication(scanBasePackages = {"com.picpay.banking.common.*", "com.picpay.banking.config", "com.picpay.banking.reconciliation.*", "com.picpay.banking.pixkey.*", "com.picpay.banking.web"})
-public class SyncVerifierApplication {
+public class ReconciliationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SyncVerifierApplication.class, args);
+        SpringApplication.run(ReconciliationApplication.class, args);
     }
 
 }

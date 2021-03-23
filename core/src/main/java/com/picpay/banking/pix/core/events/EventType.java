@@ -20,9 +20,12 @@ public enum EventType {
     PIX_KEY_UPDATE_PENDING(PixKeyEventData.class),
     PIX_KEY_REMOVE_PENDING(PixKeyEventData.class),
     PIX_KEY_CREATED_BACEN(PixKeyEventData.class),
-    PIX_KEY_REMOVED_BACEN(PixKeyEventData.class),
     PIX_KEY_UPDATED_BACEN(PixKeyEventData.class),
+    PIX_KEY_REMOVED_BACEN(PixKeyEventData.class),
     PIX_KEY_FAILED_BACEN(PixKeyEventData.class),
+    PIX_KEY_CREATED_BY_SYNC(PixKeyEventData.class),
+    PIX_KEY_UPDATED_BY_SYNC(PixKeyEventData.class),
+    PIX_KEY_REMOVED_BY_SYNC(PixKeyEventData.class),
 
     CLAIM_CREATE_PENDING(ClaimEventData.class),
     CLAIM_CANCEL_PENDING(ClaimEventData.class),

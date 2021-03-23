@@ -25,6 +25,7 @@
     <modules>
         <module>watchdog-polling-listener</module>
         <module>bacen-dict-events-listener</module>
+        <module>database-dict-events-listener</module>
     </modules>
 
 </project>

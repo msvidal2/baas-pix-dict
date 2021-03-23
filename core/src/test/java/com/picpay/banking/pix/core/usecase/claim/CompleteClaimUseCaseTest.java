@@ -5,7 +5,6 @@ import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,9 +40,6 @@ class CompleteClaimUseCaseTest {
 
     @Mock
     private SavePixKeyPort createPixKeyPort;
-
-    @Mock
-    private PixKeyEventPort pixKeyEventPort;
 
     private Claim claimRequest;
 
@@ -123,7 +119,7 @@ class CompleteClaimUseCaseTest {
                 .fantasyName("Nome Fantasia")
                 .endToEndId("endToEndId").build();
 
-        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort, pixKeyEventPort);
+        useCase =  new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
     }
 
     @Test

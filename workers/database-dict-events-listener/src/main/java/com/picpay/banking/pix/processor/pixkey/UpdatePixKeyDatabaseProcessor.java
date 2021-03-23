@@ -11,19 +11,17 @@ import com.picpay.banking.pix.core.events.EventProcessor;
 import com.picpay.banking.pix.core.events.data.PixKeyEventData;
 import com.picpay.banking.pix.core.usecase.pixkey.UpdateDatabasePixKeyUseCase;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
+@Component
 @RequiredArgsConstructor
-@Component(value = "updatePixKeyDatabaseProcessor")
 public class UpdatePixKeyDatabaseProcessor implements EventProcessor<PixKeyEventData> {
 
     private final UpdateDatabasePixKeyUseCase updateDatabasePixKeyUseCase;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public DomainEvent<PixKeyEventData> process(final DomainEvent<PixKeyEventData> domainEvent) {
         updateDatabasePixKeyUseCase.execute(domainEvent.getSource());
         return null;

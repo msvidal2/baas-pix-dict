@@ -1,0 +1,57 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    enabled: true
+    password: none
+  cloud:
+    stream:
+      kafka:
+        bindings:
+          # configuração de binding para DLQ
+          domain-database-events:
+            consumer:
+              enableDLQ: true
+              dlqName: dict-events-topic-DLQ
+              autoCommitOnError: true
+              autoCommitOffset: true
+      bindings:
+        domain-database-events:
+          destination: dict-events-topic
+          group: dict-domain-database-listener
+          contentType: application/json
+          producer:
+            partitionCount: 1
+          consumer:
+            maxAttempts: 3
+            # configuração de intervalo para retentativa
+            backOffInitialInterval: 100
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+            partitionCount: 1
+            concurrency: 1
+
+picpay:
+  ispb: 22896431
+  logging:
+    appender: CONSOLE
+    level: INFO
+  dict:
+    pixkey:
+      notification-dispatcher: true
+      event-registry: true
+  compression:
+    enabled: true
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+      path-mapping:
+        prometheus: '''metrics'''

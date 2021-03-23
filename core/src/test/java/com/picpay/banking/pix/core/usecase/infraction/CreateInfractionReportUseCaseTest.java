@@ -7,7 +7,6 @@ import com.picpay.banking.pix.core.exception.InfractionReportException;
 import com.picpay.banking.pix.core.ports.infraction.bacen.CreateInfractionReportPort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportCacheSavePort;
 import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportFindPort;
-import com.picpay.banking.pix.core.ports.infraction.picpay.InfractionReportSavePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,15 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CreateInfractionReportUseCaseTest {
 
     @InjectMocks
     private CreateInfractionReportUseCase createInfractionReportUseCase;
-    @Mock
-    private InfractionReportSavePort infractionReportSavePort;
     @Mock
     private InfractionReportFindPort infractionReportFindPort;
     @Mock
@@ -44,8 +43,8 @@ class CreateInfractionReportUseCaseTest {
     void setUp() {
         final String ispbPicPay = "22896431";
         createInfractionReportUseCase = new CreateInfractionReportUseCase(infractionReportPort,
-                                                                          infractionReportFindPort,
-                                                                          ispbPicPay);
+            infractionReportFindPort,
+            ispbPicPay);
     }
 
     @Test
@@ -65,7 +64,6 @@ class CreateInfractionReportUseCaseTest {
 
         verify(infractionReportPort).create(any(), anyString(), anyString());
         verify(infractionReportFindPort).findByEndToEndId(anyString());
-        verify(infractionReportSavePort).save(any(InfractionReport.class));
     }
 
     @Test
@@ -79,13 +77,12 @@ class CreateInfractionReportUseCaseTest {
 
         verify(infractionReportFindPort).findByEndToEndId(anyString());
         verify(infractionReportPort, times(0)).create(any(), anyString(), anyString());
-        verify(infractionReportSavePort, times(0)).save(any(InfractionReport.class));
     }
 
     @Test
     void when_createInfractionReportWithNullRequestIdentifierParams_expect_throwsIllegalArgument() {
         InfractionReport infractionReport = getInfractionReport(OPEN);
-        assertThatThrownBy(() ->createInfractionReportUseCase.execute(infractionReport, null))
+        assertThatThrownBy(() -> createInfractionReportUseCase.execute(infractionReport, null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("The request identifier cannot be empty");
     }

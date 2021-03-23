@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.domain.Reason;
 import com.picpay.banking.pix.core.ports.claim.bacen.CompleteClaimBacenPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CompleteClaimPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.CompleteClaimValidator;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,6 @@ public class CompleteClaimUseCase {
     private final CompleteClaimPort completeClaimPort;
     private final FindClaimPort findClaimPort;
     private final SavePixKeyPort createPixKeyPort;
-    private final PixKeyEventPort pixKeyEventPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
         CompleteClaimValidator.validateClaimSituation(findClaimPort.findClaim(claim.getClaimId(), claim.getIspb(), true));
@@ -73,7 +71,6 @@ public class CompleteClaimUseCase {
         pixKey.calculateCid();
 
         save(pixKey);
-        sendEvent(pixKey);
     }
 
     private void save(PixKey createdPixKey) {
@@ -81,17 +78,6 @@ public class CompleteClaimUseCase {
             createPixKeyPort.savePixKey(createdPixKey, Reason.CLIENT_REQUEST);
         } catch (Exception e) {
             log.error("Claim_completed_saveError",
-                kv("requestIdentifier", createdPixKey.getRequestId()),
-                kv("key", createdPixKey.getKey()),
-                kv("exception", e));
-        }
-    }
-
-    private void sendEvent(PixKey createdPixKey) {
-        try {
-            pixKeyEventPort.pixKeyWasCreated(createdPixKey);
-        } catch (Exception e) {
-            log.error("Claim_completed_eventError",
                 kv("requestIdentifier", createdPixKey.getRequestId()),
                 kv("key", createdPixKey.getKey()),
                 kv("exception", e));

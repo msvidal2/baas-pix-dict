@@ -6,7 +6,6 @@ import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,9 +47,6 @@ class ConfirmClaimUseCaseTest {
 
     @Mock
     private FindPixKeyPort findPixKeyPort;
-
-    @Mock
-    private PixKeyEventPort pixKeyEventPort;
 
     private Claim claim;
 
@@ -94,7 +90,6 @@ class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(1)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(1)).remove(any(), anyInt());
-        verify(pixKeyEventPort, times(1)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -109,7 +104,6 @@ class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
-        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -124,7 +118,6 @@ class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
-        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -139,7 +132,6 @@ class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
-        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
     @Test
@@ -155,7 +147,6 @@ class ConfirmClaimUseCaseTest {
         verify(findClaimPort, times(1)).findClaim(anyString(), anyInt(), anyBoolean());
         verify(saveClaimPort, times(0)).saveClaim(any(), anyString());
         verify(removePixKeyPort, times(0)).remove(any(), anyInt());
-        verify(pixKeyEventPort, times(0)).pixKeyWasRemoved(any());
     }
 
 

@@ -1,11 +1,14 @@
 spring:
   application:
     name: dict-sync-verifier
+  cloud:
     stream:
       bindings:
-        keys-changed:
-          destination: keys-changed
-          binder: kafka
+        pixKey-events:
+          destination: dict-events-topic
+          contentType: application/json
+          producer:
+            partitionCount: 1
   redis:
     enabled: true
     password: none
@@ -36,6 +39,7 @@ picpay:
     level: INFO
   dict:
     pixkey:
+      event-registry: true
       notification-dispatcher: true
     sync:
       schedule: 0 0 2 1/1 * ?

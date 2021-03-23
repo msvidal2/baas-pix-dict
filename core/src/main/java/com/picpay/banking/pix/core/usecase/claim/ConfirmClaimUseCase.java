@@ -1,6 +1,10 @@
 package com.picpay.banking.pix.core.usecase.claim;
 
-import com.picpay.banking.pix.core.domain.*;
+import com.picpay.banking.pix.core.domain.Claim;
+import com.picpay.banking.pix.core.domain.ClaimReason;
+import com.picpay.banking.pix.core.domain.ClaimSituation;
+import com.picpay.banking.pix.core.domain.ClaimType;
+import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.exception.ResourceNotFoundException;
@@ -8,7 +12,6 @@ import com.picpay.banking.pix.core.ports.claim.bacen.ConfirmClaimPort;
 import com.picpay.banking.pix.core.ports.claim.bacen.FindClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.validators.claim.ConfirmClaimValidator;
 import lombok.AllArgsConstructor;
@@ -35,7 +38,6 @@ public class ConfirmClaimUseCase {
     private final FindClaimPort findClaimPort;
     private final CreateClaimPort saveClaimPort;
     private final RemovePixKeyPort removePixKeyPort;
-    private final PixKeyEventPort pixKeyEventPort;
     private final FindPixKeyPort findPixKeyPort;
 
     public Claim execute(final Claim confirmClaim,
@@ -71,7 +73,7 @@ public class ConfirmClaimUseCase {
             kv(REQUEST_IDENTIFIER, requestIdentifier),
             kv(CLAIM_ID, claimConfirmed.getClaimId()));
 
-        remove(claimConfirmed, requestIdentifier).ifPresent(pixKey -> sendEvent(pixKey, requestIdentifier));
+        remove(claimConfirmed, requestIdentifier);
 
         log.info("Claim_confirmed_key_removed",
             kv(REQUEST_IDENTIFIER, requestIdentifier),
@@ -92,17 +94,6 @@ public class ConfirmClaimUseCase {
                 kv(EXCEPTION, e));
         }
         return pixKey;
-    }
-
-    private void sendEvent(PixKey pixKeyRemoved, final String requestIdentifier) {
-        try {
-            pixKeyEventPort.pixKeyWasRemoved(pixKeyRemoved);
-        } catch (Exception e) {
-            log.error("Claim_confirmed_key_eventError",
-                kv(REQUEST_IDENTIFIER, requestIdentifier),
-                kv(KEY, pixKeyRemoved.getKey()),
-                kv(EXCEPTION, e));
-        }
     }
 
     private void validateClaimSituation(Claim claim) {

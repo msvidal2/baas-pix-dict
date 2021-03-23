@@ -3,6 +3,7 @@
  *  Copyright (c) 2021, PicPay S.A. All rights reserved.
  *  PicPay S.A. proprietary/confidential. Use is subject to license terms.
  */
+
 package com.picpay.banking.pix.infra.config;
 
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
@@ -15,9 +16,6 @@ import com.picpay.banking.pix.core.ports.pixkey.bacen.CreatePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.RemovePixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.bacen.UpdateAccountPixKeyBacenPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.ports.reconciliation.picpay.ContentIdentifierEventPort;
 import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.AnalyzeInfractionReportUseCase;
 import com.picpay.banking.pix.core.usecase.infraction.CreateInfractionReportUseCase;
@@ -61,26 +59,6 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CreateDatabasePixKeyUseCase createDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
-                                                                   ContentIdentifierEventPort contentIdentifierEventPort) {
-        return new CreateDatabasePixKeyUseCase(savePixKeyPort, contentIdentifierEventPort);
-    }
-
-    @Bean
-    public UpdateDatabasePixKeyUseCase updateDatabasePixKeyUseCase(SavePixKeyPort savePixKeyPort,
-                                                                   FindPixKeyPort findPixKeyPort,
-                                                                   ContentIdentifierEventPort contentIdentifierEventPort) {
-        return new UpdateDatabasePixKeyUseCase(savePixKeyPort, findPixKeyPort, contentIdentifierEventPort);
-    }
-
-    @Bean
-    public RemoveDatabasePixKeyUseCase removeDatabasePixKeyUseCase(
-        RemovePixKeyPort removePixKeyPort,
-        ContentIdentifierEventPort contentIdentifierEventPort) {
-        return new RemoveDatabasePixKeyUseCase(removePixKeyPort, contentIdentifierEventPort);
-    }
-
-    @Bean
     public UpdateBacenPixKeyUseCase updateBacenPixKeyUseCase(UpdateAccountPixKeyBacenPort updateAccountPixKeyBacenPort,
                                                              FindPixKeyPort findPixKeyPort){
         return new UpdateBacenPixKeyUseCase(updateAccountPixKeyBacenPort, findPixKeyPort);
@@ -104,6 +82,5 @@ public class UseCaseConfig {
                                                                          @Value("${picpay.ispb}") final String ispbPicPay) {
         return new AnalyzeInfractionReportUseCase(infractionReportAnalyzePort, infractionReportFindPort, ispbPicPay);
     }
-
 
 }

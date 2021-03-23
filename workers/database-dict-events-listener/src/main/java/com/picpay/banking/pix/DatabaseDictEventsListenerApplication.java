@@ -10,15 +10,11 @@ package com.picpay.banking.pix;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * @author rafael.braga
- * @version 1.0 17/03/2021
- */
 @SpringBootApplication(scanBasePackages = "com.picpay.banking.*")
-public class DictEventsListenerApplication {
+public class DatabaseDictEventsListenerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DictEventsListenerApplication.class, args);
+        SpringApplication.run(DatabaseDictEventsListenerApplication.class, args);
     }
 
 }

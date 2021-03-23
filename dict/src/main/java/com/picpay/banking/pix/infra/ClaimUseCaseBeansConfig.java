@@ -13,10 +13,15 @@ import com.picpay.banking.pix.core.ports.claim.picpay.FindByIdPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.ListClaimPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.ports.pixkey.picpay.PixKeyEventPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.RemovePixKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.SavePixKeyPort;
-import com.picpay.banking.pix.core.usecase.claim.*;
+import com.picpay.banking.pix.core.usecase.claim.CancelClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ClaimEventRegistryUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CompleteClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ConfirmClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.CreateClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.FindClaimUseCase;
+import com.picpay.banking.pix.core.usecase.claim.ListClaimUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +37,6 @@ public class ClaimUseCaseBeansConfig {
     private final ConfirmClaimPort claimConfirmationPort;
     private final FindClaimPort findClaimPort;
     private final RemovePixKeyPort removePixKeyPort;
-    private PixKeyEventPort pixKeyEventPort;
     private final ListClaimPort listClaimPort;
     private final CancelClaimBacenPort claimCancelPort;
     private final FindByIdPort findByIdPort;
@@ -51,7 +55,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public ConfirmClaimUseCase claimConfirmationUseCase() {
-        return new ConfirmClaimUseCase(claimConfirmationPort, findClaimPort, saveClaimPort, removePixKeyPort, pixKeyEventPort, findPixKeyPort);
+        return new ConfirmClaimUseCase(claimConfirmationPort, findClaimPort, saveClaimPort, removePixKeyPort, findPixKeyPort);
     }
 
     @Bean
@@ -66,7 +70,7 @@ public class ClaimUseCaseBeansConfig {
 
     @Bean
     public CompleteClaimUseCase completeClaimUseCase() {
-        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort, pixKeyEventPort);
+        return new CompleteClaimUseCase(completeClaimBacenPort, completeClaimPort, findClaimPort, createPixKeyPort);
     }
 
     @Bean
