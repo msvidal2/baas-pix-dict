@@ -6,14 +6,13 @@ import com.picpay.banking.pix.core.domain.PixKey;
 import com.picpay.banking.pix.core.exception.ClaimError;
 import com.picpay.banking.pix.core.exception.ClaimException;
 import com.picpay.banking.pix.core.ports.claim.bacen.CreateClaimBacenPort;
-import com.picpay.banking.pix.core.ports.claim.picpay.CreateClaimPort;
 import com.picpay.banking.pix.core.ports.claim.picpay.FindOpenClaimByKeyPort;
 import com.picpay.banking.pix.core.ports.pixkey.picpay.FindPixKeyPort;
-import com.picpay.banking.pix.core.validators.claim.CreateClaimValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -22,34 +21,23 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class CreateClaimUseCase {
 
     private final CreateClaimBacenPort createClaimPort;
-    private final CreateClaimPort saveClaimPort;
     private final FindOpenClaimByKeyPort findOpenClaimByKeyPort;
     private final FindPixKeyPort findPixKeyPort;
 
     public Claim execute(final Claim claim, final String requestIdentifier) {
-        CreateClaimValidator.validate(requestIdentifier, claim);
-
         validateClaimAlreadyExistsForKey(claim.getPixKey().getKey());
 
-        PixKey pixKey = findPixKey(claim.getPixKey().getKey());
-        validateClaimTypeInconsistent(claim, pixKey);
+        var optionalPixKey = findPixKeyPort.findPixKey(claim.getPixKey().getKey());
+        validateClaimTypeInconsistent(claim, optionalPixKey);
 
-        Claim claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
-        if (!Objects.isNull(pixKey)) claimCreated.setPixKey(pixKey);
+        var claimCreated = createClaimPort.createClaim(claim, requestIdentifier);
+        optionalPixKey.ifPresent(claimCreated::setPixKey);
 
         log.info("Claim_created",
                 kv("requestIdentifier", requestIdentifier),
                 kv("claimId", claimCreated.getClaimId()));
 
-        Claim savedClaim = Claim.builder().build();
-
-        try{
-            savedClaim = saveClaimPort.saveClaim(claimCreated, requestIdentifier);
-        } catch (Exception e){
-            log.error("Error saving in the database: {} ", e);
-        }
-
-        return savedClaim;
+        return claimCreated;
     }
 
     private void validateClaimAlreadyExistsForKey(String key) {
@@ -58,20 +46,19 @@ public class CreateClaimUseCase {
         });
     }
 
-    private void validateClaimTypeInconsistent(Claim claim, PixKey pixKey) {
-        if(!Objects.isNull(pixKey) && !Objects.isNull(pixKey.getTaxIdWithLeftZeros())){
-            if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
-                    && pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
-                throw new ClaimException(ClaimError.KEY_ALREADY_BELONGS_TO_CUSTOMER);
+    private void validateClaimTypeInconsistent(Claim claim, Optional<PixKey> optPixKey) {
+        optPixKey.ifPresent(pixKey -> {
+            if (!Objects.isNull(pixKey.getTaxIdWithLeftZeros())) {
+                if (ClaimType.POSSESSION_CLAIM.equals(claim.getClaimType())
+                        && pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
+                    throw new ClaimException(ClaimError.KEY_ALREADY_BELONGS_TO_CUSTOMER);
+                }
+                if (ClaimType.PORTABILITY.equals(claim.getClaimType())
+                        && !pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
+                    throw new ClaimException(ClaimError.INCONSISTENT_PORTABILITY);
+                }
             }
-            if (ClaimType.PORTABILITY.equals(claim.getClaimType())
-                    && !pixKey.getTaxIdWithLeftZeros().equalsIgnoreCase(claim.getTaxIdWithLeftZeros())) {
-                throw new ClaimException(ClaimError.INCONSISTENT_PORTABILITY);
-            }
-        }
+        });
     }
 
-    private PixKey findPixKey(String key){
-        return findPixKeyPort.findPixKey(key).orElse(null);
-    }
 }

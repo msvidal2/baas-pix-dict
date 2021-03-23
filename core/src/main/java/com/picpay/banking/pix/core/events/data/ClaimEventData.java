@@ -43,7 +43,7 @@ public class ClaimEventData implements Serializable {
     private LocalDateTime endDate;
     private String correlationId;
 
-    public Claim toDomain() {
+    public Claim toClaim() {
         return Claim.builder()
                 .claimId(claimId)
                 .claimSituation(claimSituation)
